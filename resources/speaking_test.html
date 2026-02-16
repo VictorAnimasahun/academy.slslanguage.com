@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CELPIP Speaking Test - Complete Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .quota-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        
+        .task-card.completed {
+            border-left: 4px solid #10b981;
+        }
+        
+        .task-card.processing {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .submit-all-btn {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-all-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .submit-all-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .progress-bar-custom {
+            height: 30px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="mb-4">CELPIP Speaking Test - Complete Practice</h1>
+        
+        <!-- Quota Check Card -->
+        <div class="quota-card" id="quotaCard">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="mb-2"><i class="bi bi-info-circle-fill me-2"></i>Quota Check</h5>
+                    <p class="mb-0" id="quotaMessage">Checking your available quota...</p>
+                </div>
+                <div class="text-end">
+                    <div class="fs-2 fw-bold" id="quotaDisplay">-</div>
+                    <small>remaining today</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tasks Section -->
+        <div id="tasksSection" style="display: none;">
+            <h4 class="mb-3">Complete All 8 Tasks</h4>
+            <p class="text-muted mb-4">Record your response for each task, then submit all at once for feedback.</p>
+            
+            <!-- Task 1 -->
+            <div class="task-card" data-task="1">
+                <h5><span class="badge bg-primary me-2">Task 1</span> Giving Advice</h5>
+                <p>Give advice to a friend who wants to learn a new language. What should they do?</p>
+                <textarea class="form-control mb-2" rows="4" placeholder="Paste your transcription here..." data-task-input="1"></textarea>
+                <span class="badge bg-success" style="display: none;" data-task-status="1">✓ Ready</span>
+            </div>
+            
+            <!-- Task 2 -->
+            <div class="task-card" data-task="2">
+                <h5><span class="badge bg-primary me-2">Task 2</span> Talking About Personal Experience</h5>
+                <p>Talk about a time when you had to overcome a challenge. What happened?</p>
+                <textarea class="form-control mb-2" rows="4" placeholder="Paste your transcription here..." data-task-input="2"></textarea>
+                <span class="badge bg-success" style="display: none;" data-task-status="2">✓ Ready</span>
+            </div>
+            
+            <!-- Task 3 -->
+            <div class="task-card" data-task="3">
+                <h5><span class="badge bg-primary me-2">Task 3</span> Describing a Scene</h5>
+                <p>Describe what you see in this image in as much detail as possible.</p>
+                <textarea class="form-control mb-2" rows="4" placeholder="Paste your transcription here..." data-task-input="3"></textarea>
+                <span class="badge bg-success" style="display: none;" data-task-status="3">✓ Ready</span>
+            </div>
+            
+            <!-- Task 4 -->
+            <div class="task-card" data-task="4">
+                <h5><span class="badge bg-primary me-2">Task 4</span> Making Predictions</h5>
+                <p>Look at this image and predict what will happen next. Explain your reasoning.</p>
+                <textarea class="form-control mb-2" rows="4" placeholder="Paste your transcription here..." data-task-input="4"></textarea>
+                <span class="badge bg-success" style="display: none;" data-task-status="4">✓ Ready</span>
+            </div>
+            
+            <!-- Task 5 -->
+            <div class="task-card" data-task="5">
+                <h5><span class="badge bg-primary me-2">Task 5</span> Comparing and Persuading</h5>
+                <p>Compare living in a city versus living in the countryside. Which would you recommend?</p>
+                <textarea class="form-control mb-2" rows="4" placeholder="Paste your transcription here..." data-task-input="5"></textarea>
+                <span class="badge bg-success" style="display: none;" data-task-status="5">✓ Ready</span>
+            </div>
+            
+            <!-- Task 6 -->
+            <div class="task-card" data-task="6">
+                <h5><span class="badge bg-primary me-2">Task 6</span> Dealing with a Difficult Situation</h5>
+                <p>Your neighbor is having loud parties every night. Call them to resolve the situation.</p>
+                <textarea class="form-control mb-2" rows="4" placeholder="Paste your transcription here..." data-task-input="6"></textarea>
+                <span class="badge bg-success" style="display: none;" data-task-status="6">✓ Ready</span>
+            </div>
+            
+            <!-- Task 7 -->
+            <div class="task-card" data-task="7">
+                <h5><span class="badge bg-primary me-2">Task 7</span> Expressing Opinions</h5>
+                <p>Do you agree that social media has improved people's lives? Explain your opinion.</p>
+                <textarea class="form-control mb-2" rows="4" placeholder="Paste your transcription here..." data-task-input="7"></textarea>
+                <span class="badge bg-success" style="display: none;" data-task-status="7">✓ Ready</span>
+            </div>
+            
+            <!-- Task 8 -->
+            <div class="task-card" data-task="8">
+                <h5><span class="badge bg-primary me-2">Task 8</span> Describing an Unusual Situation</h5>
+                <p>Look at this unusual image and describe what might be happening and why it's unusual.</p>
+                <textarea class="form-control mb-2" rows="4" placeholder="Paste your transcription here..." data-task-input="8"></textarea>
+                <span class="badge bg-success" style="display: none;" data-task-status="8">✓ Ready</span>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="text-center mt-4">
+                <button class="submit-all-btn" id="submitAllBtn" disabled>
+                    <i class="bi bi-send-fill me-2"></i>
+                    Submit All 8 Tasks for Analysis
+                </button>
+                <p class="text-muted mt-2 mb-0" id="submitHint">Complete at least one task to enable submission</p>
+            </div>
+        </div>
+        
+        <!-- Progress Section -->
+        <div id="progressSection" style="display: none;" class="mt-4">
+            <h4 class="mb-3">Analyzing Your Responses...</h4>
+            <div class="progress progress-bar-custom mb-2">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" style="width: 0%"></div>
+            </div>
+            <p class="text-center mb-0" id="progressText">Processing task 0 of 8...</p>
+        </div>
+        
+        <!-- Results Section -->
+        <div id="resultsSection" style="display: none;" class="mt-4">
+            <h4 class="mb-3"><i class="bi bi-trophy-fill text-warning me-2"></i>Your Results</h4>
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+    
+    <script>
+        const TASK_COUNT = 8;
+        let completedTasks = 0;
+        
+        // Check quota on page load
+        async function checkQuota() {
+            try {
+                const response = await fetch('/academy/api/api_handler.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'check_test_availability',
+                        test_type: 'celpip_speaking',
+                        question_count: TASK_COUNT
+                    })
+                });
+                
+                const data = await response.json();
+                const quotaCard = document.getElementById('quotaCard');
+                const quotaMessage = document.getElementById('quotaMessage');
+                const quotaDisplay = document.getElementById('quotaDisplay');
+                const tasksSection = document.getElementById('tasksSection');
+                
+                if (data.can_start) {
+                    quotaCard.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+                    quotaMessage.textContent = `✓ You have enough quota to complete this test (${TASK_COUNT} tasks required)`;
+                    quotaDisplay.textContent = data.remaining_quota;
+                    tasksSection.style.display = 'block';
+                } else {
+                    quotaCard.style.background = 'linear-gradient(135deg, #ef4444, #f87171)';
+                    quotaMessage.innerHTML = `
+                        <strong>✗ Insufficient Quota</strong><br>
+                        ${data.message}<br>
+                        <small>You have ${data.remaining_quota} remaining, but need ${data.required_quota} for this test.</small>
+                    `;
+                    quotaDisplay.textContent = data.remaining_quota;
+                }
+            } catch (error) {
+                console.error('Quota check error:', error);
+                document.getElementById('quotaMessage').textContent = 'Error checking quota. Please refresh the page.';
+            }
+        }
+        
+        // Monitor task inputs
+        document.querySelectorAll('[data-task-input]').forEach(input => {
+            input.addEventListener('input', function() {
+                const taskNum = this.getAttribute('data-task-input');
+                const statusBadge = document.querySelector(`[data-task-status="${taskNum}"]`);
+                const taskCard = document.querySelector(`[data-task="${taskNum}"]`);
+                
+                if (this.value.trim().length > 20) {
+                    statusBadge.style.display = 'inline-block';
+                    taskCard.classList.add('completed');
+                    updateCompletedCount();
+                } else {
+                    statusBadge.style.display = 'none';
+                    taskCard.classList.remove('completed');
+                    updateCompletedCount();
+                }
+            });
+        });
+        
+        function updateCompletedCount() {
+            completedTasks = document.querySelectorAll('.task-card.completed').length;
+            const submitBtn = document.getElementById('submitAllBtn');
+            const submitHint = document.getElementById('submitHint');
+            
+            if (completedTasks > 0) {
+                submitBtn.disabled = false;
+                submitHint.textContent = `Ready to submit ${completedTasks} task${completedTasks > 1 ? 's' : ''}`;
+            } else {
+                submitBtn.disabled = true;
+                submitHint.textContent = 'Complete at least one task to enable submission';
+            }
+        }
+        
+        // Submit all tasks
+        document.getElementById('submitAllBtn').addEventListener('click', async function() {
+            if (completedTasks === 0) return;
+            
+            // Gather all completed tasks
+            const tasks = [];
+            for (let i = 1; i <= TASK_COUNT; i++) {
+                const input = document.querySelector(`[data-task-input="${i}"]`);
+                const transcription = input.value.trim();
+                
+                if (transcription.length > 20) {
+                    const taskCard = document.querySelector(`[data-task="${i}"]`);
+                    const title = taskCard.querySelector('h5').textContent;
+                    const prompt = taskCard.querySelector('p').textContent;
+                    
+                    tasks.push({
+                        title: title,
+                        prompt: prompt,
+                        transcription: transcription
+                    });
+                }
+            }
+            
+            // Hide tasks, show progress
+            document.getElementById('tasksSection').style.display = 'none';
+            document.getElementById('progressSection').style.display = 'block';
+            
+            try {
+                const response = await fetch('/academy/api/api_handler.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'analyze_speaking_batch',
+                        exam_type: 'CELPIP',
+                        tasks: tasks
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Hide progress, show results
+                document.getElementById('progressSection').style.display = 'none';
+                document.getElementById('resultsSection').style.display = 'block';
+                
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    document.getElementById('resultsContainer').innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                document.getElementById('progressSection').style.display = 'none';
+                document.getElementById('resultsSection').style.display = 'block';
+                document.getElementById('resultsContainer').innerHTML = `
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> Failed to submit. Please try again.
+                    </div>
+                `;
+            }
+        });
+        
+        function displayResults(data) {
+            const container = document.getElementById('resultsContainer');
+            let html = `
+                <div class="alert alert-success mb-4">
+                    <strong>✓ Analysis Complete!</strong><br>
+                    Processed ${data.batch_info.successful} of ${data.batch_info.total_tasks} tasks<br>
+                    Remaining quota: ${data.remaining_quota} analyses
+                </div>
+            `;
+            
+            data.results.forEach((result, index) => {
+                if (result.success) {
+                    html += `
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <strong>${result.task_title}</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="feedback-content">
+                                    ${formatFeedback(result.feedback)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="card mb-3 border-danger">
+                            <div class="card-header bg-danger text-white">
+                                <strong>Task ${result.task_number} - Error</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-danger mb-0">${result.error}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function formatFeedback(feedback) {
+            // Convert markdown-style formatting to HTML
+            let formatted = feedback.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/\n/g, '<br>');
+            return formatted;
+        }
+        
+        // Initialize
+        checkQuota();
+    </script>
+</body>
+</html>
