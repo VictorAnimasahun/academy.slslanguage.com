@@ -13,13 +13,6 @@ $ieltsAcademicWriting = getTestsByType('IELTS Academic Writing');
 $ieltsGeneralWriting = getTestsByType('IELTS General Writing');
 $ieltsAcademicSpeaking = getTestsByType('IELTS Academic Speaking');
 $ieltsGeneralSpeaking = getTestsByType('IELTS General Speaking');
-
-// Temporary debug
-echo "<pre>";
-echo "IELTS Academic Writing count: " . count($ieltsAcademicWriting) . "\n";
-print_r($ieltsAcademicWriting);
-echo "</pre>";
-die();
 ?>
 <!DOCTYPE html>
 <html lang="en">
