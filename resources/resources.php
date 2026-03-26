@@ -199,7 +199,7 @@ if (!isset($_SESSION['user_id'])) {
 
 				<!-- 7. Practice Tests -->
 				<div class="col">
-					<a href="practice_tests/practice_tests_home.php" class="text-decoration-none">
+					<a href="practice_tests/index.php" class="text-decoration-none">
 						<div class="resource-card" style="background: linear-gradient(135deg, #c4d0caff, #dbd8e7ff);">
 							<div class="card-body">
 								<i class="bi bi-file-earmark-check card-icon"></i>
@@ -222,8 +222,6 @@ if (!isset($_SESSION['user_id'])) {
 						</div>
 					</a>
 				</div>
-
-				
 
 				
 				<!-- Add more cards as needed... -->

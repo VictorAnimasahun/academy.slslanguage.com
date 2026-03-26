@@ -17,6 +17,11 @@ if (!isset($_SESSION['user_id'])) {
 	<?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
 
 	<style>
+		/* ── Global base font ── */
+		body {
+			font-size: 0.875rem; /* 14px down from browser default 16px */
+		}
+
 		.main-wrapper {
 			padding: 0;
 			min-height: 100vh;
@@ -31,7 +36,7 @@ if (!isset($_SESSION['user_id'])) {
 			top: 0;
 			z-index: 100;
 			background: white;
-			padding: 1rem 0;
+			padding: 0.6rem 0; /* was 1rem */
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 			flex-shrink: 0;
 		}
@@ -40,18 +45,19 @@ if (!isset($_SESSION['user_id'])) {
 			background: transparent;
 			padding: 0;
 			margin-bottom: 0;
+			font-size: 0.8rem; /* was inherited ~1rem */
 		}
 
 		/* Scrollable Content Container */
 		.content-wrapper {
 			flex: 1;
 			overflow-y: auto;
-			padding: 2rem 1.5rem;
+			padding: 1.25rem 1rem; /* was 2rem 1.5rem */
 		}
 
 		.test-container {
 			max-width: 900px;
-			margin: 0 auto 2rem;
+			margin: 0 auto 1.5rem;
 			background: white;
 			border-radius: 16px;
 			box-shadow: 0 6px 20px rgba(0,0,0,0.1);
@@ -61,23 +67,24 @@ if (!isset($_SESSION['user_id'])) {
 		.test-header {
 			background: linear-gradient(135deg, #0E4C92, #1e5fa8);
 			color: white;
-			padding: 2.5rem 2rem;
+			padding: 1.5rem 1.5rem; /* was 2.5rem 2rem */
 			text-align: center;
 		}
 
 		.test-header h1 {
 			margin: 0;
-			font-size: 2.5rem;
+			font-size: 1.6rem; /* was 2.5rem */
 			font-weight: 300;
 		}
 
 		.test-header p {
-			margin-top: 0.5rem;
+			margin-top: 0.4rem;
 			opacity: 0.95;
+			font-size: 0.85rem; /* was inherited */
 		}
 
 		.section-content {
-			padding: 2.5rem 2rem;
+			padding: 1.5rem 1.5rem; /* was 2.5rem 2rem */
 		}
 
 		.section {
@@ -100,16 +107,16 @@ if (!isset($_SESSION['user_id'])) {
 
 		.intro-cards {
 			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-			gap: 1.5rem;
-			margin: 2rem 0;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* was 250px */
+			gap: 1rem; /* was 1.5rem */
+			margin: 1.25rem 0; /* was 2rem */
 		}
 
 		.intro-card {
 			background: linear-gradient(135deg, #f8f9ff, #fff);
 			border: 2px solid #e6f0f8;
 			border-radius: 12px;
-			padding: 1.5rem;
+			padding: 1rem; /* was 1.5rem */
 			transition: all 0.3s;
 		}
 
@@ -121,38 +128,50 @@ if (!isset($_SESSION['user_id'])) {
 
 		.intro-card h3 {
 			color: #0E4C92;
-			margin-bottom: 0.8rem;
-			font-size: 1.3rem;
+			margin-bottom: 0.5rem;
+			font-size: 1rem; /* was 1.3rem */
+		}
+
+		.intro-card p {
+			font-size: 0.8rem;
+			margin-bottom: 0;
 		}
 
 		.task-card {
 			background: #f9fcff;
 			border-left: 4px solid #0E4C92;
 			border-radius: 8px;
-			padding: 1.5rem;
-			margin-bottom: 1.5rem;
+			padding: 1rem 1.25rem; /* was 1.5rem */
+			margin-bottom: 1rem; /* was 1.5rem */
 		}
 
 		.task-card h4 {
 			color: #0E4C92;
-			margin-bottom: 1rem;
+			margin-bottom: 0.75rem;
+			font-size: 0.95rem; /* was inherited ~1.25rem */
+		}
+
+		.task-card p {
+			font-size: 0.85rem;
 		}
 
 		.reading-passage {
-			max-height: 300px;
+			max-height: 260px; /* was 300px */
 			overflow-y: auto;
 			background: #fefcff;
 			border: 1px solid #e6e6fa;
 			border-radius: 8px;
-			padding: 1.5rem;
-			margin-bottom: 1.5rem;
-			line-height: 1.8;
+			padding: 1rem; /* was 1.5rem */
+			margin-bottom: 1rem;
+			line-height: 1.7; /* was 1.8 */
+			font-size: 0.85rem;
 		}
 
 		.form-control, .form-select {
 			border: 2px solid #e1e5e9;
 			border-radius: 8px;
-			padding: 0.75rem;
+			padding: 0.5rem 0.75rem; /* was 0.75rem */
+			font-size: 0.85rem;
 		}
 
 		.form-control:focus, .form-select:focus {
@@ -161,12 +180,16 @@ if (!isset($_SESSION['user_id'])) {
 		}
 
 		textarea.form-control {
-			min-height: 150px;
+			min-height: 110px; /* was 150px */
 		}
 
 		.form-check-input:checked {
 			background-color: #0E4C92;
 			border-color: #0E4C92;
+		}
+
+		.form-check-label {
+			font-size: 0.85rem;
 		}
 
 		/* Fixed Navigation at Bottom */
@@ -177,7 +200,7 @@ if (!isset($_SESSION['user_id'])) {
 			background: white;
 			display: flex;
 			justify-content: space-between;
-			padding: 1.5rem 2rem;
+			padding: 0.9rem 1.5rem; /* was 1.5rem 2rem */
 			border-top: 2px solid #f0f2ff;
 			gap: 1rem;
 			box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
@@ -185,9 +208,10 @@ if (!isset($_SESSION['user_id'])) {
 		}
 
 		.btn-nav {
-			padding: 0.75rem 2rem;
+			padding: 0.5rem 1.5rem; /* was 0.75rem 2rem */
 			border-radius: 25px;
 			font-weight: 500;
+			font-size: 0.85rem;
 			transition: all 0.3s;
 		}
 
@@ -205,22 +229,25 @@ if (!isset($_SESSION['user_id'])) {
 			background: #fff5f5;
 			border-left: 6px solid #E76F51;
 			border-radius: 8px;
+			font-size: 0.82rem;
 		}
 
 		.results-container {
-			padding: 2rem;
+			padding: 1.25rem; /* was 2rem */
 		}
 
 		.results-container h2 {
 			color: #0E4C92;
 			text-align: center;
-			margin-bottom: 2rem;
+			margin-bottom: 1.25rem;
+			font-size: 1.2rem; /* was inherited */
 		}
 
 		.result-item {
-			padding: 1rem;
-			margin: 0.5rem 0;
+			padding: 0.6rem 0.9rem; /* was 1rem */
+			margin: 0.4rem 0;
 			border-radius: 8px;
+			font-size: 0.82rem;
 		}
 
 		.result-correct {
@@ -236,43 +263,43 @@ if (!isset($_SESSION['user_id'])) {
 		.final-score {
 			background: linear-gradient(135deg, #0E4C92, #1e5fa8);
 			color: white;
-			padding: 2rem;
+			padding: 1.5rem; /* was 2rem */
 			border-radius: 12px;
 			text-align: center;
-			font-size: 1.5rem;
-			margin: 2rem 0;
+			font-size: 1.1rem; /* was 1.5rem */
+			margin: 1.5rem 0;
 		}
 
 		.section-title {
 			color: #E76F51;
-			font-size: 1.8rem;
-			margin-bottom: 1.5rem;
-			padding-bottom: 0.5rem;
+			font-size: 1.2rem; /* was 1.8rem */
+			margin-bottom: 1rem; /* was 1.5rem */
+			padding-bottom: 0.4rem;
 			border-bottom: 3px solid #f0f2ff;
 		}
 
-		.recorder-container {
-			background: #f8f9ff;
-			border: 2px dashed #0E4C92;
-			border-radius: 8px;
-			padding: 2rem;
-			text-align: center;
-			margin: 1rem 0;
+
+		.lead {
+			font-size: 0.95rem; /* was ~1.25rem */
+		}
+
+		blockquote.blockquote {
+			font-size: 0.875rem;
 		}
 
 		/* Responsive adjustments */
 		@media (max-width: 768px) {
 			.test-header h1 {
-				font-size: 2rem;
+				font-size: 1.2rem; /* was 2rem */
 			}
 			
 			.navigation-buttons {
-				padding: 1rem;
+				padding: 0.75rem;
 			}
 
 			.btn-nav {
-				padding: 0.5rem 1rem;
-				font-size: 0.9rem;
+				padding: 0.4rem 0.8rem;
+				font-size: 0.8rem;
 			}
 		}
 	</style>
@@ -315,28 +342,20 @@ if (!isset($_SESSION['user_id'])) {
 					<div class="section active" id="intro-section">
 						<div class="section-content intro-section">
 							<h2 class="section-title">Welcome to Your Assessment</h2>
-							<p class="lead">This diagnostic test will help us understand your current English level across five key areas.</p>
+							<p class="lead">This diagnostic test will help us understand your current English level across three key areas.</p>
 							
 							<div class="intro-cards">
 								<div class="intro-card">
-									<h3><i class="bi bi-mic-fill"></i> Speaking</h3>
-									<p>Record your responses to IELTS-style prompts with time limits</p>
-								</div>
-								<div class="intro-card">
 									<h3><i class="bi bi-pencil-fill"></i> Writing</h3>
-									<p>Complete essays and formal writing tasks</p>
+									<p>Complete essays and formal writing tasks across a range of genres and styles</p>
 								</div>
 								<div class="intro-card">
 									<h3><i class="bi bi-book-fill"></i> Reading</h3>
-									<p>Analyze texts and answer comprehension questions</p>
+									<p>Analyze academic and general texts and answer comprehension questions</p>
 								</div>
 								<div class="intro-card">
 									<h3><i class="bi bi-headphones"></i> Listening</h3>
-									<p>Respond to audio clips in exam-like conditions</p>
-								</div>
-								<div class="intro-card">
-									<h3><i class="bi bi-journal-text"></i> Grammar & Vocab</h3>
-									<p>Test your command of advanced English usage</p>
+									<p>Respond to audio clips and transcripts in exam-like conditions</p>
 								</div>
 							</div>
 
@@ -379,49 +398,10 @@ if (!isset($_SESSION['user_id'])) {
 						</div>
 					</div>
 
-					<!-- Section 2: Speaking -->
+					<!-- Section 2: Reading -->
 					<div class="section" id="section-2">
 						<div class="section-content">
-							<h2 class="section-title"><i class="bi bi-mic-fill"></i> Section 2: Speaking & Pronunciation</h2>
-							<p class="mb-4"><strong>Instructions:</strong> Answer all three tasks. Speak for no more than 1.5 minutes per task.</p>
-
-							<div class="task-card">
-								<h4>Task 1 – Abstract Discussion</h4>
-								<p class="text-muted">To what extent do you think freedom of speech should be limited in modern societies? Discuss possible consequences of both unrestricted and restricted expression.</p>
-								<div class="recorder-container">
-									<i class="bi bi-mic-fill" style="font-size: 3rem; color: #0E4C92;"></i>
-									<p class="mt-3">Recording functionality would be implemented here</p>
-									<button class="btn btn-outline-primary btn-sm mt-2"><i class="bi bi-record-circle"></i> Start Recording</button>
-								</div>
-							</div>
-
-							<div class="task-card">
-								<h4>Task 2 – Interpretation of Data</h4>
-								<p class="text-muted">Summarize the main findings and predict two long-term consequences that may arise from these trends.</p>
-								<p><small><strong>Note:</strong> A chart/infographic would be displayed here</small></p>
-								<div class="recorder-container">
-									<i class="bi bi-mic-fill" style="font-size: 3rem; color: #0E4C92;"></i>
-									<p class="mt-3">Recording functionality would be implemented here</p>
-									<button class="btn btn-outline-primary btn-sm mt-2"><i class="bi bi-record-circle"></i> Start Recording</button>
-								</div>
-							</div>
-
-							<div class="task-card">
-								<h4>Task 3 – Persuasive Response</h4>
-								<p class="text-muted">Imagine that your city is about to ban private cars in the downtown area. Convince the mayor either to support or oppose this ban, addressing both environmental and economic concerns.</p>
-								<div class="recorder-container">
-									<i class="bi bi-mic-fill" style="font-size: 3rem; color: #0E4C92;"></i>
-									<p class="mt-3">Recording functionality would be implemented here</p>
-									<button class="btn btn-outline-primary btn-sm mt-2"><i class="bi bi-record-circle"></i> Start Recording</button>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Section 3: Reading -->
-					<div class="section" id="section-3">
-						<div class="section-content">
-							<h2 class="section-title"><i class="bi bi-book-fill"></i> Section 3: Reading Comprehension</h2>
+							<h2 class="section-title"><i class="bi bi-book-fill"></i> Section 2: Reading Comprehension</h2>
 
 							<div class="reading-passage">
 								<p>The concept of resilience has been widely adopted across disciplines, from ecology to psychology and economics. At first glance, resilience appears to denote a straightforward quality: the ability of a system or individual to 'bounce back' from adversity. Yet, on closer examination, the notion is far less simplistic. In ecological studies, resilience does not imply returning to a prior state, but rather the capacity of an ecosystem to absorb disturbances while continuing to function, even if in a transformed state. Likewise, in psychology, resilience is less about eliminating distress and more about sustaining meaningful engagement with life despite ongoing hardship.</p>
@@ -456,7 +436,7 @@ if (!isset($_SESSION['user_id'])) {
 
 							<div class="task-card">
 								<h4>Question 2 – Gap Fill</h4>
-								<p>In ecological terms, resilience refers to the ability of a system to <input type="text" class="form-control d-inline-block" name="r2" style="width: 300px;" placeholder="complete the sentence"> while still continuing to function, even if in a different form.</p>
+								<p>In ecological terms, resilience refers to the ability of a system to <input type="text" class="form-control d-inline-block" name="r2" style="width: 260px;" placeholder="complete the sentence"> while still continuing to function, even if in a different form.</p>
 							</div>
 
 							<div class="task-card">
@@ -524,16 +504,16 @@ if (!isset($_SESSION['user_id'])) {
 						</div>
 					</div>
 
-					<!-- Section 4: Listening -->
-					<div class="section" id="section-4">
+					<!-- Section 3: Listening -->
+					<div class="section" id="section-3">
 						<div class="section-content">
-							<h2 class="section-title"><i class="bi bi-headphones"></i> Section 4: Listening Comprehension</h2>
+							<h2 class="section-title"><i class="bi bi-headphones"></i> Section 3: Listening Comprehension</h2>
 
 							<div class="alert alert-info">
 								<strong>Note:</strong> In a real test, you would listen to an audio recording. For this demonstration, please read the transcript below.
 							</div>
 
-							<button type="button" class="btn btn-outline-secondary mb-3" onclick="toggleScript()">
+							<button type="button" class="btn btn-outline-secondary btn-sm mb-3" onclick="toggleScript()">
 								<i class="bi bi-eye"></i> Show/Hide Transcript
 							</button>
 
@@ -545,7 +525,7 @@ if (!isset($_SESSION['user_id'])) {
 								<p>Thus, to attribute innovation to individual brilliance alone is to misunderstand its essence. What truly propels human progress is the intricate interplay between chance, collaboration, and societal demand—factors far messier, and far more human, than the myth of the solitary genius would suggest.</p>
 							</div>
 
-							<div class="task-card mt-4">
+							<div class="task-card mt-3">
 								<h4>Question 1 – Main Idea</h4>
 								<p>The central argument of the talk is that:</p>
 								<div class="form-check">
@@ -589,7 +569,7 @@ if (!isset($_SESSION['user_id'])) {
 
 							<div class="task-card">
 								<h4>Question 3 – Gap Fill</h4>
-								<p>The speaker argues that innovation is not merely a technical achievement but also depends on <input type="text" class="form-control d-inline-block" name="q3" style="width: 400px;" placeholder="two key factors"></p>
+								<p>The speaker argues that innovation is not merely a technical achievement but also depends on <input type="text" class="form-control d-inline-block" name="q3" style="width: 340px;" placeholder="two key factors"></p>
 							</div>
 
 							<div class="task-card">
@@ -636,75 +616,6 @@ if (!isset($_SESSION['user_id'])) {
 						</div>
 					</div>
 
-					<!-- Section 5: Grammar & Vocabulary -->
-					<div class="section" id="section-5">
-						<div class="section-content">
-							<h2 class="section-title"><i class="bi bi-journal-text"></i> Section 5: Grammar & Vocabulary</h2>
-
-							<div class="task-card">
-								<h4>Question 1 – Error Correction</h4>
-								<p>The sentence below contains two errors. Rewrite it correctly:</p>
-								<blockquote class="blockquote">"Hardly I had arrived to the conference when I realized I left my notes at home."</blockquote>
-								<input type="text" class="form-control" name="g1" placeholder="Rewrite correctly here...">
-							</div>
-
-							<div class="task-card">
-								<h4>Question 2 – Collocation</h4>
-								<p>Complete the sentence with the most appropriate word:</p>
-								<p class="text-muted">"Although the minister's speech was full of elegant rhetoric, it completely failed to ______ with the concerns of ordinary citizens."</p>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="g2" value="a" id="g2a">
-									<label class="form-check-label" for="g2a">resonate</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="g2" value="b" id="g2b">
-									<label class="form-check-label" for="g2b">reverberate</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="g2" value="c" id="g2c">
-									<label class="form-check-label" for="g2c">echo</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="g2" value="d" id="g2d">
-									<label class="form-check-label" for="g2d">reverence</label>
-								</div>
-							</div>
-
-							<div class="task-card">
-								<h4>Question 3 – Word Formation</h4>
-								<p class="text-muted">"Her constant ______ (ASSERT) during the negotiations made it clear she would not concede easily."</p>
-								<input type="text" class="form-control" name="g3" placeholder="Type your answer...">
-							</div>
-
-							<div class="task-card">
-								<h4>Question 4 – Sentence Transformation</h4>
-								<p class="text-muted">"They started the project only after the funding had been approved."</p>
-								<p><strong>Begin with:</strong> "Only after..."</p>
-								<input type="text" class="form-control" name="g4" placeholder="Rewrite starting with 'Only after...'">
-							</div>
-
-							<div class="task-card">
-								<h4>Question 5 – Vocabulary Precision</h4>
-								<p class="text-muted">"The scientist argued that the data was too ______ to justify drawing such sweeping conclusions."</p>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="g5" value="a" id="g5a">
-									<label class="form-check-label" for="g5a">tenuous</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="g5" value="b" id="g5b">
-									<label class="form-check-label" for="g5b">vigorous</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="g5" value="c" id="g5c">
-									<label class="form-check-label" for="g5c">prodigious</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="g5" value="d" id="g5d">
-									<label class="form-check-label" for="g5d">conspicuous</label>
-								</div>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -734,7 +645,7 @@ if (!isset($_SESSION['user_id'])) {
 
 	<script>
 		let currentSection = 0;
-		const totalSections = 6; // intro + 5 test sections
+		const totalSections = 4; // intro + 3 test sections (Writing, Reading, Listening)
 
 		function showSection(n) {
 			const sections = document.querySelectorAll('.section');
@@ -743,7 +654,6 @@ if (!isset($_SESSION['user_id'])) {
 				if (i === n) sec.classList.add('active');
 			});
 
-			// Update button visibility
 			document.getElementById('prevBtn').style.display = n === 0 ? 'none' : 'inline-block';
 			document.getElementById('nextBtn').style.display = n === totalSections - 1 ? 'none' : 'inline-block';
 			document.getElementById('submitBtn').style.display = n === totalSections - 1 ? 'inline-block' : 'none';
@@ -753,7 +663,6 @@ if (!isset($_SESSION['user_id'])) {
 			if (currentSection < totalSections - 1) {
 				currentSection++;
 				showSection(currentSection);
-				// Scroll content wrapper to top
 				document.querySelector('.content-wrapper').scrollTo({ top: 0, behavior: 'smooth' });
 			}
 		}
@@ -762,7 +671,6 @@ if (!isset($_SESSION['user_id'])) {
 			if (currentSection > 0) {
 				currentSection--;
 				showSection(currentSection);
-				// Scroll content wrapper to top
 				document.querySelector('.content-wrapper').scrollTo({ top: 0, behavior: 'smooth' });
 			}
 		}
@@ -775,11 +683,7 @@ if (!isset($_SESSION['user_id'])) {
 		// Answer keys
 		const answerKey = {
 			r1: "b", r2: "absorb disturbances", r3: "a", r4: "b", r5: "c",
-			q1: "b", q2: "a", q3: ["collaboration", "societal demand", "chance"], q4: "a", q5: "c",
-			g1: "Hardly had I arrived at the conference when I realized I had left my notes at home.",
-			g2: "a", g3: "assertiveness",
-			g4: "Only after the funding had been approved did they start the project.",
-			g5: "a"
+			q1: "b", q2: "a", q3: ["collaboration", "societal demand", "chance"], q4: "a", q5: "c"
 		};
 
 		function submitTest() {
@@ -787,7 +691,6 @@ if (!isset($_SESSION['user_id'])) {
 			let totalQs = 0;
 			let resultsHTML = '<div class="test-header"><h1><i class="bi bi-trophy-fill"></i> Test Results</h1></div><div class="results-container">';
 
-			// Helper functions
 			function checkRadio(qName, correct, label, section) {
 				totalQs++;
 				let selected = document.querySelector(`input[name='${qName}']:checked`);
@@ -806,7 +709,7 @@ if (!isset($_SESSION['user_id'])) {
 				if (!input) return;
 				let ans = input.value.trim().toLowerCase();
 				let acceptedAnswers = Array.isArray(correct) ? correct : [correct];
-				let isCorrect = acceptedAnswers.some(acceptedAns => 
+				let isCorrect = acceptedAnswers.some(acceptedAns =>
 					ans.includes(acceptedAns.toLowerCase()) || acceptedAns.toLowerCase().includes(ans)
 				);
 
@@ -835,27 +738,18 @@ if (!isset($_SESSION['user_id'])) {
 			checkRadio("q4", answerKey.q4, "Q4", "Listening");
 			checkRadio("q5", answerKey.q5, "Q5", "Listening");
 
-			// Grammar
-			resultsHTML += '<h3 class="mt-4 mb-3"><i class="bi bi-journal-text"></i> Grammar & Vocabulary</h3>';
-			checkText("g1", answerKey.g1, "Q1", "Grammar");
-			checkRadio("g2", answerKey.g2, "Q2", "Grammar");
-			checkText("g3", answerKey.g3, "Q3", "Grammar");
-			checkText("g4", answerKey.g4, "Q4", "Grammar");
-			checkRadio("g5", answerKey.g5, "Q5", "Grammar");
-
 			// Final score
 			let percentage = Math.round((score / totalQs) * 100);
 			let grade = percentage >= 90 ? "A+" : percentage >= 80 ? "A" : percentage >= 70 ? "B" : percentage >= 60 ? "C" : "Needs Improvement";
-			
+
 			resultsHTML += `<div class="final-score">
-				<div><i class="bi bi-award-fill" style="font-size: 3rem;"></i></div>
-				<div class="mt-3">Final Score: ${score} / ${totalQs} (${percentage}%)</div>
-				<div class="mt-2">Grade: ${grade}</div>
+				<div><i class="bi bi-award-fill" style="font-size: 2.2rem;"></i></div>
+				<div class="mt-2">Final Score: ${score} / ${totalQs} (${percentage}%)</div>
+				<div class="mt-1">Grade: ${grade}</div>
 			</div>`;
-			resultsHTML += '<div class="text-center mt-4 mb-4"><a href="diagnostic_tests_home.php" class="btn btn-primary btn-lg"><i class="bi bi-arrow-left"></i> Back to Diagnostic Tests</a></div>';
+			resultsHTML += '<div class="text-center mt-3 mb-4"><a href="diagnostic_tests_home.php" class="btn btn-primary"><i class="bi bi-arrow-left"></i> Back to Diagnostic Tests</a></div>';
 			resultsHTML += '</div>';
 
-			// Replace content
 			document.querySelector('.test-container').innerHTML = resultsHTML;
 			document.querySelector('.content-wrapper').scrollTo({ top: 0, behavior: 'smooth' });
 		}
