@@ -2,7 +2,7 @@
 require_once dirname(__DIR__) . '/bootstrap.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../registration.php?message=Please+login+to+access+resources");
+    header("Location: ../registration.php?message=Please+login+to+access+resources");
     exit();
 }
 
@@ -134,7 +134,7 @@ if (!isset($_SESSION['user_id'])) {
 
 				<!-- 2. Mock Tests -->
 				<div class="col">
-					<a href="mock_tests/mock_tests_home.php" class="text-decoration-none">
+					<a href="mock_tests/index.php" class="text-decoration-none">
 						<div class="resource-card" style="background: linear-gradient(135deg, #eeecf3ff, #18975cff);">
 							<div class="card-body">
 								<i class="bi bi-file-earmark-check card-icon"></i>
