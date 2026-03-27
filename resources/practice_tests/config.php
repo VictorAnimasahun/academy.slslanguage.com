@@ -44,12 +44,14 @@ function getTestsByType($type) {
     global $db;
    
     $dbType = str_replace(' ', '_', $type);
-   
-    $stmt = $db->prepare("
-        SELECT * FROM tests
-        WHERE test_type LIKE ? AND is_active = 1
-        ORDER BY code
-    ");
+
+	$stmt = $db->prepare("
+		SELECT * FROM tests
+		WHERE test_type LIKE ? 
+		AND is_active = 1 
+		AND (is_mock_section = 0 OR is_mock_section IS NULL)
+		ORDER BY code
+	");
     $stmt->execute(["%$dbType%"]);
     $tests = $stmt->fetchAll(PDO::FETCH_ASSOC);
    
