@@ -106,7 +106,7 @@ if (!isset($_SESSION['user_id'])) {
 				</a>
 
 				<!-- IELTS Card -->
-				<a href="diagnostic_ielts.php" class="test-type-card" 
+				<a href="diagnostic_IELTS.php" class="test-type-card" 
 					style="background: linear-gradient(135deg, #ec4899, #f43f5e);">
 					<div class="card-body">
 						<i class="bi bi-pencil-square test-icon"></i>
