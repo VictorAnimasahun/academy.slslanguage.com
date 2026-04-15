@@ -19,6 +19,7 @@ $exercises = [
                     ['title' => 'Maps Quiz Master', 'description' => 'Test your IELTS Task 1 maps knowledge', 'url' => 'maps_quiz.php'],
 					['title' => 'Process Quiz Master', 'description' => 'Test your IELTS Task 1 process knowledge', 'url' => 'process_desc_quiz.php'],
                     ['title' => 'IELTS Listening Section Quiz', 'description' => 'Test your knowledge on the listening test', 'url' => 'IELTS_Listening_Quiz.php'],
+					['title' => 'IELTS Mastery Knowledge T', 'description' => 'Test your knowledge on the IELTS Exam', 'url' => 'IELTS_Mastery_Quiz.php'],
                     //['title' => 'Grammar Correction', 'description' => 'Fix grammatical errors', 'url' => 'grammar_correction.php'],
                     //['title' => 'Vocabulary Matching', 'description' => 'Match words to definitions', 'url' => 'vocab_matching.php'],
                     //['title' => 'Formal vs Informal', 'description' => 'Categorize language register', 'url' => 'formal_informal.php'],
