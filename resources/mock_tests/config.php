@@ -130,3 +130,43 @@ function getSectionDisplayName($sectionType) {
     ];
     return $map[$sectionType] ?? ucfirst(str_replace('_', ' ', $sectionType));
 }
+
+// Map section_type to its PHP file
+function getSectionFile($sectionType) {
+    $map = [
+        'Reading'       => 'reading_template.php',
+        'Writing_Task1' => 'writing_template.php',
+        'Writing_Task2' => 'writing_template.php',
+        'Speaking'      => 'speaking_template.php',
+    ];
+    return $map[$sectionType] ?? null;
+}
+
+// Get the URL for a specific section (by section_type + test_code)
+// Listening routes to the mock-specific file named after the mock code (e.g. ielts_gt_mock01.php)
+function getSectionUrl($sectionType, $testCode, $mockCode) {
+    if ($sectionType === 'Listening') {
+        $file = strtolower($mockCode) . '.php';
+        return $file . '?code=' . urlencode($mockCode);
+    }
+    $file = getSectionFile($sectionType);
+    if (!$file) return null;
+    return $file . '?code=' . urlencode($testCode);
+}
+
+// Get the URL for the first section of a mock
+function getFirstSectionUrl($sections, $mockCode) {
+    if (empty($sections)) return 'index.php';
+    $first = $sections[0];
+    return getSectionUrl($first['section_type'], $first['test_code'], $mockCode) ?? 'index.php';
+}
+
+// Get the URL for the next section after the current one (by current section_order)
+function getNextSectionUrl($sections, $currentOrder, $mockCode) {
+    foreach ($sections as $sec) {
+        if ((int)$sec['section_order'] === $currentOrder + 1) {
+            return getSectionUrl($sec['section_type'], $sec['test_code'], $mockCode);
+        }
+    }
+    return null; // no next section = end of mock
+}

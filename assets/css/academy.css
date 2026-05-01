@@ -142,7 +142,6 @@ nav {
 }
 
 .btn-primary:hover {
-	transform: translateY(-2px);
 	box-shadow: 0 4px 15px rgba(56, 182, 255, 0.3);
 	background: #1599e5;
 }
@@ -164,7 +163,6 @@ nav {
 }
 
 .btn-pink:hover {
-	transform: translateY(-2px);
 	box-shadow: 0 4px 15px rgba(255, 102, 196, 0.3);
 	background: #e055b0;
 }

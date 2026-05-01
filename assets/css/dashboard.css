@@ -60,7 +60,6 @@
 
 .calendar button:not(.bg-primary):hover {
 	background-color: #e9ecef !important;
-	transform: scale(1.05);
 }
 
 .calendar .bg-primary:hover {

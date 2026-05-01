@@ -54,7 +54,6 @@ if (!isset($_SESSION['user_id'])) {
 	}
 
 	.resource-card:hover {
-		transform: translateY(-10px);
 		box-shadow: 0 20px 40px rgba(0,0,0,0.2);
 	}
 

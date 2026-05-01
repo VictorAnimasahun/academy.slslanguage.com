@@ -84,7 +84,7 @@ if (!isset($_SESSION['user_id'])) {
 			<!-- Breadcrumb -->
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="resources.php">Resources</a></li>
+					<li class="breadcrumb-item"><a href="resources_home.php">Resources</a></li>
 					<li class="breadcrumb-item active">Diagnostic Tests</li>
 				</ol>
 			</nav>

@@ -58,7 +58,6 @@ $sections = getMockExamSections($mockCode);
         }
         .section-item:hover {
             background: #e9f5ee;
-            transform: translateX(8px);
         }
         .start-btn {
             padding: 1.1rem 3.8rem;
@@ -82,7 +81,7 @@ $sections = getMockExamSections($mockCode);
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="../resources.php">Resources</a></li>
+                    <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
                     <li class="breadcrumb-item"><a href="index.php">Mock Tests</a></li>
                     <li class="breadcrumb-item active"><?= htmlspecialchars($mock['title']) ?></li>
                 </ol>
@@ -146,11 +145,18 @@ $sections = getMockExamSections($mockCode);
 
     <script>
     function startFullMock() {
-        if (confirm("Are you ready to start the full mock test?\n\nTotal duration: <?= $mock['total_duration_minutes'] ?> minutes\n\nYou cannot pause once started.")) {
-            alert("✅ Full mock test starting...\n\n(We will build the actual multi-section interface in the next step)");
-            // Future line:
-            // window.location.href = 'start.php?code=<?= urlencode($mockCode) ?>';
-        }
+        Swal.fire({
+            title: 'Ready to start?',
+            html: 'Total duration: <strong><?= $mock['total_duration_minutes'] ?> minutes</strong><br><br>You cannot pause once started.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Start Test',
+            cancelButtonText: 'Not yet',
+            confirmButtonColor: '#10b981',
+        }).then(result => {
+            if (result.isConfirmed)
+                window.location.href = '<?= getFirstSectionUrl($sections, $mockCode) ?>';
+        });
     }
     </script>
 </body>

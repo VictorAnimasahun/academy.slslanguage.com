@@ -200,7 +200,7 @@ if (!isset($_SESSION['user_id'])) {
 			<!-- Breadcrumb -->
 			<nav aria-label="breadcrumb">
 				<ol class="breadcrumb" id="breadcrumb">
-					<li class="breadcrumb-item"><a href="resources.php">Resources</a></li>
+					<li class="breadcrumb-item"><a href="resources_home.php">Resources</a></li>
 					<li class="breadcrumb-item active">Practice Tests</li>
 				</ol>
 			</nav>
@@ -1163,7 +1163,7 @@ if (!isset($_SESSION['user_id'])) {
 			};
 			
 			breadcrumb.innerHTML = `
-				<li class="breadcrumb-item"><a href="resources.php">Resources</a></li>
+				<li class="breadcrumb-item"><a href="resources_home.php">Resources</a></li>
 				<li class="breadcrumb-item"><a href="#" onclick="backToSelection(); return false;">Practice Tests</a></li>
 				<li class="breadcrumb-item active">${testNames[testType]}</li>
 			`;
@@ -1172,7 +1172,7 @@ if (!isset($_SESSION['user_id'])) {
 		function resetBreadcrumb() {
 			const breadcrumb = document.getElementById('breadcrumb');
 			breadcrumb.innerHTML = `
-				<li class="breadcrumb-item"><a href="resources.php">Resources</a></li>
+				<li class="breadcrumb-item"><a href="resources_home.php">Resources</a></li>
 				<li class="breadcrumb-item active">Practice Tests</li>
 			`;
 		}

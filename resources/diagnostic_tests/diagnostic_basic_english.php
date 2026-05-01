@@ -320,7 +320,7 @@ if (!isset($_SESSION['user_id'])) {
 			<div class="container">
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="resources.php">Resources</a></li>
+						<li class="breadcrumb-item"><a href="resources_home.php">Resources</a></li>
 						<li class="breadcrumb-item"><a href="diagnostic_tests_home.php">Diagnostic Tests</a></li>
 						<li class="breadcrumb-item active">Basic English</li>
 					</ol>

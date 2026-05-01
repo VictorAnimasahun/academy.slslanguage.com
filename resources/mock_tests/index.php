@@ -61,7 +61,6 @@ foreach ($mockExams as $mock) {
             cursor: pointer;
         }
         .mock-card:hover {
-            transform: translateY(-6px);
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
         }
         .mock-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
@@ -90,7 +89,7 @@ foreach ($mockExams as $mock) {
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="../resources.php">Resources</a></li>
+                    <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
                     <li class="breadcrumb-item active">Mock Tests</li>
                 </ol>
             </nav>

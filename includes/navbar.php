@@ -26,7 +26,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <a class="nav-link" href="#"><i class="bi bi-stickies-fill me-2"></i>Assignments</a>
         <a class="nav-link" href="#"><i class="bi bi-person-badge-fill me-2"></i>Mentors</a>
 
-        <a class="nav-link" href="<?php echo ACADEMY_URL; ?>resources/resources.php">
+        <a class="nav-link" href="<?php echo ACADEMY_URL; ?>resources/resources_home.php">
             <i class="bi bi-collection-fill me-2"></i>Resources
         </a>
 

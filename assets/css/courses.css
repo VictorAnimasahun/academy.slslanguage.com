@@ -189,7 +189,6 @@ body {
 .info-card:hover {
 	border-color: var(--accent);
 	box-shadow: 0 4px 12px rgba(11, 119, 255, 0.1);
-	transform: translateY(-2px);
 }
 
 .info-card h4 {
@@ -357,7 +356,6 @@ ul.custom-list li:before {
 .option:hover {
 	border-color: var(--accent);
 	background: #f0f7ff;
-	transform: translateX(5px);
 }
 
 .option.selected {
@@ -401,7 +399,6 @@ ul.custom-list li:before {
 
 .btn-prev:hover:not(:disabled) {
 	background: #5a6268;
-	transform: translateY(-2px);
 }
 
 .btn-prev:disabled {
@@ -415,7 +412,6 @@ ul.custom-list li:before {
 }
 
 .btn-next:hover {
-	transform: translateY(-2px);
 	box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
 }
 
@@ -425,7 +421,6 @@ ul.custom-list li:before {
 }
 
 .btn-submit:hover {
-	transform: translateY(-2px);
 	box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 

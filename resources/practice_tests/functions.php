@@ -70,7 +70,7 @@ function getBreadcrumb($testCode) {
     return '
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="../resources.php">Resources</a></li>
+            <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
             <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
             <li class="breadcrumb-item active">' . htmlspecialchars($test['title']) . '</li>
         </ol>

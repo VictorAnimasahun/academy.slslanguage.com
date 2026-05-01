@@ -117,7 +117,7 @@ if (!$test || empty($test['is_mock_section'])) {
         <div class="reading-container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="../resources.php">Resources</a></li>
+                    <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
                     <li class="breadcrumb-item"><a href="index.php">Mock Tests</a></li>
                     <li class="breadcrumb-item"><a href="take.php?code=<?= urlencode(str_replace('_R', '', $testCode)) ?>">Back to Mock</a></li>
                     <li class="breadcrumb-item active"><?= htmlspecialchars($test['title']) ?></li>
@@ -200,18 +200,32 @@ if (!$test || empty($test['is_mock_section'])) {
 
             if (timeLeft <= 0) {
                 clearInterval(interval);
-                alert("Time's up for Reading section!");
-                submitReading();
+                Swal.fire({
+                    title: "Time's up!",
+                    text: 'Reading time has ended.',
+                    icon: 'warning',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                }).then(() => submitReading(true));
             }
         }, 1000);
     }
 
-    function submitReading() {
-        if (confirm("Submit this Reading section and move to the next part of the mock test?")) {
-            alert("Reading section submitted successfully!");
-            // Later: save answers + redirect to next section
+    function submitReading(forced = false) {
+        const doSubmit = () => {
             window.location.href = `take.php?code=<?= urlencode(str_replace('_R', '', $testCode)) ?>`;
-        }
+        };
+        if (forced) { doSubmit(); return; }
+        Swal.fire({
+            title: 'Submit Reading?',
+            text: 'Move to the next part of the mock test?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Keep reviewing',
+            confirmButtonColor: '#10b981',
+        }).then(result => { if (result.isConfirmed) doSubmit(); });
     }
 
     window.onload = startTimer;

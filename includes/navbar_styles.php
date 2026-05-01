@@ -360,4 +360,13 @@
     100% { transform: scale(1); opacity:1; }
 }
 
+/* Global: no movement on button hover */
+button:hover,
+.btn:hover,
+a.btn:hover,
+[class*="btn-"]:hover,
+.nav-links a:hover {
+    transform: none !important;
+}
+
 </style>
