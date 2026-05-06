@@ -88,7 +88,8 @@ if (!isset($_SESSION['user_id'])) {
 	}
 	</style>
 </head>
-<body>
+<?php $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['user_firstname']) : 'Learner'; ?>
+<body class="light">
 	<!-- Mobile Header -->
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
 
@@ -98,8 +99,11 @@ if (!isset($_SESSION['user_id'])) {
     <!-- Sidebar Navigation -->
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
-	<!-- MAIN CONTENT AREA - uses your existing .main-wrapper class -->
-	<main class="main-wrapper">
+    <div class="main-wrapper flex-grow-1" style="flex:1;">
+        <?php include INCLUDES_PATH . '/topbar.php'; ?>
+
+	<!-- MAIN CONTENT AREA -->
+	<main class="content p-4">
 		<div class="container">
 
 			<h1 class="page-title display-5">Resources & Tools</h1>
@@ -230,11 +234,13 @@ if (!isset($_SESSION['user_id'])) {
 		</div>
 		<!-- /.container -->
 	</main>
-	<!-- END MAIN-WRAPPER -->
+    </div><!-- /.main-wrapper -->
+
     <?php include INCLUDES_PATH . '/adverts.php'; ?>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
+	<?php include INCLUDES_PATH . '/footer.php'; ?>
 
 	</body>
 </html>

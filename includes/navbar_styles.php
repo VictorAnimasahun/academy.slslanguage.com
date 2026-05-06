@@ -42,6 +42,31 @@
 		background: linear-gradient(180deg, #1f1f1f, #2a2a2a);
 	}
 
+	body.dark .advert-sidebar {
+		background: #1e1e1e;
+		border-left-color: rgba(255,255,255,0.08);
+	}
+
+	body.dark .ad-placeholder {
+		background: #2a2a2a;
+		border-color: rgba(255,255,255,0.1);
+		color: #94a3b8;
+	}
+
+	body.dark .text-muted {
+		color: #94a3b8 !important;
+	}
+
+	body.dark .nav-link {
+		color: #cbd5e1;
+	}
+
+	body.dark .nav-link:hover,
+	body.dark .nav-link.active {
+		background: rgba(255,255,255,0.07);
+		color: #fff;
+	}
+
 	/* Mobile Header */
 	.mobile-header {
 		display: none;
@@ -304,6 +329,14 @@
 
 	.ad-placeholder {
 		padding: 2rem 1rem;
+	}
+
+	/* On wide screens with the ad sidebar visible, pull the topbar in so it sits
+	   cleanly between the left nav and the right ad column */
+	@media (min-width: 1400px) {
+		.topbar {
+			margin-right: 280px;
+		}
 	}
 
 	/* Responsive Design */

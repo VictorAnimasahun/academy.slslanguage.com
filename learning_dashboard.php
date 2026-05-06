@@ -432,35 +432,6 @@ $progressPercent = round($metrics['avg_progress']);
 			});
 		});
 
-		// Theme Toggle Functionality
-		const body = document.body;
-		const toggleBtn = document.getElementById('themeToggle');
-		
-		// Load saved theme or default to light
-		const savedTheme = localStorage.getItem('eduhub-theme') || 'light';
-		applyTheme(savedTheme);
-		
-		function applyTheme(theme) {
-			body.classList.remove('light', 'dark');
-			body.classList.add(theme);
-			
-			if (toggleBtn) {
-				toggleBtn.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-				toggleBtn.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
-			}
-		}
-		
-		// Theme toggle event
-		if (toggleBtn) {
-			toggleBtn.addEventListener('click', () => {
-				const currentTheme = body.classList.contains('dark') ? 'dark' : 'light';
-				const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-				
-				applyTheme(newTheme);
-				localStorage.setItem('eduhub-theme', newTheme);
-			});
-		}
-
 		// Chart Data from PHP
 		const chartData = {
 			months: <?php echo json_encode($months, JSON_UNESCAPED_SLASHES); ?>,
@@ -893,7 +864,7 @@ $progressPercent = round($metrics['avg_progress']);
 					announcement.setAttribute('aria-live', 'polite');
 					announcement.setAttribute('aria-atomic', 'true');
 					announcement.className = 'sr-only';
-					announcement.textContent = `Switched to ${body.classList.contains('dark') ? 'light' : 'dark'} mode`;
+					announcement.textContent = `Switched to ${document.body.classList.contains('dark') ? 'light' : 'dark'} mode`;
 					document.body.appendChild(announcement);
 					
 					setTimeout(() => {

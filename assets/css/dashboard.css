@@ -1,3 +1,12 @@
+/* When main-wrapper is a flex child (dashboard layout), clear the resources-page margins
+   that navbar_styles.php injects — topbar and .content handle sidebar clearance themselves */
+.d-flex > .main-wrapper {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	padding: 0 !important;
+	min-width: 0;
+}
+
 /* Content */
 .content {
 	margin-left: 220px;
@@ -187,6 +196,7 @@
 
 	.content {
 		margin-left: 0;
+		max-width: 100%;
 		padding-top: 90px;
 	}
 }
@@ -230,10 +240,25 @@
 	}
 }
 
-@media (max-width: 480px) 
-{
+@media (max-width: 480px) {
 	.course-card > div:first-child {
 		display: none !important;
+	}
+
+	/* Prevent stat cards from cramping side by side */
+	.d-flex.gap-2.mb-4 {
+		flex-direction: column;
+	}
+
+	/* Tighten topbar on small phones */
+	.topbar .h4 {
+		font-size: 0.85rem;
+	}
+}
+
+@media (max-width: 360px) {
+	.content {
+		padding: 80px 0.5rem 0.5rem;
 	}
 }
     

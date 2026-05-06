@@ -16,7 +16,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 			🌙 Dark Mode
 		</button>
 		<div class="d-flex align-items-center me-3">
-			<button class="btn btn-link p-0 me-2" aria-label="Notifications">
+			<button class="btn btn-link p-0 me-2" id="bellBtn" aria-label="Notifications">
 				<div style="position:relative;">
 					<i class="bi bi-bell" style="font-size:1.25rem;color:#334155;"></i>
 					<span class="bell-unread-dot" style="
