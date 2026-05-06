@@ -100,6 +100,19 @@ foreach ($assignments as $a) {
     ];
 }
 
+// Recent practice test attempts
+$recentAttemptsSQL = "
+    SELECT ta.score, ta.max_score, ta.band_score, ta.completed_at, ta.attempt_number,
+           t.title, t.category, t.code
+    FROM test_attempts ta
+    JOIN tests t ON t.id = ta.test_id
+    WHERE ta.student_id = ? AND ta.status = 'completed'
+    ORDER BY ta.completed_at DESC
+    LIMIT 5
+";
+$recentAttemptsStmt = executeQuery($db, $recentAttemptsSQL, [$user_id]);
+$recentAttempts = $recentAttemptsStmt ? $recentAttemptsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
 // User display data
 $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['user_firstname']) : 'Learner';
 $progressPercent = round($metrics['avg_progress']);
@@ -175,6 +188,43 @@ $progressPercent = round($metrics['avg_progress']);
                         </div>
                     </div>
                 </div>
+
+                <!-- Recent Practice Tests -->
+                <?php if (!empty($recentAttempts)): ?>
+                <div class="small-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Recent Practice Tests</h5>
+                        <a href="resources/practice_tests/index.php" class="small text-decoration-none">All Tests</a>
+                    </div>
+                    <?php foreach ($recentAttempts as $attempt):
+                        $pct    = $attempt['max_score'] > 0 ? round(($attempt['score'] / $attempt['max_score']) * 100) : 0;
+                        $band   = $attempt['band_score'] ? number_format($attempt['band_score'], 1) : '–';
+                        $date   = date('d M Y', strtotime($attempt['completed_at']));
+                        $barCol = $pct >= 70 ? '#10b981' : ($pct >= 50 ? '#f59e0b' : '#ef4444');
+                    ?>
+                    <div class="d-flex align-items-center gap-3 py-2 border-bottom">
+                        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="bi bi-headphones text-white" style="font-size:.85rem;"></i>
+                        </div>
+                        <div style="flex:1;min-width:0;">
+                            <div class="fw-semibold text-truncate" style="font-size:.88rem;">
+                                <?php echo htmlspecialchars($attempt['title']); ?>
+                            </div>
+                            <div style="height:5px;background:#e5e7eb;border-radius:4px;margin:.25rem 0;">
+                                <div style="width:<?php echo $pct; ?>%;height:100%;background:<?php echo $barCol; ?>;border-radius:4px;"></div>
+                            </div>
+                            <div class="text-muted" style="font-size:.75rem;"><?php echo $date; ?></div>
+                        </div>
+                        <div class="text-end" style="flex-shrink:0;">
+                            <div class="fw-bold" style="font-size:.9rem;">
+                                <?php echo (int)$attempt['score'] . '/' . (int)$attempt['max_score']; ?>
+                            </div>
+                            <div class="small text-muted">Band <?php echo $band; ?></div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
 
                 <!-- Charts -->
                 <div class="small-card mb-4">

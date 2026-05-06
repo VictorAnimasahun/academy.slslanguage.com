@@ -96,8 +96,12 @@ if (!can_access('intermediate')) {
                 <h2><i class="bi bi-stopwatch me-2" style="color: #0b77ff;"></i>Practice Test</h2>
                 <div class="highlight-box" style="border-left-color: #0b77ff; background: #eff6ff;">
                     <h5 style="color: #0b77ff;"><i class="bi bi-journal-text me-2"></i>Practice Test Set 1 — Listening Section</h5>
-                    <p class="mb-1">Parts 1–4, full timed conditions.</p>
-                    <p class="mb-0 text-muted"><i class="bi bi-clock me-1"></i>Complete this section under timed conditions: 30 minutes listening + 10 minutes answer transfer. Do not pause the recording.</p>
+                    <p class="mb-1">Parts 1–4, full timed conditions. 40 questions, 30 minutes.</p>
+                    <p class="mb-2 text-muted"><i class="bi bi-clock me-1"></i>Complete under timed conditions. Do not pause the recording once it starts.</p>
+                    <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_listening_001.php"
+                       class="btn btn-primary">
+                        <i class="bi bi-play-circle me-2"></i>Start Listening Practice Test 1
+                    </a>
                 </div>
             </div>
 

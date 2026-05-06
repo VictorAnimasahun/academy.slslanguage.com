@@ -128,6 +128,32 @@ DELETE FROM courses WHERE folder_name = 'IELTS_Gen_2Mo';
 
 ---
 
+## 009 — Seed IELTS Listening Practice Test 1 (`IELTS_PT_L_001`)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-05-06 | 1 test, 40 questions, 28 options, 35 correct answers inserted |
+| Live  | [ ] | | |
+
+**Dependency:** Core tables (`tests`, `questions`, `question_options`, `question_correct_answers`) must exist — these were part of the original schema, not a migration.
+
+**What it does:**
+- Inserts 1 record into `tests` (code=`IELTS_PT_L_001`, 40 questions, 30 min, category=Listening)
+- Inserts 40 records into `questions` (Parts 1–4, correct question types per IELTS format)
+- Inserts MCQ options into `question_options` for Q11–14, Q27–30
+- Inserts text/letter answers into `question_correct_answers` for all fill-in and matching questions
+- Uses `WHERE @existing = 0` guard — safe to run twice (won't double-insert)
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_L_001'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_L_001'));
+DELETE FROM questions  WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_L_001');
+DELETE FROM tests      WHERE code = 'IELTS_PT_L_001';
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

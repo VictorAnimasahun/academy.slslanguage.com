@@ -613,6 +613,8 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 together must include both
     <script>
     const CORRECT      = <?= json_encode($answers) ?>;
     const CORRECT_PAIR = <?= json_encode($answers_pair) ?>; // Q29 & 30
+    const TEST_CODE    = <?= json_encode($testCode) ?>;
+    const startTime    = Date.now();
     let userAnswers = {}, timeLeft = <?= $timeLimit ?>, submitted = false;
 
     // ── Timer ────────────────────────────────────────────
@@ -725,8 +727,31 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 together must include both
         partScores[3] += pairScore;
         markMultiSelect(sel29, sel30, pairSet);
 
-        const total = Object.values(partScores).reduce((a, b) => a + b, 0);
-        showResults(total, partScores);
+        const total    = Object.values(partScores).reduce((a, b) => a + b, 0);
+        const band     = toBand(total);
+        const timeSecs = Math.round((Date.now() - startTime) / 1000);
+        showResults(total, partScores, band);
+        saveAttempt(total, 40, parseFloat(band), timeSecs);
+    }
+
+    function saveAttempt(score, maxScore, bandScore, timeSpent) {
+        fetch('save_attempt.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                test_code:  TEST_CODE,
+                score:      score,
+                max_score:  maxScore,
+                band_score: bandScore,
+                time_spent: timeSpent,
+                answers:    userAnswers,
+            }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) console.error('save_attempt error:', data.error);
+        })
+        .catch(err => console.error('save_attempt fetch error:', err));
     }
 
     function getPart(q) {
@@ -787,7 +812,7 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 together must include both
         return '<4.0';
     }
 
-    function showResults(total, partScores) {
+    function showResults(total, partScores, band) {
         const banner = document.getElementById('resultsBanner');
         document.getElementById('totalScore').textContent = total + '/40';
         document.getElementById('bandScore').textContent  = 'Band ' + toBand(total);

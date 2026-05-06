@@ -2,13 +2,11 @@
 -- Migration 009 — Seed IELTS Listening Practice Test 1
 -- Test code: IELTS_PT_L_001
 -- 40 questions across Parts 1–4
+-- IDEMPOTENT: safe to re-run — cleans child records before re-inserting.
 -- Run on LOCAL first, then LIVE. See migration_log.md.
 -- ============================================================
 
--- Guard: skip if already seeded
-SET @existing = (SELECT COUNT(*) FROM tests WHERE code = 'IELTS_PT_L_001');
-
--- Insert test record
+-- Step 1: Ensure test record exists
 INSERT INTO tests (code, title, description, test_type, duration_minutes, total_questions, is_active, is_mock_section, category)
 SELECT 'IELTS_PT_L_001',
        'IELTS Listening – Practice Test 1',
@@ -19,9 +17,16 @@ SELECT 'IELTS_PT_L_001',
        1,
        0,
        'Listening'
-WHERE @existing = 0;
+WHERE NOT EXISTS (SELECT 1 FROM tests WHERE code = 'IELTS_PT_L_001');
 
-SET @tid = (SELECT id FROM tests WHERE code = 'IELTS_PT_L_001');
+SET @tid = (SELECT id FROM tests WHERE code = 'IELTS_PT_L_001' LIMIT 1);
+
+-- Step 2: Wipe any existing child records so re-runs are clean
+DELETE FROM question_correct_answers
+    WHERE question_id IN (SELECT id FROM questions WHERE test_id = @tid);
+DELETE FROM question_options
+    WHERE question_id IN (SELECT id FROM questions WHERE test_id = @tid);
+DELETE FROM questions WHERE test_id = @tid;
 
 -- ============================================================
 -- PART 1 – Questions 1–10 (form_note_completion)
