@@ -5,6 +5,8 @@
 		--muted: #6b7280;
 		--card-radius: 14px;
 		--soft: #eef6ff;
+		--topbar-h: 60px;
+		--sidebar-w: 220px;
 	}
 
 	body {
@@ -14,7 +16,8 @@
 		min-height: 100vh;
 		overflow-x: hidden;
 	}
-	/* Dark mode styles */
+
+	/* ── Dark mode ─────────────────────────────────────────────────── */
 	body.dark {
 		background: #121212;
 		color: #e4e6eb;
@@ -67,7 +70,36 @@
 		color: #fff;
 	}
 
-	/* Mobile Header */
+	/* ── Topbar — fixed full-width header ─────────────────────────── */
+	.topbar {
+		position: fixed;
+		top: 0; left: 0; right: 0;
+		height: var(--topbar-h);
+		background: #fff;
+		border-bottom: 1px solid rgba(15,23,42,0.07);
+		z-index: 1001;
+		padding: 0 1.25rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	/* Shift panels below the fixed topbar on desktop */
+	@media (min-width: 1200px) {
+		body:has(.topbar) .sidebar {
+			top: var(--topbar-h);
+			height: calc(100vh - var(--topbar-h));
+		}
+		body:has(.topbar) .advert-sidebar {
+			top: var(--topbar-h);
+			height: calc(100vh - var(--topbar-h));
+		}
+		body:has(.topbar) .main-wrapper {
+			margin-top: var(--topbar-h);
+		}
+	}
+
+	/* ── Mobile header ────────────────────────────────────────────── */
 	.mobile-header {
 		display: none;
 		position: fixed;
@@ -118,8 +150,9 @@
 		z-index: 999;
 	}
 
+	/* ── Sidebar ──────────────────────────────────────────────────── */
 	.sidebar {
-		width: 220px;
+		width: var(--sidebar-w);
 		background: var(--sidebar-bg);
 		min-height: 100vh;
 		border-right: 1px solid rgba(15,23,42,0.04);
@@ -129,56 +162,6 @@
 		padding: 1.25rem;
 		z-index: 1000;
 		transition: transform 0.3s ease;
-	}
-
-	.mobile-header {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 70px;
-		background: #fff;
-		border-bottom: 1px solid rgba(15,23,42,0.1);
-		z-index: 1100;
-		padding: 0 1rem;
-		align-items: center;
-		justify-content: space-between;
-		box-shadow: 0 2px 8px rgba(15,23,42,0.05);
-	}
-
-	.mobile-menu-toggle {
-		background: transparent;
-		border: none;
-		color: var(--accent);
-		font-size: 1.75rem;
-		cursor: pointer;
-		padding: 0.5rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.mobile-brand {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.mobile-brand .blue-pill {
-		width: 40px;
-		height: 40px;
-	}
-
-	.mobile-overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
-		z-index: 999;
 	}
 
 	.sidebar .brand {
@@ -202,6 +185,15 @@
 		font-weight: 600;
 	}
 
+	/* ── Desktop sidebar collapse ─────────────────────────────────── */
+	body.sidebar-collapsed .sidebar {
+		transform: translateX(-100%);
+	}
+	body.sidebar-collapsed .main-wrapper {
+		margin-left: 0 !important;
+	}
+
+	/* ── Shared pill/logo ─────────────────────────────────────────── */
 	.blue-pill {
 		display: inline-flex;
 		align-items: center;
@@ -211,14 +203,18 @@
 		width: 44px;
 		height: 44px;
 		border-radius: 10px;
+		flex-shrink: 0;
 	}
 
+	/* ── Main content area ────────────────────────────────────────── */
 	.main-wrapper {
 		margin-left: 260px;
 		margin-right: 280px;
 		padding: 2rem;
+		transition: margin-left 0.3s ease;
 	}
 
+	/* ── Right advert sidebar ─────────────────────────────────────── */
 	.advert-sidebar {
 		width: 280px;
 		position: fixed;
@@ -231,6 +227,7 @@
 		overflow-y: auto;
 	}
 
+	/* ── Content card styles ──────────────────────────────────────── */
 	.course-card {
 		background: #fff;
 		border-radius: var(--card-radius);
@@ -280,34 +277,13 @@
 		font-weight: 500;
 	}
 
-	.nav-links a:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(11, 119, 255, 0.3);
-	}
-
 	.nav-links a.secondary {
 		background: #fff;
 		color: var(--accent);
 		border: 2px solid var(--accent);
 	}
 
-	.nav-links a.secondary:hover {
-		background: #f0f7ff;
-	}
-
-	/* Topbar */
-	.topbar {
-		margin-left: 220px;
-		padding: 1rem 1.5rem;
-		background: #fff;
-		border-bottom: 1px solid rgba(15,23,42,0.04);
-		position: sticky;
-		top: 0;
-		z-index: 50;
-		transition: all 0.3s ease;
-	}
-
-	/* Advertisement Styles */
+	/* ── Advertisement styles ─────────────────────────────────────── */
 	.ad-container {
 		background: #fff;
 		border-radius: var(--card-radius);
@@ -331,15 +307,7 @@
 		padding: 2rem 1rem;
 	}
 
-	/* On wide screens with the ad sidebar visible, pull the topbar in so it sits
-	   cleanly between the left nav and the right ad column */
-	@media (min-width: 1400px) {
-		.topbar {
-			margin-right: 280px;
-		}
-	}
-
-	/* Responsive Design */
+	/* ── Responsive ───────────────────────────────────────────────── */
 	@media (max-width: 1399px) {
 		.advert-sidebar {
 			display: none;
@@ -350,6 +318,9 @@
 	}
 
 	@media (max-width: 1199px) {
+		/* Hide desktop topbar — mobile-header takes over */
+		.topbar { display: none; }
+
 		.sidebar {
 			transform: translateX(-100%);
 			box-shadow: 2px 0 10px rgba(0,0,0,0.1);
@@ -377,6 +348,7 @@
 	@media (max-width: 768px) {
 		.main-wrapper {
 			padding: 1rem;
+			padding-top: 90px;
 		}
 		.nav-links {
 			flex-direction: column;
@@ -388,18 +360,18 @@
 	}
 
 	@keyframes pulse {
-    0% { transform: scale(1); opacity:1; }
-    50% { transform: scale(1.2); opacity:0.6; }
-    100% { transform: scale(1); opacity:1; }
-}
+		0% { transform: scale(1); opacity:1; }
+		50% { transform: scale(1.2); opacity:0.6; }
+		100% { transform: scale(1); opacity:1; }
+	}
 
-/* Global: no movement on button hover */
-button:hover,
-.btn:hover,
-a.btn:hover,
-[class*="btn-"]:hover,
-.nav-links a:hover {
-    transform: none !important;
-}
+	/* Global: no movement on button hover */
+	button:hover,
+	.btn:hover,
+	a.btn:hover,
+	[class*="btn-"]:hover,
+	.nav-links a:hover {
+		transform: none !important;
+	}
 
 </style>

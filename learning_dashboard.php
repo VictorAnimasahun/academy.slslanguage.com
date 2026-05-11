@@ -446,6 +446,15 @@ $progressPercent = round($metrics['avg_progress']);
 	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
 	<script>
+		// Theme restore before first paint
+		(function() {
+			const saved = localStorage.getItem('eduhub-theme') || 'light';
+			document.body.classList.remove('light', 'dark');
+			document.body.classList.add(saved);
+			const btn = document.getElementById('themeToggle');
+			if (btn) btn.textContent = saved === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+		})();
+
 		// Mobile Menu Script
 		const menuToggle = document.getElementById('menuToggle');
 		const sidebarElement = document.querySelector('.sidebar');
@@ -467,9 +476,24 @@ $progressPercent = round($metrics['avg_progress']);
 		if (menuToggle) {
 			menuToggle.addEventListener('click', toggleMenu);
 		}
-		
+
 		if (mobileOverlay) {
 			mobileOverlay.addEventListener('click', toggleMenu);
+		}
+
+		const sidebarToggle = document.getElementById('sidebarToggle');
+		if (sidebarToggle) {
+			sidebarToggle.addEventListener('click', function() {
+				if (window.innerWidth >= 1200) {
+					const collapsed = document.body.classList.toggle('sidebar-collapsed');
+					localStorage.setItem('eduhub-sidebar-collapsed', collapsed);
+				} else {
+					toggleMenu();
+				}
+			});
+		}
+		if (window.innerWidth >= 1200 && localStorage.getItem('eduhub-sidebar-collapsed') === 'true') {
+			document.body.classList.add('sidebar-collapsed');
 		}
 
 		// Close menu when a nav link is clicked on mobile
@@ -906,20 +930,16 @@ $progressPercent = round($metrics['avg_progress']);
 				});
 			});
 
-			// Announce theme changes to screen readers
+			// Theme toggle
 			const themeToggle = document.getElementById('themeToggle');
 			if (themeToggle) {
 				themeToggle.addEventListener('click', function() {
-					const announcement = document.createElement('div');
-					announcement.setAttribute('aria-live', 'polite');
-					announcement.setAttribute('aria-atomic', 'true');
-					announcement.className = 'sr-only';
-					announcement.textContent = `Switched to ${document.body.classList.contains('dark') ? 'light' : 'dark'} mode`;
-					document.body.appendChild(announcement);
-					
-					setTimeout(() => {
-						announcement.remove();
-					}, 1000);
+					const isDark = document.body.classList.contains('dark');
+					const newTheme = isDark ? 'light' : 'dark';
+					document.body.classList.remove('light', 'dark');
+					document.body.classList.add(newTheme);
+					themeToggle.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+					localStorage.setItem('eduhub-theme', newTheme);
 				});
 			}
 		}
@@ -997,7 +1017,8 @@ $progressPercent = round($metrics['avg_progress']);
 		}
 	</script>
 
-	<!-- Footer -->
+	<!-- Footer (ads suppressed on dashboard — it has its own right column) -->
+	<?php define('ADVERTS_RENDERED', true); ?>
 	<?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
 </html>

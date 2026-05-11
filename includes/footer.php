@@ -1,3 +1,4 @@
+<?php if (!defined('ADVERTS_RENDERED') && defined('INCLUDES_PATH')): include INCLUDES_PATH . '/adverts.php'; endif; ?>
 <!-- Messages Drawer -->
 <div id="msgDrawer" style="
     position:fixed; top:0; right:-380px; width:360px; height:100vh;
@@ -77,35 +78,35 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ── Messages drawer ──────────────────────────────────────────────────
-const drawer  = document.getElementById('msgDrawer');
-const overlay = document.getElementById('msgOverlay');
-const body    = document.getElementById('msgDrawerBody');
+const msgDrawer   = document.getElementById('msgDrawer');
+const msgOverlay  = document.getElementById('msgOverlay');
+const msgDrawerBody = document.getElementById('msgDrawerBody');
 
 function openDrawer() {
-    drawer.classList.add('open');
-    overlay.style.display = 'block';
+    msgDrawer.classList.add('open');
+    msgOverlay.style.display = 'block';
     loadMessages();
 }
 
 function closeDrawer() {
-    drawer.classList.remove('open');
-    overlay.style.display = 'none';
+    msgDrawer.classList.remove('open');
+    msgOverlay.style.display = 'none';
 }
 
 function loadMessages() {
-    body.innerHTML = '<div class="msg-empty">Loading…</div>';
+    msgDrawerBody.innerHTML = '<div class="msg-empty">Loading…</div>';
     fetch(ACADEMY_URL + 'api/get_messages_preview.php')
         .then(r => r.json())
         .then(data => renderMessages(data.messages))
-        .catch(() => { body.innerHTML = '<div class="msg-empty">Could not load messages.</div>'; });
+        .catch(() => { msgDrawerBody.innerHTML = '<div class="msg-empty">Could not load messages.</div>'; });
 }
 
 function renderMessages(msgs) {
     if (!msgs || msgs.length === 0) {
-        body.innerHTML = '<div class="msg-empty"><i class="bi bi-inbox" style="font-size:2rem;"></i><br>No messages yet.</div>';
+        msgDrawerBody.innerHTML = '<div class="msg-empty"><i class="bi bi-inbox" style="font-size:2rem;"></i><br>No messages yet.</div>';
         return;
     }
-    body.innerHTML = msgs.map(m => `
+    msgDrawerBody.innerHTML = msgs.map(m => `
         <div class="msg-item ${m.is_read ? '' : 'unread'}"
              onclick="window.location='${ACADEMY_URL}message_view.php?id=${m.id}'">
             <div class="msg-item-title">${escHtml(m.title)}</div>
@@ -121,14 +122,8 @@ function escHtml(str) {
 
 // Use event delegation so these work regardless of when the DOM settles
 document.addEventListener('click', function(e) {
-    // Bell button (or anything inside it)
+    // Bell button — open drawer
     if (e.target.closest('#bellBtn')) {
-        openDrawer();
-        return;
-    }
-    // Messages nav link — intercept unless already on messages.php
-    if (e.target.closest('#msgNavLink') && !window.location.pathname.endsWith('messages.php')) {
-        e.preventDefault();
         openDrawer();
         return;
     }
@@ -138,7 +133,7 @@ document.addEventListener('click', function(e) {
         return;
     }
     // Overlay click
-    if (e.target === overlay) {
+    if (e.target === msgOverlay) {
         closeDrawer();
     }
 });

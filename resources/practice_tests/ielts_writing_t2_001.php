@@ -21,13 +21,13 @@ $wordTarget = 250;
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         .main-wrapper { padding: 1.5rem; min-height: 100vh; background: #f8f9fa; }
-        .test-container { max-width: 1200px; margin: 0 auto; }
+        .test-container { max-width: none; }
         .panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); height: 100%; }
         .section-badge { background: linear-gradient(135deg,#3b82f6,#60a5fa); color:white; padding:.5rem 1.5rem; border-radius:50px; font-weight:700; font-size:.9rem; }
         .timer-display { font-size: 2.2rem; font-weight: 700; font-family: monospace; color: #1e40af; }
         .timer-display.warning { color: #ef4444; }
         .prompt-box { background:#eff6ff; border-left:4px solid #3b82f6; border-radius:8px; padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
-        .essay-textarea { width:100%; min-height:380px; padding:1.25rem; border:2px solid #e5e7eb; border-radius:10px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
+        .essay-textarea { width:100%; min-height:calc(100vh - 310px); padding:1.25rem; border:2px solid #e5e7eb; border-radius:10px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
         .essay-textarea:focus { border-color:#3b82f6; outline:none; }
         .word-count { font-size:1.6rem; font-weight:700; }
         .word-count.below { color:#ef4444; }

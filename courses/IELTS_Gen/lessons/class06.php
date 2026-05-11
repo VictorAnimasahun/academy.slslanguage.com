@@ -120,6 +120,10 @@ if (!can_access('intermediate')) { ?>
                     <p class="mb-1"><strong>Practice Test Set 1 — Speaking Part 1</strong> (timed, 4–5 min)</p>
                     <p class="mb-0 text-muted small">Complete under timed conditions with a partner or self-record. Cover 3–4 topic areas. Aim for 2–3 sentences per answer using the IDEA framework.</p>
                 </div>
+                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_speaking_001.php"
+                   class="btn btn-primary mt-3">
+                    <i class="bi bi-play-circle me-2"></i>Start Speaking Practice Test 1
+                </a>
             </div>
 
             <div class="content-section">

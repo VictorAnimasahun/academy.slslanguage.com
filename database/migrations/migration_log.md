@@ -154,6 +154,47 @@ DELETE FROM tests      WHERE code = 'IELTS_PT_L_001';
 
 ---
 
+## 010 — Seed IELTS Reading Practice Test 1 (`IELTS_PT_R_001`)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | |
+| Live  | [ ] | | |
+
+**Dependency:** Core tables (`tests`, `questions`, `question_options`, `question_correct_answers`) must exist — part of original schema.
+
+**What it does:**
+- Inserts 1 record into `tests` (code=`IELTS_PT_R_001`, 40 questions, 60 min, category=Reading)
+- Inserts 40 records into `questions` across 3 sections (T/F/NG, matching, note/sentence completion, MCQ, section matching, summary completion)
+- Inserts MCQ options into `question_options` for Q28–31 (4 options each = 16 rows)
+- Inserts text/letter answers into `question_correct_answers` for all non-MCQ questions (includes alternatives for Q15, Q18, Q20)
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_R_001'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_R_001'));
+DELETE FROM questions  WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_R_001');
+DELETE FROM tests      WHERE code = 'IELTS_PT_R_001';
+```
+
+---
+
+## 011 — Seed IELTS Writing Task 1 + Speaking Practice Test 1
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | |
+| Live  | [ ] | | |
+
+**What it does:** Inserts 2 records into `tests` — `IELTS_PT_W1_001` (Writing Task 1, 20 min) and `IELTS_PT_S_001` (Speaking, 15 min). No `questions` rows — these are AI-graded open-ended tasks.
+
+**Rollback:**
+```sql
+DELETE FROM tests WHERE code IN ('IELTS_PT_W1_001', 'IELTS_PT_S_001');
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

@@ -61,6 +61,7 @@ $parts = [
     <title>IELTS Speaking – Practice 1 | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         .main-wrapper { padding:1.5rem; background:#f8f9fa; min-height:100vh; }
@@ -128,33 +129,55 @@ $parts = [
                     </ul>
                 <?php endif; ?>
 
-                <!-- Recording interface -->
-                <div class="d-flex align-items-center gap-3 mt-3 pt-3 border-top">
-                    <button class="rec-btn" id="recBtn-<?= $pNum ?>" onclick="toggleRecording(<?= $pNum ?>)">
-                        <i class="bi bi-mic-fill" id="recIcon-<?= $pNum ?>"></i>
-                    </button>
-                    <div>
-                        <div class="rec-time" id="recTime-<?= $pNum ?>">0:00</div>
-                        <div class="text-muted small" id="recStatus-<?= $pNum ?>">Press to start recording</div>
+                <!-- Recording + transcription interface -->
+                <div class="mt-3 pt-3 border-top">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <button class="rec-btn" id="recBtn-<?= $pNum ?>" onclick="toggleRecording(<?= $pNum ?>)">
+                            <i class="bi bi-mic-fill" id="recIcon-<?= $pNum ?>"></i>
+                        </button>
+                        <div>
+                            <div class="rec-time" id="recTime-<?= $pNum ?>">0:00</div>
+                            <div class="text-muted small" id="recStatus-<?= $pNum ?>">Press mic to start — your speech will be transcribed automatically</div>
+                        </div>
                     </div>
-                    <audio id="playback-<?= $pNum ?>" controls class="ms-auto d-none" style="height:36px;"></audio>
+                    <textarea id="transcript-<?= $pNum ?>" class="form-control" rows="4"
+                        placeholder="Your transcription appears here as you speak. You can also type or edit it directly."></textarea>
                 </div>
             </div>
             <?php endforeach; ?>
 
-            <div class="text-center mt-2 mb-5">
-                <a href="index.php" class="btn btn-outline-secondary px-4">
-                    <i class="bi bi-check-circle me-1"></i> Finish Practice
-                </a>
+            <div class="text-center mt-2 mb-4">
+                <button class="btn btn-success btn-lg px-5" onclick="submitAllParts()">
+                    <i class="bi bi-stars me-2"></i>Submit All Parts for AI Feedback
+                </button>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingSection" class="text-center py-5 d-none">
+                <div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem;"></div>
+                <p class="fw-bold">Analysing your speaking with AI…</p>
+                <p class="text-muted small">This may take 15–30 seconds</p>
+            </div>
+
+            <!-- Results -->
+            <div id="resultsSection" class="d-none mb-5">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-success text-white rounded-top-4 py-3">
+                        <h5 class="mb-0"><i class="bi bi-trophy-fill me-2"></i>AI Examiner Feedback</h5>
+                    </div>
+                    <div class="card-body p-4" id="feedbackContent"></div>
+                </div>
             </div>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
     <script>
-    const recState = {};
+    const recState  = {};
     let prepInterval = null;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     function startPrep() {
         let secs = 60;
@@ -170,48 +193,130 @@ $parts = [
         }, 1000);
     }
 
-    async function toggleRecording(pNum) {
-        const btn    = document.getElementById('recBtn-' + pNum);
-        const icon   = document.getElementById('recIcon-' + pNum);
-        const timeEl = document.getElementById('recTime-' + pNum);
-        const status = document.getElementById('recStatus-' + pNum);
+    function toggleRecording(pNum) {
+        const btn      = document.getElementById('recBtn-' + pNum);
+        const icon     = document.getElementById('recIcon-' + pNum);
+        const timeEl   = document.getElementById('recTime-' + pNum);
+        const status   = document.getElementById('recStatus-' + pNum);
+        const textarea = document.getElementById('transcript-' + pNum);
 
-        if (!recState[pNum] || !recState[pNum].active) {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const recorder = new MediaRecorder(stream);
-                const chunks = [];
-                recorder.ondataavailable = e => chunks.push(e.data);
-                recorder.onstop = () => {
-                    const blob = new Blob(chunks, { type: 'audio/webm' });
-                    const url  = URL.createObjectURL(blob);
-                    const playback = document.getElementById('playback-' + pNum);
-                    playback.src = url;
-                    playback.classList.remove('d-none');
-                    stream.getTracks().forEach(t => t.stop());
-                };
-                recorder.start();
-
-                let elapsed = 0;
-                const timer = setInterval(() => {
-                    elapsed++;
-                    timeEl.textContent = Math.floor(elapsed/60) + ':' + String(elapsed%60).padStart(2,'0');
-                }, 1000);
-
-                recState[pNum] = { active: true, recorder, timer };
-                btn.classList.add('recording');
-                icon.className = 'bi bi-stop-fill';
-                status.textContent = 'Recording…';
-            } catch (e) {
-                Swal.fire({ title: 'Microphone access denied', text: 'Please allow microphone access to record.', icon: 'error' });
-            }
-        } else {
-            recState[pNum].recorder.stop();
+        if (recState[pNum] && recState[pNum].active) {
+            // Stop
+            recState[pNum].recognition.stop();
             clearInterval(recState[pNum].timer);
             recState[pNum].active = false;
             btn.classList.remove('recording');
+            btn.style.background = '#6b7280';
             icon.className = 'bi bi-mic-fill';
-            status.textContent = 'Recording saved — press play to review';
+            status.textContent = 'Done — review your transcription above, then edit if needed';
+            return;
+        }
+
+        if (!SpeechRecognition) {
+            Swal.fire({
+                title: 'Browser not supported',
+                html: 'Speech recognition requires Chrome or Edge. You can <strong>type your response directly</strong> into the text box instead.',
+                icon: 'warning',
+            });
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.continuous      = true;
+        recognition.interimResults  = true;
+        recognition.lang            = 'en-US';
+
+        let savedText = textarea.value;
+        recognition.onresult = e => {
+            let interim = '';
+            let final   = '';
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                if (e.results[i].isFinal) final   += e.results[i][0].transcript + ' ';
+                else                       interim += e.results[i][0].transcript;
+            }
+            savedText += final;
+            textarea.value = savedText + interim;
+            if (final) savedText = textarea.value.replace(interim, '');
+        };
+        recognition.onerror = e => {
+            if (e.error !== 'no-speech') status.textContent = 'Mic error: ' + e.error + ' — check permissions';
+        };
+        recognition.onend = () => {
+            if (recState[pNum] && recState[pNum].active) recognition.start(); // auto-restart (Chrome stops after ~60s)
+        };
+
+        recognition.start();
+
+        let elapsed = 0;
+        const timer = setInterval(() => {
+            elapsed++;
+            timeEl.textContent = Math.floor(elapsed/60) + ':' + String(elapsed%60).padStart(2,'0');
+        }, 1000);
+
+        recState[pNum] = { active: true, recognition, timer };
+        btn.classList.add('recording');
+        btn.style.background = '#ef4444';
+        icon.className = 'bi bi-stop-fill';
+        status.textContent = 'Recording & transcribing — press again to stop';
+    }
+
+    function buildTasksPayload() {
+        const parts = <?= json_encode(array_map(fn($p) => [
+            'title'   => $p['title'],
+            'prompts' => $p['prompts'],
+        ], $parts)) ?>;
+
+        return Object.keys(parts).map((key, i) => {
+            const pNum        = i + 1;
+            const transcript  = (document.getElementById('transcript-' + pNum)?.value || '').trim();
+            const promptText  = parts[key].prompts.join('\n');
+            return { part: pNum, prompt: parts[key].title + '\n\n' + promptText, transcription: transcript };
+        });
+    }
+
+    async function submitAllParts() {
+        const tasks = buildTasksPayload();
+        const empty = tasks.filter(t => t.transcription.length < 10);
+        if (empty.length > 0) {
+            const partNames = empty.map(t => 'Part ' + t.part).join(', ');
+            const r = await Swal.fire({
+                title: 'Missing responses',
+                html: `${partNames} ${empty.length > 1 ? 'have' : 'has'} no transcription. Submit anyway?`,
+                icon: 'warning', showCancelButton: true,
+                confirmButtonText: 'Submit anyway', cancelButtonText: 'Go back',
+            });
+            if (!r.isConfirmed) return;
+        }
+
+        document.querySelector('[onclick="submitAllParts()"]').disabled = true;
+        document.getElementById('loadingSection').classList.remove('d-none');
+
+        try {
+            const res = await fetch('../../api/api_handler.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action:    'analyze_speaking_batch',
+                    exam_type: 'IELTS',
+                    tasks:     tasks,
+                }),
+            });
+            const data = await res.json();
+            document.getElementById('loadingSection').classList.add('d-none');
+            document.getElementById('resultsSection').classList.remove('d-none');
+
+            if (data.success) {
+                document.getElementById('feedbackContent').innerHTML =
+                    '<pre style="white-space:pre-wrap;font-family:inherit;line-height:1.7;">' +
+                    data.feedback.replace(/</g,'&lt;') + '</pre>';
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                document.getElementById('feedbackContent').innerHTML =
+                    '<div class="alert alert-danger">' + (data.error || 'Unknown error') + '</div>';
+            }
+        } catch (err) {
+            document.getElementById('loadingSection').classList.add('d-none');
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error' });
         }
     }
     </script>

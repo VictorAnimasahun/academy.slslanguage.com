@@ -13,7 +13,16 @@ $current_page = basename($_SERVER['PHP_SELF']);
         if (btn) btn.textContent = saved === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
     })();
 
+    // Restore sidebar-collapsed state before first paint (desktop only)
+    (function() {
+        if (window.innerWidth >= 1200 && localStorage.getItem('eduhub-sidebar-collapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+    })();
+
     document.addEventListener('DOMContentLoaded', function() {
+
+        // ── Theme toggle ────────────────────────────────────────────
         const toggleBtn = document.getElementById('themeToggle');
         if (toggleBtn) {
             toggleBtn.addEventListener('click', function() {
@@ -22,49 +31,54 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 document.body.classList.remove('light', 'dark');
                 document.body.classList.add(newTheme);
                 toggleBtn.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-                toggleBtn.setAttribute('aria-label', `Switch to ${newTheme === 'dark' ? 'light' : 'dark'} mode`);
                 localStorage.setItem('eduhub-theme', newTheme);
             });
         }
-    });
 
-    // Mobile Menu Toggle
-    (function() {
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebarElement = document.querySelector('.sidebar');
-        const mobileOverlay = document.getElementById('mobileOverlay');
+        // ── Sidebar toggles ─────────────────────────────────────────
+        const menuToggle    = document.getElementById('menuToggle');    // mobile header
+        const sidebarToggle = document.getElementById('sidebarToggle'); // topbar (desktop)
+        const sidebarEl     = document.querySelector('.sidebar');
+        const overlay       = document.getElementById('mobileOverlay');
 
-        function toggleMenu() {
-            if (!sidebarElement || !mobileOverlay) return;
-            
-            sidebarElement.classList.toggle('active');
-            mobileOverlay.classList.toggle('active');
-            
-            // Change icon
-            const icon = menuToggle.querySelector('i');
-            if (sidebarElement.classList.contains('active')) {
-                icon.className = 'bi bi-x-lg';
-            } else {
-                icon.className = 'bi bi-list';
-            }
+        function toggleMobile() {
+            if (!sidebarEl) return;
+            const open = sidebarEl.classList.toggle('active');
+            if (overlay) overlay.classList.toggle('active', open);
+            const icon = menuToggle?.querySelector('i');
+            if (icon) icon.className = open ? 'bi bi-x-lg' : 'bi bi-list';
+        }
+
+        function toggleDesktop() {
+            const collapsed = document.body.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('eduhub-sidebar-collapsed', collapsed);
         }
 
         if (menuToggle) {
-            menuToggle.addEventListener('click', toggleMenu);
-        }
-        
-        if (mobileOverlay) {
-            mobileOverlay.addEventListener('click', toggleMenu);
+            menuToggle.addEventListener('click', toggleMobile);
         }
 
-        // Close menu when a nav link is clicked on mobile
-        const navLinks = document.querySelectorAll('.sidebar .nav-link');
-        navLinks.forEach(link => {
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                if (window.innerWidth >= 1200) {
+                    toggleDesktop();
+                } else {
+                    toggleMobile();
+                }
+            });
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', toggleMobile);
+        }
+
+        // Close mobile sidebar when a nav link is clicked
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
             link.addEventListener('click', () => {
-                if (window.innerWidth < 1200 && sidebarElement && sidebarElement.classList.contains('active')) {
-                    toggleMenu();
+                if (window.innerWidth < 1200 && sidebarEl?.classList.contains('active')) {
+                    toggleMobile();
                 }
             });
         });
-    })();
+    });
 </script>

@@ -148,51 +148,56 @@ function saveAudioFile($testCode, $userId, $audioData) {
 }
 
 /**
- * Load reading/listening questions and answers (for future use)
+ * Load correct answers from the database for a given test code.
+ *
+ * Returns an array keyed by question_number where each value is a list of
+ * accepted lowercase strings. Text/fill answers come from
+ * question_correct_answers; MCQ correct answers come from question_options
+ * (is_correct = 1).
+ *
+ * If the test hasn't been migrated yet the function returns [] and logs an
+ * error — callers should detect this and show a graceful message.
  */
-function getTestQuestions($testCode) {
-    $pdo = getDB();
-    try {
-        $stmt = $pdo->prepare("
-            SELECT question_number, question_text, question_type, 
-                   correct_answer, points
-            FROM test_questions
-            WHERE test_code = ?
-            ORDER BY question_number
-        ");
-        $stmt->execute([$testCode]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        error_log("Error loading questions: " . $e->getMessage());
-        return [];
-    }
-}
+function loadTestAnswers(PDO $db, string $testCode): array {
+    $answers = [];
 
-/**
- * Check answer for reading/listening tests
- */
-function checkAnswer($testCode, $questionNum, $userAnswer) {
-    $pdo = getDB();
     try {
-        $stmt = $pdo->prepare("
-            SELECT correct_answer, points
-            FROM test_questions
-            WHERE test_code = ? AND question_number = ?
+        $stmt = $db->prepare("SELECT id FROM tests WHERE code = ? AND is_active = 1 LIMIT 1");
+        $stmt->execute([$testCode]);
+        $testId = $stmt->fetchColumn();
+        if (!$testId) {
+            error_log("loadTestAnswers: no active test found for code '$testCode' — run the seed migration.");
+            return [];
+        }
+
+        // Text / fill / matching / sentence-completion answers
+        $stmt = $db->prepare("
+            SELECT q.question_number, qca.answer_text
+            FROM   questions q
+            JOIN   question_correct_answers qca ON qca.question_id = q.id
+            WHERE  q.test_id = ?
+            ORDER  BY q.question_number ASC, qca.is_alternative ASC
         ");
-        $stmt->execute([$testCode, $questionNum]);
-        $question = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$question) return ['correct' => false, 'points' => 0];
-        
-        $correctAnswers = json_decode($question['correct_answer'], true);
-        $isCorrect = in_array(trim($userAnswer), $correctAnswers);
-        
-        return [
-            'correct' => $isCorrect,
-            'points' => $isCorrect ? $question['points'] : 0
-        ];
+        $stmt->execute([$testId]);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $answers[(int)$row['question_number']][] = strtolower($row['answer_text']);
+        }
+
+        // MCQ answers — the correct option label stored in question_options
+        $stmt = $db->prepare("
+            SELECT q.question_number, LOWER(qo.option_label) AS answer
+            FROM   questions q
+            JOIN   question_options qo ON qo.question_id = q.id AND qo.is_correct = 1
+            WHERE  q.test_id = ?
+            ORDER  BY q.question_number ASC
+        ");
+        $stmt->execute([$testId]);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $answers[(int)$row['question_number']] = [strtolower($row['answer'])];
+        }
     } catch (PDOException $e) {
-        error_log("Error checking answer: " . $e->getMessage());
-        return ['correct' => false, 'points' => 0];
+        error_log("loadTestAnswers DB error for '$testCode': " . $e->getMessage());
     }
+
+    return $answers;
 }

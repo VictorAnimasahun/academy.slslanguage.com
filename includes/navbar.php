@@ -3,13 +3,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 
 <aside class="sidebar d-flex flex-column" role="navigation">
-    <div class="brand mb-4">
-        <div class="blue-pill"><i class="bi bi-mortarboard-fill"></i></div>
-        <div>
-            <div style="font-size:.95rem">EduHub</div>
-            <div style="font-size:.78rem;color:var(--muted)">Learning Platform</div>
-        </div>
-    </div>
 
     <nav class="nav flex-column gap-1">
         <a class="nav-link <?php echo ($current_page == 'learning_dashboard.php') ? 'active' : ''; ?>" 

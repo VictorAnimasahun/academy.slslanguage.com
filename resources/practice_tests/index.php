@@ -12,7 +12,7 @@ $sections = [
         'icon'    => 'bi-award',
         'tests'   => [
             ['file' => 'ielts_listening_001.php',    'title' => 'Listening Practice 1',       'section' => 'Listening',       'icon' => 'bi-headphones',    'meta' => '30 min · 40 Questions'],
-            ['file' => 'ielts_reading_gt_001.php',   'title' => 'Reading (GT) Practice 1',    'section' => 'Reading',         'icon' => 'bi-book',          'meta' => '60 min · 40 Questions'],
+            ['file' => 'ielts_reading_001.php',       'title' => 'Reading (GT) Practice 1',    'section' => 'Reading',         'icon' => 'bi-book',          'meta' => '60 min · 40 Questions'],
             ['file' => 'ielts_writing_t1_001.php',   'title' => 'Writing Task 1 – Letter',    'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '20 min · 150+ words'],
             ['file' => 'ielts_writing_t2_001.php',   'title' => 'Writing Task 2 – Essay',     'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '40 min · 250+ words'],
             ['file' => 'ielts_speaking_001.php',     'title' => 'Speaking Practice 1',        'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],

@@ -261,49 +261,10 @@ $parts = [
     ],
 ];
 
-// Correct answers (lowercase, multiple accepted forms as array)
-// Q29-30 are handled separately as a pair
-$answers = [
-    1  => ['jamieson'],
-    2  => ['afternoon'],
-    3  => ['communication'],
-    4  => ['week'],
-    5  => ['10', 'ten'],
-    6  => ['suit'],
-    7  => ['passport'],
-    8  => ['personality'],
-    9  => ['feedback'],
-    10 => ['time'],
-    11 => ['a'],
-    12 => ['b'],
-    13 => ['a'],
-    14 => ['c'],
-    15 => ['river'],
-    16 => ['1422'],
-    17 => ['top'],
-    18 => ['pass'],
-    19 => ['steam'],
-    20 => ['capital'],
-    21 => ['g'],
-    22 => ['f'],
-    23 => ['a'],
-    24 => ['e'],
-    25 => ['b'],
-    26 => ['c'],
-    27 => ['c'],
-    28 => ['a'],
-    31 => ['shelter'],
-    32 => ['oil'],
-    33 => ['roads'],
-    34 => ['insects'],
-    35 => ['grass', 'grasses'],
-    36 => ['water'],
-    37 => ['soil'],
-    38 => ['dry'],
-    39 => ['simple'],
-    40 => ['nest', 'nests'],
-];
-$answers_pair = ['b', 'd']; // Q29 & Q30 together must include both
+require_once __DIR__ . '/functions.php';
+/** @var \PDO $db */
+$answers = loadTestAnswers($db, $testCode);
+$answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as a set
 ?>
 <!DOCTYPE html>
 <html lang="en">

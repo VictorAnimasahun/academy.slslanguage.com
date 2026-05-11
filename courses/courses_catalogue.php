@@ -47,7 +47,7 @@ $sql = "SELECT c.*,
 array_unshift($params, $user_id);
 
 try {
-    // Prepare and execute
+    /** @var \PDO $db */
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -289,6 +289,6 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             });
         });
     </script>
-	<?php include INCLUDES_PATH . '/footer.php'; ?>
+	<?php define('ADVERTS_RENDERED', true); include INCLUDES_PATH . '/footer.php'; ?>
 </body>
 </html>

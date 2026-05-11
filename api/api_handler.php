@@ -99,12 +99,18 @@ function handleEssayAnalysis($input, $userId, $rateLimiter) {
     $essay = trim($input['essay']);
     $examType = $input['exam_type'];
     
-    // Create rubric based on exam type
-    $rubric = $examType === 'CELPIP'
-        ? "Act as a CELPIP examiner. Score this writing 1–12 on: Content/Coherence, Vocabulary Use, Readability, Task Fulfilment. Give overall level and detailed feedback in bullet points."
-        : "You are an official IELTS Writing Task 2 examiner. Score this essay (out of 9.0) for:\n• Task Response\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nGive the overall band score and 5–7 specific improvement suggestions. Be accurate and strict like a real examiner.";
-    
-    $prompt = "Question: $question\n\n$rubric\n\nEssay:\n$essay";
+    $taskType = $input['task_type'] ?? 'writing_task2';
+
+    // Create rubric based on exam type and task
+    if ($examType === 'CELPIP') {
+        $rubric = "Act as a CELPIP examiner. Score this writing 1–12 on: Content/Coherence, Vocabulary Use, Readability, Task Fulfilment. Give overall level and detailed feedback in bullet points.";
+    } elseif ($taskType === 'writing_task1') {
+        $rubric = "You are an official IELTS General Training Writing Task 1 examiner. The candidate has written a letter in response to the prompt. Score the letter (out of 9.0) for:\n• Task Achievement (does it cover all bullet points and use the right tone/register?)\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nGive the overall band score and 5–7 specific improvement suggestions. Note whether the letter is formal, semi-formal, or informal and whether the register matches what the task requires. Be accurate and strict like a real examiner.";
+    } else {
+        $rubric = "You are an official IELTS Writing Task 2 examiner. Score this essay (out of 9.0) for:\n• Task Response\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nGive the overall band score and 5–7 specific improvement suggestions. Be accurate and strict like a real examiner.";
+    }
+
+    $prompt = "Question: $question\n\n$rubric\n\nResponse:\n$essay";
     
     // Call AI API
     $response = callAI($prompt, ANALYSIS_API);

@@ -97,6 +97,10 @@ if (!can_access('intermediate')) { ?>
                     <p class="mb-1"><strong>Practice Test Set 1 — Writing Task 1</strong> (informal or formal letter, 20 min timed)</p>
                     <p class="mb-0 text-muted small">Write under timed conditions. Check your register, structure, and word count (150+ words) before reviewing.</p>
                 </div>
+                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_writing_t1_001.php"
+                   class="btn btn-primary mt-3">
+                    <i class="bi bi-play-circle me-2"></i>Start Writing Task 1 Practice Test
+                </a>
             </div>
 
             <div class="content-section">

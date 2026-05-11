@@ -21,13 +21,13 @@ $wordTarget = 150;
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         .main-wrapper { padding: 1.5rem; min-height: 100vh; background: #f8f9fa; }
-        .test-container { max-width: 1200px; margin: 0 auto; }
+        .test-container { max-width: none; }
         .panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); height: 100%; }
         .section-badge { background: linear-gradient(135deg,#10b981,#34d399); color:white; padding:.5rem 1.5rem; border-radius:50px; font-weight:700; font-size:.9rem; }
         .timer-display { font-size: 2.2rem; font-weight: 700; font-family: monospace; color: #1e40af; }
         .timer-display.warning { color: #ef4444; }
         .prompt-box { background:#f0fdf4; border-left:4px solid #10b981; border-radius:8px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
-        .essay-textarea { width:100%; min-height:340px; padding:1.25rem; border:2px solid #e5e7eb; border-radius:10px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
+        .essay-textarea { width:100%; min-height:calc(100vh - 310px); padding:1.25rem; border:2px solid #e5e7eb; border-radius:10px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
         .essay-textarea:focus { border-color:#10b981; outline:none; }
         .word-count { font-size:1.6rem; font-weight:700; }
         .word-count.below { color:#ef4444; }
@@ -72,16 +72,7 @@ $wordTarget = 150;
                             </ul>
                         </div>
 
-                        <div class="chart-placeholder mb-3">
-                            <!-- ══ TODO: Add chart/diagram image if required ══
-                                 Replace this block with:
-                                 <img src="/assets/img/practice/IELTS_PT_W1_001/chart.png" class="img-fluid" alt="Task chart">
-                            -->
-                            <i class="bi bi-image fs-1 mb-2"></i>
-                            <span>Chart / diagram image here</span>
-                        </div>
-
-                        <div class="alert alert-light border small mb-0">
+                                        <div class="alert alert-light border small mb-0">
                             <i class="bi bi-info-circle me-1 text-success"></i>
                             Write <strong>at least <?= $wordTarget ?> words</strong>. You should spend about <strong>20 minutes</strong> on this task.
                         </div>
@@ -115,10 +106,15 @@ $wordTarget = 150;
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
     <script>
     const TARGET = <?= $wordTarget ?>;
     let timeLeft = <?= $timeLimit ?>;
+    let submitted = false;
+
+    // Build the question string from the prompt box HTML for practice mode
+    const QUESTION = "You recently stayed at a hotel and had a problem with your room.\n\nWrite a letter to the hotel manager. In your letter:\n- describe the problem you had\n- explain how it affected your stay\n- say what action you would like the hotel to take\n\nWrite at least 150 words.";
 
     const timerEl   = document.getElementById('timerEl');
     const textarea  = document.getElementById('responseText');
@@ -168,14 +164,18 @@ $wordTarget = 150;
     }
 
     function doSubmit() {
+        if (submitted) return;
+        submitted = true;
         clearInterval(interval);
         const words    = countWords(textarea.value);
         const timeUsed = <?= $timeLimit ?> - timeLeft;
-        // Send to essay analyzer for AI feedback
         const params = new URLSearchParams({
             test_code: '<?= $testCode ?>',
+            task_type: 'writing_task1',
             type:      'writing_task1',
             title:     'IELTS Writing Task 1 – Practice 1',
+            testType:  'IELTS General Training',
+            question:  QUESTION,
             response:  textarea.value,
             words:     words,
             time:      timeUsed,

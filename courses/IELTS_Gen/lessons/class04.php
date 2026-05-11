@@ -119,6 +119,10 @@ if (!can_access('intermediate')) { ?>
                     <p class="mb-1"><strong>Practice Test Set 1 — Reading section</strong> (all 3 sections, 60 min timed)</p>
                     <p class="mb-0 text-muted small">Complete under exam conditions. No pausing. Self-mark using the answer key and note which question types caused the most errors.</p>
                 </div>
+                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_reading_001.php"
+                   class="btn btn-primary mt-3">
+                    <i class="bi bi-play-circle me-2"></i>Start Reading Practice Test 1
+                </a>
             </div>
 
             <div class="content-section">

@@ -1,3 +1,4 @@
+<?php if (defined('ADVERTS_RENDERED')) return; define('ADVERTS_RENDERED', true); ?>
 <!-- Right Advertisement Sidebar -->
     <aside class="advert-sidebar">
 		 <!-- Internal Promo -->

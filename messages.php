@@ -35,6 +35,7 @@ $query = "
     ORDER BY m.created_at DESC
 ";
 
+/** @var \PDO $db */
 $messagesStmt = executeQuery($db, $query, [$user_id, $user_id, $user_id]);
 $messages = $messagesStmt ? $messagesStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
@@ -63,12 +64,6 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
     <link href="assets/css/dashboard.css" rel="stylesheet">
     
     <style>
-		main.content {
-			max-width: 1000px;
-			margin: 0 auto;
-			padding: 1rem;
-		}
-
         .message-card {
             background: var(--card-bg);
             border-radius: 12px;
@@ -192,7 +187,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
     <!-- Main Content -->
-    <main class="content container-fluid">
+    <main class="main-wrapper">
         <div class="row">
             <div class="col-lg-10 mx-auto">
                 <!-- Header -->
@@ -292,9 +287,24 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         if (menuToggle) {
             menuToggle.addEventListener('click', toggleMenu);
         }
-        
+
         if (mobileOverlay) {
             mobileOverlay.addEventListener('click', toggleMenu);
+        }
+
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                if (window.innerWidth >= 1200) {
+                    const collapsed = document.body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('eduhub-sidebar-collapsed', collapsed);
+                } else {
+                    toggleMenu();
+                }
+            });
+        }
+        if (window.innerWidth >= 1200 && localStorage.getItem('eduhub-sidebar-collapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
         }
 
         const navLinks = document.querySelectorAll('.sidebar .nav-link');
@@ -372,5 +382,6 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             });
         });
     </script>
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
 </html>
