@@ -269,28 +269,13 @@ $answers = loadTestAnswers($db, $testCode);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        /* Override main-wrapper padding so split panels can go edge-to-edge */
-        .main-wrapper { padding: 0; }
-
-        /* ── Top strip ───────────────────────────────────────────── */
-        .reading-top {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: #fff;
-            border-bottom: 2px solid #e5e7eb;
-            padding: .6rem 1.5rem;
-        }
+        .main-wrapper { padding: 1.5rem; min-height: 100vh; }
 
         /* ── Section tabs ────────────────────────────────────────── */
         .sec-tabs {
-            position: sticky;
-            top: 54px;
-            z-index: 99;
-            background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-            padding: 0 1rem;
             display: flex;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1.5rem;
         }
         .sec-tab {
             border: none;
@@ -310,9 +295,7 @@ $answers = loadTestAnswers($db, $testCode);
         .sec-panel.active { display: block; }
 
         .content-col {
-            max-width: 860px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem 3rem;
+            padding: 0 0 3rem;
         }
 
         /* ── Passage elements ────────────────────────────────────── */
@@ -426,28 +409,28 @@ $answers = loadTestAnswers($db, $testCode);
         }
     </style>
 </head>
-<body>
+<body class="light">
 <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
 <div class="mobile-overlay" id="mobileOverlay"></div>
 <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
-<main class="main-wrapper">
+<div class="main-wrapper flex-grow-1" style="flex:1;">
+    <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
-    <!-- ── Top strip ── -->
-    <div class="reading-top d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <div class="d-flex align-items-center gap-3">
-            <nav aria-label="breadcrumb" class="mb-0">
-                <ol class="breadcrumb mb-0" style="font-size:.8rem;">
-                    <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
-                    <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
-                    <li class="breadcrumb-item active">IELTS Reading – Practice 1</li>
-                </ol>
-            </nav>
-        </div>
+<main class="content p-4">
+
+    <!-- Breadcrumb + badge + timer + submit -->
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <nav aria-label="breadcrumb" class="mb-0">
+            <ol class="breadcrumb mb-0" style="font-size:.8rem;">
+                <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
+                <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
+                <li class="breadcrumb-item active">IELTS Reading – Practice 1</li>
+            </ol>
+        </nav>
         <div class="d-flex align-items-center gap-3">
             <span class="section-badge">Reading · GT</span>
             <span class="text-muted small">40 Questions · 60 min</span>
-            <i class="bi bi-clock text-muted"></i>
             <span id="timerDisplay" class="timer-display">60:00</span>
             <button class="btn btn-primary btn-sm px-3" id="submitBtn" onclick="handleSubmit()">
                 <i class="bi bi-check2-circle me-1"></i>Submit
@@ -502,6 +485,9 @@ $answers = loadTestAnswers($db, $testCode);
     </form>
 
 </main>
+</div><!-- /.main-wrapper -->
+
+<?php include INCLUDES_PATH . '/adverts.php'; ?>
 
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -830,5 +816,6 @@ function renderSectionMatching(array $s, string $mode): void {
     <?php endforeach;
 }
 ?>
+<?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
 </html>

@@ -79,47 +79,60 @@ $sections = [
         .test-meta { font-size: .82rem; color: #9ca3af; }
     </style>
 </head>
-<body>
+<body class="light">
+    <!-- Mobile Header -->
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
+
+    <!-- Mobile Overlay -->
     <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Sidebar Navigation -->
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
-    <main class="main-wrapper">
-        <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
-                    <li class="breadcrumb-item active">Practice Tests</li>
-                </ol>
-            </nav>
+    <div class="main-wrapper flex-grow-1" style="flex:1;">
+        <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
-            <h1 class="display-5 mb-1">Practice Tests</h1>
-            <p class="text-muted mb-5">Standalone timed practice for every section of IELTS and CELPIP.</p>
+        <!-- MAIN CONTENT AREA -->
+        <main class="content p-4">
+            <div class="container">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
+                        <li class="breadcrumb-item active">Practice Tests</li>
+                    </ol>
+                </nav>
 
-            <?php foreach ($sections as $exam => $data): ?>
-            <div class="exam-block">
-                <div class="exam-header" style="background:<?= $data['color'] ?>;">
-                    <i class="<?= $data['icon'] ?> fs-4"></i>
-                    <?= $exam ?> Practice Tests
+                <h1 class="display-5 mb-1">Practice Tests</h1>
+                <p class="text-muted mb-5">Standalone timed practice for every section of IELTS and CELPIP.</p>
+
+                <?php foreach ($sections as $exam => $data): ?>
+                <div class="exam-block">
+                    <div class="exam-header" style="background:<?= $data['color'] ?>;">
+                        <i class="<?= $data['icon'] ?> fs-4"></i>
+                        <?= $exam ?> Practice Tests
+                    </div>
+                    <div class="test-grid">
+                        <?php foreach ($data['tests'] as $t): ?>
+                        <a class="test-card" href="<?= $t['file'] ?>" style="--accent:<?= $data['color'] ?>;">
+                            <div class="test-card-top">
+                                <div class="test-icon-circle"><i class="<?= $t['icon'] ?>"></i></div>
+                                <p class="test-card-title"><?= htmlspecialchars($t['title']) ?></p>
+                            </div>
+                            <span class="test-section-tag"><?= htmlspecialchars($t['section']) ?></span>
+                            <div class="test-meta"><i class="bi bi-clock me-1"></i><?= htmlspecialchars($t['meta']) ?></div>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-                <div class="test-grid">
-                    <?php foreach ($data['tests'] as $t): ?>
-                    <a class="test-card" href="<?= $t['file'] ?>" style="--accent:<?= $data['color'] ?>;">
-                        <div class="test-card-top">
-                            <div class="test-icon-circle"><i class="<?= $t['icon'] ?>"></i></div>
-                            <p class="test-card-title"><?= htmlspecialchars($t['title']) ?></p>
-                        </div>
-                        <span class="test-section-tag"><?= htmlspecialchars($t['section']) ?></span>
-                        <div class="test-meta"><i class="bi bi-clock me-1"></i><?= htmlspecialchars($t['meta']) ?></div>
-                    </a>
-                    <?php endforeach; ?>
-                </div>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
-        </div>
-    </main>
+        </main>
+    </div><!-- /.main-wrapper -->
+
+    <?php include INCLUDES_PATH . '/adverts.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
 </html>

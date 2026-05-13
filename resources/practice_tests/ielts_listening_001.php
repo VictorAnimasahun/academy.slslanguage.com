@@ -276,8 +276,8 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .main-wrapper { padding: 1.5rem; background: #f8f9fa; min-height: 100vh; }
-        .test-container { max-width: 1100px; margin: 0 auto; }
+        .main-wrapper { padding: 1.5rem; min-height: 100vh; }
+        .test-container { max-width: 100%; }
         .panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,.07); }
         .section-badge { background: linear-gradient(135deg,#10b981,#34d399); color: white; padding: .45rem 1.4rem; border-radius: 50px; font-weight: 700; font-size: .85rem; }
         .timer-display { font-size: 2rem; font-weight: 700; font-family: monospace; color: #1e40af; }
@@ -342,12 +342,15 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
         .part-score-row { display: flex; justify-content: space-between; font-size: .88rem; border-bottom: 1px solid #e5e7eb; padding: .3rem 0; }
     </style>
 </head>
-<body>
+<body class="light">
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
     <div class="mobile-overlay" id="mobileOverlay"></div>
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
-    <main class="main-wrapper">
+    <div class="main-wrapper flex-grow-1" style="flex:1;">
+        <?php include INCLUDES_PATH . '/topbar.php'; ?>
+
+    <main class="content p-4">
         <div class="test-container">
 
             <nav aria-label="breadcrumb" class="mb-3">
@@ -567,10 +570,14 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
             </div><!-- .panel -->
         </div><!-- .test-container -->
     </main>
+    </div><!-- /.main-wrapper -->
+
+    <?php include INCLUDES_PATH . '/adverts.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
     <script>
     const CORRECT      = <?= json_encode($answers) ?>;
     const CORRECT_PAIR = <?= json_encode($answers_pair) ?>; // Q29 & 30

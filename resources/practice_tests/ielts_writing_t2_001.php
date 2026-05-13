@@ -20,7 +20,7 @@ $wordTarget = 250;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .main-wrapper { padding: 1.5rem; min-height: 100vh; background: #f8f9fa; }
+        .main-wrapper { padding: 0; min-height: 100vh; }
         .test-container { max-width: none; }
         .panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); height: 100%; }
         .section-badge { background: linear-gradient(135deg,#3b82f6,#60a5fa); color:white; padding:.5rem 1.5rem; border-radius:50px; font-weight:700; font-size:.9rem; }
@@ -35,12 +35,15 @@ $wordTarget = 250;
         .bottom-bar { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; padding-top:1rem; border-top:1px solid #e5e7eb; }
     </style>
 </head>
-<body>
+<body class="light">
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
     <div class="mobile-overlay" id="mobileOverlay"></div>
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
-    <main class="main-wrapper">
+    <div class="main-wrapper flex-grow-1" style="flex:1;">
+        <?php include INCLUDES_PATH . '/topbar.php'; ?>
+
+    <main class="content p-2">
         <div class="test-container">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
@@ -95,9 +98,13 @@ $wordTarget = 250;
             </div>
         </div>
     </main>
+    </div><!-- /.main-wrapper -->
+
+    <?php include INCLUDES_PATH . '/adverts.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
     <script>
     const TARGET = <?= $wordTarget ?>;
     let timeLeft = <?= $timeLimit ?>;

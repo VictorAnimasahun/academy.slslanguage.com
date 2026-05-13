@@ -64,7 +64,7 @@ $parts = [
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .main-wrapper { padding:1.5rem; background:#f8f9fa; min-height:100vh; }
+        .main-wrapper { padding:1.5rem; min-height:100vh; }
         .test-container { max-width:900px; margin:0 auto; }
         .part-card { background:white; border-radius:16px; padding:2rem; box-shadow:0 4px 18px rgba(0,0,0,0.07); margin-bottom:1.5rem; border-left:5px solid var(--c); }
         .part-header { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
@@ -82,12 +82,15 @@ $parts = [
         .section-badge { background:linear-gradient(135deg,#10b981,#34d399); color:white; padding:.45rem 1.4rem; border-radius:50px; font-weight:700; font-size:.85rem; }
     </style>
 </head>
-<body>
+<body class="light">
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
     <div class="mobile-overlay" id="mobileOverlay"></div>
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
-    <main class="main-wrapper">
+    <div class="main-wrapper flex-grow-1" style="flex:1;">
+        <?php include INCLUDES_PATH . '/topbar.php'; ?>
+
+    <main class="content p-4">
         <div class="test-container">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
@@ -170,10 +173,14 @@ $parts = [
             </div>
         </div>
     </main>
+    </div><!-- /.main-wrapper -->
+
+    <?php include INCLUDES_PATH . '/adverts.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
     <script>
     const recState  = {};
     let prepInterval = null;
