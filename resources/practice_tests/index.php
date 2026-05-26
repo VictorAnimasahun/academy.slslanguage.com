@@ -15,7 +15,10 @@ $sections = [
             ['file' => 'ielts_reading_001.php',       'title' => 'Reading (GT) Practice 1',    'section' => 'Reading',         'icon' => 'bi-book',          'meta' => '60 min · 40 Questions'],
             ['file' => 'ielts_writing_t1_001.php',   'title' => 'Writing Task 1 – Letter',    'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '20 min · 150+ words'],
             ['file' => 'ielts_writing_t2_001.php',   'title' => 'Writing Task 2 – Essay',     'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '40 min · 250+ words'],
-            ['file' => 'ielts_speaking_001.php',     'title' => 'Speaking Practice 1',        'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],
+            ['file' => 'ielts_speaking_001.php',     'title' => 'Speaking Practice 1 – Hotels',        'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],
+            ['file' => 'ielts_speaking_002.php',     'title' => 'Speaking Practice 2 – Online Shopping', 'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],
+            ['file' => 'ielts_speaking_003.php',     'title' => 'Speaking Practice 3 – Famous People',   'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],
+            ['file' => 'ielts_speaking_004.php',     'title' => 'Speaking Practice 4 – Science',         'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],
         ],
     ],
     'CELPIP' => [

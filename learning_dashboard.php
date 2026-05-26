@@ -113,6 +113,25 @@ $recentAttemptsSQL = "
 $recentAttemptsStmt = executeQuery($db, $recentAttemptsSQL, [$user_id]);
 $recentAttempts = $recentAttemptsStmt ? $recentAttemptsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
+// Mock test sessions
+$mockSessionsSQL = "
+    SELECT ms.id, ms.status, ms.overall_band, ms.writing_band, ms.created_at, ms.released_at,
+           ms.listening_attempt_id, ms.reading_attempt_id, ms.writing_attempt_id,
+           t.title AS mock_title, t.id AS mock_test_id,
+           ta_l.band_score AS l_band,
+           ta_r.band_score AS r_band,
+           ms.speaking_band
+    FROM mock_sessions ms
+    JOIN tests t ON t.id = ms.mock_test_id
+    LEFT JOIN test_attempts ta_l ON ta_l.id = ms.listening_attempt_id
+    LEFT JOIN test_attempts ta_r ON ta_r.id = ms.reading_attempt_id
+    WHERE ms.student_id = ?
+    ORDER BY ms.created_at DESC
+    LIMIT 5
+";
+$mockSessionsStmt = executeQuery($db, $mockSessionsSQL, [$user_id]);
+$mockSessions = $mockSessionsStmt ? $mockSessionsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
 // User display data
 $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['user_firstname']) : 'Learner';
 $progressPercent = round($metrics['avg_progress']);
@@ -225,6 +244,70 @@ $progressPercent = round($metrics['avg_progress']);
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
+
+                <!-- Mock Test Results -->
+                <div class="small-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Mock Test Results</h5>
+                        <a href="resources/mock_tests/index.php" class="small text-decoration-none">All Mock Tests</a>
+                    </div>
+                    <?php if (empty($mockSessions)): ?>
+                        <p class="text-muted small mb-0">No mock tests attempted yet. <a href="resources/mock_tests/index.php">Start a full mock exam →</a></p>
+                    <?php else: ?>
+                        <?php foreach ($mockSessions as $ms):
+                            $msDate = date('d M Y', strtotime($ms['created_at']));
+                        ?>
+                        <div class="d-flex align-items-start gap-3 py-2 border-bottom">
+                            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <i class="bi bi-clipboard-check text-white" style="font-size:.85rem;"></i>
+                            </div>
+                            <div style="flex:1;min-width:0;">
+                                <div class="fw-semibold text-truncate" style="font-size:.88rem;">
+                                    <?php echo htmlspecialchars($ms['mock_title']); ?>
+                                </div>
+                                <div class="text-muted" style="font-size:.75rem;"><?php echo $msDate; ?></div>
+                            </div>
+                            <div class="text-end" style="flex-shrink:0;">
+                                <?php if ($ms['status'] === 'in_progress'): ?>
+                                    <?php
+                                    // Determine resume link
+                                    if (is_null($ms['listening_attempt_id'])) $resumeUrl = "resources/mock_tests/mock_listening.php?session_id={$ms['id']}";
+                                    elseif (is_null($ms['reading_attempt_id'])) $resumeUrl = "resources/mock_tests/mock_reading.php?session_id={$ms['id']}";
+                                    elseif (is_null($ms['writing_attempt_id'])) $resumeUrl = "resources/mock_tests/mock_writing.php?session_id={$ms['id']}";
+                                    else $resumeUrl = "resources/mock_tests/mock_speaking.php?session_id={$ms['id']}";
+                                    ?>
+                                    <a href="<?php echo $resumeUrl; ?>" class="btn btn-sm btn-outline-warning py-0 px-2" style="font-size:.75rem;">Resume</a>
+                                <?php elseif ($ms['status'] === 'awaiting_speaking_grade'): ?>
+                                    <span style="background:#fef3c7;color:#92400e;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:600;">Awaiting Speaking</span>
+                                <?php elseif ($ms['status'] === 'results_released'): ?>
+                                    <div class="d-flex flex-column align-items-end gap-1">
+                                        <span style="font-size:1.1rem;font-weight:800;color:#10b981;">Band <?php echo number_format((float)$ms['overall_band'], 1); ?></span>
+                                        <div style="font-size:.7rem;color:#94a3b8;display:flex;gap:.4rem;">
+                                            <span>L:<?php echo number_format((float)$ms['l_band'],1); ?></span>
+                                            <span>R:<?php echo number_format((float)$ms['r_band'],1); ?></span>
+                                            <span>W:<?php echo number_format((float)$ms['writing_band'],1); ?></span>
+                                            <span>S:<?php echo number_format((float)$ms['speaking_band'],1); ?></span>
+                                        </div>
+                                        <button onclick="downloadMockPDF(<?php echo htmlspecialchars(json_encode([
+                                            'title'   => $ms['mock_title'],
+                                            'date'    => $msDate,
+                                            'overall' => number_format((float)$ms['overall_band'], 1),
+                                            'l'       => number_format((float)$ms['l_band'], 1),
+                                            'r'       => number_format((float)$ms['r_band'], 1),
+                                            'w'       => number_format((float)$ms['writing_band'], 1),
+                                            's'       => number_format((float)$ms['speaking_band'], 1),
+                                            'name'    => $userName,
+                                        ])); ?>)"
+                                            style="background:none;border:1px solid #10b981;color:#10b981;border-radius:6px;padding:.15rem .5rem;font-size:.72rem;cursor:pointer;">
+                                            ↓ PDF
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
 
                 <!-- Charts -->
                 <div class="small-card mb-4">
@@ -443,7 +526,73 @@ $progressPercent = round($metrics['avg_progress']);
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    function downloadMockPDF(data) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+        const green = [16, 185, 129];
+        const dark  = [30, 41, 59];
+        const muted = [100, 116, 139];
+
+        // Header bar
+        doc.setFillColor(...green);
+        doc.rect(0, 0, 210, 38, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'bold');
+        doc.text('IELTS Mock Test Results', 15, 18);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text(data.title, 15, 27);
+        doc.text(data.date, 15, 33);
+
+        // Candidate name
+        doc.setTextColor(...dark);
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Candidate: ' + data.name, 15, 52);
+
+        // Overall band
+        doc.setFillColor(240, 253, 244);
+        doc.roundedRect(15, 58, 80, 28, 4, 4, 'F');
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...muted);
+        doc.text('Overall Band Score', 25, 67);
+        doc.setFontSize(26);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...green);
+        doc.text(data.overall, 40, 81);
+
+        // Section bands
+        const sections = [['Listening', data.l], ['Reading', data.r], ['Writing', data.w], ['Speaking', data.s]];
+        let x = 15;
+        sections.forEach(([label, band]) => {
+            doc.setFillColor(248, 250, 252);
+            doc.roundedRect(x, 95, 42, 26, 3, 3, 'F');
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...muted);
+            doc.text(label, x + 5, 104);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(...green);
+            doc.text(band, x + 5, 116);
+            x += 46;
+        });
+
+        // Footer
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...muted);
+        doc.text('Scholarly Language Services · slslanguage.com', 15, 285);
+        doc.text('Generated ' + new Date().toLocaleDateString(), 150, 285);
+
+        doc.save('IELTS_Mock_Results_' + data.date.replace(/ /g,'_') + '.pdf');
+    }
+    </script>
 
 	<script>
 		// Theme restore before first paint

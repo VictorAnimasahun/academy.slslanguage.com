@@ -66,8 +66,8 @@ VALUES
 (@tid, 28, 'Part 3 – Sibling rivalry research', "What does Ruth think is surprising about the difference in oldest children's academic performance?",'multiple_choice_single', 'Choose A, B or C.', 1.0, 280),
 
 -- Part 3 Q29–30: Multi-select pair (choose TWO from A–E)
-(@tid, 29, 'Part 3 – Sibling rivalry / valuable experiences', 'Which TWO experiences of sibling rivalry do the speakers agree has been valuable? (Answer 1)', 'multi_select_pair', 'Choose TWO letters, A–E.', 1.0, 290),
-(@tid, 30, 'Part 3 – Sibling rivalry / valuable experiences', 'Which TWO experiences of sibling rivalry do the speakers agree has been valuable? (Answer 2)', 'multi_select_pair', 'Choose TWO letters, A–E.', 1.0, 300),
+(@tid, 29, 'Part 3 – Sibling rivalry / valuable experiences', 'Which TWO experiences of sibling rivalry do the speakers agree has been valuable? (Answer 1)', 'multiple_choice_multiple', 'Choose TWO letters, A–E.', 1.0, 290),
+(@tid, 30, 'Part 3 – Sibling rivalry / valuable experiences', 'Which TWO experiences of sibling rivalry do the speakers agree has been valuable? (Answer 2)', 'multiple_choice_multiple', 'Choose TWO letters, A–E.', 1.0, 300),
 
 -- Part 4 Q31–40: Form completion (Eucalyptus tree)
 (@tid, 31, 'Part 4 – The Eucalyptus Tree in Australia', 'It provides ___ and food for a wide range of species',                                      'form_note_completion', 'Write ONE WORD ONLY.', 1.0, 310),

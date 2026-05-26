@@ -61,10 +61,10 @@ try {
     // Insert attempt
     $stmt = $db->prepare("
         INSERT INTO test_attempts
-            (student_id, test_id, attempt_number, mode, started_at, completed_at, score, max_score, band_score, status)
-        VALUES (?, ?, ?, 'practice', ?, NOW(), ?, ?, ?, 'completed')
+            (student_id, test_id, attempt_number, mode, started_at, completed_at, score, max_score, band_score, time_spent, status)
+        VALUES (?, ?, ?, 'practice', ?, NOW(), ?, ?, ?, ?, 'completed')
     ");
-    $stmt->execute([$student_id, $test_id, $attempt_number, $started_at, $score, $max_score, $band_score]);
+    $stmt->execute([$student_id, $test_id, $attempt_number, $started_at, $score, $max_score, $band_score, $time_spent]);
     $attempt_id = (int)$db->lastInsertId();
 
     // Load all questions for this test

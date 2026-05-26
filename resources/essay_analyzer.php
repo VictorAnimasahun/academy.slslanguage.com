@@ -17,6 +17,7 @@ if (isset($_GET['type']) && isset($_GET['question'])) {
         'type' => htmlspecialchars($_GET['type'], ENT_QUOTES, 'UTF-8'),
         'title' => htmlspecialchars($_GET['title'] ?? 'Practice Test', ENT_QUOTES, 'UTF-8'),
         'question' => $_GET['question'],
+        'response' => $_GET['response'] ?? '',
         'timeLimit' => intval($_GET['time'] ?? 40),
         'wordTarget' => intval($_GET['words'] ?? 250),
         'testType' => htmlspecialchars($_GET['testType'] ?? 'Writing Test', ENT_QUOTES, 'UTF-8'),
@@ -556,13 +557,20 @@ if (practiceMode && practiceData) {
         // Pre-fill the question
         const questionInput = document.getElementById('questionInput');
         const questionText = document.getElementById('questionText');
-        
+
         questionInput.value = practiceData.question;
         questionText.textContent = practiceData.question;
-        
+
         // Make question readonly and style it
         questionInput.setAttribute('readonly', true);
         questionInput.classList.add('question-readonly');
+
+        // Pre-fill the essay if it was passed from a practice test
+        if (practiceData.response && practiceData.response.trim()) {
+            const essayInput = document.getElementById('essayInput');
+            essayInput.value = practiceData.response;
+            updateWordCount();
+        }
         
         // Set exam type based on practice data
         if (practiceData.type.includes('celpip')) {

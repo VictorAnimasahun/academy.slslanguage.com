@@ -1,13 +1,12 @@
 <?php
-// IELTS Speaking Practice 001
-// TODO: Replace prompts with real exam content
+// IELTS Speaking Practice 002 — Languages / Website / Online Shopping
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
     exit();
 }
 
-$testCode = 'IELTS_PT_S_001';
+$testCode = 'IELTS_PT_S_002';
 
 $parts = [
     1 => [
@@ -16,12 +15,12 @@ $parts = [
         'icon'     => 'bi-person-circle',
         'color'    => '#10b981',
         'intro'    => 'The examiner will ask you general questions about yourself and familiar topics such as home, family, work, studies, and interests.',
-        'topic'    => 'Email',
+        'topic'    => 'Languages',
         'prompts'  => [
-            'What kinds of emails do you receive about your work or studies?',
-            'Do you prefer to email, phone or text your friends? [Why?]',
-            'Do you reply to emails and messages as soon as you receive them? [Why/Why not?]',
-            'Are you happy to receive emails that are advertising things? [Why/Why not?]',
+            'How many languages can you speak? [Why/Why not?]',
+            'How useful will English be to you in your future? [Why/Why not?]',
+            'What do you remember about learning languages at school? [Why/Why not?]',
+            'What do you think would be the hardest language for you to learn? [Why?]',
         ],
     ],
     2 => [
@@ -31,7 +30,7 @@ $parts = [
         'color'     => '#3b82f6',
         'intro'     => 'You will be given a topic card. You have 1 minute to prepare, then you should speak for 1–2 minutes.',
         'prompts'   => [
-            "Describe a hotel that you know.\n\nYou should say:\n• where this hotel is\n• what this hotel looks like\n• what facilities this hotel has\n\nand explain whether you think this is a nice hotel to stay in.",
+            "Describe a website that you bought something from.\n\nYou should say:\n• what the website is\n• what you bought from this website\n• how satisfied you were with what you bought\n\nand explain what you liked or disliked about using this website.",
         ],
         'prep_time' => 60,
     ],
@@ -41,25 +40,13 @@ $parts = [
         'icon'     => 'bi-chat-dots',
         'color'    => '#8b5cf6',
         'intro'    => 'The examiner will ask further questions connected to the topic in Part 2.',
-        'topics'   => [
-            'Staying in hotels' => [
-                'What things are important when people are choosing a hotel?',
-                'Why do some people not like staying in hotels?',
-                'Do you think staying in a luxury hotel is a waste of money?',
-            ],
-            'Working in a hotel' => [
-                'Do you think hotel work is a good career for life?',
-                'How does working in a big hotel compare with working in a small hotel?',
-                'What skills are needed to be a successful hotel manager?',
-            ],
-        ],
         'prompts'  => [
-            'What things are important when people are choosing a hotel?',
-            'Why do some people not like staying in hotels?',
-            'Do you think staying in a luxury hotel is a waste of money?',
-            'Do you think hotel work is a good career for life?',
-            'How does working in a big hotel compare with working in a small hotel?',
-            'What skills are needed to be a successful hotel manager?',
+            'What kinds of things do people in your country often buy from online shops?',
+            'Why do you think online shopping has become so popular nowadays?',
+            'What are some possible disadvantages of buying things from online shops?',
+            'Why do many people today keep buying things which they do not need?',
+            'Do you believe the benefits of a consumer society outweigh the disadvantages?',
+            'How possible is it to avoid the culture of consumerism?',
         ],
     ],
 ];
@@ -69,7 +56,7 @@ $parts = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Speaking – Practice 1: Hotels | EduHub</title>
+    <title>IELTS Speaking – Practice 2: Online Shopping | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -107,7 +94,7 @@ $parts = [
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
                     <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
-                    <li class="breadcrumb-item active">IELTS Speaking – Practice 1</li>
+                    <li class="breadcrumb-item active">IELTS Speaking – Practice 2</li>
                 </ol>
             </nav>
 
@@ -137,13 +124,12 @@ $parts = [
                     </div>
                 <?php else: ?>
                     <ul class="prompt-list">
-                        <?php foreach ($part['prompts'] as $i => $prompt): ?>
+                        <?php foreach ($part['prompts'] as $prompt): ?>
                         <li><?= htmlspecialchars($prompt) ?></li>
                         <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
 
-                <!-- Recording + transcription interface -->
                 <div class="mt-3 pt-3 border-top">
                     <div class="d-flex align-items-center gap-3 mb-2">
                         <button class="rec-btn" id="recBtn-<?= $pNum ?>" onclick="toggleRecording(<?= $pNum ?>)">
@@ -166,14 +152,12 @@ $parts = [
                 </button>
             </div>
 
-            <!-- Loading -->
             <div id="loadingSection" class="text-center py-5 d-none">
                 <div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem;"></div>
                 <p class="fw-bold">Analysing your speaking with AI…</p>
                 <p class="text-muted small">This may take 15–30 seconds</p>
             </div>
 
-            <!-- Results -->
             <div id="resultsSection" class="d-none mb-5">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-header bg-success text-white rounded-top-4 py-3">
@@ -184,7 +168,7 @@ $parts = [
             </div>
         </div>
     </main>
-    </div><!-- /.main-wrapper -->
+    </div>
 
     <?php include INCLUDES_PATH . '/adverts.php'; ?>
 
@@ -219,7 +203,6 @@ $parts = [
         const textarea = document.getElementById('transcript-' + pNum);
 
         if (recState[pNum] && recState[pNum].active) {
-            // Stop
             recState[pNum].recognition.stop();
             clearInterval(recState[pNum].timer);
             recState[pNum].active = false;
@@ -240,14 +223,13 @@ $parts = [
         }
 
         const recognition = new SpeechRecognition();
-        recognition.continuous      = true;
-        recognition.interimResults  = true;
-        recognition.lang            = 'en-US';
+        recognition.continuous     = true;
+        recognition.interimResults = true;
+        recognition.lang           = 'en-US';
 
         let savedText = textarea.value;
         recognition.onresult = e => {
-            let interim = '';
-            let final   = '';
+            let interim = '', final = '';
             for (let i = e.resultIndex; i < e.results.length; i++) {
                 if (e.results[i].isFinal) final   += e.results[i][0].transcript + ' ';
                 else                       interim += e.results[i][0].transcript;
@@ -260,9 +242,8 @@ $parts = [
             if (e.error !== 'no-speech') status.textContent = 'Mic error: ' + e.error + ' — check permissions';
         };
         recognition.onend = () => {
-            if (recState[pNum] && recState[pNum].active) recognition.start(); // auto-restart (Chrome stops after ~60s)
+            if (recState[pNum] && recState[pNum].active) recognition.start();
         };
-
         recognition.start();
 
         let elapsed = 0;
@@ -285,9 +266,9 @@ $parts = [
         ], $parts)) ?>;
 
         return Object.keys(parts).map((key, i) => {
-            const pNum        = i + 1;
-            const transcript  = (document.getElementById('transcript-' + pNum)?.value || '').trim();
-            const promptText  = parts[key].prompts.join('\n');
+            const pNum       = i + 1;
+            const transcript = (document.getElementById('transcript-' + pNum)?.value || '').trim();
+            const promptText = parts[key].prompts.join('\n');
             return { part: pNum, prompt: parts[key].title + '\n\n' + promptText, transcription: transcript };
         });
     }

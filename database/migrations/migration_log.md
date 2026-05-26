@@ -195,6 +195,53 @@ DELETE FROM tests WHERE code IN ('IELTS_PT_W1_001', 'IELTS_PT_S_001');
 
 ---
 
+## 012 — Re-seed IELTS Listening Practice Test 1 (corrected)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Fixes broken 009 data — wipes and re-inserts all 40 questions |
+| Live  | [ ] | | Run after 013 |
+
+**Why it exists:** Migration 009 used `multiple_choice_multiple` for Q29/Q30 but stored their options incorrectly. 012 is the corrected idempotent re-seed. It wipes child records before re-inserting, so it is safe to run even if 009 already ran.
+
+**Dependency:** Migration 013 must be applied first (adds `mode` + `time_spent` to `test_attempts`).
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_L_001'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_L_001'));
+DELETE FROM questions  WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_PT_L_001');
+DELETE FROM tests      WHERE code = 'IELTS_PT_L_001';
+```
+
+---
+
+## 013 — Add missing schema (`mode`, `time_spent`, `user_certificates`)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | |
+| Live  | [ ] | | Fixes 500 on save_attempt.php and dashboard errors |
+
+**What it does:**
+- Adds `mode ENUM('practice','mock')` to `test_attempts` — was missing, causing save_attempt.php to 500 on live
+- Adds `time_spent INT UNSIGNED` to `test_attempts` — was missing, causing analytics/dashboard errors
+- Creates `user_certificates` table — was missing, causing dashboard to log errors on every page load
+
+**Rollback:**
+```sql
+ALTER TABLE test_attempts DROP COLUMN IF EXISTS `mode`;
+ALTER TABLE test_attempts DROP COLUMN IF EXISTS `time_spent`;
+DROP TABLE IF EXISTS user_certificates;
+```
+
+---
+
+## Migration 014 — 2026-05-15
+- Creates `mock_sessions` table (tracks full mock exam sittings per student)
+- Seeds `tests` table with IELTS_FULL_MOCK_001 (category=Full, is_mock_section=1)
+- Run order: LOCAL → LIVE
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
