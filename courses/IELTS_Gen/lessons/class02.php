@@ -291,7 +291,7 @@ if (!can_access('intermediate')) {
                 <a href="class03.php" class="btn btn-primary" style="background-color: #0b77ff; border-color: #0b77ff;">
                     Next: Class 3 <i class="bi bi-arrow-right ms-1"></i>
                 </a>
-                <a href="course_overview.php" class="btn btn-outline-primary">
+                <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-primary">
                     <i class="bi bi-grid me-1"></i> Course Overview
                 </a>
             </div>
@@ -318,7 +318,7 @@ if (!can_access('intermediate')) {
                         <li class="mb-2"><a href="intro.php" class="text-white text-decoration-none"><i class="bi bi-arrow-left-circle me-1"></i>Class 1: Orientation</a></li>
                         <li class="mb-2"><a href="intro.php" class="text-white text-decoration-none"><i class="bi bi-chevron-left me-1"></i>Previous Class</a></li>
                         <li class="mb-2"><a href="class03.php" class="text-white text-decoration-none"><i class="bi bi-chevron-right me-1"></i>Next Class</a></li>
-                        <li><a href="course_overview.php" class="text-white text-decoration-none"><i class="bi bi-grid me-1"></i>Course Overview</a></li>
+                        <li><a href="<?= htmlspecialchars($back['url']) ?>" class="text-white text-decoration-none"><i class="bi bi-grid me-1"></i>Course Overview</a></li>
                     </ul>
                 </div>
             </div>

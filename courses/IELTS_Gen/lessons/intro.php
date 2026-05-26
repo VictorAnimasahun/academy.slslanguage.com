@@ -1,5 +1,6 @@
 <?php
 require_once (dirname(dirname(dirname(__DIR__)))) . '/bootstrap.php';
+require_once __DIR__ . '/course_context.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../../../../registration.php?message=Please+login+to+access+this+course");
@@ -30,7 +31,10 @@ if (!isset($_SESSION['user_id'])) {
                     <li class="breadcrumb-item">
                         <a href="../../courses_catalogue.php" class="text-decoration-none">Courses</a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">IELTS General 3-Month Masterclass</li>
+                    <li class="breadcrumb-item">
+                        <a href="<?= htmlspecialchars($back['url']) ?>" class="text-decoration-none"><?= htmlspecialchars($back['name']) ?></a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Class 1: Course Orientation</li>
                 </ol>
             </nav>
 
@@ -320,10 +324,10 @@ if (!isset($_SESSION['user_id'])) {
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <a href="../../courses_catalogue.php" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left-circle me-2"></i>Back to Courses
+                <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left-circle me-2"></i>Back to Course Overview
                 </a>
-                <a href="lesson.php?n=2" class="btn btn-primary btn-lg">
+                <a href="class02.php" class="btn btn-primary btn-lg">
                     <i class="bi bi-play-circle me-2"></i>Next: Class 2
                 </a>
                 <a href="../../../learning_dashboard.php" class="btn btn-outline-secondary">
@@ -339,13 +343,13 @@ if (!isset($_SESSION['user_id'])) {
             <h6 class="mb-3">Course Navigation</h6>
             <div class="d-grid gap-1">
                 <span class="btn btn-light btn-sm disabled fw-bold">Class 1 — You are here</span>
-                <a href="lesson.php?n=2" class="btn btn-outline-light btn-sm">Class 2</a>
-                <a href="lesson.php?n=3" class="btn btn-outline-light btn-sm">Class 3</a>
-                <a href="lesson.php?n=4" class="btn btn-outline-light btn-sm">Class 4</a>
-                <a href="lesson.php?n=5" class="btn btn-outline-light btn-sm">Class 5</a>
-                <a href="lesson.php?n=6" class="btn btn-outline-light btn-sm">Class 6</a>
-                <a href="lesson.php?n=7" class="btn btn-outline-light btn-sm">Class 7</a>
-                <a href="lesson.php?n=8" class="btn btn-outline-light btn-sm">Mock Test 1 (Class 8)</a>
+                <a href="class02.php" class="btn btn-outline-light btn-sm">Class 2</a>
+                <a href="class03.php" class="btn btn-outline-light btn-sm">Class 3</a>
+                <a href="class04.php" class="btn btn-outline-light btn-sm">Class 4</a>
+                <a href="class05.php" class="btn btn-outline-light btn-sm">Class 5</a>
+                <a href="class06.php" class="btn btn-outline-light btn-sm">Class 6</a>
+                <a href="class07.php" class="btn btn-outline-light btn-sm">Class 7</a>
+                <a href="class08.php" class="btn btn-outline-light btn-sm">Mock Test 1 (Class 8)</a>
             </div>
             <hr style="border-color: rgba(255,255,255,0.3);">
             <a href="../../courses_catalogue.php" class="btn btn-outline-light btn-sm w-100">All Courses</a>

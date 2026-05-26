@@ -70,7 +70,7 @@ DELETE FROM courses WHERE folder_name = 'IELTS_Gen_Mst';
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | |
+| Local | [x] | 2026-05-27 | All 24 lessons updated — tiers and file_paths pointing to shared bank |
 | Live | [ ] | | |
 
 **What it does:**
@@ -92,7 +92,7 @@ UPDATE lessons SET min_tier = 'beginner' WHERE course_id = @c AND lesson_order =
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | |
+| Local | [x] | 2026-05-27 | 1 course, 1 module, 8 lessons inserted |
 | Live | [ ] | | |
 
 **Dependency:** Migration 006 must be applied first.
@@ -112,7 +112,7 @@ DELETE FROM courses WHERE folder_name = 'IELTS_Gen_1Mo';
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | |
+| Local | [x] | 2026-05-27 | 1 course, 2 modules, 16 lessons inserted |
 | Live | [ ] | | |
 
 **Dependency:** Migration 006 must be applied first.
