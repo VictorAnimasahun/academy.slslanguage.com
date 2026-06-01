@@ -68,7 +68,8 @@ if (!isset($map[$mockCode][$section])) {
     exit();
 }
 
-$testCode = $map[$mockCode][$section];
+$sectionInfo = $map[$mockCode][$section];
+$testCode    = is_array($sectionInfo) ? ($sectionInfo['test_code'] ?? '') : $sectionInfo;
 $stmt = $db->prepare("SELECT * FROM tests WHERE code = ? AND is_active = 1 LIMIT 1");
 $stmt->execute([$testCode]);
 $test = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -112,9 +113,17 @@ try {
         $stmt->execute([$student_id, $test_id, $attempt_number, $started_at, $writing_band, $time_spent]);
         $attempt_id = (int)$db->lastInsertId();
 
-        $ins = $db->prepare("INSERT INTO attempt_answers (attempt_id, question_id, selected_option_id, answer_text, score_awarded) VALUES (?, NULL, NULL, ?, ?)");
-        if ($t1e) $ins->execute([$attempt_id, $t1e, $band1]);
-        if ($t2e) $ins->execute([$attempt_id, $t2e, $band2]);
+        // Look up actual question IDs for Task 1 and Task 2
+        $wq_stmt = $db->prepare("SELECT question_number, id FROM questions WHERE test_id = ? AND question_number IN (1,2) ORDER BY question_number");
+        $wq_stmt->execute([$test_id]);
+        $writing_q_ids = [];
+        foreach ($wq_stmt->fetchAll(PDO::FETCH_ASSOC) as $wq) {
+            $writing_q_ids[(int)$wq['question_number']] = (int)$wq['id'];
+        }
+
+        $ins = $db->prepare("INSERT INTO attempt_answers (attempt_id, question_id, selected_option_id, answer_text, score_awarded) VALUES (?, ?, NULL, ?, ?)");
+        if ($t1e && isset($writing_q_ids[1])) $ins->execute([$attempt_id, $writing_q_ids[1], $t1e, $band1]);
+        if ($t2e && isset($writing_q_ids[2])) $ins->execute([$attempt_id, $writing_q_ids[2], $t2e, $band2]);
 
         $db->prepare("UPDATE mock_sessions SET writing_attempt_id=?, writing_band=?, writing_ai_feedback=? WHERE id=?")
            ->execute([$attempt_id, $writing_band, $writing_feedback, $session_id]);
@@ -150,23 +159,20 @@ try {
             $correct_opts[(int)$co['question_id']][] = $co['label'];
         }
 
-        // Q29-30 pair scoring (listening only)
-        $pair_q_nums  = ($section === 'listening') ? [29, 30] : [];
-        $pair_correct = ['b', 'd'];
-        $pair_selected = [];
-        foreach ($pair_q_nums as $pq) {
-            $pair_selected[$pq] = strtolower(trim($answers[$pq] ?? ''));
-        }
-        $pair_scores = [29 => 0.0, 30 => 0.0];
-        if (!empty($pair_q_nums)) {
-            $pair_unique = array_unique(array_filter(array_values($pair_selected)));
-            if (count($pair_unique) === count(array_filter(array_values($pair_selected)))) {
-                foreach ($pair_q_nums as $pq) {
-                    if (in_array($pair_selected[$pq], $pair_correct) && $pair_selected[29] !== $pair_selected[30]) {
-                        $pair_scores[$pq] = 1.0;
-                    }
-                }
-            }
+        // Choose-TWO pair scoring (listening only).
+        // Each entry: [qA, qB, [correct_letter_a, correct_letter_b]] — either order accepted.
+        $pair_defs = ($section === 'listening') ? [
+            [21, 22, ['c', 'e']],
+            [23, 24, ['b', 'e']],
+        ] : [];
+
+        $pair_q_to_score = [];
+        foreach ($pair_defs as [$qa, $qb, $pair_correct]) {
+            $answer_a = strtolower(trim($answers[$qa] ?? ''));
+            $answer_b = strtolower(trim($answers[$qb] ?? ''));
+            $distinct = ($answer_a !== $answer_b);
+            $pair_q_to_score[$qa] = ($answer_a !== '' && in_array($answer_a, $pair_correct) && $distinct) ? 1.0 : 0.0;
+            $pair_q_to_score[$qb] = ($answer_b !== '' && in_array($answer_b, $pair_correct) && $distinct) ? 1.0 : 0.0;
         }
 
         $score      = 0.0;
@@ -180,8 +186,8 @@ try {
             $opt_id      = null;
             $score_awd   = 0.0;
 
-            if (in_array($q_num, $pair_q_nums)) {
-                $score_awd = $pair_scores[$q_num];
+            if (array_key_exists($q_num, $pair_q_to_score)) {
+                $score_awd = $pair_q_to_score[$q_num];
             } elseif (in_array($q_type, ['multiple_choice_single', 'multiple_choice_multiple'])) {
                 if ($user_answer !== '' && isset($correct_opts[$q_id]) && in_array(strtolower($user_answer), $correct_opts[$q_id])) {
                     $score_awd = 1.0;

@@ -6,8 +6,10 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$student_id = (int)$_SESSION['user_id'];
-$session_id = (int)($_GET['session_id'] ?? 0);
+$student_id  = (int)$_SESSION['user_id'];
+$session_id  = (int)($_GET['session_id'] ?? 0);
+$adminEmails = ['v.animasahun@slslanguage.com', 'animasahunvictor1@gmail.com', 'ashonibarevik@gmail.com'];
+$isAdmin     = in_array($_SESSION['user_email'] ?? '', $adminEmails);
 
 if (!$session_id) { header("Location: index.php"); exit(); }
 
@@ -26,15 +28,15 @@ if ($session['status'] !== 'in_progress') { header("Location: mock_start.php"); 
 $map      = require INCLUDES_PATH . '/mock_test_map.php';
 $mockCode = $session['mock_code'];
 
-if (is_null($session['listening_attempt_id'])) {
+if (!$isAdmin && is_null($session['listening_attempt_id'])) {
     $file = $map[$mockCode]['listening']['file'] ?? 'mock_start.php';
     header("Location: {$file}?session_id={$session_id}"); exit();
 }
-if (is_null($session['reading_attempt_id'])) {
+if (!$isAdmin && is_null($session['reading_attempt_id'])) {
     $file = $map[$mockCode]['reading']['file'] ?? 'mock_start.php';
     header("Location: {$file}?session_id={$session_id}"); exit();
 }
-if (!is_null($session['writing_attempt_id'])) {
+if (!$isAdmin && !is_null($session['writing_attempt_id'])) {
     header("Location: mock_speaking.php?session_id={$session_id}"); exit();
 }
 
@@ -71,13 +73,7 @@ if ($writingTest) {
     }
 }
 
-// Fallback if DB not seeded yet
-if ($task1['question'] === '') {
-    $task1['question'] = "Writing Task 1 prompt not yet configured. Please contact your instructor.";
-}
-if ($task2['question'] === '') {
-    $task2['question'] = "Writing Task 2 prompt not yet configured. Please contact your instructor.";
-}
+// No fallback — empty = not configured. Tasks without content simply won't render.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -117,6 +113,15 @@ if ($task2['question'] === '') {
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-2">
+            <?php if ($isAdmin): ?>
+            <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:10px;margin-bottom:1rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
+                <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
+                <a href="full_mock_001_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
+                <a href="full_mock_001_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
+                <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">✍️ Writing</a>
+                <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
+            </div>
+            <?php endif; ?>
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div class="progress-steps">
                     <div class="step done"><div class="step-dot"></div>Listening</div>
@@ -140,11 +145,16 @@ if ($task2['question'] === '') {
                 </div>
 
                 <div class="d-flex border-bottom mb-4">
+                    <?php if (!empty($task1['question'])): ?>
                     <button class="task-tab active" onclick="switchTask(1)" id="ttab-1">Task 1 <span class="text-muted" style="font-size:.72rem;">150+ words</span></button>
-                    <button class="task-tab" onclick="switchTask(2)" id="ttab-2">Task 2 <span class="text-muted" style="font-size:.72rem;">250+ words</span></button>
+                    <?php endif; ?>
+                    <?php if (!empty($task2['question'])): ?>
+                    <button class="task-tab <?= empty($task1['question']) ? 'active' : '' ?>" onclick="switchTask(2)" id="ttab-2">Task 2 <span class="text-muted" style="font-size:.72rem;">250+ words</span></button>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Task 1 -->
+                <?php if (!empty($task1['question'])): ?>
                 <div class="task-panel active" id="task-1">
                     <div class="row g-3">
                         <div class="col-lg-5">
@@ -168,9 +178,11 @@ if ($task2['question'] === '') {
                         <button class="btn btn-warning fw-semibold" onclick="switchTask(2)">Next: Task 2 →</button>
                     </div>
                 </div>
+                <?php endif; ?>
 
                 <!-- Task 2 -->
-                <div class="task-panel" id="task-2">
+                <?php if (!empty($task2['question'])): ?>
+                <div class="task-panel <?= empty($task1['question']) ? 'active' : '' ?>" id="task-2">
                     <div class="row g-3">
                         <div class="col-lg-5">
                             <p class="small fw-semibold text-uppercase text-muted mb-2">Writing Task 2</p>
@@ -191,6 +203,7 @@ if ($task2['question'] === '') {
                         </button>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
         </main>
     </div>

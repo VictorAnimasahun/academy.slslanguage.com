@@ -9,6 +9,8 @@ if (!isset($_SESSION['user_id'])) {
 
 $student_id    = (int)$_SESSION['user_id'];
 $session_id    = (int)($_GET['session_id'] ?? 0);
+$adminEmails   = ['v.animasahun@slslanguage.com', 'animasahunvictor1@gmail.com', 'ashonibarevik@gmail.com'];
+$isAdmin       = in_array($_SESSION['user_email'] ?? '', $adminEmails);
 $submitted     = false;
 $error         = '';
 
@@ -26,14 +28,12 @@ $stmt->execute([$session_id, $student_id]);
 $session = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$session) { die("Session not found."); }
-if ($session['status'] !== 'in_progress') {
-    $submitted = ($session['status'] !== 'in_progress');
-}
+$submitted = ($session['status'] !== 'in_progress');
 
-// Guard: all written sections must be done
-if ($session['status'] === 'in_progress') {
-    if (is_null($session['listening_attempt_id'])) { header("Location: mock_listening.php?session_id={$session_id}"); exit(); }
-    if (is_null($session['reading_attempt_id']))   { header("Location: mock_reading.php?session_id={$session_id}"); exit(); }
+// Students must complete all written sections first; admins can preview freely
+if (!$isAdmin && $session['status'] === 'in_progress') {
+    if (is_null($session['listening_attempt_id'])) { header("Location: full_mock_001_listening.php?session_id={$session_id}"); exit(); }
+    if (is_null($session['reading_attempt_id']))   { header("Location: full_mock_001_reading.php?session_id={$session_id}"); exit(); }
     if (is_null($session['writing_attempt_id']))   { header("Location: mock_writing.php?session_id={$session_id}"); exit(); }
 }
 
@@ -96,6 +96,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-3">
+            <?php if ($isAdmin): ?>
+            <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:10px;margin-bottom:1rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
+                <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
+                <a href="full_mock_001_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
+                <a href="full_mock_001_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
+                <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
+                <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎤 Speaking</a>
+            </div>
+            <?php endif; ?>
             <div class="progress-steps mb-4">
                 <div class="step done"><div class="step-dot"></div>Listening</div>
                 <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>

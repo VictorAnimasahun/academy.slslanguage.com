@@ -388,6 +388,25 @@ nav {
 	color: #0D1B2A;
 }
 
+.course-subheading {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin: 24px 0 12px;
+  padding-top: 8px;
+  border-top: 2px solid #bfdbfe;
+}
+.course-subheading .coming-soon-label {
+  font-size: .8rem;
+  font-weight: 400;
+  color: #6b7280;
+  margin-left: .5rem;
+}
+.course-card.coming-soon {
+  opacity: .75;
+}
+
 .course-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -428,11 +447,11 @@ nav {
 
 /* Image */
 .course-image {
-	height: 50%;
-	width: auto;            /* let it size naturally */
-	margin: 10px;           /* space around image */
-	border-radius: 8px;     /* optional: soft corners */
-	overflow: hidden;       /* keeps image inside rounded edges */
+	height: 160px;
+	flex-shrink: 0;
+	margin: 10px;
+	border-radius: 8px;
+	overflow: hidden;
 }
 .course-image img {
   width: 100%;
@@ -443,9 +462,8 @@ nav {
 
 /* Content */
 .course-content {
-	height: 50%;
+	flex: 1;
 	padding: 15px;
-	flex: none;
 	display: flex;
 	flex-direction: column;
 }
@@ -477,7 +495,7 @@ nav {
 /* Enrol Now Button */
 .enrol-button {
 	display: inline-block;
-	margin-top: 5px;
+	margin-top: auto;
 	width: auto;
 	padding: 10px 20px;
 	color: #2196F3;
@@ -844,13 +862,14 @@ footer {
     }
 
     .course-image {
-        height: 45%;
+        height: 140px;
+        flex-shrink: 0;
         margin: 8px;
         border-radius: 6px;
     }
 
     .course-content {
-        height: 55%;
+        flex: 1;
         padding: 12px;
     }
 
@@ -874,7 +893,7 @@ footer {
     .enrol-button {
         padding: 8px 16px;
         font-size: 0.9rem;
-        margin-top: 3px;
+        margin-top: auto;
     }
 
     .see-more-btn {

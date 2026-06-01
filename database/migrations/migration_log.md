@@ -242,6 +242,78 @@ DROP TABLE IF EXISTS user_certificates;
 - Seeds `tests` table with IELTS_FULL_MOCK_001 (category=Full, is_mock_section=1)
 - Run order: LOCAL → LIVE
 
+---
+
+## 015 — Seed IELTS_FM1_L / IELTS_FM1_R / IELTS_FM1_W test records
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | |
+| Live  | [ ] | | |
+
+**What it does:** Inserts test container rows for the three graded sections of Full Mock 001.
+
+---
+
+## 016 — Seed IELTS_FM1_L questions (Listening Full Mock 1)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Adds `part_number` column to `questions` table (idempotent, MySQL 5.7/8.0 safe)
+- Inserts 40 questions across 4 parts (form completion, MCQ, plan labelling, choose-TWO, matching, note completion)
+- All correct answers loaded; ⚠️ some question stems and MCQ option text are placeholders — update from Cambridge IELTS GT Test 1 book
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM1_L'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM1_L'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM1_L');
+```
+
+---
+
+## 017 — Seed IELTS_FM1_R questions (Reading Full Mock 1)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 40 questions across 3 sections (matching, T/F/NG, table/sentence/summary completion, matching headings, MCQ)
+- All correct answers loaded; ⚠️ passage texts and question stems are placeholders — paste Cambridge passage text into Q1/Q15/Q28 instructions fields
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM1_R'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM1_R'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM1_R');
+```
+
+---
+
+## 018 — Seed IELTS_FM1_W questions (Writing Full Mock 1)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 2 writing task records into `questions` (Task 1 = letter to Mrs Barrett, Task 2 = plastic/environment essay)
+- Prompts are complete — no placeholders
+
+**Rollback:**
+```sql
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM1_W');
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

@@ -54,9 +54,9 @@ $userEmail = $isLoggedIn ? $_SESSION['user_email'] : '';
                     <a href="#resources">Resources</a>
                     <div class="dropdown">
                         <a href="#tutorials">Free Tutorials</a>
-                        <a href="#ebooks">E-books</a>
+                        <a href="resources/study_materials/index.php">Study Materials</a>
                         <a href="#webinars">Webinars</a>
-						<a href="#webinars">Essay Analyzer</a>
+                        <a href="resources/essay_analyzer.php">Essay Analyser</a>
                     </div>
                 </li>
 				
@@ -114,10 +114,10 @@ $userEmail = $isLoggedIn ? $_SESSION['user_email'] : '';
                             <span class="dropdown-arrow">▼</span>
                         </div>
                         <div class="mobile-dropdown" id="resources-dropdown">
-                            <a href="#blog">Blog</a>
                             <a href="#tutorials">Free Tutorials</a>
-                            <a href="#ebooks">E-books</a>
+                            <a href="resources/study_materials/index.php">Study Materials</a>
                             <a href="#webinars">Webinars</a>
+                            <a href="resources/essay_analyzer.php">Essay Analyser</a>
                         </div>
                     </li>
                     <li><a href="#contact">Contact</a></li>
@@ -190,115 +190,159 @@ $userEmail = $isLoggedIn ? $_SESSION['user_email'] : '';
 	<section class="course-section">
 		<div class="courses-container">
 			<h2 class="course-heading">Our Courses</h2>
+
+			<!-- IELTS General -->
+			<h3 class="course-subheading">IELTS General Training</h3>
 			<div class="course-grid">
-
-				<!-- Course 1 -->
 				<div class="course-card">
 					<div class="course-image">
-						<img src="assets/images/course1.png" alt="English Grammar Fundamentals">
-					</div>
-					<div class="course-content">
-						<span class="course-tag">ENGLISH</span>
-						<h3 class="course-title">English Grammar Fundamentals</h3>
-						<p class="course-desc">12 Modules</p>
-						<a href="#" class="enrol-button">Enrol Now</a>
-					</div>
-				</div>
-
-				<!-- Course 2 -->
-				<div class="course-card">
-				<div class="course-image">
-					<img src="assets/images/course2.png" alt="Business English">
-				</div>
-				<div class="course-content">
-					<span class="course-tag">ENGLISH</span>
-					<h3 class="course-title">Business English</h3>
-					<p class="course-desc">8 Modules</p>
-					<a href="#" class="enrol-button">Enrol Now</a>
-				</div>
-				</div>
-
-				<!-- Course 3 -->
-				<div class="course-card">
-				<div class="course-image">
-					<img src="assets/images/course3.png" alt="Academic Writing">
-				</div>
-				<div class="course-content">
-					<span class="course-tag">ENGLISH</span>
-					<h3 class="course-title">Academic Writing</h3>
-					<p class="course-desc">10 Modules</p>
-					<a href="#" class="enrol-button">Enrol Now</a>
-				</div>
-				</div>
-
-				<!-- Course 4 -->
-				<div class="course-card">
-				<div class="course-image">
-					<img src="assets/images/course4.png" alt="Pronunciation & Accent Training">
-				</div>
-				<div class="course-content">
-					<span class="course-tag">ENGLISH</span>
-					<h3 class="course-title">Pronunciation & Accent Training</h3>
-					<p class="course-desc">15 Modules</p>
-					<a href="#" class="enrol-button">Enrol Now</a>
-				</div>
-				</div>
-
-				<!-- Course 5 -->
-				<div class="course-card">
-				<div class="course-image">
-					<img src="assets/images/Course5.jpg" alt="Art of Allusion">
-				</div>
-				<div class="course-content">
-					<span class="course-tag">ENGLISH</span>
-					<h3 class="course-title">The Art of Allusion: Speaking with references</h3>
-					<p class="course-desc">8 Modules</p>
-					<a href="#" class="enrol-button">Enrol Now</a>
-				</div>
-				</div>
-
-				<!-- Course 6 -->
-				<div class="course-card">
-					<div class="course-image">
-						<img src="assets/images/Course6.png" alt="Reading Comprehension">
-					</div>
-					<div class="course-content">
-						<span class="course-tag">ENGLISH</span>
-						<h3 class="course-title">Basics of English Language</h3>
-						<p class="course-desc">9 Modules</p>
-						<a href="#" class="enrol-button">Enrol Now</a>
-					</div>
-				</div>
-
-				<!-- Hidden Courses -->
-
-				<!-- Course 7 -->
-				<div class="course-card extra hidden">
-					<div class="course-image">
-						<img src="assets/images/Course7.png" alt="Listening Skills">
+						<img src="assets/images/Course7.png" alt="IELTS General 1 Month">
 					</div>
 					<div class="course-content">
 						<span class="course-tag">IELTS</span>
-						<h3 class="course-title">IELTS Masterclass</h3>
-						<p class="course-desc">11 Modules</p>
-						<a href="#" class="enrol-button">Enrol Now</a>
+						<h3 class="course-title">IELTS General — 1 Month</h3>
+						<p class="course-desc">8 Classes · 4 Weeks · Intermediate Plan</p>
+						<a href="courses/IELTS_Gen_1Mo/course_overview.php" class="enrol-button">View Course</a>
 					</div>
 				</div>
-
-				<!-- Course 8 -->
-				<div class="course-card extra hidden">
+				<div class="course-card">
 					<div class="course-image">
-						<img src="assets/images/Course8.jpg" alt="English for Specific Purposes">
+						<img src="assets/images/Course7.png" alt="IELTS General 2 Month">
 					</div>
 					<div class="course-content">
-						<span class="course-tag">CELPIP</span>
-						<h3 class="course-title">CELPIP Masterclass</h3>
-						<p class="course-desc">14 Modules</p>
-						<a href="#" class="enrol-button">Enrol Now</a>
+						<span class="course-tag">IELTS</span>
+						<h3 class="course-title">IELTS General — 2 Month</h3>
+						<p class="course-desc">16 Classes · 8 Weeks · Advanced Plan</p>
+						<a href="courses/IELTS_Gen_2Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+				<div class="course-card">
+					<div class="course-image">
+						<img src="assets/images/Course7.png" alt="IELTS General Masterclass">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">IELTS</span>
+						<h3 class="course-title">IELTS General Masterclass</h3>
+						<p class="course-desc">24 Classes · 12 Weeks · Fluent Plan</p>
+						<a href="courses/IELTS_Gen_Mst/course_overview.php" class="enrol-button">View Course</a>
 					</div>
 				</div>
 			</div>
-			<button class="see-more-btn" onclick="toggleCourses()" data-expanded="false">See More Courses</button>
+
+			<!-- IELTS Academic -->
+			<h3 class="course-subheading">IELTS Academic</h3>
+			<div class="course-grid">
+				<div class="course-card">
+					<div class="course-image">
+						<img src="assets/images/course1.png" alt="IELTS Academic 1 Month">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">IELTS</span>
+						<h3 class="course-title">IELTS Academic — 1 Month</h3>
+						<p class="course-desc">8 Classes · 4 Weeks · Intermediate Plan</p>
+						<a href="courses/IELTS_Aca_1Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+				<div class="course-card">
+					<div class="course-image">
+						<img src="assets/images/course1.png" alt="IELTS Academic 2 Month">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">IELTS</span>
+						<h3 class="course-title">IELTS Academic — 2 Month</h3>
+						<p class="course-desc">16 Classes · 8 Weeks · Advanced Plan</p>
+						<a href="courses/IELTS_Aca_2Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+				<div class="course-card">
+					<div class="course-image">
+						<img src="assets/images/course1.png" alt="IELTS Academic Masterclass">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">IELTS</span>
+						<h3 class="course-title">IELTS Academic Masterclass</h3>
+						<p class="course-desc">24 Classes · 12 Weeks · Fluent Plan</p>
+						<a href="courses/IELTS_Aca_3Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- CELPIP General -->
+			<h3 class="course-subheading">CELPIP General</h3>
+			<div class="course-grid">
+				<div class="course-card">
+					<div class="course-image">
+						<img src="assets/images/Course8.jpg" alt="CELPIP General 1 Month">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">CELPIP</span>
+						<h3 class="course-title">CELPIP General — 1 Month</h3>
+						<p class="course-desc">8 Classes · 4 Weeks · Intermediate Plan</p>
+						<a href="courses/CELPIP_Gen_1Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+				<div class="course-card">
+					<div class="course-image">
+						<img src="assets/images/Course8.jpg" alt="CELPIP General 2 Month">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">CELPIP</span>
+						<h3 class="course-title">CELPIP General — 2 Month</h3>
+						<p class="course-desc">16 Classes · 8 Weeks · Advanced Plan</p>
+						<a href="courses/CELPIP_Gen_2Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+				<div class="course-card">
+					<div class="course-image">
+						<img src="assets/images/Course8.jpg" alt="CELPIP General Masterclass">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">CELPIP</span>
+						<h3 class="course-title">CELPIP General Masterclass</h3>
+						<p class="course-desc">24 Classes · 12 Weeks · Fluent Plan</p>
+						<a href="courses/CELPIP_Gen_3Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- PTE Academic -->
+			<h3 class="course-subheading">PTE Academic <span class="coming-soon-label">— Coming Soon</span></h3>
+			<div class="course-grid">
+				<div class="course-card coming-soon">
+					<div class="course-image">
+						<img src="assets/images/course3.png" alt="PTE Academic 1 Month">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">PTE</span>
+						<h3 class="course-title">PTE Academic — 1 Month</h3>
+						<p class="course-desc">8 Classes · 4 Weeks · Intermediate Plan</p>
+						<a href="courses/PTE_Gen_1Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+				<div class="course-card coming-soon">
+					<div class="course-image">
+						<img src="assets/images/course3.png" alt="PTE Academic 2 Month">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">PTE</span>
+						<h3 class="course-title">PTE Academic — 2 Month</h3>
+						<p class="course-desc">16 Classes · 8 Weeks · Advanced Plan</p>
+						<a href="courses/PTE_Gen_2Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+				<div class="course-card coming-soon">
+					<div class="course-image">
+						<img src="assets/images/course3.png" alt="PTE Academic Masterclass">
+					</div>
+					<div class="course-content">
+						<span class="course-tag">PTE</span>
+						<h3 class="course-title">PTE Academic Masterclass</h3>
+						<p class="course-desc">24 Classes · 12 Weeks · Fluent Plan</p>
+						<a href="courses/PTE_Gen_3Mo/course_overview.php" class="enrol-button">View Course</a>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</section>
 

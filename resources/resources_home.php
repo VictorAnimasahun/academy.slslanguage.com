@@ -112,11 +112,10 @@ if (!isset($_SESSION['user_id'])) {
 				<!-- 0. Diagnostic Tests -->
 				<div class="col">
 					<a href="diagnostic_tests/diagnostic_tests_home.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">
 							<div class="card-body">
-								<i class="bi bi-pencil-square card-icon"></i>
+								<i class="bi bi-clipboard2-pulse card-icon"></i>
 								<h3 class="card-title">Diagnostic Tests</h3>
-								<p class="card-text">Assess your current level: IELTS, CELPIP & Basic English</p>
 							</div>
 						</div>
 					</a>
@@ -125,11 +124,10 @@ if (!isset($_SESSION['user_id'])) {
 				<!-- 1. Essay Analyser -->
 				<div class="col">
 					<a href="essay_analyzer.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #ec4899, #f43f5e);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #ea580c, #f97316);">
 							<div class="card-body">
-								<i class="bi bi-pencil-square card-icon"></i>
-								<h3 class="card-title">IELTS & CELPIP Essay Analyser</h3>
-								<p class="card-text">Instant band score + detailed feedback</p>
+								<i class="bi bi-pencil-fill card-icon"></i>
+								<h3 class="card-title">Essay Analyser</h3>
 							</div>
 						</div>
 					</a>
@@ -138,11 +136,10 @@ if (!isset($_SESSION['user_id'])) {
 				<!-- 2. Mock Tests -->
 				<div class="col">
 					<a href="mock_tests/index.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #eeecf3ff, #18975cff);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">
 							<div class="card-body">
-								<i class="bi bi-file-earmark-check card-icon"></i>
+								<i class="bi bi-journal-check card-icon"></i>
 								<h3 class="card-title">Mock Tests</h3>
-								<p class="card-text">Take one of our simulated complete tests</p>
 							</div>
 						</div>
 					</a>
@@ -151,11 +148,10 @@ if (!isset($_SESSION['user_id'])) {
 				<!-- 3. Quizzes -->
 				<div class="col">
 					<a href="quizzes/quizzes_home.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #10b981, #34d399);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #16a34a, #22c55e);">
 							<div class="card-body">
-								<i class="bi bi-stopwatch card-icon"></i>
+								<i class="bi bi-patch-question-fill card-icon"></i>
 								<h3 class="card-title">Quizzes</h3>
-								<p class="card-text">Test your knowledge on a range of topics</p>
 							</div>
 						</div>
 					</a>
@@ -164,11 +160,10 @@ if (!isset($_SESSION['user_id'])) {
 				<!-- 4. Model Answers -->
 				<div class="col">
 					<a href="model_answers/model_answers.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #b45309, #d97706);">
 							<div class="card-body">
-								<i class="bi bi-file-earmark-text card-icon"></i>
-								<h3 class="card-title">Model Answers Library</h3>
-								<p class="card-text">Band 8–9 essays & Task 1 reports</p>
+								<i class="bi bi-award-fill card-icon"></i>
+								<h3 class="card-title">Model Answers</h3>
 							</div>
 						</div>
 					</a>
@@ -177,24 +172,22 @@ if (!isset($_SESSION['user_id'])) {
 				<!-- 5. Vocabulary Banks -->
 				<div class="col">
 					<a href="vocabulary-banks.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">
 							<div class="card-body">
-								<i class="bi bi-journal-bookmark card-icon"></i>
-								<h3 class="card-title">Topic Vocabulary Banks</h3>
-								<p class="card-text">30+ topics with audio & examples</p>
+								<i class="bi bi-journal-bookmark-fill card-icon"></i>
+								<h3 class="card-title">Vocabulary Banks</h3>
 							</div>
 						</div>
 					</a>
 				</div>
 
-				<!-- 6. Speaking Anaylzer -->
+				<!-- 6. Speaking Analyser -->
 				<div class="col">
 					<a href="audio_analyzer.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #ef4444, #f87171);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #9d174d, #ec4899);">
 							<div class="card-body">
 								<i class="bi bi-mic-fill card-icon"></i>
-								<h3 class="card-title">Audio Analyzer</h3>
-								<p class="card-text">Record & Analyze your speaking samples</p>
+								<h3 class="card-title">Speaking Analyser</h3>
 							</div>
 						</div>
 					</a>
@@ -203,11 +196,10 @@ if (!isset($_SESSION['user_id'])) {
 				<!-- 7. Practice Tests -->
 				<div class="col">
 					<a href="practice_tests/index.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #c4d0caff, #dbd8e7ff);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #0369a1, #0ea5e9);">
 							<div class="card-body">
-								<i class="bi bi-file-earmark-check card-icon"></i>
+								<i class="bi bi-mortarboard-fill card-icon"></i>
 								<h3 class="card-title">Practice Tests</h3>
-								<p class="card-text">Prepare for any test with these practice questions</p>
 							</div>
 						</div>
 					</a>
@@ -216,11 +208,22 @@ if (!isset($_SESSION['user_id'])) {
 				<!-- 8. Exercises -->
 				<div class="col">
 					<a href="exercises/exercises.php" class="text-decoration-none">
-						<div class="resource-card" style="background: linear-gradient(135deg, #5c2fe3ff, #d2f107ff);">
+						<div class="resource-card" style="background: linear-gradient(135deg, #b91c1c, #ef4444);">
 							<div class="card-body">
-								<i class="bi bi-file-earmark-check card-icon"></i>
+								<i class="bi bi-activity card-icon"></i>
 								<h3 class="card-title">Exercises</h3>
-								<p class="card-text">-</p>
+							</div>
+						</div>
+					</a>
+				</div>
+
+				<!-- 9. Study Materials -->
+				<div class="col">
+					<a href="study_materials/index.php" class="text-decoration-none">
+						<div class="resource-card" style="background: linear-gradient(135deg, #0369a1, #0ea5e9);">
+							<div class="card-body">
+								<i class="bi bi-file-earmark-arrow-down-fill card-icon"></i>
+								<h3 class="card-title">Study Materials</h3>
 							</div>
 						</div>
 					</a>
