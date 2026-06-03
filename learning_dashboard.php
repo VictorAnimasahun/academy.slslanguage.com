@@ -271,8 +271,8 @@ $progressPercent = round($metrics['avg_progress']);
                                 <?php if ($ms['status'] === 'in_progress'): ?>
                                     <?php
                                     // Determine resume link
-                                    if (is_null($ms['listening_attempt_id'])) $resumeUrl = "resources/mock_tests/mock_listening.php?session_id={$ms['id']}";
-                                    elseif (is_null($ms['reading_attempt_id'])) $resumeUrl = "resources/mock_tests/mock_reading.php?session_id={$ms['id']}";
+                                    if (is_null($ms['listening_attempt_id'])) $resumeUrl = "resources/mock_tests/full_mock_001_listening.php?session_id={$ms['id']}";
+                                    elseif (is_null($ms['reading_attempt_id'])) $resumeUrl = "resources/mock_tests/full_mock_001_reading.php?session_id={$ms['id']}";
                                     elseif (is_null($ms['writing_attempt_id'])) $resumeUrl = "resources/mock_tests/mock_writing.php?session_id={$ms['id']}";
                                     else $resumeUrl = "resources/mock_tests/mock_speaking.php?session_id={$ms['id']}";
                                     ?>

@@ -81,10 +81,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         .panel { background:#fff; border-radius:16px; padding:2.5rem; box-shadow:0 4px 20px rgba(0,0,0,.07); max-width:680px; margin:2rem auto; text-align:center; }
         .section-badge { background:linear-gradient(135deg,#10b981,#34d399); color:#fff; padding:.45rem 1.25rem; border-radius:50px; font-weight:700; font-size:.88rem; }
         .icon-circle { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:1.5rem auto; font-size:2.2rem; }
-        .progress-steps { display:flex; gap:.5rem; align-items:center; justify-content:center; }
+        .progress-steps { display:flex; gap:.5rem; align-items:center; }
         .step { display:flex; align-items:center; gap:.35rem; font-size:.8rem; color:#94a3b8; }
-        .step.done { color:#10b981; } .step.current { color:#10b981; font-weight:600; }
+        .step.done { color:#10b981; } .step.current { color:#f59e0b; font-weight:600; }
         .step-dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
+        .sticky-header { position:fixed; top:var(--topbar-h,60px); left:var(--sidebar-w,220px); right:280px; z-index:150; background:#f1f5f9; padding:.6rem 1.5rem .5rem; border-bottom:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(0,0,0,.05); }
+        @media (max-width:1399px) { .sticky-header { right:0; } }
+        @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
+        body.sidebar-collapsed .sticky-header { left:0; }
+        body.sidebar-collapsed .submit-bar { left:0; }
     </style>
 </head>
 <body class="light">
@@ -96,24 +101,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-3">
-            <?php if ($isAdmin): ?>
-            <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:10px;margin-bottom:1rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
-                <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
-                <a href="full_mock_001_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
-                <a href="full_mock_001_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
-                <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
-                <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎤 Speaking</a>
+            <div class="sticky-header">
+                <?php if ($isAdmin): ?>
+                <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
+                    <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
+                    <a href="full_mock_001_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
+                    <a href="full_mock_001_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
+                    <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
+                    <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎤 Speaking</a>
+                </div>
+                <?php endif; ?>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="progress-steps">
+                        <div class="step done"><div class="step-dot"></div>Listening</div>
+                        <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                        <div class="step done"><div class="step-dot"></div>Reading</div>
+                        <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                        <div class="step done"><div class="step-dot"></div>Writing</div>
+                        <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                        <div class="step current"><div class="step-dot"></div>Speaking</div>
+                    </div>
+                    <small class="text-muted"><?= htmlspecialchars($session['mock_title']) ?></small>
+                </div>
             </div>
-            <?php endif; ?>
-            <div class="progress-steps mb-4">
-                <div class="step done"><div class="step-dot"></div>Listening</div>
-                <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
-                <div class="step done"><div class="step-dot"></div>Reading</div>
-                <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
-                <div class="step done"><div class="step-dot"></div>Writing</div>
-                <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
-                <div class="step current"><div class="step-dot"></div>Speaking</div>
-            </div>
+            <div style="padding-top:<?= $isAdmin ? '110px' : '60px' ?>;">
 
             <?php if ($error): ?>
                 <div class="alert alert-danger text-center"><?= htmlspecialchars($error) ?></div>
@@ -165,6 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                 </form>
             </div>
             <?php endif; ?>
+            </div><!-- end padding-top div -->
         </main>
     </div>
 

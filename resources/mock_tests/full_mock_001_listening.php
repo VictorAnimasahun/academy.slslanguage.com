@@ -205,6 +205,15 @@ $DURATION_SECS  = 40 * 60; // 30 min audio + 10 min transfer
         }
         @media (max-width: 1399px) { .submit-bar { right: 0; } }
         @media (max-width: 1199px) { .submit-bar { left: 0; right: 0; } }
+        .progress-steps { display:flex; gap:.5rem; align-items:center; }
+        .step { display:flex; align-items:center; gap:.35rem; font-size:.8rem; color:#94a3b8; }
+        .step.done { color:#10b981; } .step.current { color:#f59e0b; font-weight:600; }
+        .step-dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
+        .sticky-header { position:fixed; top:var(--topbar-h,60px); left:var(--sidebar-w,220px); right:280px; z-index:150; background:#f1f5f9; padding:.6rem 1.5rem .5rem; border-bottom:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(0,0,0,.05); }
+        @media (max-width:1399px) { .sticky-header { right:0; } }
+        @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
+        body.sidebar-collapsed .sticky-header { left:0; }
+        body.sidebar-collapsed .submit-bar { left:0; }
     </style>
 </head>
 <body>
@@ -216,28 +225,36 @@ $DURATION_SECS  = 40 * 60; // 30 min audio + 10 min transfer
 <div class="main-wrapper flex-grow-1" style="flex:1;">
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
-    <main class="content p-3" style="max-width:900px; margin:0 auto;">
+    <main class="content p-3">
 
-        <!-- Header row -->
-        <div class="test-header-row">
-            <div class="test-meta">
-                <span class="test-meta-tag">Mock Test</span>
-                <span class="test-meta-name"><?= htmlspecialchars($session['mock_title']) ?> — <i class="bi bi-headphones me-1"></i>Listening</span>
+        <div class="sticky-header">
+            <?php if ($isAdmin): ?>
+            <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
+                <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
+                <a href="full_mock_001_listening.php?session_id=<?= $session_id ?>" style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎧 Listening</a>
+                <a href="full_mock_001_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
+                <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
+                <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
             </div>
-            <button class="btn-exit" onclick="confirmExit()"><i class="bi bi-box-arrow-right me-1"></i> Exit</button>
+            <?php endif; ?>
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="progress-steps">
+                    <div class="step current"><div class="step-dot"></div>Listening</div>
+                    <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                    <div class="step"><div class="step-dot"></div>Reading</div>
+                    <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                    <div class="step"><div class="step-dot"></div>Writing</div>
+                    <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                    <div class="step"><div class="step-dot"></div>Speaking</div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <small class="text-muted"><?= htmlspecialchars($session['mock_title']) ?></small>
+                    <button class="btn-exit" onclick="confirmExit()"><i class="bi bi-box-arrow-right me-1"></i> Exit</button>
+                </div>
+            </div>
         </div>
 
-        <?php if ($isAdmin): ?>
-        <div style="background:#1e1b4b; color:#c7d2fe; padding:.6rem 1.25rem; border-radius:10px; margin-bottom:1rem; display:flex; align-items:center; gap:1.5rem; font-size:.82rem; font-weight:600;">
-            <span style="color:#a5b4fc; text-transform:uppercase; letter-spacing:.08em; font-size:.7rem;">Admin Preview</span>
-            <a href="full_mock_001_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc; text-decoration:none;">🎧 Listening</a>
-            <a href="full_mock_001_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc; text-decoration:none;">📖 Reading</a>
-            <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#a5b4fc; text-decoration:none;">✍️ Writing</a>
-            <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#a5b4fc; text-decoration:none;">🎤 Speaking</a>
-        </div>
-        <?php endif; ?>
-
-        <div class="section-content">
+        <div class="section-content" style="padding-top:<?= $isAdmin ? '110px' : '60px' ?>;">
 
             <!-- Hidden audio element -->
             <audio id="mainAudio" preload="auto">
