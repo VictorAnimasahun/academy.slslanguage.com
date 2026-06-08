@@ -271,32 +271,28 @@ function gradeMockEssay(string $question, string $essay, string $taskType): arra
         . '{"band":<0-9 in 0.5 steps>,"task_achievement":"...","coherence_cohesion":"...","lexical_resource":"...","grammatical_range":"...","overall_feedback":"...","improvements":["..."]}'
         . "\n\nCandidate response:\n{$essay}";
 
-    $ch = curl_init('https://api.anthropic.com/v1/messages');
+    $url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" . GEMINI_API_KEY;
+    $ch  = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => json_encode([
-            'model'      => 'claude-sonnet-4-20250514',
-            'max_tokens' => 1000,
-            'messages'   => [['role' => 'user', 'content' => $prompt]],
+            'contents' => [['role' => 'user', 'parts' => [['text' => $prompt]]]]
         ]),
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            'x-api-key: ' . ANTHROPIC_API_KEY,
-            'anthropic-version: 2023-06-01',
-        ],
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
     ]);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $response  = curl_exec($ch);
+    $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
     curl_close($ch);
 
-    if ($httpCode !== 200) {
-        error_log("gradeMockEssay API error {$httpCode}: {$response}");
+    if ($curlError || $httpCode !== 200) {
+        error_log("gradeMockEssay Gemini error {$httpCode}: {$response}");
         return ['band' => 0.0, 'overall_feedback' => 'AI grading temporarily unavailable.'];
     }
 
     $result = json_decode($response, true);
-    $text   = $result['content'][0]['text'] ?? '{}';
+    $text   = $result['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
     $text   = preg_replace('/^```(?:json)?\s*/m', '', trim($text));
     $text   = preg_replace('/\s*```$/m', '', $text);
     $parsed = json_decode(trim($text), true);

@@ -28,7 +28,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="bi bi-person-badge-fill me-2"></i>Mentors
         </a>
 
-        <a class="nav-link <?php echo (strpos($_SERVER['PHP_SELF'], '/resources/') !== false) ? 'active' : ''; ?>"
+        <a class="nav-link <?php echo ($current_page == 'my_results.php') ? 'active' : ''; ?>"
+           href="<?php echo ACADEMY_URL; ?>resources/practice_tests/my_results.php">
+            <i class="bi bi-clipboard-data-fill me-2"></i>My Results
+        </a>
+
+        <a class="nav-link <?php echo (strpos($_SERVER['PHP_SELF'], '/resources/') !== false && $current_page !== 'my_results.php') ? 'active' : ''; ?>"
            href="<?php echo ACADEMY_URL; ?>resources/resources_home.php">
             <i class="bi bi-collection-fill me-2"></i>Resources
         </a>
