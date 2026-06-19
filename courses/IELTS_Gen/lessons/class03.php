@@ -4,7 +4,7 @@ require_once INCLUDES_PATH . '/tier_access.php';
 require_once __DIR__ . '/course_context.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../../../../registration.php?message=Please+login+to+access+this+course");
+    header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course");
     exit();
 }
 

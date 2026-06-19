@@ -3,7 +3,7 @@ require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../../../registration.php?message=Please+login+to+access+courses");
+    header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+courses");
     exit();
 }
 

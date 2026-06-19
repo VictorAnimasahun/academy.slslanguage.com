@@ -3,6 +3,7 @@ require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 require_once CONFIG_PATH . '/api_keys.php';
 
 header('Content-Type: application/json');
+set_time_limit(120); // two AI calls can take up to ~50s total
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
@@ -159,12 +160,14 @@ try {
             $correct_opts[(int)$co['question_id']][] = $co['label'];
         }
 
-        // Choose-TWO pair scoring (listening only).
+        // Choose-TWO pair scoring, keyed by test code (each mock has different
+        // pair-question positions and correct letters).
         // Each entry: [qA, qB, [correct_letter_a, correct_letter_b]] — either order accepted.
-        $pair_defs = ($section === 'listening') ? [
-            [21, 22, ['c', 'e']],
-            [23, 24, ['b', 'e']],
-        ] : [];
+        $pair_defs = match ($testCode) {
+            'IELTS_FM1_L' => [[21, 22, ['c', 'e']], [23, 24, ['b', 'e']]],
+            'IELTS_FM2_L' => [[19, 20, ['b', 'c']]],
+            default => [],
+        };
 
         $pair_q_to_score = [];
         foreach ($pair_defs as [$qa, $qb, $pair_correct]) {
@@ -271,11 +274,13 @@ function gradeMockEssay(string $question, string $essay, string $taskType): arra
         . '{"band":<0-9 in 0.5 steps>,"task_achievement":"...","coherence_cohesion":"...","lexical_resource":"...","grammatical_range":"...","overall_feedback":"...","improvements":["..."]}'
         . "\n\nCandidate response:\n{$essay}";
 
-    $url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" . GEMINI_API_KEY;
+    $url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=" . GEMINI_API_KEY;
     $ch  = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
+        CURLOPT_TIMEOUT        => 45,
+        CURLOPT_SSL_VERIFYPEER => true,
         CURLOPT_POSTFIELDS     => json_encode([
             'contents' => [['role' => 'user', 'parts' => [['text' => $prompt]]]]
         ]),
@@ -284,7 +289,6 @@ function gradeMockEssay(string $question, string $essay, string $taskType): arra
     $response  = curl_exec($ch);
     $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
-    curl_close($ch);
 
     if ($curlError || $httpCode !== 200) {
         error_log("gradeMockEssay Gemini error {$httpCode}: {$response}");

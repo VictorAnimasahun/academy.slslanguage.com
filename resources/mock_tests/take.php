@@ -3,7 +3,7 @@ require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 require_once 'config.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../edu_hub_registration.php?message=Please+login+to+access+mock+tests");
+    header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+mock+tests");
     exit();
 }
 

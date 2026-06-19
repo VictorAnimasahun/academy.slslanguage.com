@@ -314,6 +314,26 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 
 ---
 
+## 024 — Manual writing grading override
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-17 | |
+| Live  | [x] | 2026-06-17 | |
+
+**What it does:**
+- Adds `writing_notes` (TEXT NULL) to `mock_sessions` — instructor's manual comments, separate from AI feedback
+- Adds `writing_graded_by` (ENUM('ai','instructor') DEFAULT 'ai') to `mock_sessions` — tracks which source the displayed writing band/feedback came from
+- Lets an instructor override the Writing band in `mock_session_detail.php` when the Gemini AI grader is down or wrong, instead of being stuck with an AI-only score
+
+**Rollback:**
+```sql
+ALTER TABLE mock_sessions DROP COLUMN writing_graded_by;
+ALTER TABLE mock_sessions DROP COLUMN writing_notes;
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

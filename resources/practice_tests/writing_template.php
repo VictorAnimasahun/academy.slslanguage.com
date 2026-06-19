@@ -4,7 +4,7 @@ require_once 'config.php';
 require_once 'functions.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../edu_hub_registration.php?message=Please+login");
+    header("Location: ../../edu_hub_registration.php?message=Please+login");
     exit();
 }
 

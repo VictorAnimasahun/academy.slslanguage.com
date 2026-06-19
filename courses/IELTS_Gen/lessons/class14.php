@@ -2,7 +2,7 @@
 require_once (dirname(dirname(dirname(__DIR__)))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
 require_once __DIR__ . '/course_context.php';
-if (!isset($_SESSION['user_id'])) { header("Location: ../../../../../registration.php?message=Please+login+to+access+this+course"); exit(); }
+if (!isset($_SESSION['user_id'])) { header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course"); exit(); }
 if (!can_access('advanced')) { ?>
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Upgrade Required</title><meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

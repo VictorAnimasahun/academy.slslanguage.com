@@ -18,4 +18,21 @@ return [
         'reading'   => ['file' => 'full_mock_001_reading.php',  'test_code' => 'IELTS_FM1_R'],
         'writing'   => ['file' => 'mock_writing.php',           'test_code' => 'IELTS_FM1_W'],
     ],
+    'IELTS_FULL_MOCK_002' => [
+        'listening' => ['file' => 'full_mock_002_listening.php', 'test_code' => 'IELTS_FM2_L'],
+        'reading'   => ['file' => 'full_mock_002_reading.php',  'test_code' => 'IELTS_FM2_R'],
+        'writing'   => ['file' => 'mock_writing.php',           'test_code' => 'IELTS_FM2_W'],
+    ],
+    // PLACEHOLDER — layout files exist but no content migrations seeded yet.
+    'IELTS_FULL_MOCK_003' => [
+        'listening' => ['file' => 'full_mock_003_listening.php', 'test_code' => 'IELTS_FM3_L'],
+        'reading'   => ['file' => 'full_mock_003_reading.php',  'test_code' => 'IELTS_FM3_R'],
+        'writing'   => ['file' => 'mock_writing.php',           'test_code' => 'IELTS_FM3_W'],
+    ],
+    // PLACEHOLDER — layout files exist but no content migrations seeded yet.
+    'IELTS_FULL_MOCK_004' => [
+        'listening' => ['file' => 'full_mock_004_listening.php', 'test_code' => 'IELTS_FM4_L'],
+        'reading'   => ['file' => 'full_mock_004_reading.php',  'test_code' => 'IELTS_FM4_R'],
+        'writing'   => ['file' => 'mock_writing.php',           'test_code' => 'IELTS_FM4_W'],
+    ],
 ];

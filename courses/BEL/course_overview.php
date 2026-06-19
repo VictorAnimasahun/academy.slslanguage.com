@@ -4,7 +4,7 @@ require_once('../../../config.php');
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../../registration.php?message=Please+login+to+access+courses");
+    header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+courses");
     exit();
 }
 
