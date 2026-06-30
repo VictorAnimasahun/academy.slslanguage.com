@@ -334,6 +334,205 @@ ALTER TABLE mock_sessions DROP COLUMN writing_notes;
 
 ---
 
+## 028 — Seed test container records for IELTS Full Mock 003
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-20 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 4 placeholder `tests` rows: `IELTS_FULL_MOCK_003`, `IELTS_FM3_L`, `IELTS_FM3_R`, `IELTS_FM3_W`
+- Step 1 of the "adding a new full mock" checklist (see `resources/mock_tests/DOCUMENTATION.md`) — content (questions/passages/audio) follows in later migrations
+
+**Rollback:**
+```sql
+DELETE FROM tests WHERE code IN ('IELTS_FULL_MOCK_003','IELTS_FM3_L','IELTS_FM3_R','IELTS_FM3_W');
+```
+
+---
+
+## 029 — Seed IELTS_FM3_L (Listening Full Mock Test 3)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-20 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 40 questions, 46 options, 26 correct answers for `IELTS_FM3_L` (Cambridge IELTS GT Test 3 — full real content, transcribed from the book)
+- Also adds an `IELTS_FM3_L` entry to `$pair_defs` in `mock_save_section.php` for the four choose-TWO question pairs (Q11–12, Q13–14, Q21–22, Q23–24) — without this they'd silently score against the wrong answer key
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM3_L'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM3_L'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM3_L');
+```
+(Also remove the `IELTS_FM3_L` line from `$pair_defs` in `mock_save_section.php`.)
+
+---
+
+## 030 — Seed IELTS_FM3_R (Reading Full Mock Test 3)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-20 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 40 questions, 113 options, 39 correct answers for `IELTS_FM3_R` (Cambridge IELTS GT Test 3 — full real content, transcribed from the book)
+- Q1–5 (paragraph matching), Q28–33 (heading matching), Q37–40 (sentence-ending matching) each get their own full copy of their options box per question_id — the Reading UI's dropdown reads options per-question, unlike Listening's shared-box + free-text input
+- Two answers carry an accepted alternative: Q19 accepts "flavour" or "flavor"; Q24 accepts "agenda" or "meeting agenda"
+- Reading passage text itself is NOT duplicated here — it lives in `full_mock_003_reading.php`'s `$passages` array (also updated this session, along with a small `renderPassage()` enhancement to handle lettered paragraphs that have no separate heading/body split)
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM3_R'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM3_R'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM3_R');
+```
+
+---
+
+## 031 — Seed IELTS_FM3_W (Writing Full Mock Test 3)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-20 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 2 writing task records into `questions` (Task 1 = letter about a book that influenced you, Task 2 = essay on living close to where you were born)
+- Prompts are complete — no placeholders
+
+**Rollback:**
+```sql
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM3_W');
+```
+
+---
+
+## 032 — Add FM3 to mock_exams and mock_exam_sections
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-23 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Adds `IELTS_FULL_MOCK_003` to `mock_exams` (Layer A catalog) and its 3 sections to `mock_exam_sections` (Listening → `IELTS_FM3_L`, Reading → `IELTS_FM3_R`, Writing_Task1 → `IELTS_FM3_W`)
+- Last step of the Mock 3 build — makes it visible/launchable from the `index.php`/`take.php` browse pages
+- Mock 3 is now fully complete end-to-end: migrations 028–032, `full_mock_003_reading.php`'s `$passages` filled in, audio in `assets/audio/IELTS_FULL_MOCK_003/`
+
+**Rollback:**
+```sql
+DELETE FROM mock_exam_sections WHERE mock_code = 'IELTS_FULL_MOCK_003';
+DELETE FROM mock_exams WHERE code = 'IELTS_FULL_MOCK_003';
+```
+
+---
+
+## 033 — Seed test container records for IELTS Full Mock 004
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-29 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 4 `tests` container rows: `IELTS_FULL_MOCK_004`, `IELTS_FM4_L`, `IELTS_FM4_R`, `IELTS_FM4_W`
+
+**Rollback:**
+```sql
+DELETE FROM tests WHERE code IN ('IELTS_FULL_MOCK_004','IELTS_FM4_L','IELTS_FM4_R','IELTS_FM4_W');
+```
+
+---
+
+## 034 — Seed IELTS_FM4_L (Listening Full Mock Test 4)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-29 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 40 questions, 29 options, 35 correct answers for `IELTS_FM4_L` (Cambridge IELTS 16 Test 4 — full real content)
+- Part 2 Q15–20 is a `diagram_map_labelling` question (recreation ground map) — image lives at `assets/img/mock_tests/IELTS_FULL_MOCK_004/part2_map.png`, wired into `full_mock_004_listening.php`'s `$partImages[2]`
+- Two choose-TWO pairs: Q21–22 and Q23–24, both correct = B & C — added to `mock_save_section.php`'s `$pair_defs` under `IELTS_FM4_L`
+- Three answers carry an accepted alternative: Q31 accepts "spice"/"spices", Q32 accepts "colony"/"settlement", Q36 accepts "balance"/"balancing"
+- Audio placed at `assets/audio/IELTS_FULL_MOCK_004/listening_part{1-4}.mp3`
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM4_L'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM4_L'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM4_L');
+```
+(Also remove the `IELTS_FM4_L` line from `$pair_defs` in `mock_save_section.php`.)
+
+---
+
+## 035 — Seed IELTS_FM4_R (Reading Full Mock Test 4)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-29 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 40 questions, 96 options, 36 correct answers for `IELTS_FM4_R` (Cambridge IELTS 16 Test 4 — full real content)
+- Q1–8 (boot review matching), Q32–37 (organisation matching) each get their own full copy of their options box per question_id, per the FM1/FM2/FM3 convention
+- `full_mock_004_reading.php`'s `$passages` array filled in with all 5 texts (boots, beekeeping, CV writing, new job, women's football history)
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM4_R'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM4_R'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM4_R');
+```
+
+---
+
+## 036 — Seed IELTS_FM4_W (Writing Full Mock Test 4)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-29 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Inserts 2 writing task records into `questions` (Task 1 = email to a friend advising on student accommodation, Task 2 = essay on the best time in history to live)
+- Prompts are complete — no placeholders
+
+**Rollback:**
+```sql
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_FM4_W');
+```
+
+---
+
+## 037 — Add FM4 to mock_exams and mock_exam_sections
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-06-29 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Adds `IELTS_FULL_MOCK_004` to `mock_exams` (Layer A catalog) and its 3 sections to `mock_exam_sections` (Listening → `IELTS_FM4_L`, Reading → `IELTS_FM4_R`, Writing_Task1 → `IELTS_FM4_W`)
+- Last step of the Mock 4 build — makes it visible/launchable from the `index.php`/`take.php` browse pages
+- Mock 4 is now fully complete end-to-end: migrations 033–037, `full_mock_004_reading.php`'s `$passages` filled in, audio in `assets/audio/IELTS_FULL_MOCK_004/`, map image in `assets/img/mock_tests/IELTS_FULL_MOCK_004/`
+
+**Rollback:**
+```sql
+DELETE FROM mock_exam_sections WHERE mock_code = 'IELTS_FULL_MOCK_004';
+DELETE FROM mock_exams WHERE code = 'IELTS_FULL_MOCK_004';
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

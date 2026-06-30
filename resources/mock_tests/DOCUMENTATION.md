@@ -29,8 +29,8 @@ This is where questions are rendered, timed, submitted, and scored. `ielts_full_
 | `full_mock_001_listening.php` | B | FM1 Listening renderer — loads questions/options from DB by test code, renders per-part tabs, embedded audio player, submits to `mock_save_section.php` |
 | `full_mock_001_reading.php` | B | FM1 Reading renderer — same DB-driven question rendering, but **passages are hardcoded in a PHP array** (`$passages`, keyed by first question number of each passage), not pulled from `stimulus_text`. See "Why passages are hardcoded" below |
 | `full_mock_002_listening.php` / `full_mock_002_reading.php` | B | Cambridge IELTS GT Test 2 content. Improved generic pattern vs. FM1 (see below) — this is now the template to copy for new mocks, not FM1 |
-| `full_mock_003_listening.php` / `full_mock_003_reading.php`, `ielts_full_mock_003.php` | A→B bridge + B | **Placeholder only** — copied from FM2's files (no FM2-specific hardcoding needed since FM2 already generalized the pattern), `$passages = []`, `mock_test_map.php` entry points at `IELTS_FM3_L/R/W`. No content migrations exist yet |
-| `full_mock_004_listening.php` / `full_mock_004_reading.php`, `ielts_full_mock_004.php` | A→B bridge + B | Same placeholder status as Mock 3, pointing at `IELTS_FM4_L/R/W` |
+| `full_mock_003_listening.php` / `full_mock_003_reading.php`, `ielts_full_mock_003.php` | A→B bridge + B | **Complete** — Cambridge IELTS GT Test 3 content (migrations 028–032), `$passages` filled in, audio in `assets/audio/IELTS_FULL_MOCK_003/` |
+| `full_mock_004_listening.php` / `full_mock_004_reading.php`, `ielts_full_mock_004.php` | A→B bridge + B | **Placeholder only** — copied from FM2's files (no FM2-specific hardcoding needed since FM2 already generalized the pattern), `$passages = []`, `mock_test_map.php` entry points at `IELTS_FM4_L/R/W`. No content migrations exist yet |
 | `mock_writing.php` | B | Shared writing section for **any** full mock — loads Task 1 + Task 2 from DB by test code, no mock-specific hardcoding |
 | `mock_speaking.php` | B | Submission/collation page, not an actual test — packages L/R/W results for instructor review; speaking itself is administered live and graded later in `sls-admin` |
 | `mock_save_section.php` | B | The scoring engine. One endpoint handles all three machine-graded sections (`listening`, `reading`, `writing`) via a `section` POST param. See "Scoring details" below |
@@ -87,4 +87,4 @@ This is the exact sequence followed for FM2 — treat it as the spec. FM2's real
 7. **Audio assets** — `academy/assets/audio/IELTS_FULL_MOCK_{NNN}/listening_part{1-4}.mp3`
 8. Run migrations on LOCAL, verify question counts, then LIVE. Update `database/migrations/migration_log.md`.
 
-**Mock 3 and 4 currently have steps 2, 3, 5 done (placeholders) — steps 1, 4 (real `$passages`), 6, 7, 8 remain** once Cambridge Test 3/4 content and audio are available.
+**Mock 3 is complete** (migrations 028–032 + `$passages` + audio). **Mock 4 currently has steps 2, 3, 5 done (placeholders) — steps 1, 4 (real `$passages`), 6, 7, 8 remain** once Cambridge Test 4 content and audio are available.

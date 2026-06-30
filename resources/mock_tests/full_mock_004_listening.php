@@ -311,9 +311,12 @@ $DURATION_SECS = 40 * 60; // 30 min audio + 10 min transfer
 
                 <?php
                 // ── Per-part worksheet images ───────────────────────────
-                // Add entries here if this mock's Part 2 (or any part) needs a diagram image.
                 $partImages = [
-                    // e.g. 2 => ['url' => ACADEMY_URL . 'assets/img/...', 'alt' => '...', 'caption' => '...']
+                    2 => [
+                        'url'     => ACADEMY_URL . 'assets/img/mock_tests/IELTS_FULL_MOCK_004/part2_map.png',
+                        'alt'     => 'Recreation ground after proposed changes',
+                        'caption' => 'Recreation ground after proposed changes — use for Questions 15–20',
+                    ],
                 ];
                 if (isset($partImages[$partNum])):
                     $img = $partImages[$partNum];

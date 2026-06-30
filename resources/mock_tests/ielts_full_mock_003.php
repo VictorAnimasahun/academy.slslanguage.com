@@ -2,8 +2,7 @@
 /**
  * IELTS GT Mock Test 3 — session launcher.
  * Routes through the DB-driven mock session system (full_mock_003_listening.php).
- * PLACEHOLDER — no content migrations exist yet. Follow the FM2 checklist in
- * resources/mock_tests/DOCUMENTATION.md to seed IELTS_FULL_MOCK_003 and its sections.
+ * Content seeded by migrations 028, 029, 030, 031, 032.
  */
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 
