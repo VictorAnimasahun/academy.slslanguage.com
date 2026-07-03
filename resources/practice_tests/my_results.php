@@ -278,14 +278,14 @@ if (!$sessionId && !$attemptId) {
         .back-link:hover { color:#111; }
     </style>
 </head>
-<body>
+<body class="light">
 <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
 <div class="mobile-overlay" id="mobileOverlay"></div>
 <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
-<div class="flex-grow-1" style="padding:1.75rem 1.5rem;">
+<div class="main-wrapper flex-grow-1" style="flex:1;">
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
-    <main class="content p-2" style="max-width:900px;">
+    <main class="content p-4" style="max-width:900px;">
 
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
@@ -666,6 +666,7 @@ if (!$sessionId && !$attemptId) {
     </main>
 </div>
 
+<?php include INCLUDES_PATH . '/adverts.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>

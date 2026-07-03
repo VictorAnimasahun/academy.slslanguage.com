@@ -171,7 +171,7 @@ if (!isset($_SESSION['user_id'])) {
 
 				<!-- 5. Vocabulary Banks -->
 				<div class="col">
-					<a href="vocabulary-banks.php" class="text-decoration-none">
+					<a href="vocabulary_banks/vocab_home.php" class="text-decoration-none">
 						<div class="resource-card" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">
 							<div class="card-body">
 								<i class="bi bi-journal-bookmark-fill card-icon"></i>

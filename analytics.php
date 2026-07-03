@@ -124,7 +124,6 @@ function fmtTime(?int $secs): string {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
-    <link href="assets/css/dashboard.css" rel="stylesheet">
     <style>
         /* ── Page header ─────────────────────────────────────── */
         .page-eyebrow {

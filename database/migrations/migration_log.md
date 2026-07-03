@@ -533,6 +533,165 @@ DELETE FROM mock_exams WHERE code = 'IELTS_FULL_MOCK_004';
 
 ---
 
+## 038 — Create `vocabulary_words` table
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-01 | 15 columns, all indexes confirmed |
+| Live  | [x] | 2026-07-01 | |
+
+**What it does:**
+- Creates the `vocabulary_words` table — the core store for the Vocabulary Banks feature
+- Fields: headword, phonetic (IPA), word_class, cefr_level, is_awl flag, definition,
+  secondary_definitions, synonyms, antonyms, collocations, word_family, sort_order, is_active
+- UNIQUE key on `headword` prevents duplicates
+- Indexes on word_class, cefr_level, is_awl, is_active, sort_order
+
+**Rollback:**
+```sql
+DROP TABLE IF EXISTS vocabulary_words;
+```
+
+---
+
+## 039 — Add `word_id` (nullable FK) to `questions` table
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-01 | Column + idx_word_id index confirmed |
+| Live  | [x] | 2026-07-01 | |
+
+**What it does:**
+- Adds nullable `word_id INT UNSIGNED` column to `questions`, positioned after `test_id`
+- Adds `idx_word_id` index for fast per-word question lookups
+- Fully backwards-compatible — all existing questions keep `word_id = NULL`
+
+**Rollback:**
+```sql
+ALTER TABLE questions DROP INDEX idx_word_id;
+ALTER TABLE questions DROP COLUMN word_id;
+```
+
+---
+
+## 040 — Create `word_test_usages` table
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-01 | 9 columns, indexes on word_id + exam_type/skill confirmed |
+| Live  | [x] | 2026-07-01 | |
+
+**What it does:**
+- Creates `word_test_usages` — stores per-word example sentences keyed by exam type (IELTS/CELPIP/PTE/General), skill (Listening/Reading/Writing/Speaking), and sub-section (e.g. Task 1, Part 3, Summarize Written Text)
+- Each row: one example sentence + optional context note for one word × one test context
+- `word_id` links back to `vocabulary_words`
+
+**Rollback:**
+```sql
+DROP TABLE IF EXISTS word_test_usages;
+```
+
+---
+
+## 041 — Seed first 30 vocabulary words (batch 1)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-01 | 30 rows confirmed — AWL Sublist 1 + high-frequency test words |
+| Live  | [x] | 2026-07-01 | |
+
+**What it does:**
+- Seeds 30 words into `vocabulary_words`: analyse, approach, assess, benefit, concept, context,
+  contribute, crucial, demonstrate, environment, establish, evaluate, factor, focus, identify,
+  impact, indicate, individual, involve, issue, maintain, method, policy, principle, process,
+  significant, structure, suggest, therefore, vary
+- Each row includes phonetic, word_class, CEFR level, AWL flag, definition, secondary definitions,
+  synonyms, antonyms, collocations, and word family
+- INSERT IGNORE — safe to re-run
+
+**Rollback:**
+```sql
+DELETE FROM vocabulary_words WHERE sort_order BETWEEN 1 AND 30;
+```
+
+---
+
+## 042 — Seed test usage examples for first 30 vocabulary words
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-01 | 60 rows — IELTS (Writing×30, Reading×8, Speaking×7, Listening×3), CELPIP Writing×5, PTE Writing×7 |
+| Live  | [x] | 2026-07-01 | |
+
+**What it does:**
+- Seeds 60 rows into `word_test_usages` — 2 examples per word across different exam types and skills
+- Each row includes an authentic example sentence and an examiner context note
+- DELETE + re-INSERT pattern — safe to re-run
+
+**Rollback:**
+```sql
+DELETE FROM word_test_usages
+WHERE word_id IN (SELECT id FROM vocabulary_words WHERE sort_order BETWEEN 1 AND 30);
+```
+
+---
+
+## 043 — Seed vocab quiz test containers (first 30 words)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-01 | 30 rows — VOCAB_WORD_001 to VOCAB_WORD_030 confirmed |
+| Live  | [x] | 2026-07-02 | |
+
+**What it does:**
+- Inserts one row into `tests` per vocabulary word (codes VOCAB_WORD_001–VOCAB_WORD_030)
+- test_type = 'Vocabulary', category = 'Word Exercise', duration = 5 min, total_questions = 0 (updated when questions are seeded in migration 044)
+- Uses INSERT IGNORE + NOT EXISTS guard — safe to re-run
+
+**Rollback:**
+```sql
+DELETE FROM tests WHERE code LIKE 'VOCAB_WORD_%';
+```
+
+---
+
+## 044 — Seed vocab quiz questions for first 30 words
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-02 | 90 questions, 240 option rows, 31 answer rows — all 30 tests show total_questions=3 |
+| Live  | [x] | 2026-07-02 | |
+
+**What it does:**
+- Clears existing vocab questions (idempotent) then re-inserts
+- 3 questions per word: (1) Definition MCQ, (2) Gap-fill sentence, (3) Word form MCQ
+- Populates `questions` (word_id set), `question_options` (4 per MCQ), `question_correct_answers` (gap-fill answers)
+- Updates `tests.total_questions` to 3 for all VOCAB_WORD_XXX containers
+
+---
+
+## 045 — Extend `assignments` table
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-02 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Adds `test_id INT UNSIGNED NULL FK → tests(id) ON DELETE SET NULL`
+- Adds `type ENUM('test','quiz','vocabulary','task') NOT NULL DEFAULT 'task'`
+- Adds `created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP`
+
+**Rollback:**
+```sql
+DELETE qca FROM question_correct_answers qca JOIN questions q ON qca.question_id=q.id JOIN tests t ON q.test_id=t.id WHERE t.test_type='Vocabulary';
+DELETE qo FROM question_options qo JOIN questions q ON qo.question_id=q.id JOIN tests t ON q.test_id=t.id WHERE t.test_type='Vocabulary';
+DELETE q FROM questions q JOIN tests t ON q.test_id=t.id WHERE t.test_type='Vocabulary';
+UPDATE tests SET total_questions=0 WHERE test_type='Vocabulary';
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

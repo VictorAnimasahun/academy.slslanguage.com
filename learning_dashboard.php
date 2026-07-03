@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . '/bootstrap.php'; 
+require_once __DIR__ . '/bootstrap.php';
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: edu_hub_registration.php?message=Please+login+to+access+courses");
     exit();
@@ -13,132 +12,66 @@ if (!$user_id) {
     exit();
 }
 
-// Database queries with error handling
-
-
-// Combined dashboard metrics query
-$metricsSQL = "SELECT 
+// Enrollment metrics
+$metricsStmt = executeQuery($db, "SELECT
     COUNT(CASE WHEN progress_percentage = 100 THEN 1 END) as completed,
     COUNT(CASE WHEN progress_percentage > 0 AND progress_percentage < 100 THEN 1 END) as in_progress,
-    COUNT(*) as total_enrolled,
     COALESCE(AVG(progress_percentage), 0) as avg_progress
-FROM enrollments WHERE student_id = ?";
+FROM enrollments WHERE student_id = ?", [$user_id]);
+$metrics = $metricsStmt ? $metricsStmt->fetch(PDO::FETCH_ASSOC) : ['completed' => 0, 'in_progress' => 0, 'avg_progress' => 0];
 
-$metricsStmt = executeQuery($db, $metricsSQL, [$user_id]);
-$metrics = $metricsStmt ? $metricsStmt->fetch(PDO::FETCH_ASSOC) : [
-    'completed' => 0, 'in_progress' => 0, 'total_enrolled' => 0, 'avg_progress' => 0
-];
-
-// Certificates count
-$certSQL = "SELECT COUNT(*) as cnt FROM user_certificates WHERE student_id = ?";
-$certStmt = executeQuery($db, $certSQL, [$user_id]);
+// Certificates
+$certStmt = executeQuery($db, "SELECT COUNT(*) FROM user_certificates WHERE student_id = ?", [$user_id]);
 $certificatesEarned = $certStmt ? $certStmt->fetchColumn() : 0;
 
 // Enrolled courses
-$enrolledSQL = "SELECT c.*, e.progress_percentage, e.enrolled_at 
-    FROM courses c 
-    JOIN enrollments e ON c.id = e.course_id 
-    WHERE e.student_id = ?
-    ORDER BY e.enrolled_at DESC";
-$enrolledStmt = executeQuery($db, $enrolledSQL, [$user_id]);
+$enrolledStmt = executeQuery($db, "SELECT c.*, e.progress_percentage, e.enrolled_at
+    FROM courses c JOIN enrollments e ON c.id = e.course_id
+    WHERE e.student_id = ? ORDER BY e.enrolled_at DESC", [$user_id]);
 $enrolled_courses = $enrolledStmt ? $enrolledStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
-// Available courses
-$availableSQL = "SELECT c.* FROM courses c 
+// Recommended courses (not yet enrolled)
+$availableStmt = executeQuery($db, "SELECT c.* FROM courses c
     WHERE c.id NOT IN (SELECT course_id FROM enrollments WHERE student_id = ?)
-    ORDER BY c.created_at DESC LIMIT " . MAX_COURSE_RECOMMENDATIONS;
-$availableStmt = executeQuery($db, $availableSQL, [$user_id]);
+    ORDER BY c.created_at DESC LIMIT " . MAX_COURSE_RECOMMENDATIONS, [$user_id]);
 $available_courses = $availableStmt ? $availableStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
-// Assignments
-$assignmentsSQL = "SELECT a.*, c.title AS course_title 
-    FROM assignments a
-    JOIN courses c ON a.course_id = c.id
-    JOIN enrollments e ON e.course_id = c.id
-    WHERE e.student_id = ?
-    ORDER BY a.due_date ASC
-    LIMIT " . MAX_ASSIGNMENTS_DISPLAY;
-$assignmentsStmt = executeQuery($db, $assignmentsSQL, [$user_id]);
-$assignments = $assignmentsStmt ? $assignmentsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-
-// User activity for charts - with fallback sample data
-$activitySQL = "SELECT MONTHNAME(created_at) as month, 
-    MONTH(created_at) as month_num,
-    SUM(CASE WHEN type='study' THEN duration_minutes ELSE 0 END) / 60 AS study_hours,
-    SUM(CASE WHEN type='test' THEN duration_minutes ELSE 0 END) / 60 AS test_hours
-    FROM students_activity
-    WHERE student_id = ? AND YEAR(created_at) = YEAR(CURDATE())
-    GROUP BY MONTH(created_at)
-    ORDER BY MONTH(created_at)";
-$activityStmt = executeQuery($db, $activitySQL, [$user_id]);
-$activity = $activityStmt ? $activityStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-
-// Prepare chart data with fallback sample data
-$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-$studyHours = array_fill(0, 12, 0);
-$testHours = array_fill(0, 12, 0);
-
-// If no real data, use sample data for demonstration
-if (empty($activity)) {
-    $studyHours = [12, 19, 15, 25, 32, 28, 20, 24, 18, 22, 26, 30];
-    $testHours = [8, 12, 10, 18, 24, 20, 14, 16, 12, 15, 18, 20];
-} else {
-    foreach ($activity as $row) {
-        $monthIndex = $row['month_num'] - 1;
-        $studyHours[$monthIndex] = (float)$row['study_hours'];
-        $testHours[$monthIndex] = (float)$row['test_hours'];
-    }
-}
-
-// Prepare calendar events
-$calendarEvents = [];
-foreach ($assignments as $a) {
-    $calendarEvents[] = [
-        'title' => $a['title'],
-        'start' => $a['due_date'],
-        'url' => "assignment.php?id=" . $a['id']
-    ];
-}
-
-// Most recent practice test attempt only (exclude mock sections)
-$recentAttemptsSQL = "
-    SELECT ta.id, ta.score, ta.max_score, ta.band_score, ta.completed_at, ta.attempt_number,
-           t.title, t.category, t.code
-    FROM test_attempts ta
-    JOIN tests t ON t.id = ta.test_id
+// Most recent practice test attempt
+$recentAttemptsStmt = executeQuery($db, "
+    SELECT ta.score, ta.max_score, ta.band_score, ta.completed_at, t.title
+    FROM test_attempts ta JOIN tests t ON t.id = ta.test_id
     WHERE ta.student_id = ? AND ta.status = 'completed'
       AND (ta.mode = 'practice' OR ta.mode IS NULL)
-    ORDER BY ta.completed_at DESC
-    LIMIT 1
-";
-$recentAttemptsStmt = executeQuery($db, $recentAttemptsSQL, [$user_id]);
+    ORDER BY ta.completed_at DESC LIMIT 1", [$user_id]);
 $recentAttempts = $recentAttemptsStmt ? $recentAttemptsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
-// Mock test sessions
-$mockSessionsSQL = "
-    SELECT ms.id, ms.status, ms.overall_band, ms.writing_band, ms.created_at, ms.released_at,
+// Most recent mock session
+$mockSessionsStmt = executeQuery($db, "
+    SELECT ms.id, ms.status, ms.overall_band, ms.writing_band, ms.created_at,
            ms.listening_attempt_id, ms.reading_attempt_id, ms.writing_attempt_id,
-           ms.speaking_notes,
-           t.title AS mock_title, t.id AS mock_test_id,
+           ms.speaking_notes, ms.speaking_band,
+           t.title AS mock_title,
            ta_l.band_score AS l_band, ta_l.score AS l_score, ta_l.max_score AS l_max,
-           ta_r.band_score AS r_band, ta_r.score AS r_score, ta_r.max_score AS r_max,
-           ms.speaking_band
+           ta_r.band_score AS r_band, ta_r.score AS r_score, ta_r.max_score AS r_max
     FROM mock_sessions ms
     JOIN tests t ON t.id = ms.mock_test_id
     LEFT JOIN test_attempts ta_l ON ta_l.id = ms.listening_attempt_id
     LEFT JOIN test_attempts ta_r ON ta_r.id = ms.reading_attempt_id
-    WHERE ms.student_id = ?
-    ORDER BY ms.created_at DESC
-    LIMIT 1
-";
-$mockSessionsStmt = executeQuery($db, $mockSessionsSQL, [$user_id]);
+    WHERE ms.student_id = ? ORDER BY ms.created_at DESC LIMIT 1", [$user_id]);
 $mockSessions = $mockSessionsStmt ? $mockSessionsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
-// User display data
+// Daily vocabulary word
+$vocabWords = $db->query(
+    "SELECT id, headword, phonetic, word_class, cefr_level, is_awl, definition
+     FROM vocabulary_words WHERE is_active=1 ORDER BY sort_order, headword"
+)->fetchAll(PDO::FETCH_ASSOC);
+$dailyWord = !empty($vocabWords)
+    ? $vocabWords[(int)(date('z') + date('Y')) % count($vocabWords)]
+    : null;
+
 $userName     = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['user_firstname']) : 'Learner';
 $userLastname = isset($_SESSION['user_lastname'])  ? htmlspecialchars($_SESSION['user_lastname'])  : '';
 $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
-$progressPercent = round($metrics['avg_progress']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -149,78 +82,177 @@ $progressPercent = round($metrics['avg_progress']);
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    
-    <!-- External Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
-	<link href="assets/css/dashboard.css" rel="stylesheet">
+    <link href="assets/css/dashboard.css" rel="stylesheet">
+    <style>
+        .wotd-header {
+            background: linear-gradient(135deg, #0b77ff 0%, #6366f1 100%);
+            margin: -1.25rem -1.25rem 1rem;
+            padding: 1.25rem;
+            border-radius: 12px 12px 0 0;
+        }
+        .wotd-badge {
+            display: inline-block;
+            background: rgba(255,255,255,.2);
+            color: #fff;
+            padding: .15rem .55rem;
+            border-radius: 999px;
+            font-size: .7rem;
+            font-weight: 600;
+        }
+        .wotd-badge-awl { background: rgba(236,72,153,.75); }
+
+        .progress-course-label {
+            font-size: .8rem;
+            font-weight: 600;
+            color: #1f2937;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+    </style>
 </head>
 
 <body class="light">
-    <!-- Mobile Header -->
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
-
-    <!-- Mobile Overlay -->
     <div class="mobile-overlay" id="mobileOverlay"></div>
-
-    <!-- Sidebar Navigation -->
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
-
-    <!-- Topbar -->
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
-    <!-- Main Content -->
     <main class="content container-fluid">
         <div class="row align-items-start">
-            <div class="col-lg-8" style="max-width: 750px;">
-                <!-- Stats Cards -->
+
+            <!-- Left column -->
+            <div class="col-lg-8" style="max-width:750px;">
+
+                <!-- Stat cards -->
                 <div class="d-flex gap-2 mb-4">
-                    <div class="stat-card d-flex align-items-center gap-2" style="flex: 1; min-width: 0;">
+                    <div class="stat-card d-flex align-items-center gap-2" style="flex:1;min-width:0;">
                         <div class="blue-pill" style="width:32px;height:32px;">
-                            <i class="bi bi-book-half" aria-hidden="true" style="font-size:0.8rem;"></i>
+                            <i class="bi bi-book-half" style="font-size:.8rem;"></i>
                         </div>
-                        <div style="min-width: 0;">
-                            <div style="font-weight:700;font-size:0.9rem;" aria-label="Completed courses">
-                                <?php echo $metrics['completed']; ?>+
-                            </div>
+                        <div style="min-width:0;">
+                            <div style="font-weight:700;font-size:.9rem;"><?php echo $metrics['completed']; ?>+</div>
                             <div style="color:var(--muted);font-size:.7rem;white-space:nowrap;">Completed</div>
                         </div>
                     </div>
-
-                    <div class="stat-card d-flex align-items-center gap-2" style="flex: 1; min-width: 0;">
+                    <div class="stat-card d-flex align-items-center gap-2" style="flex:1;min-width:0;">
                         <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(90deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;color:#fff;">
-                            <i class="bi bi-award" aria-hidden="true" style="font-size:0.8rem;"></i>
+                            <i class="bi bi-award" style="font-size:.8rem;"></i>
                         </div>
-                        <div style="min-width: 0;">
-                            <div style="font-weight:700;font-size:0.9rem;" aria-label="Earned certificates">
-                                <?php echo $certificatesEarned; ?>
-                            </div>
+                        <div style="min-width:0;">
+                            <div style="font-weight:700;font-size:.9rem;"><?php echo $certificatesEarned; ?></div>
                             <div style="color:var(--muted);font-size:.7rem;white-space:nowrap;">Certificates</div>
                         </div>
                     </div>
-
-                    <div class="stat-card d-flex align-items-center gap-2" style="flex: 1; min-width: 0;">
+                    <div class="stat-card d-flex align-items-center gap-2" style="flex:1;min-width:0;">
                         <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(90deg,#7c3aed,#c084fc);display:flex;align-items:center;justify-content:center;color:#fff;">
-                            <i class="bi bi-mortarboard-fill" aria-hidden="true" style="font-size:0.8rem;"></i>
+                            <i class="bi bi-mortarboard-fill" style="font-size:.8rem;"></i>
                         </div>
-                        <div style="min-width: 0;">
-                            <div style="font-weight:700;font-size:0.9rem;" aria-label="Courses in progress">
-                                <?php echo $metrics['in_progress']; ?>
-                            </div>
+                        <div style="min-width:0;">
+                            <div style="font-weight:700;font-size:.9rem;"><?php echo $metrics['in_progress']; ?></div>
                             <div style="color:var(--muted);font-size:.7rem;white-space:nowrap;">In Progress</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Practice Tests -->
+                <!-- Ongoing / Registered Courses -->
+                <?php if (!empty($enrolled_courses)): ?>
+                <div class="small-card mb-4">
+                    <h5 class="mb-3">My Courses</h5>
+                    <div class="row g-3">
+                        <?php foreach (array_slice($enrolled_courses, 0, 3) as $course):
+                            $progress = (int)($course['progress_percentage'] ?? 0);
+                            $barCol   = $progress >= 70 ? 'linear-gradient(90deg,#10b981,#34d399)'
+                                      : ($progress >= 30 ? 'linear-gradient(90deg,#0b77ff,#6f8cff)'
+                                      : 'linear-gradient(90deg,#f59e0b,#fbbf24)');
+                            $base = __DIR__ . '/courses/' . $course['folder_name'];
+                            if (file_exists($base . '/intro.php')) {
+                                $courseLink = "courses/{$course['folder_name']}/intro.php?id={$course['id']}";
+                            } elseif (file_exists($base . '/course_overview.php')) {
+                                $courseLink = "courses/{$course['folder_name']}/course_overview.php?id={$course['id']}";
+                            } else {
+                                $courseLink = "courses/courses_detail.php?id={$course['id']}";
+                            }
+                        ?>
+                        <div class="col-md-4">
+                            <div class="course-card h-100">
+                                <h6 style="font-weight:700;font-size:.9rem;"><?php echo htmlspecialchars($course['title']); ?></h6>
+                                <?php if (!empty($course['description'])): ?>
+                                <div class="small text-muted mb-3" style="font-size:.78rem;">
+                                    <?php
+                                    $desc = $course['description'];
+                                    echo htmlspecialchars(strlen($desc) > MAX_DESCRIPTION_LENGTH
+                                        ? substr($desc, 0, MAX_DESCRIPTION_LENGTH) . '...' : $desc);
+                                    ?>
+                                </div>
+                                <?php endif; ?>
+                                <div class="mt-auto">
+                                    <div style="height:6px;background:#eef2ff;border-radius:4px;margin-bottom:.4rem;">
+                                        <div style="width:<?php echo $progress; ?>%;height:100%;background:<?php echo $barCol; ?>;border-radius:4px;transition:width .6s;"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted" style="font-size:.75rem;"><?php echo $progress; ?>% complete</small>
+                                        <a href="<?php echo $courseLink; ?>"
+                                           class="btn btn-sm btn-primary" style="font-size:.78rem;">Continue</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- Recommended Courses -->
+                <?php if (!empty($available_courses)): ?>
+                <div class="small-card mb-4">
+                    <h5 class="mb-3">Recommended for You</h5>
+                    <div class="row g-3">
+                        <?php foreach ($available_courses as $course): ?>
+                        <div class="col-md-4">
+                            <div class="course-card h-100 d-flex flex-column">
+                                <div style="height:80px;background:linear-gradient(135deg,#eef4ff,#f5f3ff);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem;flex-shrink:0;">
+                                    <?php if (!empty($course['thumbnail'])): ?>
+                                        <img src="<?php echo htmlspecialchars($course['thumbnail']); ?>"
+                                             alt="" style="max-height:100%;max-width:100%;object-fit:cover;border-radius:8px;" loading="lazy">
+                                    <?php else: ?>
+                                        <i class="bi bi-book-half" style="font-size:2rem;color:#93c5fd;"></i>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if (!empty($course['category'])): ?>
+                                <div class="mb-1">
+                                    <span class="badge bg-light text-dark" style="font-size:.7rem;"><?php echo htmlspecialchars($course['category']); ?></span>
+                                </div>
+                                <?php endif; ?>
+                                <h6 style="font-weight:700;font-size:.88rem;"><?php echo htmlspecialchars($course['title'] ?? 'Untitled Course'); ?></h6>
+                                <?php if (!empty($course['description'])): ?>
+                                <div class="text-muted small mb-3" style="font-size:.78rem;flex:1;">
+                                    <?php
+                                    $desc = $course['description'];
+                                    echo htmlspecialchars(strlen($desc) > MAX_DESCRIPTION_LENGTH
+                                        ? substr($desc, 0, MAX_DESCRIPTION_LENGTH) . '...' : $desc);
+                                    ?>
+                                </div>
+                                <?php endif; ?>
+                                <a href="courses/courses_detail.php?id=<?php echo (int)$course['id']; ?>"
+                                   class="btn btn-outline-primary btn-sm mt-auto" style="font-size:.78rem;">View Course</a>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- Recent Practice Test -->
                 <?php if (!empty($recentAttempts)): ?>
                 <div class="small-card mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0">Recent Practice Tests</h5>
-                        <a href="resources/practice_tests/my_results.php" class="small text-decoration-none">View all results</a>
+                        <h5 class="mb-0">Recent Practice Test</h5>
+                        <a href="resources/practice_tests/my_results.php" class="small text-decoration-none">View all results →</a>
                     </div>
                     <?php foreach ($recentAttempts as $attempt):
                         $pct    = $attempt['max_score'] > 0 ? round(($attempt['score'] / $attempt['max_score']) * 100) : 0;
@@ -228,23 +260,19 @@ $progressPercent = round($metrics['avg_progress']);
                         $date   = date('d M Y', strtotime($attempt['completed_at']));
                         $barCol = $pct >= 70 ? '#10b981' : ($pct >= 50 ? '#f59e0b' : '#ef4444');
                     ?>
-                    <div class="d-flex align-items-center gap-3 py-2 border-bottom">
-                        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <i class="bi bi-headphones text-white" style="font-size:.85rem;"></i>
+                    <div class="d-flex align-items-center gap-3 py-2">
+                        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#0b77ff,#6366f1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="bi bi-journal-check text-white" style="font-size:.85rem;"></i>
                         </div>
                         <div style="flex:1;min-width:0;">
-                            <div class="fw-semibold text-truncate" style="font-size:.88rem;">
-                                <?php echo htmlspecialchars($attempt['title']); ?>
-                            </div>
+                            <div class="fw-semibold text-truncate" style="font-size:.88rem;"><?php echo htmlspecialchars($attempt['title']); ?></div>
                             <div style="height:5px;background:#e5e7eb;border-radius:4px;margin:.25rem 0;">
                                 <div style="width:<?php echo $pct; ?>%;height:100%;background:<?php echo $barCol; ?>;border-radius:4px;"></div>
                             </div>
                             <div class="text-muted" style="font-size:.75rem;"><?php echo $date; ?></div>
                         </div>
                         <div class="text-end" style="flex-shrink:0;">
-                            <div class="fw-bold" style="font-size:.9rem;">
-                                <?php echo (int)$attempt['score'] . '/' . (int)$attempt['max_score']; ?>
-                            </div>
+                            <div class="fw-bold" style="font-size:.9rem;"><?php echo (int)$attempt['score'] . '/' . (int)$attempt['max_score']; ?></div>
                             <div class="small text-muted">Band <?php echo $band; ?></div>
                         </div>
                     </div>
@@ -264,24 +292,21 @@ $progressPercent = round($metrics['avg_progress']);
                         <?php foreach ($mockSessions as $ms):
                             $msDate = date('d M Y', strtotime($ms['created_at']));
                         ?>
-                        <div class="d-flex align-items-start gap-3 py-2 border-bottom">
+                        <div class="d-flex align-items-start gap-3 py-2">
                             <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                 <i class="bi bi-clipboard-check text-white" style="font-size:.85rem;"></i>
                             </div>
                             <div style="flex:1;min-width:0;">
-                                <div class="fw-semibold text-truncate" style="font-size:.88rem;">
-                                    <?php echo htmlspecialchars($ms['mock_title']); ?>
-                                </div>
+                                <div class="fw-semibold text-truncate" style="font-size:.88rem;"><?php echo htmlspecialchars($ms['mock_title']); ?></div>
                                 <div class="text-muted" style="font-size:.75rem;"><?php echo $msDate; ?></div>
                             </div>
                             <div class="text-end" style="flex-shrink:0;">
                                 <?php if ($ms['status'] === 'in_progress'): ?>
                                     <?php
-                                    // Determine resume link
-                                    if (is_null($ms['listening_attempt_id'])) $resumeUrl = "resources/mock_tests/full_mock_001_listening.php?session_id={$ms['id']}";
+                                    if (is_null($ms['listening_attempt_id']))   $resumeUrl = "resources/mock_tests/full_mock_001_listening.php?session_id={$ms['id']}";
                                     elseif (is_null($ms['reading_attempt_id'])) $resumeUrl = "resources/mock_tests/full_mock_001_reading.php?session_id={$ms['id']}";
                                     elseif (is_null($ms['writing_attempt_id'])) $resumeUrl = "resources/mock_tests/mock_writing.php?session_id={$ms['id']}";
-                                    else $resumeUrl = "resources/mock_tests/mock_speaking.php?session_id={$ms['id']}";
+                                    else                                        $resumeUrl = "resources/mock_tests/mock_speaking.php?session_id={$ms['id']}";
                                     ?>
                                     <a href="<?php echo $resumeUrl; ?>" class="btn btn-sm btn-outline-warning py-0 px-2" style="font-size:.75rem;">Resume</a>
                                 <?php elseif ($ms['status'] === 'awaiting_speaking_grade'): ?>
@@ -319,224 +344,71 @@ $progressPercent = round($metrics['avg_progress']);
                     <?php endif; ?>
                 </div>
 
-                <!-- Charts -->
-                <div class="small-card mb-4">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <h5 class="mb-0">Study Statistics</h5>
-                            <div style="color:var(--muted);font-size:.85rem;">Study vs Test (hours)</div>
-                        </div>
-                        <div>
-                            <span class="badge bg-light text-muted">This Year</span>
-                        </div>
-                    </div>
-                    <div style="position: relative; height: 280px; width: 100%;">
-                        <canvas id="studyChart" role="img" aria-label="Study statistics chart showing study vs test hours by month"></canvas>
-                    </div>
-                </div>
-
-                <!-- Course Recommendations -->
-                <div class="small-card mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0">Recommended Courses</h5>
-                        <a href="#" class="small text-decoration-none">See All</a>
-                    </div>
-
-                    <div class="row g-3">
-                        <?php
-                        $recommendations = !empty($available_courses) ? $available_courses : array_slice($enrolled_courses, 0, MAX_COURSE_RECOMMENDATIONS);
-                        if (empty($recommendations)) {
-                            echo '<div class="col-12"><div class="alert alert-info">No course recommendations available at this time.</div></div>';
-                        }
-                        foreach ($recommendations as $course):
-                        ?>
-                        <div class="col-md-4">
-                            <div class="course-card h-100 d-flex flex-column">
-                                <div style="height:120px;background:linear-gradient(180deg,#f3f7ff,#fff);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem;">
-                                    <?php if (isset($course['thumbnail']) && $course['thumbnail']): ?>
-                                        <img src="<?php echo htmlspecialchars($course['thumbnail']); ?>" 
-                                             alt="Course thumbnail" 
-                                             style="max-height:100%;max-width:100%;object-fit:cover;border-radius:8px;"
-                                             loading="lazy">
-                                    <?php else: ?>
-                                        <i class="bi bi-book-half" style="font-size:2.6rem;color:#93c5fd;" aria-hidden="true"></i>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="mb-2">
-                                    <small class="badge bg-light text-dark">
-                                        <?php echo htmlspecialchars($course['category'] ?? 'General'); ?>
-                                    </small>
-                                </div>
-                                <h6 style="font-weight:700">
-                                    <?php echo htmlspecialchars($course['title'] ?? 'Untitled Course'); ?>
-                                </h6>
-                                <div class="text-muted small mb-2">
-                                    <?php 
-                                    $description = $course['description'] ?? '';
-                                    echo htmlspecialchars(strlen($description) > MAX_DESCRIPTION_LENGTH ? 
-                                        substr($description, 0, MAX_DESCRIPTION_LENGTH) . '...' : $description);
-                                    ?>
-                                </div>
-
-                                <div class="mt-auto d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <small class="text-muted">
-                                            <?php echo isset($course['total_lessons']) ? (int)$course['total_lessons'] . ' lessons' : '24 lessons'; ?>
-                                        </small>
-                                        <div class="small text-muted">
-                                            <?php echo isset($course['total_hours']) ? (int)$course['total_hours'] . ' hours' : '40 hours'; ?>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <a href="courses/courses_detail.php?id=<?php echo htmlspecialchars($course['id'] ?? ''); ?>" 
-                                           class="btn btn-outline-primary btn-sm">View Course</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-
-                <!-- My Enrolled Courses -->
-                <?php if (!empty($enrolled_courses)): ?>
-                <div class="small-card">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0">My Courses</h5>
-                        <a href="#" class="small text-decoration-none">View All</a>
-                    </div>
-
-                    <div class="row g-3">
-                        <?php foreach (array_slice($enrolled_courses, 0, 3) as $course): 
-                            $progress = isset($course['progress_percentage']) ? (int)$course['progress_percentage'] : 0;
-                        ?>
-                        <div class="col-md-4">
-                            <div class="course-card h-100">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div>
-                                        <h6 style="font-weight:700;">
-                                            <?php echo htmlspecialchars($course['title']); ?>
-                                        </h6>
-                                        <div class="small text-muted">
-                                            <?php 
-                                            $description = $course['description'] ?? '';
-                                            echo htmlspecialchars(strlen($description) > MAX_DESCRIPTION_LENGTH ? 
-                                                substr($description, 0, MAX_DESCRIPTION_LENGTH) . '...' : $description);
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-3">
-                                    <div class="progress" style="height:9px;border-radius:8px;background:#eef2ff;">
-                                        <div class="progress-bar" 
-                                             role="progressbar" 
-                                             style="width:<?php echo $progress; ?>%;background:linear-gradient(90deg,#0b77ff,#6f8cff);" 
-                                             aria-valuenow="<?php echo $progress; ?>" 
-                                             aria-valuemin="0" 
-                                             aria-valuemax="100"
-                                             aria-label="Course progress: <?php echo $progress; ?>% complete">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mt-2">
-                                        <small class="text-muted"><?php echo $progress; ?>% complete</small>
-
-
-                                        <?php
-											$isEnrolled = isset($course['progress_percentage']);
-											$courseFolder = $course['folder_name'];
-
-											if ($isEnrolled) {
-												$link = "courses/{$courseFolder}/intro.php?id={$course['id']}";
-												$label = "Continue";
-											} else {
-												$link = "courses_detail.php?id={$course['id']}";
-												$label = "View Course";
-											}
-											?>
-											<a href="<?php echo $link; ?>" class="btn btn-sm btn-primary">
-												<?php echo $label; ?>
-											</a>
-
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <?php endif; ?>
             </div>
 
-            <!-- Right Sidebar -->
+            <!-- Right column -->
             <div class="col-lg-4">
                 <div class="position-sticky" style="top:96px;">
-                    <!-- Calendar -->
-                    <div class="small-card mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="mb-0">Calendar</h6>
-                            <small id="calendar-date" class="text-muted"></small>
-                        </div>
-                        <div id="miniCalendar" class="calendar"></div>
-                    </div>
 
-                    <!-- Assignments -->
-                    <div class="small-card mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="mb-0">Upcoming Assignments</h6>
-                            <a href="#" class="small text-decoration-none">See All</a>
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <?php if (empty($assignments)): ?>
-                                <div class="text-center py-3 text-muted">
-                                    <i class="bi bi-check-circle-fill" style="font-size:2rem;color:#10b981;"></i>
-                                    <div class="mt-2">No upcoming assignments!</div>
-                                </div>
-                            <?php else: ?>
-                                <?php foreach ($assignments as $assignment): 
-                                    $due = isset($assignment['due_date']) ? date('M j', strtotime($assignment['due_date'])) : 'TBD';
-                                ?>
-                                <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
-                                    <div>
-                                        <div style="font-weight:600;">
-                                            <?php echo htmlspecialchars($assignment['title']); ?>
-                                        </div>
-                                        <div class="small text-muted">
-                                            <?php echo htmlspecialchars($assignment['course_title'] ?? ''); ?> • Due <?php echo htmlspecialchars($due); ?>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <a href="assignment.php?id=<?php echo htmlspecialchars($assignment['id'] ?? ''); ?>" 
-                                           class="btn btn-sm btn-outline-primary">Open</a>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
+                    <!-- Word of the Day -->
+                    <?php if ($dailyWord): ?>
+                    <div class="small-card mb-3" style="overflow:hidden;">
+                        <div class="wotd-header">
+                            <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:.5rem;">Word of the Day</div>
+                            <div style="font-size:1.65rem;font-weight:800;color:#fff;line-height:1.1;"><?= htmlspecialchars($dailyWord['headword']) ?></div>
+                            <?php if ($dailyWord['phonetic']): ?>
+                            <div style="font-size:.85rem;color:rgba(255,255,255,.72);margin-top:.25rem;"><?= htmlspecialchars($dailyWord['phonetic']) ?></div>
                             <?php endif; ?>
+                            <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.65rem;">
+                                <span class="wotd-badge"><?= htmlspecialchars($dailyWord['word_class']) ?></span>
+                                <span class="wotd-badge"><?= htmlspecialchars($dailyWord['cefr_level']) ?></span>
+                                <?php if ($dailyWord['is_awl']): ?>
+                                <span class="wotd-badge wotd-badge-awl">AWL</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <p style="font-size:.88rem;color:#374151;line-height:1.6;margin-bottom:1rem;"><?= htmlspecialchars($dailyWord['definition']) ?></p>
+                        <div class="d-flex gap-2">
+                            <a href="resources/vocabulary_banks/word.php?id=<?= $dailyWord['id'] ?>"
+                               class="btn btn-primary btn-sm" style="flex:1;font-size:.8rem;">Explore word</a>
+                            <a href="resources/vocabulary_banks/word_quiz.php?word_id=<?= $dailyWord['id'] ?>"
+                               class="btn btn-outline-secondary btn-sm" style="flex:1;font-size:.8rem;">Practice</a>
                         </div>
                     </div>
+                    <div class="text-center mb-3">
+                        <a href="resources/vocabulary_banks/vocab_home.php"
+                           style="font-size:.78rem;color:#6b7280;text-decoration:none;">Browse all vocabulary →</a>
+                    </div>
+                    <?php endif; ?>
 
-                    <!-- Progress Chart -->
+                    <!-- Per-course progress -->
+                    <?php if (!empty($enrolled_courses)): ?>
                     <div class="small-card">
                         <h6 class="mb-3">My Progress</h6>
-                        <div class="text-center">
-                            <div style="position: relative; height: 180px; width: 180px; margin: 0 auto;">
-                                <canvas id="progressDonut" role="img" aria-label="Progress chart showing <?php echo $progressPercent; ?>% completion"></canvas>
+                        <?php foreach ($enrolled_courses as $course):
+                            $pct    = (int)($course['progress_percentage'] ?? 0);
+                            $barCol = $pct >= 70 ? '#10b981' : ($pct >= 30 ? '#0b77ff' : '#f59e0b');
+                        ?>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-baseline mb-1">
+                                <span class="progress-course-label"><?= htmlspecialchars($course['title']) ?></span>
+                                <span style="font-size:.75rem;color:#6b7280;flex-shrink:0;margin-left:.5rem;"><?= $pct ?>%</span>
                             </div>
-                            <div class="mt-3">
-                                <div style="font-weight:700;font-size:1.1rem;"><?php echo $progressPercent; ?>%</div>
-                                <div class="small text-muted">Average Progress</div>
+                            <div style="height:6px;background:#f0f4ff;border-radius:4px;">
+                                <div style="width:<?= $pct ?>%;height:100%;background:<?= $barCol ?>;border-radius:4px;transition:width .6s;"></div>
                             </div>
                         </div>
+                        <?php endforeach; ?>
                     </div>
+                    <?php endif; ?>
+
                 </div>
             </div>
+
         </div>
     </main>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
     function downloadMockPDF(data) {
@@ -552,45 +424,36 @@ $progressPercent = round($metrics['avg_progress']);
         const white = [255, 255, 255];
         const L = 15, R = 195, W = 180;
 
-        // ── Header ───────────────────────────────────────────────
         doc.setFillColor(...navy);
         doc.rect(0, 0, 210, 46, 'F');
-
         doc.setTextColor(180, 210, 255);
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'italic');
         doc.text('Confidential Assessment Report', R, 8, { align: 'right' });
-
         doc.setTextColor(...white);
         doc.setFontSize(22);
         doc.setFont('helvetica', 'bold');
         doc.text(data.title.toUpperCase(), L, 22);
-
         doc.setFontSize(10.5);
         doc.setFont('helvetica', 'italic');
         doc.text('Full Band Assessment Report', L, 31);
-
         doc.setDrawColor(100, 140, 200);
         doc.setLineWidth(0.25);
         doc.line(L, 35, R, 35);
-
         doc.setFontSize(8);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(180, 210, 255);
         doc.text('Scholarly Language Services', R, 43, { align: 'right' });
 
-        // ── Candidate info ────────────────────────────────────────
         doc.setTextColor(...dark);
         doc.setFontSize(12.5);
         doc.setFont('helvetica', 'bold');
         doc.text('Candidate: ' + data.name, L, 59);
-
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(...muted);
         doc.text('Date: ' + data.date, L, 66);
 
-        // ── Band table ────────────────────────────────────────────
         const tY = 73;
         const colW = 45;
         const cols = [
@@ -600,7 +463,6 @@ $progressPercent = round($metrics['avg_progress']);
             { label: 'Speaking',  band: data.s, sub: 'Instructor' },
         ];
 
-        // Header row
         doc.setFillColor(...navy);
         doc.rect(L, tY, W, 10, 'F');
         doc.setTextColor(...white);
@@ -608,25 +470,20 @@ $progressPercent = round($metrics['avg_progress']);
         doc.setFont('helvetica', 'bold');
         cols.forEach((c, i) => doc.text(c.label, L + colW*i + colW/2, tY + 7, { align: 'center' }));
 
-        // Band value row
         doc.setFillColor(...light);
         doc.rect(L, tY + 10, W, 22, 'F');
         doc.setDrawColor(226, 232, 240);
         doc.setLineWidth(0.2);
         for (let i = 1; i < 4; i++) doc.line(L + colW*i, tY+10, L + colW*i, tY+32);
-
         doc.setFontSize(22);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(...navy);
         cols.forEach((c, i) => doc.text(c.band, L + colW*i + colW/2, tY + 26, { align: 'center' }));
-
-        // Sub-labels (raw score / method)
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(...muted);
         cols.forEach((c, i) => { if (c.sub) doc.text(c.sub, L + colW*i + colW/2, tY + 31, { align: 'center' }); });
 
-        // Overall band row
         const oY = tY + 34;
         doc.setFillColor(...navy);
         doc.rect(L, oY, 120, 14, 'F');
@@ -634,7 +491,6 @@ $progressPercent = round($metrics['avg_progress']);
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
         doc.text('OVERALL BAND SCORE', L + 5, oY + 9.5);
-
         doc.setFillColor(...pink);
         doc.rect(L + 120, oY, 60, 14, 'F');
         doc.setTextColor(...white);
@@ -642,18 +498,12 @@ $progressPercent = round($metrics['avg_progress']);
         doc.setFont('helvetica', 'bold');
         doc.text(data.overall, L + 150, oY + 10.5, { align: 'center' });
 
-        // Calculation note
         const avg = ((parseFloat(data.l) + parseFloat(data.r) + parseFloat(data.w) + parseFloat(data.s)) / 4).toFixed(2);
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'italic');
         doc.setTextColor(...muted);
-        doc.text(
-            '(' + data.l + ' + ' + data.r + ' + ' + data.w + ' + ' + data.s +
-            ') ÷ 4 = ' + avg + '  →  rounded to ' + data.overall,
-            L, oY + 21
-        );
+        doc.text('(' + data.l + ' + ' + data.r + ' + ' + data.w + ' + ' + data.s + ') ÷ 4 = ' + avg + '  →  rounded to ' + data.overall, L, oY + 21);
 
-        // ── Section panels ────────────────────────────────────────
         const panels = [
             { label: 'LISTENING', band: data.l, score: data.l_score, note: 'Raw score shown. Part-by-part breakdown available in your online results.' },
             { label: 'READING',   band: data.r, score: data.r_score, note: 'Raw score shown. Section breakdown available in your online results.' },
@@ -663,7 +513,6 @@ $progressPercent = round($metrics['avg_progress']);
 
         let pY = oY + 29;
         panels.forEach(p => {
-            // Section header bar
             doc.setFillColor(...navy);
             doc.rect(L, pY, W, 10, 'F');
             doc.setTextColor(...white);
@@ -671,11 +520,8 @@ $progressPercent = round($metrics['avg_progress']);
             doc.setFont('helvetica', 'bold');
             doc.text(p.label, L + 5, pY + 7);
             doc.text('Band ' + p.band, R, pY + 7, { align: 'right' });
-
-            // Body
             doc.setFillColor(...light);
             doc.rect(L, pY + 10, W, 14, 'F');
-
             if (p.score) {
                 doc.setFontSize(8.5);
                 doc.setFont('helvetica', 'bold');
@@ -691,11 +537,9 @@ $progressPercent = round($metrics['avg_progress']);
                 doc.setTextColor(...muted);
                 doc.text(p.note, L + 5, pY + 18);
             }
-
             pY += 26;
         });
 
-        // ── Summary box ───────────────────────────────────────────
         doc.setFillColor(224, 242, 254);
         doc.rect(L, pY + 4, W, 22, 'F');
         doc.setDrawColor(...blue);
@@ -710,7 +554,6 @@ $progressPercent = round($metrics['avg_progress']);
         doc.setTextColor(...muted);
         doc.text('Log in to your EduHub account to view correct/incorrect answers, AI writing feedback, and speaking notes.', L + 5, pY + 21);
 
-        // ── Footer ────────────────────────────────────────────────
         doc.setFillColor(...navy);
         doc.rect(0, 282, 210, 15, 'F');
         doc.setTextColor(180, 210, 255);
@@ -724,580 +567,79 @@ $progressPercent = round($metrics['avg_progress']);
     }
     </script>
 
-	<script>
-		// Theme restore before first paint
-		(function() {
-			const saved = localStorage.getItem('eduhub-theme') || 'light';
-			document.body.classList.remove('light', 'dark');
-			document.body.classList.add(saved);
-			const btn = document.getElementById('themeToggle');
-			if (btn) btn.textContent = saved === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-		})();
+    <script>
+        // Theme restore before first paint
+        (function() {
+            const saved = localStorage.getItem('eduhub-theme') || 'light';
+            document.body.classList.remove('light', 'dark');
+            document.body.classList.add(saved);
+            const btn = document.getElementById('themeToggle');
+            if (btn) btn.textContent = saved === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        })();
 
-		// Mobile Menu Script
-		const menuToggle = document.getElementById('menuToggle');
-		const sidebarElement = document.querySelector('.sidebar');
-		const mobileOverlay = document.getElementById('mobileOverlay');
+        // Mobile menu
+        const menuToggle    = document.getElementById('menuToggle');
+        const sidebarEl     = document.querySelector('.sidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
 
-		function toggleMenu() {
-			sidebarElement.classList.toggle('active');
-			mobileOverlay.classList.toggle('active');
-			
-			// Change icon
-			const icon = menuToggle.querySelector('i');
-			if (sidebarElement.classList.contains('active')) {
-				icon.className = 'bi bi-x-lg';
-			} else {
-				icon.className = 'bi bi-list';
-			}
-		}
+        function toggleMenu() {
+            sidebarEl.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            icon.className = sidebarEl.classList.contains('active') ? 'bi bi-x-lg' : 'bi bi-list';
+        }
 
-		if (menuToggle) {
-			menuToggle.addEventListener('click', toggleMenu);
-		}
+        if (menuToggle)    menuToggle.addEventListener('click', toggleMenu);
+        if (mobileOverlay) mobileOverlay.addEventListener('click', toggleMenu);
 
-		if (mobileOverlay) {
-			mobileOverlay.addEventListener('click', toggleMenu);
-		}
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                if (window.innerWidth >= 1200) {
+                    const collapsed = document.body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('eduhub-sidebar-collapsed', collapsed);
+                } else {
+                    toggleMenu();
+                }
+            });
+        }
+        if (window.innerWidth >= 1200 && localStorage.getItem('eduhub-sidebar-collapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
+        }
 
-		const sidebarToggle = document.getElementById('sidebarToggle');
-		if (sidebarToggle) {
-			sidebarToggle.addEventListener('click', function() {
-				if (window.innerWidth >= 1200) {
-					const collapsed = document.body.classList.toggle('sidebar-collapsed');
-					localStorage.setItem('eduhub-sidebar-collapsed', collapsed);
-				} else {
-					toggleMenu();
-				}
-			});
-		}
-		if (window.innerWidth >= 1200 && localStorage.getItem('eduhub-sidebar-collapsed') === 'true') {
-			document.body.classList.add('sidebar-collapsed');
-		}
+        document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1200 && sidebarEl.classList.contains('active')) toggleMenu();
+            });
+        });
 
-		// Close menu when a nav link is clicked on mobile
-		const navLinks = document.querySelectorAll('.sidebar .nav-link');
-		navLinks.forEach(link => {
-			link.addEventListener('click', () => {
-				if (window.innerWidth < 1200 && sidebarElement.classList.contains('active')) {
-					toggleMenu();
-				}
-			});
-		});
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+                document.body.classList.remove('light', 'dark');
+                document.body.classList.add(newTheme);
+                themeToggle.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('eduhub-theme', newTheme);
+            });
+        }
 
-		// Chart Data from PHP
-		const chartData = {
-			months: <?php echo json_encode($months, JSON_UNESCAPED_SLASHES); ?>,
-			studyHours: <?php echo json_encode($studyHours, JSON_NUMERIC_CHECK); ?>,
-			testHours: <?php echo json_encode($testHours, JSON_NUMERIC_CHECK); ?>,
-			progressPercent: <?php echo json_encode($progressPercent, JSON_NUMERIC_CHECK); ?>
-		};
+        // Card entrance animation
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.stat-card, .small-card').forEach((card, i) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, i * 60);
+            });
+        });
+    </script>
 
-		// Study Statistics Chart
-		function initStudyChart() {
-			const ctx = document.getElementById('studyChart');
-			if (!ctx) return;
-			
-			const ctxContext = ctx.getContext('2d');
-			
-			new Chart(ctxContext, {
-				type: 'line',
-				data: {
-					labels: chartData.months,
-					datasets: [
-						{
-							label: 'Study Hours',
-							data: chartData.studyHours,
-							fill: true,
-							backgroundColor: 'rgba(11, 119, 255, 0.1)',
-							borderColor: 'rgba(11, 119, 255, 0.8)',
-							borderWidth: 2,
-							tension: 0.4,
-							pointRadius: 4,
-							pointBackgroundColor: 'rgba(11, 119, 255, 1)',
-							pointBorderColor: '#fff',
-							pointBorderWidth: 2
-						},
-						{
-							label: 'Test Hours',
-							data: chartData.testHours,
-							fill: true,
-							backgroundColor: 'rgba(16, 185, 129, 0.1)',
-							borderColor: 'rgba(16, 185, 129, 0.8)',
-							borderWidth: 2,
-							tension: 0.4,
-							pointRadius: 4,
-							pointBackgroundColor: 'rgba(16, 185, 129, 1)',
-							pointBorderColor: '#fff',
-							pointBorderWidth: 2
-						}
-					]
-				},
-				options: {
-					responsive: true,
-					maintainAspectRatio: true,
-					aspectRatio: 2.2,
-					plugins: {
-						legend: {
-							display: true,
-							position: 'top',
-							labels: {
-								usePointStyle: true,
-								padding: 20,
-								font: {
-									size: 12,
-									weight: '500'
-								}
-							}
-						},
-						tooltip: {
-							backgroundColor: 'rgba(0, 0, 0, 0.8)',
-							titleColor: '#fff',
-							bodyColor: '#fff',
-							borderColor: 'rgba(255, 255, 255, 0.1)',
-							borderWidth: 1,
-							cornerRadius: 8,
-							displayColors: true,
-							callbacks: {
-								label: function(context) {
-									return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + ' hours';
-								}
-							}
-						}
-					},
-					scales: {
-						x: {
-							grid: {
-								display: false
-							},
-							ticks: {
-								font: {
-									size: 11
-								}
-							}
-						},
-						y: {
-							beginAtZero: true,
-							max: Math.max(...chartData.studyHours, ...chartData.testHours) + 5,
-							grid: {
-								color: 'rgba(15, 23, 42, 0.04)',
-								drawBorder: false
-							},
-							ticks: {
-								font: {
-									size: 11
-								},
-								stepSize: 5,
-								callback: function(value) {
-									return value + 'h';
-								}
-							}
-						}
-					},
-					interaction: {
-						intersect: false,
-						mode: 'index'
-					},
-					elements: {
-						line: {
-							borderCapStyle: 'round'
-						}
-					}
-				}
-			});
-		}
-
-		// Progress Donut Chart
-		function initProgressChart() {
-			const ctx = document.getElementById('progressDonut');
-			if (!ctx) return;
-			
-			const ctxContext = ctx.getContext('2d');
-			
-			const chart = new Chart(ctxContext, {
-				type: 'doughnut',
-				data: {
-					datasets: [{
-						data: [chartData.progressPercent, 100 - chartData.progressPercent],
-						backgroundColor: ['#0b77ff', '#e6eefc'],
-						borderWidth: 0,
-						cutout: '75%'
-					}]
-				},
-				options: {
-					responsive: true,
-					maintainAspectRatio: true,
-					plugins: {
-						legend: {
-							display: false
-						},
-						tooltip: {
-							enabled: false
-						}
-					}
-				}
-			});
-			
-			// Add center text
-			Chart.register({
-				id: 'centerText',
-				beforeDraw: function(chart) {
-					if (chart.canvas.id !== 'progressDonut') return;
-					
-					const ctx = chart.ctx;
-					const centerX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
-					const centerY = chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2;
-					
-					ctx.save();
-					ctx.textAlign = 'center';
-					ctx.textBaseline = 'middle';
-					ctx.font = 'bold 20px Inter, sans-serif';
-					ctx.fillStyle = document.body.classList.contains('dark') ? '#e4e6eb' : '#0f172a';
-					ctx.fillText(chartData.progressPercent + '%', centerX, centerY);
-					ctx.restore();
-				}
-			});
-		}
-
-		// Mini Calendar with Navigation
-		let calendarState = {
-			currentYear: new Date().getFullYear(),
-			currentMonth: new Date().getMonth(),
-			selectedDate: null
-		};
-
-		const monthNames = [
-			"January", "February", "March", "April", "May", "June",
-			"July", "August", "September", "October", "November", "December"
-		];
-
-		function initMiniCalendar() {
-			renderCalendar();
-			
-			// Add keyboard navigation
-			document.addEventListener('keydown', (e) => {
-				const calendarEl = document.getElementById('miniCalendar');
-				if (!calendarEl || !document.body.contains(calendarEl)) return;
-				
-				if (e.key === 'ArrowLeft' && e.ctrlKey) {
-					changeMonth(-1);
-				} else if (e.key === 'ArrowRight' && e.ctrlKey) {
-					changeMonth(1);
-				}
-			});
-		}
-
-		function renderCalendar() {
-			const calendarEl = document.getElementById('miniCalendar');
-			const headerEl = document.getElementById('calendar-date');
-			
-			if (!calendarEl) return;
-			
-			const { currentYear, currentMonth } = calendarState;
-			const today = new Date();
-			const todayDate = today.getDate();
-			const todayMonth = today.getMonth();
-			const todayYear = today.getFullYear();
-			
-			// Update header
-			if (headerEl) {
-				headerEl.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-			}
-			
-			const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-			const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-			
-			let calendarHTML = `
-				<div class="d-flex justify-content-between align-items-center mb-3">
-					<button class="btn btn-sm btn-link text-decoration-none p-0" 
-							onclick="changeMonth(-1)" 
-							aria-label="Previous month"
-							style="font-size:1.2rem;color:#6c757d;">
-						‹
-					</button>
-					<div class="small text-muted fw-bold" style="letter-spacing:0.5px;">
-						Su Mo Tu We Th Fr Sa
-					</div>
-					<button class="btn btn-sm btn-link text-decoration-none p-0" 
-							onclick="changeMonth(1)" 
-							aria-label="Next month"
-							style="font-size:1.2rem;color:#6c757d;">
-						›
-					</button>
-				</div>
-			`;
-			
-			calendarHTML += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;">';
-			
-			// Empty cells for days before month starts
-			for (let i = 0; i < firstDay; i++) {
-				calendarHTML += '<div style="padding:8px;"></div>';
-			}
-			
-			// Days of the month
-			for (let day = 1; day <= daysInMonth; day++) {
-				const isToday = day === todayDate && 
-							currentMonth === todayMonth && 
-							currentYear === todayYear;
-				
-				const isSelected = calendarState.selectedDate && 
-								day === calendarState.selectedDate.day && 
-								currentMonth === calendarState.selectedDate.month && 
-								currentYear === calendarState.selectedDate.year;
-				
-				let dayClass = 'bg-light';
-				let textClass = 'text-dark';
-				let extraStyle = '';
-				
-				if (isToday) {
-					dayClass = 'bg-primary';
-					textClass = 'text-white fw-bold';
-					extraStyle = 'box-shadow:0 2px 8px rgba(13,110,253,0.3);';
-				} else if (isSelected) {
-					dayClass = 'bg-primary bg-opacity-10';
-					textClass = 'text-primary fw-semibold';
-					extraStyle = 'border:2px solid var(--bs-primary);';
-				}
-				
-				calendarHTML += `
-					<button 
-						class="${dayClass} ${textClass} border-0" 
-						style="padding:8px;border-radius:8px;text-align:center;font-size:0.85rem;cursor:pointer;transition:all 0.2s;${extraStyle}"
-						onclick="selectDate(${day}, ${currentMonth}, ${currentYear})"
-						onmouseover="if(!this.classList.contains('bg-primary')) { this.style.backgroundColor='#e9ecef'; this.style.transform='scale(1.05)'; }"
-						onmouseout="if(!this.classList.contains('bg-primary')) { this.style.backgroundColor=''; this.style.transform=''; }"
-						aria-label="${monthNames[currentMonth]} ${day}, ${currentYear}"
-						title="${monthNames[currentMonth]} ${day}, ${currentYear}">
-						${day}
-					</button>
-				`;
-			}
-			
-			calendarHTML += '</div>';
-			
-			// Add "Today" button
-			if (currentMonth !== todayMonth || currentYear !== todayYear) {
-				calendarHTML += `
-					<button class="btn btn-sm btn-outline-primary w-100 mt-3" 
-							onclick="goToToday()"
-							style="border-radius:8px;">
-						Go to Today
-					</button>
-				`;
-			}
-			
-			calendarEl.innerHTML = calendarHTML;
-		}
-
-		function changeMonth(direction) {
-			calendarState.currentMonth += direction;
-			
-			if (calendarState.currentMonth < 0) {
-				calendarState.currentMonth = 11;
-				calendarState.currentYear--;
-			} else if (calendarState.currentMonth > 11) {
-				calendarState.currentMonth = 0;
-				calendarState.currentYear++;
-			}
-			
-			renderCalendar();
-		}
-
-		function selectDate(day, month, year) {
-			calendarState.selectedDate = { day, month, year };
-			renderCalendar();
-			
-			// Optional: Trigger custom event for integration with other components
-			const date = new Date(year, month, day);
-			const event = new CustomEvent('calendarDateSelected', { 
-				detail: { 
-					date: date,
-					formatted: date.toLocaleDateString('en-US', { 
-						weekday: 'long', 
-						year: 'numeric', 
-						month: 'long', 
-						day: 'numeric' 
-					})
-				} 
-			});
-			document.dispatchEvent(event);
-			
-			// Optional: Show selected date feedback
-			console.log(`Selected: ${monthNames[month]} ${day}, ${year}`);
-		}
-
-		function goToToday() {
-			const today = new Date();
-			calendarState.currentYear = today.getFullYear();
-			calendarState.currentMonth = today.getMonth();
-			selectDate(today.getDate(), today.getMonth(), today.getFullYear());
-		}
-
-		// Initialize calendar when DOM is ready
-		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', initMiniCalendar);
-		} else {
-			initMiniCalendar();
-		}
-
-		// Optional: Listen for date selection events in other parts of your app
-		document.addEventListener('calendarDateSelected', (e) => {
-			// Example: You can filter assignments by selected date here
-			console.log('Date selected:', e.detail.formatted);
-		});
-
-		// Search functionality
-		function initSearch() {
-			const searchInput = document.querySelector('input[placeholder="Search courses..."]');
-			if (!searchInput) return;
-			
-			let searchTimeout;
-			searchInput.addEventListener('input', function() {
-				clearTimeout(searchTimeout);
-				const query = this.value.trim();
-				
-				if (query.length === 0) return;
-				
-				searchTimeout = setTimeout(() => {
-					// Here you would typically make an AJAX request to search
-					console.log('Searching for:', query);
-				}, 300);
-			});
-		}
-
-		// Loading states
-		function showLoading(element) {
-			if (element) {
-				element.classList.add('loading');
-			}
-		}
-
-		function hideLoading(element) {
-			if (element) {
-				element.classList.remove('loading');
-			}
-		}
-
-		// Error handling
-		function showError(message, container) {
-			if (!container) return;
-			
-			const errorDiv = document.createElement('div');
-			errorDiv.className = 'error-message';
-			errorDiv.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i>${message}`;
-			
-			container.appendChild(errorDiv);
-			
-			setTimeout(() => {
-				errorDiv.remove();
-			}, 5000);
-		}
-
-		// Accessibility enhancements
-		function initAccessibility() {
-			// Keyboard navigation for course cards
-			const courseCards = document.querySelectorAll('.course-card');
-			courseCards.forEach(card => {
-				card.setAttribute('tabindex', '0');
-				card.addEventListener('keypress', function(e) {
-					if (e.key === 'Enter' || e.key === ' ') {
-						const link = card.querySelector('a');
-						if (link) {
-							link.click();
-						}
-					}
-				});
-			});
-
-			// Theme toggle
-			const themeToggle = document.getElementById('themeToggle');
-			if (themeToggle) {
-				themeToggle.addEventListener('click', function() {
-					const isDark = document.body.classList.contains('dark');
-					const newTheme = isDark ? 'light' : 'dark';
-					document.body.classList.remove('light', 'dark');
-					document.body.classList.add(newTheme);
-					themeToggle.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-					localStorage.setItem('eduhub-theme', newTheme);
-				});
-			}
-		}
-
-		// Performance optimizations
-		function initPerformance() {
-			// Lazy load images
-			const images = document.querySelectorAll('img[loading="lazy"]');
-			if ('IntersectionObserver' in window) {
-				const imageObserver = new IntersectionObserver((entries, observer) => {
-					entries.forEach(entry => {
-						if (entry.isIntersecting) {
-							const img = entry.target;
-							img.src = img.dataset.src || img.src;
-							img.classList.remove('lazy');
-							imageObserver.unobserve(img);
-						}
-					});
-				});
-
-				images.forEach(img => imageObserver.observe(img));
-			}
-
-			// Debounced window resize
-			let resizeTimeout;
-			window.addEventListener('resize', () => {
-				clearTimeout(resizeTimeout);
-				resizeTimeout = setTimeout(() => {
-					// Redraw charts on resize
-					Chart.helpers.each(Chart.instances, (instance) => {
-						instance.resize();
-					});
-				}, 250);
-			});
-		}
-
-		// Initialize everything when DOM is loaded
-		document.addEventListener('DOMContentLoaded', function() {
-			try {
-				initStudyChart();
-				initProgressChart();
-				initMiniCalendar();
-				initSearch();
-				initAccessibility();
-				initPerformance();
-				
-				// Add some loading animations
-				document.querySelectorAll('.stat-card, .course-card, .small-card').forEach((card, index) => {
-					card.style.opacity = '0';
-					card.style.transform = 'translateY(20px)';
-					card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-					
-					setTimeout(() => {
-						card.style.opacity = '1';
-						card.style.transform = 'translateY(0)';
-					}, index * 50);
-				});
-				
-			} catch (error) {
-				console.error('Error initializing dashboard:', error);
-				showError('Some features may not be working properly. Please refresh the page.', 
-						document.querySelector('.content'));
-			}
-		});
-
-		// Service Worker for caching (optional)
-		if ('serviceWorker' in navigator) {
-			window.addEventListener('load', function() {
-				navigator.serviceWorker.register('/sw.js').then(function(registration) {
-					console.log('SW registered: ', registration);
-				}).catch(function(registrationError) {
-					console.log('SW registration failed: ', registrationError);
-				});
-			});
-		}
-	</script>
-
-	<!-- Footer (ads suppressed on dashboard — it has its own right column) -->
-	<?php define('ADVERTS_RENDERED', true); ?>
-	<?php include INCLUDES_PATH . '/footer.php'; ?>
+    <?php define('ADVERTS_RENDERED', true); ?>
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
 </html>
