@@ -106,27 +106,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
 
 	<style>
-		body {
-			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-			min-height: 100vh;
-			overflow-x: hidden;
-		}
-
-		.main-wrapper {
-			padding: 2rem 1rem;
-		}
+		.main-wrapper { padding: 2rem 1.5rem; min-height: 100vh; }
 
 		.quiz-container {
 			max-width: 900px;
 			margin: 0 auto;
 			background: white;
 			border-radius: 12px;
-			box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+			box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 			overflow: hidden;
 		}
 
 		.quiz-header {
-			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+			background: linear-gradient(135deg, #0b77ff 0%, #6366f1 100%);
 			color: white;
 			padding: 2rem;
 			text-align: center;

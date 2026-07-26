@@ -414,8 +414,8 @@ $base_url = "../../";
                                     [
                                         'title' => 'Module 3: Practice & Assessment',
                                         'lessons' => [
-                                            ['file' => 'practice.php', 'title' => 'Practice Exercises', 'duration' => '20 min', 'icon' => 'pencil-square'],
-                                            ['file' => 'quiz1.php', 'title' => 'Assessment Quiz', 'duration' => '45 min', 'icon' => 'clipboard-check'],
+                                            ['file' => 'celpip_mini_mock.php', 'title' => 'Practice Exercises', 'duration' => '20 min', 'icon' => 'pencil-square'],
+                                            ['file' => 'summary.php', 'title' => 'Assessment Summary', 'duration' => '45 min', 'icon' => 'clipboard-check'],
                                         ]
                                     ]
                                 ];

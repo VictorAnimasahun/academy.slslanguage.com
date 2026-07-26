@@ -414,8 +414,8 @@ $base_url = "../../";
                                     [
                                         'title' => 'Module 3: Practice & Assessment',
                                         'lessons' => [
-                                            ['file' => 'practice.php', 'title' => 'Practice Exercises', 'duration' => '20 min', 'icon' => 'pencil-square'],
-                                            ['file' => 'quiz1.php', 'title' => 'Assessment Quiz', 'duration' => '45 min', 'icon' => 'clipboard-check'],
+                                            ['file' => '../../resources/practice_tests/practice_tests_home.php', 'title' => 'Practice Exercises', 'duration' => '20 min', 'icon' => 'pencil-square'],
+                                            ['file' => 'quiz.php', 'title' => 'Assessment Quiz', 'duration' => '45 min', 'icon' => 'clipboard-check'],
                                         ]
                                     ]
                                 ];

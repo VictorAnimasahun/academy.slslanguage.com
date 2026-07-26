@@ -1457,31 +1457,20 @@ if (!isset($_SESSION['user_id'])) {
 
 		// Function to start a writing test
 		function startWritingTest(testId) {
-			const test = testData[testId];
-			if (!test) {
-				console.error('Test not found:', testId);
+			let url;
+			if (testId.startsWith('ielts-ac-task1') || testId.startsWith('ielts-gt-task1')) {
+				url = 'ielts_writing_t1_001.php';
+			} else if (testId.startsWith('ielts-ac-task2') || testId.startsWith('ielts-gt-task2')) {
+				url = 'ielts_writing_t2_001.php';
+			} else if (testId.startsWith('celpip-task1')) {
+				url = 'celpip_writing_t1_001.php';
+			} else if (testId.startsWith('celpip-task2')) {
+				url = 'celpip_writing_t2_001.php';
+			} else {
+				console.error('Unknown writing test:', testId);
 				return;
 			}
-
-			// Build URL with parameters
-			const params = new URLSearchParams({
-				type: test.type,
-				title: test.title,
-				question: test.question,
-				time: test.timeLimit,
-				words: test.wordTarget,
-				testType: test.testType
-			});
-
-			// Add visual data if present
-			if (test.visualType === 'image' && test.imageUrl) {
-				params.append('visualType', 'image');
-				params.append('imageUrl', test.imageUrl);
-				params.append('imageAlt', test.imageAlt || '');
-			}
-			
-			// Open essay analyzer in new tab with test data
-			window.open('essay_analyzer.php?' + params.toString(), '_blank');
+			window.location.href = url;
 		}
 
 		// Function to start a SPEAKING test

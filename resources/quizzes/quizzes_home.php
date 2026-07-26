@@ -11,7 +11,7 @@ $exercises = [
     'ielts' => [
         'name' => 'IELTS',
         'icon' => 'bi-book',
-        'color' => '#667eea',
+        'color' => '#0b77ff',
         'items' => [
             'writing' => [
                 'name' => 'Writing',
@@ -152,14 +152,14 @@ $exercises = [
 		}
 
 		.test-tab:hover {
-			border-color: #667eea;
-			color: #667eea;
+			border-color: #0b77ff;
+			color: #0b77ff;
 		}
 
 		.test-tab.active {
-			background: #667eea;
+			background: #0b77ff;
 			color: white;
-			border-color: #667eea;
+			border-color: #0b77ff;
 		}
 
 		/* Section Tabs */
@@ -184,84 +184,69 @@ $exercises = [
 		}
 
 		.section-tab:hover {
-			color: #667eea;
+			color: #0b77ff;
 		}
 
 		.section-tab.active {
-			color: #667eea;
-			border-bottom-color: #667eea;
+			color: #0b77ff;
+			border-bottom-color: #0b77ff;
 		}
 
 		/* Exercise Grid */
 		.exercises-grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-			gap: 1.5rem;
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+			gap: 1.25rem;
 			margin-bottom: 2rem;
 		}
 
 		.exercise-card {
 			background: white;
-			border-radius: 12px;
-			overflow: hidden;
-			box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-			transition: all 0.3s ease;
+			border-radius: 16px;
+			padding: 1.5rem;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+			border-left: 5px solid #0b77ff;
+			transition: box-shadow 0.2s ease;
 			text-decoration: none;
 			color: inherit;
 			display: flex;
 			flex-direction: column;
-			height: 100%;
 		}
 
 		.exercise-card:hover {
-			transform: translateY(-8px);
-			box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+			box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+			color: inherit;
+			text-decoration: none;
 		}
 
-		.exercise-header {
-			padding: 1.5rem;
-			background: linear-gradient(135deg, #667eea, #764ba2);
-			color: white;
-		}
-
-		.exercise-header h3 {
-			font-size: 1.2rem;
-			font-weight: 600;
-			margin: 0;
-		}
-
-		.exercise-body {
-			padding: 1.5rem;
-			flex: 1;
-			display: flex;
-			flex-direction: column;
+		.exercise-card h3 {
+			font-size: 1.1rem;
+			font-weight: 700;
+			margin: 0 0 0.5rem;
+			color: #0f172a;
 		}
 
 		.exercise-description {
 			color: #6b7280;
-			font-size: 0.95rem;
+			font-size: 0.88rem;
 			margin-bottom: 1rem;
 			flex: 1;
 		}
 
 		.exercise-link {
-			display: inline-block;
-			padding: 0.6rem 1.2rem;
-			background: #667eea;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+			padding: 0.5rem 1rem;
+			background: #0b77ff;
 			color: white;
-			border-radius: 6px;
-			text-decoration: none;
-			font-weight: 500;
-			transition: background 0.3s ease;
-			text-align: center;
+			border-radius: 8px;
+			font-size: 0.85rem;
+			font-weight: 600;
 			align-self: flex-start;
 		}
 
-		.exercise-link:hover {
-			background: #764ba2;
-			color: white;
-			text-decoration: none;
-		}
+		.exercise-link:hover { color: white; }
 
 		.content-section {
 			display: none;
@@ -366,13 +351,9 @@ $exercises = [
 								<div class="exercises-grid">
 									<?php foreach ($section['exercises'] as $exercise): ?>
 										<a href="<?php echo $exercise['url']; ?>" class="exercise-card">
-											<div class="exercise-header">
-												<h3><i class="bi bi-play-circle"></i> <?php echo $exercise['title']; ?></h3>
-											</div>
-											<div class="exercise-body">
-												<p class="exercise-description"><?php echo $exercise['description']; ?></p>
-												<div class="exercise-link">Start Exercise →</div>
-											</div>
+											<h3><i class="bi bi-patch-question me-2 text-primary"></i><?php echo $exercise['title']; ?></h3>
+											<p class="exercise-description"><?php echo $exercise['description']; ?></p>
+											<div class="exercise-link"><i class="bi bi-play-fill"></i> Start Quiz</div>
 										</a>
 									<?php endforeach; ?>
 								</div>

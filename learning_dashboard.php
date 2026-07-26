@@ -347,7 +347,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             </div>
 
             <!-- Right column -->
-            <div class="col-lg-4">
+            <div class="col-lg-4" style="padding-right:1.5rem;">
                 <div class="position-sticky" style="top:96px;">
 
                     <!-- Word of the Day -->

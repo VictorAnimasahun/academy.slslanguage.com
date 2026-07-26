@@ -5,13 +5,13 @@
         <div class="course-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
             <h6 class="mb-2">🎯 Quick Access</h6>
             <div class="d-grid gap-2">
-                <a href="crash_course_quiz.php" class="btn btn-light btn-sm">
+                <a href="<?= ACADEMY_URL ?>resources/quizzes/quizzes_home.php" class="btn btn-light btn-sm">
                     <i class="bi bi-question-circle me-2"></i>Knowledge Quiz
                 </a>
-                <a href="practice_tasks.php" class="btn btn-light btn-sm">
+                <a href="<?= ACADEMY_URL ?>resources/practice_tests/practice_tests_home.php" class="btn btn-light btn-sm">
                     <i class="bi bi-pencil-square me-2"></i>Practice Tasks
                 </a>
-                <a href="../courses_catalogue.php" class="btn btn-outline-light btn-sm">
+                <a href="<?= ACADEMY_URL ?>courses/courses_catalogue.php" class="btn btn-outline-light btn-sm">
                     Browse All Courses
                 </a>
             </div>

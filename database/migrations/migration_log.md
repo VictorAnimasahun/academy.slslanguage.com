@@ -248,8 +248,8 @@ DROP TABLE IF EXISTS user_certificates;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | |
-| Live  | [ ] | | |
+| Local | [x] | 2026-07-20 | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:** Inserts test container rows for the three graded sections of Full Mock 001.
 
@@ -259,8 +259,8 @@ DROP TABLE IF EXISTS user_certificates;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | |
-| Live  | [ ] | | |
+| Local | [x] | 2026-07-20 | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Adds `part_number` column to `questions` table (idempotent, MySQL 5.7/8.0 safe)
@@ -280,8 +280,8 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | |
-| Live  | [ ] | | |
+| Local | [x] | 2026-07-20 | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 40 questions across 3 sections (matching, T/F/NG, table/sentence/summary completion, matching headings, MCQ)
@@ -300,8 +300,8 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | |
-| Live  | [ ] | | |
+| Local | [x] | 2026-07-20 | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 2 writing task records into `questions` (Task 1 = letter to Mrs Barrett, Task 2 = plastic/environment essay)
@@ -339,7 +339,7 @@ ALTER TABLE mock_sessions DROP COLUMN writing_notes;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-20 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 4 placeholder `tests` rows: `IELTS_FULL_MOCK_003`, `IELTS_FM3_L`, `IELTS_FM3_R`, `IELTS_FM3_W`
@@ -357,7 +357,7 @@ DELETE FROM tests WHERE code IN ('IELTS_FULL_MOCK_003','IELTS_FM3_L','IELTS_FM3_
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-20 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 40 questions, 46 options, 26 correct answers for `IELTS_FM3_L` (Cambridge IELTS GT Test 3 — full real content, transcribed from the book)
@@ -378,7 +378,7 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-20 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 40 questions, 113 options, 39 correct answers for `IELTS_FM3_R` (Cambridge IELTS GT Test 3 — full real content, transcribed from the book)
@@ -400,7 +400,7 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-20 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 2 writing task records into `questions` (Task 1 = letter about a book that influenced you, Task 2 = essay on living close to where you were born)
@@ -418,7 +418,7 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-23 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Adds `IELTS_FULL_MOCK_003` to `mock_exams` (Layer A catalog) and its 3 sections to `mock_exam_sections` (Listening → `IELTS_FM3_L`, Reading → `IELTS_FM3_R`, Writing_Task1 → `IELTS_FM3_W`)
@@ -438,7 +438,7 @@ DELETE FROM mock_exams WHERE code = 'IELTS_FULL_MOCK_003';
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-29 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 4 `tests` container rows: `IELTS_FULL_MOCK_004`, `IELTS_FM4_L`, `IELTS_FM4_R`, `IELTS_FM4_W`
@@ -455,7 +455,7 @@ DELETE FROM tests WHERE code IN ('IELTS_FULL_MOCK_004','IELTS_FM4_L','IELTS_FM4_
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-29 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 40 questions, 29 options, 35 correct answers for `IELTS_FM4_L` (Cambridge IELTS 16 Test 4 — full real content)
@@ -479,7 +479,7 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-29 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 40 questions, 96 options, 36 correct answers for `IELTS_FM4_R` (Cambridge IELTS 16 Test 4 — full real content)
@@ -500,7 +500,7 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-29 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Inserts 2 writing task records into `questions` (Task 1 = email to a friend advising on student accommodation, Task 2 = essay on the best time in history to live)
@@ -518,7 +518,7 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-06-29 | |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-07-20 | |
 
 **What it does:**
 - Adds `IELTS_FULL_MOCK_004` to `mock_exams` (Layer A catalog) and its 3 sections to `mock_exam_sections` (Listening → `IELTS_FM4_L`, Reading → `IELTS_FM4_R`, Writing_Task1 → `IELTS_FM4_W`)
@@ -688,6 +688,25 @@ DELETE qca FROM question_correct_answers qca JOIN questions q ON qca.question_id
 DELETE qo FROM question_options qo JOIN questions q ON qo.question_id=q.id JOIN tests t ON q.test_id=t.id WHERE t.test_type='Vocabulary';
 DELETE q FROM questions q JOIN tests t ON q.test_id=t.id WHERE t.test_type='Vocabulary';
 UPDATE tests SET total_questions=0 WHERE test_type='Vocabulary';
+```
+
+---
+
+## 046 — Create `api_tokens` table
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-07-25 | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Creates `api_tokens` table for bearer-token auth (sls_mobile app, future API clients)
+- `student_id` FK → `students(id)` ON DELETE CASCADE
+- `token` is a unique 64-char random hex string; `expires_at` required, `revoked_at` nullable for manual logout/invalidation
+
+**Rollback:**
+```sql
+DROP TABLE IF EXISTS api_tokens;
 ```
 
 ---

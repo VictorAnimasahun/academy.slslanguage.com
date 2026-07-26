@@ -20,25 +20,14 @@ if (!isset($_SESSION['user_id'])) {
 	
 
 	<style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        .main-wrapper { padding: 2rem 1.5rem; min-height: 100vh; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #4A90E2 0%, #87CEEB 100%);
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
+        .quiz-container {
             max-width: 800px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
         }
 
@@ -236,8 +225,8 @@ if (!isset($_SESSION['user_id'])) {
 		<?php include INCLUDES_PATH . '/mobile_header.php'; ?>
 		<div class="mobile-overlay" id="mobileOverlay"></div>
 		<?php include INCLUDES_PATH . '/navbar.php'; ?>
-		
-		<div class="container">
+		<main class="main-wrapper">
+		<div class="quiz-container">
 			<div class="header">
 				<h1>IELTS Listening Test Quiz</h1>
 				<p>Test your knowledge about the IELTS Listening section</p>
@@ -748,6 +737,9 @@ if (!isset($_SESSION['user_id'])) {
             doc.save(`SLS_IELTS_Listening_Quiz_Results_${new Date().toISOString().split('T')[0]}.pdf`);
         }
     </script>
+	</div><!-- /.quiz-container -->
+	</main><!-- /.main-wrapper -->
+	<?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
 </body>
 
 </html>

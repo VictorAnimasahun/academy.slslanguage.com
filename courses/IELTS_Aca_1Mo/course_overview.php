@@ -179,7 +179,7 @@ $month_colors = [1 => '#0b77ff'];
             <div class="d-grid gap-1">
                 <a href="<?= ACADEMY_URL ?>courses/IELTS_Aca_Crash/intro.php?from=IELTS_Aca_1Mo" class="btn btn-light btn-sm">Class 1 — Free Preview</a>
                 <?php if ($student_tier_level >= 2): ?>
-                <a href="<?= ACADEMY_URL ?>courses/IELTS_Aca_Crash/mock_exam.php?from=IELTS_Aca_1Mo" class="btn btn-outline-light btn-sm">Mock Exam</a>
+                <a href="<?= ACADEMY_URL ?>resources/mock_tests/index.php" class="btn btn-outline-light btn-sm">Mock Exams</a>
                 <?php else: ?>
                 <a href="../../upgrade.php?required=intermediate" class="btn btn-warning btn-sm"><i class="bi bi-lightning-charge me-1"></i>Upgrade to Unlock</a>
                 <?php endif; ?>
