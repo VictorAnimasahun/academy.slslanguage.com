@@ -49,6 +49,14 @@ CELPIP_PT_[SECTION]_[NNN]    (same pattern, different prefix)
 
 `IELTS_PT_L_002` has an audio asset folder (`academy/assets/audio/IELTS_PT_L_002/`) but **no migration file** seeds its questions into the DB. This means its content (if it exists in the live/local DB at all) was added directly through the `sls-admin` question editor, bypassing the migrations folder entirely — so it isn't reproducible from source and isn't tracked in `migration_log.md`. This is the same risk pattern that caused FM1's Listening/Reading questions to be wrong for a period (manually re-entered from the wrong source test). Worth auditing in `sls-admin` before treating `IELTS_PT_L_002` as real content.
 
+## Practice-test setup activities
+
+- [x] Stage IELTS Listening PT1–PT4 media. PT1 was already present; PT2–PT4 now each have four validated MP3 files named `part1.mp3` through `part4.mp3` in their respective `academy/assets/audio/IELTS_PT_L_00N/` folders.
+- [ ] Seed and validate the `tests`, `questions`, options, and answer keys for every PT2–PT4 section through new, uniquely numbered migrations.
+- [ ] Replace the PT2–PT4 placeholder pages with complete test renderers and verify each student submission flow locally before deploying it.
+
+The completed media task does not by itself make PT2–PT4 runnable: their pages and database content are still pending.
+
 ## Adding a new practice test
 
 Follow `academy/documentation/ai_test_page_template.md` exactly — it's a self-contained brief (test code convention, PHP `$parts` array structure per question type, the `$answers` format, the migration SQL skeleton, and the full `question_type` ENUM reference) designed to be handed wholesale to an AI or a developer to generate both files. Always reuse `save_attempt.php` — never write a new save endpoint per test.
