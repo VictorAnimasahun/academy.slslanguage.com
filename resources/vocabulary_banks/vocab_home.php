@@ -206,6 +206,8 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                 <?php endif; ?>
             </div>
 
+            <?php include __DIR__ . '/context_vocab.php'; ?>
+
         </div>
     </main>
 </div>
