@@ -14,6 +14,7 @@ Placement/assessment tests used to gauge a new student's level before recommendi
 |---|---|
 | `diagnostic_IELTS.php` | IELTS-specific diagnostic/placement test |
 | `diagnostic_basic_english.php` | General English placement test (for students not yet ready for exam-specific prep) |
+| `diagnostic_celpip.php` | Authenticated entry point for the CELPIP mini mock test |
 
 ## Assets
 
