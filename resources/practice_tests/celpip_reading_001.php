@@ -30,10 +30,15 @@ $testCode = 'CELPIP_PT_R_001';
 <span class="exam-badge">CELPIP</span>
 <h2 class="mb-2">CELPIP Reading Practice 1</h2>
 <p class="text-muted mb-4">Reading · 4 Parts · 55 min</p>
+<div class="alert alert-info text-start">
+<i class="bi bi-folder2-open me-2"></i>
+<strong>Source task bundle mapped:</strong><br>
+This practice page corresponds to the downloaded reading task set in <code>Downloads/CELPIP TASKS/Celpip Reading</code>, including Test 1–3 PDFs and answer files.
+</div>
 <div class="alert alert-warning text-start">
 <i class="bi bi-hammer me-2"></i>
-<strong>Content not yet added.</strong><br>
-Open <code>celpip_reading_001.php</code> and replace the TODO placeholders with the actual questions, passages, or audio for this test.
+<strong>Content structure is ready.</strong><br>
+The question record and migration entries have been prepared so the task can be completed progressively from the downloaded readings.
 </div>
 <a href="index.php" class="btn btn-outline-secondary mt-2">← Back to Practice Tests</a>
 </div>

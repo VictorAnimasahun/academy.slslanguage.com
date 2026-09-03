@@ -30,10 +30,15 @@ $testCode = 'CELPIP_PT_W2_001';
 <span class="exam-badge">CELPIP</span>
 <h2 class="mb-2">CELPIP Writing Task 2 Practice 1</h2>
 <p class="text-muted mb-4">Writing Task 2 – Survey Response</p>
+<div class="alert alert-info text-start">
+<i class="bi bi-folder2-open me-2"></i>
+<strong>Source writing set mapped:</strong><br>
+This task corresponds to the downloaded CELPIP Writing bundle under <code>Downloads/CELPIP TASKS/Celpip Writing /Test 2</code> and the Test 3 set.
+</div>
 <div class="alert alert-warning text-start">
 <i class="bi bi-hammer me-2"></i>
-<strong>Content not yet added.</strong><br>
-Open <code>celpip_writing_t2_001.php</code> and replace the TODO placeholders with the actual questions, passages, or audio for this test.
+<strong>Survey prompt bank remains to be converted.</strong><br>
+The project now has the source mapping and database record in place so each downloaded scenario can be sequenced into the live assessment workflow.
 </div>
 <a href="index.php" class="btn btn-outline-secondary mt-2">← Back to Practice Tests</a>
 </div>

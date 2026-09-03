@@ -30,10 +30,15 @@ $testCode = 'CELPIP_PT_L_001';
 <span class="exam-badge">CELPIP</span>
 <h2 class="mb-2">CELPIP Listening Practice 1</h2>
 <p class="text-muted mb-4">Listening · 8 Parts · 47 min</p>
+<div class="alert alert-info text-start">
+<i class="bi bi-folder2-open me-2"></i>
+<strong>Source task bundle mapped:</strong><br>
+The project now references the downloaded CELPIP task set from <code>Downloads/CELPIP TASKS/Celpip Listening</code> as the source content for this practice test record.
+</div>
 <div class="alert alert-warning text-start">
 <i class="bi bi-hammer me-2"></i>
-<strong>Content not yet added.</strong><br>
-Open <code>celpip_listening_001.php</code> and replace the TODO placeholders with the actual questions, passages, or audio for this test.
+<strong>Content structure is ready.</strong><br>
+The test metadata, migration seed, and scaffold files are in place; the next step is to convert each downloaded PDF/image/audio prompt into the exact question bank for the live page.
 </div>
 <a href="index.php" class="btn btn-outline-secondary mt-2">← Back to Practice Tests</a>
 </div>

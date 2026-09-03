@@ -30,10 +30,15 @@ $testCode = 'CELPIP_PT_S_001';
 <span class="exam-badge">CELPIP</span>
 <h2 class="mb-2">CELPIP Speaking Practice 1</h2>
 <p class="text-muted mb-4">Speaking · 8 Tasks · ~16 min</p>
+<div class="alert alert-info text-start">
+<i class="bi bi-folder2-open me-2"></i>
+<strong>Source task bundle mapped:</strong><br>
+The speaking task bank was mapped from <code>Downloads/CELPIP TASKS/Celpip Speaking</code>, containing Speaking Test 1, 2, and 3 prompt images.
+</div>
 <div class="alert alert-warning text-start">
 <i class="bi bi-hammer me-2"></i>
-<strong>Content not yet added.</strong><br>
-Open <code>celpip_speaking_001.php</code> and replace the TODO placeholders with the actual questions, passages, or audio for this test.
+<strong>Prompt bank ready for conversion.</strong><br>
+The project now tracks the source bundle and the seeded test entry so the speaking prompts can be finalized into the live exercise flow.
 </div>
 <a href="index.php" class="btn btn-outline-secondary mt-2">← Back to Practice Tests</a>
 </div>

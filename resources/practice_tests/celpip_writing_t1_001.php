@@ -43,13 +43,13 @@ $wordMin   = 150; $wordMax = 200;
 <span class="section-badge">Writing Task 1 – Email</span>
 <small class="text-muted">CELPIP</small></div>
 <div class="prompt-box">
-<!-- ══ TODO: Replace with actual CELPIP Task 1 email scenario ══ -->
-<p class="mb-2"><strong>You recently moved to a new neighbourhood and would like to meet your neighbours.</strong></p>
-<p class="mb-0">Write an email to the neighbourhood community group. In your email:</p>
+<!-- Source task bundle: Downloads/CELPIP TASKS/Celpip Writing /Test 1/CELPIP Writing Test 1.jpg -->
+<p class="mb-2"><strong>Writing Task 1 source mapped to the downloaded CELPIP writing set.</strong></p>
+<p class="mb-0">Use the task prompt from the downloaded writing bundle for this email response. In your email:</p>
 <ul class="mt-2 mb-0">
-<li>introduce yourself</li>
-<li>explain why you are writing</li>
-<li>suggest a way to get to know your neighbours</li>
+<li>introduce the purpose of your message</li>
+<li>explain the situation or request clearly</li>
+<li>include a polite closing or next step</li>
 </ul>
 </div>
 <div class="alert alert-light border small mb-0">
