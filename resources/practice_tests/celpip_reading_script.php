@@ -96,7 +96,7 @@ async function handleSubmit(auto = false) {
     if (!auto) {
         const r = await Swal.fire({
             title: 'Submit Test?', text: 'You cannot change your answers after submitting.', icon: 'question',
-            showCancelButton: true, confirmButtonText: 'Yes, submit', cancelButtonText: 'Continue working', confirmButtonColor: '#2f6f9a',
+            showCancelButton: true, confirmButtonText: 'Yes, submit', cancelButtonText: 'Continue working', confirmButtonColor: '#9c1f2e',
         });
         if (!r.isConfirmed) return;
     }
@@ -114,10 +114,10 @@ async function handleSubmit(auto = false) {
     Swal.fire({
         title: 'Test Complete!',
         html: `<div class="text-center">
-                    <div class="result-badge" style="background:#2f6f9a;">Score: ${score} / ${MAX_SCORE}</div>
+                    <div class="result-badge" style="background:#9c1f2e;">Score: ${score} / ${MAX_SCORE}</div>
                     <p class="mt-3 text-muted small">Scroll through each part below to see correct answers.</p>
                 </div>`,
-        icon: 'success', confirmButtonText: 'View Feedback', confirmButtonColor: '#2f6f9a',
+        icon: 'success', confirmButtonText: 'View Feedback', confirmButtonColor: '#9c1f2e',
     }).then(() => {
         document.querySelector('.celpip-screen[data-part="1"]').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });

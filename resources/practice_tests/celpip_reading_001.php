@@ -210,7 +210,6 @@ $maxScore = 38;
 </main>
 </div><!-- /.main-wrapper -->
 
-<?php include INCLUDES_PATH . '/adverts.php'; ?>
 
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

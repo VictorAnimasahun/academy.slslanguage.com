@@ -79,18 +79,18 @@ $tasks = [
         .speaking-task-image { max-width: 100%; border-radius: 8px; margin-top: .75rem; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
         .speaking-stage { margin-top: 1.25rem; border-top: 1px solid #e5e7eb; padding-top: 1.25rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
         .prep-box { background: #f1f3f5; border-radius: 8px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
-        .prep-box .clock-icon { font-size: 1.8rem; color: #2f6f9a; }
+        .prep-box .clock-icon { font-size: 1.8rem; color: #9c1f2e; }
         .prep-box .prep-label { font-size: .78rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
-        .prep-box .prep-count { font-size: 1.8rem; font-weight: 700; color: #1b6394; font-family: monospace; }
+        .prep-box .prep-count { font-size: 1.8rem; font-weight: 700; color: #7a1824; font-family: monospace; }
         .rec-stage { display: none; align-items: center; gap: 1rem; flex: 1 1 auto; min-width: 260px; }
         .rec-mic { width: 52px; height: 52px; border-radius: 50%; background: #eef1f3; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #dc3545; flex-shrink: 0; }
         .rec-track { flex: 1 1 auto; }
         .rec-label { font-size: .78rem; color: #6b7280; font-weight: 600; margin-bottom: .3rem; }
         .rec-bar-bg { background: #e5e7eb; border-radius: 4px; height: 10px; overflow: hidden; }
-        .rec-bar-fill { background: #2f6f9a; height: 100%; width: 0%; transition: width 1s linear; }
+        .rec-bar-fill { background: #9c1f2e; height: 100%; width: 0%; transition: width 1s linear; }
         .transcript-toggle { font-size: .78rem; color: #6b7280; cursor: pointer; margin-top: 1rem; display: inline-block; }
         .transcript-box { display: none; margin-top: .5rem; }
-        .celpip-progress .dot.done { background: #2f6f9a; }
+        .celpip-progress .dot.done { background: #9c1f2e; }
     </style>
 </head>
 <body class="light">
@@ -188,7 +188,6 @@ $tasks = [
 </main>
 </div><!-- /.main-wrapper -->
 
-<?php include INCLUDES_PATH . '/adverts.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

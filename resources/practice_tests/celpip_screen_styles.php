@@ -2,9 +2,16 @@
 // Shared look for CELPIP-style practice test screens (Reading, and reusable
 // for future Listening pages). Modelled on real CELPIP-General screenshots
 // from the official Prometric "CELPIP-General Overview" participant package
-// (dark header bar + Next button, split info/work panels, blue accents).
+// (dark header bar + Next button, split info/work panels), recolored to
+// CELPIP's own brand red/charcoal (sampled from the official CELPIP-General
+// logo) instead of a generic blue.
 ?>
 <style>
+    :root {
+        --celpip-red: #9c1f2e;
+        --celpip-red-dark: #7a1824;
+        --celpip-charcoal: #363636;
+    }
     .main-wrapper { padding: 1.25rem; min-height: 100vh; }
     .celpip-shell {
         max-width: 980px;
@@ -16,7 +23,7 @@
         background: #fff;
     }
     .celpip-header {
-        background: #3d4750;
+        background: var(--celpip-charcoal);
         color: #fff;
         padding: .7rem 1.1rem;
         display: flex;
@@ -29,7 +36,7 @@
     .celpip-header .meta { display: flex; align-items: center; gap: .9rem; font-size: .82rem; color: #dfe3e6; }
     .celpip-header .meta strong { color: #fff; font-family: monospace; font-size: .95rem; }
     .celpip-next-btn {
-        background: #2f6f9a;
+        background: var(--celpip-red);
         color: #fff;
         border: none;
         border-radius: 4px;
@@ -39,7 +46,7 @@
         letter-spacing: .03em;
         cursor: pointer;
     }
-    .celpip-next-btn:hover { background: #255a7d; }
+    .celpip-next-btn:hover { background: var(--celpip-red-dark); }
     .celpip-next-btn:disabled { background: #6b7680; cursor: not-allowed; }
     .celpip-back-btn {
         background: transparent;
@@ -67,7 +74,7 @@
         display: flex;
         align-items: center;
         gap: .4rem;
-        color: #1b6394;
+        color: var(--celpip-red);
         font-weight: 700;
         font-size: .85rem;
         margin-bottom: .6rem;
@@ -79,7 +86,7 @@
     .celpip-passage .sub-divider { border-top: 1px dashed #c7ccd1; margin: 1.1rem 0; }
 
     .celpip-q-row { margin-bottom: 1rem; }
-    .celpip-q-row .q-num { font-weight: 700; color: #1b6394; font-size: .85rem; }
+    .celpip-q-row .q-num { font-weight: 700; color: var(--celpip-red); font-size: .85rem; }
     .celpip-q-row .q-text { font-size: .87rem; color: #1f2937; margin: .15rem 0 .4rem; }
     .celpip-select {
         width: 100%;
@@ -90,7 +97,7 @@
         background: #fff;
         color: #1f2937;
     }
-    .celpip-select:focus { outline: none; border-color: #2f6f9a; box-shadow: 0 0 0 2px rgba(47,111,154,.15); }
+    .celpip-select:focus { outline: none; border-color: var(--celpip-red); box-shadow: 0 0 0 2px rgba(156,31,46,.15); }
     .celpip-select.correct   { border-color: #198754; background: #eafaf1; }
     .celpip-select.incorrect { border-color: #dc3545; background: #fdecee; }
     .celpip-feedback-hint { font-size: .76rem; margin-top: .2rem; }
@@ -107,12 +114,12 @@
     .legend-pill { display:inline-block; background:#e2e8f0; border-radius:6px; padding:.2rem .55rem; margin:.15rem .15rem 0 0; font-size:.74rem; }
     .brochure-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.6rem; margin-top:.5rem; }
     .brochure-card { background:#e2e8f0; border-radius:6px; padding:.7rem; font-size:.78rem; line-height:1.55; }
-    .brochure-card strong { color:#1b6394; display:block; margin-bottom:.25rem; }
+    .brochure-card strong { color: var(--celpip-red); display:block; margin-bottom:.25rem; }
 
     .celpip-progress { display:flex; gap:.3rem; padding:.5rem 1.1rem; background:#f5f6f7; border-top:1px solid #d7dce0; }
     .celpip-progress .dot { flex:1; height:4px; border-radius:2px; background:#d7dce0; }
-    .celpip-progress .dot.done { background:#2f6f9a; }
-    .celpip-progress .dot.current { background:#1b6394; }
+    .celpip-progress .dot.done { background: var(--celpip-red); }
+    .celpip-progress .dot.current { background: var(--celpip-red-dark); }
 
     .result-badge { display: inline-block; color: #fff; border-radius: 8px; padding: .4rem 1rem; font-size: .95rem; font-weight: 700; margin: .25rem; }
 

@@ -82,7 +82,7 @@ function renderCelpipWorkPanel(array $sections): void {
 }
 ?>
 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
-    <span class="section-badge" style="background:linear-gradient(135deg,#f59e0b,#fbbf24); color:#fff; padding:.3rem 1.1rem; border-radius:50px; font-weight:700; font-size:.8rem;">Reading</span>
+    <span class="section-badge" style="background:linear-gradient(135deg,#9c1f2e,#c23347); color:#fff; padding:.3rem 1.1rem; border-radius:50px; font-weight:700; font-size:.8rem;">Reading</span>
     <span class="text-muted small">38 Questions · 55 min</span>
 </div>
 

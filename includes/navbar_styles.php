@@ -209,9 +209,12 @@
 	/* ── Main content area ────────────────────────────────────────── */
 	.main-wrapper {
 		margin-left: 260px;
-		margin-right: 280px;
+		margin-right: 0;
 		padding: 2rem;
 		transition: margin-left 0.3s ease;
+	}
+	body:has(.advert-sidebar) .main-wrapper {
+		margin-right: 280px;
 	}
 
 	/* ── Right advert sidebar ─────────────────────────────────────── */
