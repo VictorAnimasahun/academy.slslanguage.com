@@ -10,16 +10,13 @@
 --   Part 1 (Correspondence): 1-11  (Q1-6 standalone MCQ, Q7-11 cloze-MCQ)
 --   Part 2 (Diagram):        12-19 (Q12-16 cloze-MCQ, Q17-19 standalone MCQ)
 --   Part 3 (Information):    20-28 (paragraph matching A-E, E = "not given")
---   Part 4 (Viewpoints):     29-38 (Q29-33 NOT auto-graded -- see note below;
---                             Q34-38 cloze-MCQ)
+--   Part 4 (Viewpoints):     29-38 (all standalone/cloze MCQ)
 --
--- NOTE on Q29-33: the source PDF for Part 4 Questions 1-5 never printed
--- multiple-choice options (unlike every other question in this test) --
--- only the answer key gives the correct phrasing. Rather than inventing
--- plausible-looking wrong options that were never in the source material,
--- these 5 are seeded as ungraded self-check questions (points = 0,
--- question_type = 'short_answer', the answer key text stored so the page
--- can reveal it after submission). Scored max is therefore 33, not 38.
+-- CORRECTION (superseding the original note below): Q29-33's options were
+-- NOT missing from the source -- the PDF lists the four options for
+-- Questions 1-5 in a block AFTER the Questions 6-10 cloze text, rather
+-- than immediately under each stem like every other part. Missed on first
+-- read. All 38 questions are real graded MCQ; nothing is ungraded.
 -- ============================================================
 
 UPDATE tests SET total_questions = 38, duration_minutes = 55
@@ -71,13 +68,12 @@ INSERT INTO questions (test_id, question_number, stimulus_text, question_text, q
 (@tid, 28, 'Reading for Information', 'Some camping equipment is less able to withstand unpleasant conditions.', 'matching', 'Decide which paragraph, A to D, has the information given in each statement below. Select E if the information is not given in any of the paragraphs.', 1.0, 3, 280);
 
 -- ── Part 4 — Reading for Viewpoints (Q29-38) ───────────────────────────
--- Q29-33: source PDF never printed MCQ options for these -- ungraded, points=0.
 INSERT INTO questions (test_id, question_number, stimulus_text, question_text, question_type, instructions, points, part_number, display_order) VALUES
-(@tid, 29, 'Reading for Viewpoints', 'Annalisa Ducharme most likely objects to...', 'short_answer', 'Not auto-graded -- the source material did not provide answer options for this question. Compare your reasoning to the model answer shown after submitting.', 0.0, 4, 290),
-(@tid, 30, 'Reading for Viewpoints', 'Marianne Houseman thinks language preservation programs should be...', 'short_answer', 'Not auto-graded -- the source material did not provide answer options for this question. Compare your reasoning to the model answer shown after submitting.', 0.0, 4, 300),
-(@tid, 31, 'Reading for Viewpoints', 'Who holds directly opposing viewpoints?', 'short_answer', 'Not auto-graded -- the source material did not provide answer options for this question. Compare your reasoning to the model answer shown after submitting.', 0.0, 4, 310),
-(@tid, 32, 'Reading for Viewpoints', 'Marianne Houseman would most likely agree that...', 'short_answer', 'Not auto-graded -- the source material did not provide answer options for this question. Compare your reasoning to the model answer shown after submitting.', 0.0, 4, 320),
-(@tid, 33, 'Reading for Viewpoints', 'Overall, the article suggests that efforts to preserve dying languages are...', 'short_answer', 'Not auto-graded -- the source material did not provide answer options for this question. Compare your reasoning to the model answer shown after submitting.', 0.0, 4, 330),
+(@tid, 29, 'Reading for Viewpoints', 'Annalisa Ducharme most likely objects to', 'multiple_choice_single', 'Choose the best option according to the information given on the website.', 1.0, 4, 290),
+(@tid, 30, 'Reading for Viewpoints', 'Marianne Houseman thinks language preservation programs should be', 'multiple_choice_single', 'Choose the best option according to the information given on the website.', 1.0, 4, 300),
+(@tid, 31, 'Reading for Viewpoints', 'Who holds directly opposing viewpoints?', 'multiple_choice_single', 'Choose the best option according to the information given on the website.', 1.0, 4, 310),
+(@tid, 32, 'Reading for Viewpoints', 'Marianne Houseman would most likely agree that', 'multiple_choice_single', 'Choose the best option according to the information given on the website.', 1.0, 4, 320),
+(@tid, 33, 'Reading for Viewpoints', 'Overall, the article suggests that efforts to preserve dying languages are', 'multiple_choice_single', 'Choose the best option according to the information given on the website.', 1.0, 4, 330),
 (@tid, 34, 'Reading for Viewpoints', 'Blank 6 in the visitor comment', 'multiple_choice_single', 'Complete the comment by choosing the best option to fill in each blank.', 1.0, 4, 340),
 (@tid, 35, 'Reading for Viewpoints', 'Blank 7 in the visitor comment', 'multiple_choice_single', 'Complete the comment by choosing the best option to fill in each blank.', 1.0, 4, 350),
 (@tid, 36, 'Reading for Viewpoints', 'Blank 8 in the visitor comment', 'multiple_choice_single', 'Complete the comment by choosing the best option to fill in each blank.', 1.0, 4, 360),
@@ -175,12 +171,10 @@ INSERT INTO question_options (question_id, option_label, option_text, is_correct
 (@q37,'A','language standardization efforts',0,10),(@q37,'B','aggressive nationalist agendas',1,20),(@q37,'C','likely to proliferate',0,30),(@q37,'D','indulgent charity campaigns',0,40),
 (@q38,'A','unnecessary',0,10),(@q38,'B','linguistic',0,20),(@q38,'C','essential',0,30),(@q38,'D','arbitrary',1,40);
 
--- ── Model answers for the 5 ungraded Part 4 questions (Q29-33) ─────────
--- Stored for display only -- loadTestAnswers() will surface these but the
--- page treats question_number IN (29,30,31,32,33) as unscored/self-check.
-INSERT INTO question_correct_answers (question_id, answer_text, is_case_sensitive, is_alternative) VALUES
-(@q29,'a simplistic categorization or definition of a language',0,0),
-(@q30,'abandoned',0,0),
-(@q31,'houseman and reideger',0,0),
-(@q32,'people stand to gain from a lingua franca',0,0),
-(@q33,'fraught with an array of sociopolitical complications',0,0);
+-- ── MCQ options: Part 4 Q29-33 ───────────────────────────────────────────
+INSERT INTO question_options (question_id, option_label, option_text, is_correct, display_order) VALUES
+(@q29,'A','inflated claims about language preservation outcomes',0,10),(@q29,'B','public programs to revitalize dying languages for political reasons',0,20),(@q29,'C','denials about the rate of language extinction',0,30),(@q29,'D','a simplistic categorization or definition of a language',1,40),
+(@q30,'A','modified',0,10),(@q30,'B','continued',0,20),(@q30,'C','consolidated',0,30),(@q30,'D','abandoned',1,40),
+(@q31,'A','Ducharme and UNESCO',0,10),(@q31,'B','Houseman and Reideger',1,20),(@q31,'C','Reideger and Ducharme',0,30),(@q31,'D','Ducharme and Houseman',0,40),
+(@q32,'A','investments in language immersion schools are defensible',0,10),(@q32,'B','language preservation policies deserve public attention',0,20),(@q32,'C','people stand to gain from a lingua franca',1,30),(@q32,'D','dying languages are a priceless cultural resource',0,40),
+(@q33,'A','hampered by the link between language and identity',0,10),(@q33,'B','fraught with an array of sociopolitical complications',1,20),(@q33,'C','warranted on the basis of disturbing global statistics',0,30),(@q33,'D','essential for the sake of preserving indigenous cultures',0,40);

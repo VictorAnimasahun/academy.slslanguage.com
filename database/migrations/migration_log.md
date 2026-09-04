@@ -726,14 +726,14 @@ DROP TABLE IF EXISTS api_tokens;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [x] | 2026-09-04 | 38 questions, 141 options, 5 model answers -- verified via direct query and a PHP CLI render smoke test |
+| Local | [x] | 2026-09-04 | 38 questions, 161 options, all scored -- verified via direct query and a PHP CLI render smoke test. Corrected same day (see note below). |
 | Live  | [ ] | | |
 
 **What it does:**
-- Transcribes CELPIP Reading Test 1 (Downloads/CELPIP TASKS/Celpip Reading/Test 1, 4 PDFs + answer key docx) into `questions`/`question_options`/`question_correct_answers` for `CELPIP_PT_R_001`
+- Transcribes CELPIP Reading Test 1 (Downloads/CELPIP TASKS/Celpip Reading/Test 1, 4 PDFs + answer key docx) into `questions`/`question_options` for `CELPIP_PT_R_001`
 - Updates `tests.total_questions` to 38 (was a placeholder 4)
-- Q29-33 (Part 4, viewpoint questions 1-5) are seeded as ungraded `short_answer` rows (points=0) because the source PDF never printed multiple-choice options for these 5 -- only the answer key's correct phrasing exists. They render as self-check reflection items in `celpip_reading_001.php`, not scored MCQ. Scored max is 33/38.
-- Companion page `resources/practice_tests/celpip_reading_001.php` replaced its stub with the full 4-part renderer (mcq / paragraph_match / diagram / unscored_reflect section types)
+- All 38 questions are real graded MCQ. **Correction:** the migration originally shipped Q29-33 (Part 4, viewpoint questions 1-5) as ungraded `short_answer` rows, believing the source PDF never printed their options. That was a misread on first pass -- the PDF lists Questions 1-5's four options in a block *after* the Questions 6-10 cloze text instead of directly under each stem like every other part in this test, so they were missed. Caught by the user and fixed same day: Q29-33 are now real `multiple_choice_single` questions with full option sets, matching the rest of the test.
+- Companion page `resources/practice_tests/celpip_reading_001.php` replaced its stub with the full 4-part renderer (mcq / paragraph_match / diagram section types)
 
 **Rollback:**
 ```sql

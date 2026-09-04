@@ -9,11 +9,6 @@ if (!isset($_SESSION['user_id'])) {
 $testCode  = 'CELPIP_PT_R_001';
 $timeLimit = 55 * 60;
 
-// Question numbers 29-33 (Part 4, Q1-5) have no scored MCQ options -- the
-// source material never printed them. They're shown as self-check reflection
-// items instead of graded questions. See migration 055 for the full note.
-$unscoredQuestions = [29, 30, 31, 32, 33];
-
 $parts = [
     1 => [
         'title'   => 'Part 1',
@@ -142,19 +137,19 @@ $parts = [
         'q_range' => [29, 38],
         'sections' => [
             [
-                'type'          => 'unscored_reflect',
+                'type'          => 'mcq',
                 'passage_title' => 'Language Decline',
                 'passage'       => "<p>The numbers are in, and they're grim: Three thousand of the world's seven thousand languages are in decline and expected to perish by around 2100. While the most prevalent languages are taking a firmer hold across the globe, the extinction rate for languages is 25 per year. Charting language demise, UNESCO ranks dwindling languages on a scale ranging from \"vulnerable\" to \"critically endangered.\" The question is how, or whether, UNESCO or sovereign governments should intervene?</p>
 <p>Concerned language preservation organizations include the Canadian Association for Language Diversity (CALD), a charity whose goal is to prevent language extinctions. CALD spokesperson Norman Reideger says all endangered languages should be saved. \"For individuals, language fosters a sense of personal identity. Language extinction means loss of priceless, irreplaceable cultural knowledge—the grammar, music, narratives, and even medical knowledge embedded in a language. A linguistically diverse planet is a healthy planet.\"</p>
 <p>Concordia University linguistics professor Marianne Houseman deplores such use of biodiversity rhetoric in linguistics discourse. \"Life is life, and language is language,\" she clarifies. Houseman is skeptical about whether speakers of endangered languages benefit from linguistic preservation, noting that those who abandon their language may be acting in their own best interests by adapting to a naturally evolving socio-economic climate. \"Whose needs are served by government-funded social—or socio-linguistic—engineering schemes?\" asks Houseman, \"Their proponents are typically nationalist regimes advancing their own territorial, political and economic agendas.\"</p>
 <p>Annalisa Ducharme, a Memorial University doctoral candidate, points out that a confounding factor is variation within a language. \"One language can have multiple dialects—regional varieties,\" says Ducharme, \"If an endangered language is to be artificially propped up with government funded schools and preschools, as they do with some First Nation languages in Canada, then which—whose—version of the language should be deemed 'essential' and therefore worth saving?\" As well as First Nation languages, Ducharme points to French, which \"has many dialects worth sustaining. Globally, France, Louisiana, and Africa have their own versions. In New Brunswick, French dialects include Quebecois, Acadian, and Chiac, a sub-dialect that blends Acadian French, English, and [aboriginal] Mi'kmaq.\"</p>",
-                'instructions' => "The source material for these five questions never printed multiple-choice options — only a model answer is available. Write your own short answer, then compare it to the model answer revealed after you submit. These are <strong>not scored</strong>.",
+                'instructions' => 'Choose the best option according to the information given on the website.',
                 'questions'    => [
-                    ['q'=>29, 'text'=>'Annalisa Ducharme most likely objects to...'],
-                    ['q'=>30, 'text'=>'Marianne Houseman thinks language preservation programs should be...'],
-                    ['q'=>31, 'text'=>'Who holds directly opposing viewpoints?'],
-                    ['q'=>32, 'text'=>'Marianne Houseman would most likely agree that...'],
-                    ['q'=>33, 'text'=>'Overall, the article suggests that efforts to preserve dying languages are...'],
+                    ['q'=>29, 'text'=>'Annalisa Ducharme most likely objects to', 'options'=>['A'=>'inflated claims about language preservation outcomes','B'=>'public programs to revitalize dying languages for political reasons','C'=>'denials about the rate of language extinction','D'=>'a simplistic categorization or definition of a language']],
+                    ['q'=>30, 'text'=>'Marianne Houseman thinks language preservation programs should be', 'options'=>['A'=>'modified','B'=>'continued','C'=>'consolidated','D'=>'abandoned']],
+                    ['q'=>31, 'text'=>'Who holds directly opposing viewpoints?', 'options'=>['A'=>'Ducharme and UNESCO','B'=>'Houseman and Reideger','C'=>'Reideger and Ducharme','D'=>'Ducharme and Houseman']],
+                    ['q'=>32, 'text'=>'Marianne Houseman would most likely agree that', 'options'=>['A'=>'investments in language immersion schools are defensible','B'=>'language preservation policies deserve public attention','C'=>'people stand to gain from a lingua franca','D'=>'dying languages are a priceless cultural resource']],
+                    ['q'=>33, 'text'=>'Overall, the article suggests that efforts to preserve dying languages are', 'options'=>['A'=>'hampered by the link between language and identity','B'=>'fraught with an array of sociopolitical complications','C'=>'warranted on the basis of disturbing global statistics','D'=>'essential for the sake of preserving indigenous cultures']],
                 ],
             ],
             [
@@ -176,8 +171,8 @@ $parts = [
 
 require_once __DIR__ . '/functions.php';
 /** @var \PDO $db */
-$answers = loadTestAnswers($db, $testCode);
-$maxScore = 38 - count($unscoredQuestions);
+$answers  = loadTestAnswers($db, $testCode);
+$maxScore = 38;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -215,8 +210,6 @@ $maxScore = 38 - count($unscoredQuestions);
         .diagram-table { width:100%; border-collapse: collapse; font-size:.82rem; }
         .diagram-table th, .diagram-table td { border:1px solid #e2e8f0; padding:.5rem .6rem; vertical-align:top; }
         .diagram-table th { background:#eef2ff; }
-        .unscored-card { background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:.9rem; margin-bottom:.9rem; }
-        .model-answer { display:none; background:#eef2ff; border-radius:6px; padding:.6rem .8rem; margin-top:.5rem; font-size:.85rem; }
         @media (max-width: 767px) { .content-col { padding: 1rem 1rem 2rem; } }
     </style>
 </head>
@@ -240,7 +233,7 @@ $maxScore = 38 - count($unscoredQuestions);
         </nav>
         <div class="d-flex align-items-center gap-3">
             <span class="section-badge">Reading</span>
-            <span class="text-muted small">38 Questions (33 scored) · 55 min</span>
+            <span class="text-muted small">38 Questions · 55 min</span>
             <span id="timerDisplay" class="timer-display">55:00</span>
             <button class="btn btn-primary btn-sm px-3" id="submitBtn" onclick="handleSubmit()">
                 <i class="bi bi-check2-circle me-1"></i>Submit
@@ -292,7 +285,6 @@ $maxScore = 38 - count($unscoredQuestions);
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 const CORRECT   = <?= json_encode($answers) ?>;
-const UNSCORED  = <?= json_encode($unscoredQuestions) ?>;
 const MAX_SCORE = <?= $maxScore ?>;
 const TEST_CODE = <?= json_encode($testCode) ?>;
 const startTime = Date.now();
@@ -318,13 +310,11 @@ function switchSec(n) {
 function collectAnswers() {
     document.querySelectorAll('select[data-q]').forEach(el => { userAnswers[el.dataset.q] = el.value.trim().toLowerCase(); });
     document.querySelectorAll('input[type=radio]:checked[data-q]').forEach(el => { userAnswers[el.dataset.q] = el.value.trim().toLowerCase(); });
-    document.querySelectorAll('textarea[data-q]').forEach(el => { userAnswers[el.dataset.q] = el.value.trim(); });
 }
 
 function gradeAnswers() {
     let score = 0;
     for (let q in CORRECT) {
-        if (UNSCORED.includes(parseInt(q, 10))) continue;
         const given = (userAnswers[q] || '').toLowerCase().trim();
         if (CORRECT[q].includes(given)) score++;
     }
@@ -339,7 +329,6 @@ function showFeedback() {
     });
     document.querySelectorAll('.mcq-card').forEach(card => {
         const q = card.dataset.q;
-        if (UNSCORED.includes(parseInt(q, 10))) return;
         const given = (userAnswers[q] || '').toLowerCase();
         const correct = (CORRECT[q] || [])[0] || '';
         card.querySelectorAll('.mcq-option').forEach(opt => {
@@ -348,15 +337,6 @@ function showFeedback() {
             if (val === correct) opt.style.background = '#d1e7dd';
             else if (val === given) opt.style.background = '#f8d7da';
         });
-    });
-    document.querySelectorAll('.unscored-card').forEach(card => {
-        const q = card.dataset.q;
-        const modelText = (CORRECT[q] || [])[0] || '';
-        const modelEl = card.querySelector('.model-answer');
-        if (modelEl) {
-            modelEl.textContent = 'Model answer: ' + modelText;
-            modelEl.style.display = 'block';
-        }
     });
 }
 
@@ -410,7 +390,6 @@ function renderCelpipSection(array $s): void {
         case 'mcq':             renderCelpipMcq($s);           break;
         case 'paragraph_match':  renderCelpipParagraphMatch($s); break;
         case 'diagram':          renderCelpipDiagram($s);        break;
-        case 'unscored_reflect': renderCelpipUnscored($s);       break;
     }
 }
 
@@ -479,21 +458,6 @@ function renderCelpipDiagram(array $s): void { ?>
         </div>
     </div>
 <?php }
-
-function renderCelpipUnscored(array $s): void { ?>
-    <div class="passage-box">
-        <h4><?= htmlspecialchars($s['passage_title']) ?></h4>
-        <?= $s['passage'] ?>
-    </div>
-    <p class="fw-semibold small"><?= $s['instructions'] ?></p>
-    <?php foreach ($s['questions'] as $q): ?>
-    <div class="unscored-card" data-q="<?= $q['q'] ?>">
-        <p class="fw-semibold small mb-2"><span class="q-num"><?= $q['q'] ?>.</span><?= htmlspecialchars($q['text']) ?></p>
-        <textarea class="form-control form-control-sm" data-q="<?= $q['q'] ?>" rows="2" placeholder="Write your own short answer (not scored)..."></textarea>
-        <div class="model-answer"></div>
-    </div>
-    <?php endforeach;
-}
 ?>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
