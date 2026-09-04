@@ -24,6 +24,10 @@ function renderCelpipInfoPanel(array $sections): void {
                 echo '<p class="text-muted fst-italic mb-0"><strong>E.</strong> Not given in any of the paragraphs.</p>';
                 break;
             case 'diagram':
+                if (!empty($sec['image'])) {
+                    echo '<img class="celpip-diagram-image" src="' . ACADEMY_URL . 'assets/img/practice_tests/' . htmlspecialchars($sec['image_dir']) . '/' . htmlspecialchars($sec['image']) . '" alt="' . htmlspecialchars($sec['passage_title']) . '">';
+                    break;
+                }
                 echo '<h4>' . htmlspecialchars($sec['passage_title']) . '</h4>';
                 echo $sec['passage'];
                 echo '<div class="table-responsive"><table class="diagram-table"><thead><tr><th>Plant</th><th>Difficulty</th><th>Season</th><th>Notes</th></tr></thead><tbody>';

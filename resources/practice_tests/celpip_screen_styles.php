@@ -97,6 +97,7 @@
     .celpip-feedback-hint.ok  { color: #198754; }
     .celpip-feedback-hint.bad { color: #dc3545; }
 
+    .celpip-diagram-image { width:100%; height:auto; border:1px solid #d7dce0; border-radius:6px; display:block; margin-top:.25rem; }
     .diagram-table { width:100%; border-collapse: collapse; font-size:.8rem; margin-top:.5rem; }
     .diagram-table th, .diagram-table td { border:1px solid #d7dce0; padding:.4rem .55rem; vertical-align:top; }
     .diagram-table th { background:#e2e8f0; }

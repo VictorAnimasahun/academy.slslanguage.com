@@ -60,6 +60,8 @@ $parts = [
             [
                 'type'          => 'diagram',
                 'passage_title' => 'Lemongrass Gardening Centre',
+                'image'         => 'lemongrass_gardening_centre.png',
+                'image_dir'     => 'CELPIP_PT_R_001',
                 'passage'       => '<p class="text-muted small">Grow your own organic garden with our selection of fruit and vegetable seeds! Gardening workshops held every Tuesday from 6:00–7:00 p.m. Or, simply drop by our store and speak to any of our knowledgeable staff. We are here to make your garden a success!</p>',
                 'diagram_rows'  => [
                     ['plant'=>'Tomatoes',  'difficulty'=>'Moderate','season'=>'Spring', 'notes'=>['need plenty of direct sunlight','plant seeds deeply in the soil','require moderate watering per week','grow well next to carrots']],
