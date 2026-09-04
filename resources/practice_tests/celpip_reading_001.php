@@ -183,35 +183,7 @@ $maxScore = 38;
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
-    <style>
-        .main-wrapper { padding: 1.5rem; min-height: 100vh; }
-        .sec-tabs { display: flex; border-bottom: 1px solid #dee2e6; margin-bottom: 1.5rem; flex-wrap:wrap; }
-        .sec-tab { border: none; background: transparent; padding: .55rem 1.2rem; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; cursor: pointer; font-size: .88rem; }
-        .sec-tab.active { color: #0d6efd; border-bottom-color: #0d6efd; }
-        .sec-panel { display: none; }
-        .sec-panel.active { display: block; }
-        .content-col { padding: 0 0 3rem; }
-        .passage-box { background: #f8fafc; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1rem; font-size: .92rem; line-height: 1.8; }
-        .passage-box h4 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
-        .sub-divider { border-top: 2px dashed #dee2e6; margin: 1.5rem 0; }
-        .q-num { font-weight: 700; color: #0d6efd; min-width: 2rem; display: inline-block; }
-        .question-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .75rem; flex-wrap: wrap; }
-        .match-select { border: 2px solid #dee2e6; border-radius: 6px; padding: .28rem .55rem; font-size: .88rem; background: #fff; }
-        .mcq-card { background: #f8f9fa; border-radius: 8px; padding: .9rem; margin-bottom: .9rem; }
-        .mcq-option { display: flex; align-items: flex-start; gap: .5rem; margin-bottom: .35rem; cursor: pointer; font-size: .9rem; }
-        .mcq-option input[type=radio] { margin-top: 3px; flex-shrink: 0; }
-        .feedback-correct { color: #198754; font-size: .78rem; font-weight: 600; }
-        .feedback-incorrect { color: #dc3545; font-size: .78rem; font-weight: 600; }
-        .section-badge { background: linear-gradient(135deg,#f59e0b,#fbbf24); color: white; padding: .3rem 1.1rem; border-radius: 50px; font-weight: 700; font-size: .82rem; }
-        .timer-display { font-size: 1.5rem; font-weight: 700; color: #0d6efd; font-family: monospace; }
-        .timer-display.warning { color: #dc3545; animation: blink 1s infinite; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
-        .result-badge { display: inline-block; color: #fff; border-radius: 8px; padding: .4rem 1rem; font-size: .95rem; font-weight: 700; margin: .25rem; }
-        .diagram-table { width:100%; border-collapse: collapse; font-size:.82rem; }
-        .diagram-table th, .diagram-table td { border:1px solid #e2e8f0; padding:.5rem .6rem; vertical-align:top; }
-        .diagram-table th { background:#eef2ff; }
-        @media (max-width: 767px) { .content-col { padding: 1rem 1rem 2rem; } }
-    </style>
+    <?php include __DIR__ . '/celpip_screen_styles.php'; ?>
 </head>
 <body class="light">
 <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
@@ -223,57 +195,15 @@ $maxScore = 38;
 
 <main class="content p-4">
 
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-        <nav aria-label="breadcrumb" class="mb-0">
-            <ol class="breadcrumb mb-0" style="font-size:.8rem;">
-                <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
-                <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
-                <li class="breadcrumb-item active">CELPIP Reading – Practice 1</li>
-            </ol>
-        </nav>
-        <div class="d-flex align-items-center gap-3">
-            <span class="section-badge">Reading</span>
-            <span class="text-muted small">38 Questions · 55 min</span>
-            <span id="timerDisplay" class="timer-display">55:00</span>
-            <button class="btn btn-primary btn-sm px-3" id="submitBtn" onclick="handleSubmit()">
-                <i class="bi bi-check2-circle me-1"></i>Submit
-            </button>
-        </div>
-    </div>
+    <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb mb-0" style="font-size:.8rem;">
+            <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
+            <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
+            <li class="breadcrumb-item active">CELPIP Reading – Practice 1</li>
+        </ol>
+    </nav>
 
-    <div class="sec-tabs">
-        <?php foreach ($parts as $pNum => $part): ?>
-        <button class="sec-tab <?= $pNum === 1 ? 'active' : '' ?>" onclick="switchSec(<?= $pNum ?>)" id="stab-<?= $pNum ?>">
-            <?= htmlspecialchars($part['title']) ?> <span class="text-muted" style="font-size:.7rem;"><?= htmlspecialchars($part['label']) ?></span>
-            <span class="text-muted ms-1" style="font-size:.72rem;">Q<?= $part['q_range'][0] ?>–<?= $part['q_range'][1] ?></span>
-        </button>
-        <?php endforeach; ?>
-    </div>
-
-    <form id="testForm" onsubmit="return false;">
-    <?php foreach ($parts as $pNum => $part): ?>
-    <div class="sec-panel <?= $pNum === 1 ? 'active' : '' ?>" id="spanel-<?= $pNum ?>">
-        <div class="content-col">
-            <?php foreach ($part['sections'] as $si => $sec): ?>
-                <?php if ($si > 0): ?><div class="sub-divider"></div><?php endif; ?>
-                <?php renderCelpipSection($sec); ?>
-            <?php endforeach; ?>
-
-            <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                <?php if ($pNum < count($parts)): ?>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="switchSec(<?= $pNum + 1 ?>)">
-                    Part <?= $pNum + 1 ?> <i class="bi bi-arrow-right ms-1"></i>
-                </button>
-                <?php else: ?>
-                <button type="button" class="btn btn-success px-4 btn-sm" onclick="handleSubmit()">
-                    Submit Test <i class="bi bi-send ms-1"></i>
-                </button>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-    <?php endforeach; ?>
-    </form>
+    <?php require __DIR__ . '/celpip_reading_shell.php'; ?>
 
 </main>
 </div><!-- /.main-wrapper -->
@@ -283,182 +213,7 @@ $maxScore = 38;
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-const CORRECT   = <?= json_encode($answers) ?>;
-const MAX_SCORE = <?= $maxScore ?>;
-const TEST_CODE = <?= json_encode($testCode) ?>;
-const startTime = Date.now();
-let userAnswers = {}, timeLeft = <?= $timeLimit ?>, submitted = false;
-
-const timerEl = document.getElementById('timerDisplay');
-const timerInterval = setInterval(() => {
-    if (submitted) return;
-    timeLeft--;
-    const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-    timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    if (timeLeft <= 300) timerEl.classList.add('warning');
-    if (timeLeft <= 0) { clearInterval(timerInterval); handleSubmit(true); }
-}, 1000);
-
-function switchSec(n) {
-    document.querySelectorAll('.sec-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.sec-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('spanel-' + n).classList.add('active');
-    document.getElementById('stab-' + n).classList.add('active');
-}
-
-function collectAnswers() {
-    document.querySelectorAll('select[data-q]').forEach(el => { userAnswers[el.dataset.q] = el.value.trim().toLowerCase(); });
-    document.querySelectorAll('input[type=radio]:checked[data-q]').forEach(el => { userAnswers[el.dataset.q] = el.value.trim().toLowerCase(); });
-}
-
-function gradeAnswers() {
-    let score = 0;
-    for (let q in CORRECT) {
-        const given = (userAnswers[q] || '').toLowerCase().trim();
-        if (CORRECT[q].includes(given)) score++;
-    }
-    return score;
-}
-
-function showFeedback() {
-    document.querySelectorAll('select[data-q]').forEach(el => {
-        const q = el.dataset.q, given = el.value.trim().toLowerCase(), correct = CORRECT[q] || [];
-        el.style.borderColor = correct.includes(given) ? '#198754' : '#dc3545';
-        el.style.background  = correct.includes(given) ? '#d1e7dd' : '#f8d7da';
-    });
-    document.querySelectorAll('.mcq-card').forEach(card => {
-        const q = card.dataset.q;
-        const given = (userAnswers[q] || '').toLowerCase();
-        const correct = (CORRECT[q] || [])[0] || '';
-        card.querySelectorAll('.mcq-option').forEach(opt => {
-            const val = opt.querySelector('input').value.toLowerCase();
-            opt.style.background = '';
-            if (val === correct) opt.style.background = '#d1e7dd';
-            else if (val === given) opt.style.background = '#f8d7da';
-        });
-    });
-}
-
-function saveAttempt(score, timeSpent) {
-    fetch('save_attempt.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            test_code:  TEST_CODE,
-            score,
-            max_score:  MAX_SCORE,
-            band_score: null,
-            time_spent: timeSpent,
-            answers:    userAnswers,
-        }),
-    }).catch(err => console.error('save_attempt:', err));
-}
-
-async function handleSubmit(auto = false) {
-    if (submitted) return;
-    if (!auto) {
-        const r = await Swal.fire({
-            title: 'Submit Test?', text: 'You cannot change your answers after submitting.', icon: 'question',
-            showCancelButton: true, confirmButtonText: 'Yes, submit', cancelButtonText: 'Continue working', confirmButtonColor: '#0d6efd',
-        });
-        if (!r.isConfirmed) return;
-    }
-    submitted = true;
-    clearInterval(timerInterval);
-    document.getElementById('submitBtn').disabled = true;
-    collectAnswers();
-    const score     = gradeAnswers();
-    const timeSpent = Math.round((Date.now() - startTime) / 1000);
-    showFeedback();
-    saveAttempt(score, timeSpent);
-    document.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
-    Swal.fire({
-        title: 'Test Complete!',
-        html: `<div class="text-center">
-                    <div class="result-badge" style="background:#0d6efd;">Score: ${score} / ${MAX_SCORE}</div>
-                    <p class="mt-3 text-muted small">Correct answers and model answers are shown below.</p>
-                </div>`,
-        icon: 'success', confirmButtonText: 'View Feedback', confirmButtonColor: '#0d6efd',
-    }).then(() => switchSec(1));
-}
-</script>
-
-<?php
-function renderCelpipSection(array $s): void {
-    switch ($s['type']) {
-        case 'mcq':             renderCelpipMcq($s);           break;
-        case 'paragraph_match':  renderCelpipParagraphMatch($s); break;
-        case 'diagram':          renderCelpipDiagram($s);        break;
-    }
-}
-
-function renderCelpipMcq(array $s): void {
-    if (!empty($s['passage'])): ?>
-    <div class="passage-box">
-        <?php if (!empty($s['passage_title'])): ?><h4><?= htmlspecialchars($s['passage_title']) ?></h4><?php endif; ?>
-        <?= $s['passage'] ?>
-    </div>
-    <?php endif; ?>
-    <p class="fw-semibold small"><?= $s['instructions'] ?></p>
-    <?php foreach ($s['questions'] as $q): ?>
-    <div class="mcq-card" data-q="<?= $q['q'] ?>">
-        <p class="fw-semibold small mb-2"><span class="q-num"><?= $q['q'] ?>.</span><?= htmlspecialchars($q['text']) ?></p>
-        <?php foreach ($q['options'] as $letter => $text): ?>
-        <label class="mcq-option">
-            <input type="radio" name="q<?= $q['q'] ?>" value="<?= strtolower($letter) ?>" data-q="<?= $q['q'] ?>">
-            <span class="small"><strong><?= $letter ?></strong> &nbsp; <?= htmlspecialchars($text) ?></span>
-        </label>
-        <?php endforeach; ?>
-    </div>
-    <?php endforeach;
-}
-
-function renderCelpipParagraphMatch(array $s): void { ?>
-    <div class="passage-box">
-        <h4><?= htmlspecialchars($s['passage_title']) ?></h4>
-        <?php foreach ($s['paragraphs'] as $letter => $text): ?>
-        <p><strong><?= $letter ?>.</strong> <?= htmlspecialchars($text) ?></p>
-        <?php endforeach; ?>
-        <p class="text-muted fst-italic mb-0"><strong>E.</strong> Not given in any of the above paragraphs.</p>
-    </div>
-    <p class="fw-semibold small"><?= $s['instructions'] ?></p>
-    <?php foreach ($s['questions'] as $row): ?>
-    <div class="question-row">
-        <span class="q-num"><?= $row['q'] ?>.</span>
-        <span class="flex-grow-1 small"><?= htmlspecialchars($row['text']) ?></span>
-        <select class="match-select" data-q="<?= $row['q'] ?>">
-            <option value="">–</option>
-            <?php foreach ($s['options'] as $opt): ?>
-            <option value="<?= strtolower($opt) ?>"><?= $opt ?><?= isset($s['option_labels'][$opt]) ? ' – ' . $s['option_labels'][$opt] : '' ?></option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-    <?php endforeach;
-}
-
-function renderCelpipDiagram(array $s): void { ?>
-    <div class="passage-box">
-        <h4><?= htmlspecialchars($s['passage_title']) ?></h4>
-        <?= $s['passage'] ?>
-        <div class="table-responsive">
-        <table class="diagram-table">
-            <thead><tr><th>Plant</th><th>Difficulty</th><th>Season</th><th>Notes</th></tr></thead>
-            <tbody>
-            <?php foreach ($s['diagram_rows'] as $row): ?>
-                <tr>
-                    <td><strong><?= htmlspecialchars($row['plant']) ?></strong></td>
-                    <td><?= htmlspecialchars($row['difficulty']) ?></td>
-                    <td><?= htmlspecialchars($row['season']) ?></td>
-                    <td><ul class="mb-0 ps-3"><?php foreach ($row['notes'] as $n): ?><li><?= htmlspecialchars($n) ?></li><?php endforeach; ?></ul></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-        </div>
-    </div>
-<?php }
-?>
+<?php include __DIR__ . '/celpip_reading_script.php'; ?>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
 </html>
