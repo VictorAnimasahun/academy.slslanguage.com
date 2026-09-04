@@ -711,6 +711,87 @@ DROP TABLE IF EXISTS api_tokens;
 
 ---
 
+## 050-054 — Seed CELPIP practice test containers (Listening/Reading/Writing T1+T2/Speaking, PT1-3)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-04 | Ran for the first time this session -- these 5 files existed but were never actually applied on local before now. 15 `tests` rows created (CELPIP_PT_[L\|R\|W1\|W2\|S]_00[1-3]). |
+| Live  | [ ] | | |
+
+**What it does:** Container rows only (title/duration/category) for 3 CELPIP practice test sets across all 5 sections. Writing T1/T2 pages already had real prompts hardcoded in PHP; Listening/Reading/Speaking pages were stub placeholders until migration 055+ below fills in real content per test.
+
+---
+
+## 055 — Seed real question content for CELPIP Reading Practice Test 1
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-04 | 38 questions, 141 options, 5 model answers -- verified via direct query and a PHP CLI render smoke test |
+| Live  | [ ] | | |
+
+**What it does:**
+- Transcribes CELPIP Reading Test 1 (Downloads/CELPIP TASKS/Celpip Reading/Test 1, 4 PDFs + answer key docx) into `questions`/`question_options`/`question_correct_answers` for `CELPIP_PT_R_001`
+- Updates `tests.total_questions` to 38 (was a placeholder 4)
+- Q29-33 (Part 4, viewpoint questions 1-5) are seeded as ungraded `short_answer` rows (points=0) because the source PDF never printed multiple-choice options for these 5 -- only the answer key's correct phrasing exists. They render as self-check reflection items in `celpip_reading_001.php`, not scored MCQ. Scored max is 33/38.
+- Companion page `resources/practice_tests/celpip_reading_001.php` replaced its stub with the full 4-part renderer (mcq / paragraph_match / diagram / unscored_reflect section types)
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_001'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_001'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_001');
+UPDATE tests SET total_questions = 4 WHERE code = 'CELPIP_PT_R_001';
+```
+
+---
+
+## 056 — Seed real question content for CELPIP Reading Practice Test 2
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-04 | 38 questions, 161 options -- verified via direct query and a PHP CLI render smoke test |
+| Live  | [ ] | | |
+
+**What it does:**
+- Transcribes CELPIP Reading Test 2 into `questions`/`question_options` for `CELPIP_PT_R_002`, all 38 questions scored (no ungraded items this time)
+- Part 1 uses the instructor's own rewritten passage + 11 questions (sent directly, replacing the source PDF's broken English and its own answer key)
+- Parts 2-4 are cleaned-up rewrites of the source PDFs -- same topics and same correct answers as the original material, wording polished because that source read as non-native/broken English throughout (unlike Test 1's source). See `project_celpip_practice_tests.md` memory for the full quality note.
+- Companion page `resources/practice_tests/celpip_reading_002.php` replaced its stub with a 4-part renderer (mcq / paragraph_match / schedule-diagram section types)
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_002'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_002'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_002');
+UPDATE tests SET total_questions = 4 WHERE code = 'CELPIP_PT_R_002';
+```
+
+---
+
+## 057 — Seed real question content for CELPIP Reading Practice Test 3
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-04 | 38 questions, 161 options -- verified via direct query and a PHP CLI render smoke test |
+| Live  | [ ] | | |
+
+**What it does:**
+- Transcribes CELPIP Reading Test 3 (`CELPIP READING Test III.pdf` -- all 4 parts in one file, easy to miss since Tests 1-2 split theirs across 4 separate PDFs) into `questions`/`question_options` for `CELPIP_PT_R_003`, all 38 scored
+- Answer key was `READING TEST 3 Answers.docx`, sitting directly in `Celpip Reading/` rather than inside `Test 3/` -- also easy to miss
+- Source prose was already native-quality (unlike Test 2), so this is a faithful transcription with only light polish -- one broken question stem in Part 4 Q3 ("Pallister does not [X]" didn't grammatically fit its own answer key text) was fixed by dropping "does not"
+- The answer key document's leading digit index was unreliable in several places (pointed at the wrong list position while the answer text itself was correct) -- answers were matched by text content against the source options, not by the printed digit
+- Companion page `resources/practice_tests/celpip_reading_003.php` replaced its stub with a 4-part renderer (mcq / paragraph_match / brochure-diagram section types)
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_003'));
+DELETE FROM question_options          WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_003'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_003');
+UPDATE tests SET total_questions = 4 WHERE code = 'CELPIP_PT_R_003';
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
