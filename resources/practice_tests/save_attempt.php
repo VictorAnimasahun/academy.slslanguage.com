@@ -145,7 +145,6 @@ try {
 
     foreach ($questions as $q_num => $q_info) {
         $q_id        = $q_info['id'];
-        $q_type      = $q_info['type'];
         $user_answer = trim($answers[$q_num] ?? '');
         $opt_id      = null;
         $score_awd   = 0.0;
@@ -153,8 +152,13 @@ try {
         if (in_array($q_num, $pair_q_nums)) {
             // Q29-30 pair
             $score_awd = $pair_scores[$q_num];
-        } elseif (in_array($q_type, ['multiple_choice_single', 'multiple_choice_multiple'])) {
-            // MCQ: score by correct option label
+        } elseif (isset($options_map[$q_id])) {
+            // Any question with defined answer options (multiple_choice_single/multiple,
+            // and option-based "matching" questions like CELPIP's paragraph-matching
+            // dropdowns, whose correct answer lives on question_options.is_correct
+            // rather than question_correct_answers) — score by correct option label.
+            // Branching on data presence rather than $q_type keeps this correct even
+            // when 'matching' is used both ways (typed-letter vs. dropdown-of-options).
             if ($user_answer !== '' && isset($correct_opts[$q_id])) {
                 if (in_array(strtolower($user_answer), $correct_opts[$q_id])) {
                     $score_awd = 1.0;
@@ -164,7 +168,8 @@ try {
                 $opt_id = $options_map[$q_id][strtoupper($user_answer)];
             }
         } else {
-            // Text answer: form_note_completion, table_completion, matching, sentence_completion, etc.
+            // Text answer: form_note_completion, table_completion, sentence_completion,
+            // typed-letter matching (e.g. "Write the correct letter, A-E"), etc.
             if ($user_answer !== '' && isset($correct_text[$q_id])) {
                 if (in_array(strtolower($user_answer), $correct_text[$q_id])) {
                     $score_awd = 1.0;
