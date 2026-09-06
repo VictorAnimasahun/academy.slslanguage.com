@@ -792,6 +792,48 @@ UPDATE tests SET total_questions = 4 WHERE code = 'CELPIP_PT_R_003';
 
 ---
 
+## 058 — Fix wrong answer key for CELPIP_PT_R_001 Q25
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-05 | Verified via direct query: option D → is_correct=0, option E → is_correct=1 |
+| Live  | [ ] | | |
+
+**What it does:**
+- Q25 ("Campsites are evenly spaced across the country.") was seeded in migration 055 with option D marked correct, following the source answer key document. That document's justification for D doesn't hold up on re-reading the passage — none of paragraphs A-D address geographic distribution/spacing. Correct answer is E (Not given).
+- Content error in the source material, caught by spot-checking the answer key against the passage itself.
+
+**Rollback:**
+```sql
+UPDATE question_options SET is_correct = 1 WHERE question_id = (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_001') AND question_number = 25) AND option_label = 'D';
+UPDATE question_options SET is_correct = 0 WHERE question_id = (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'CELPIP_PT_R_001') AND question_number = 25) AND option_label = 'E';
+```
+
+---
+
+## 059 — Seed batch 2 of vocabulary words (idiomatic/compound expressions)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-06 | 3 rows confirmed — sort_order 31-33 |
+| Live  | [ ] | | |
+
+**What it does:**
+- Adds 3 words to `vocabulary_words`, continuing from batch 1 (migration 041): colour in (phrase),
+  loan-sourced (adjective), slap-on (adjective)
+- `word_class` has no dedicated `idiom` value in the schema (migration 038) — these were classed as
+  `phrase`/`adjective`, the closest existing fit for phrasal-verb and compound-adjective style entries
+- Each row includes phonetic, word_class, CEFR level, AWL flag, definition, synonyms, antonyms,
+  collocations, and word family
+- INSERT IGNORE — safe to re-run
+
+**Rollback:**
+```sql
+DELETE FROM vocabulary_words WHERE sort_order BETWEEN 31 AND 33;
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
