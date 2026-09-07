@@ -39,6 +39,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => 'Response to Dr. Williams',
                 'passage'       => "<p>Dear Dr. Williams,</p>
 <p>I am writing to let you know that, unfortunately, <strong>(7)</strong>___ on November 29. My father has been <strong>(8)</strong>___ for knee surgery, and it's critical that I be with him at this time. I anticipate that I will be in Chicago for the next three weeks.</p>
@@ -73,6 +74,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => "J.K. Young's Email to James",
                 'passage'       => "<p><em>Subject: Week 6 Rehearsal Update</em></p>
 <p>Hi, whanau!</p>
@@ -158,6 +160,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => 'A Reader Comment',
                 'passage'       => "<p>This is a great article, but I see it a little differently. Most children actually have <strong>(34)</strong>___. In fact, children in Japan, China, and many other countries consume far less calcium than their North American peers, yet they still <strong>(35)</strong>___. That's because the human body is an incredibly efficient <strong>(36)</strong>___. Like our hair, bone is <strong>(37)</strong>___ that is constantly being built up, broken down, and renewed. Throughout our lives, bones take up and release calcium and other minerals as part of <strong>(38)</strong>___ by factors such as diet, exercise, hormones, genetics, and certain diseases.</p>",
                 'instructions' => 'Complete the comment by choosing the best option to fill in each blank.',

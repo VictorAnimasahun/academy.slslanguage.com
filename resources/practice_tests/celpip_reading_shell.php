@@ -7,8 +7,13 @@
 // the left, numbered questions with dropdown answers on the right).
 
 function renderCelpipInfoPanel(array $sections): void {
-    foreach ($sections as $i => $sec) {
-        if ($i > 0) echo '<div class="sub-divider"></div>';
+    $first = true;
+    foreach ($sections as $sec) {
+        // Reply/email passages with inline fill-in-the-blank dropdowns belong
+        // entirely in the work (right) panel, not here — see renderCelpipWorkPanel().
+        if (!empty($sec['inline_blanks'])) continue;
+        if (!$first) echo '<div class="sub-divider"></div>';
+        $first = false;
         switch ($sec['type']) {
             case 'mcq':
                 if (!empty($sec['passage'])) {
@@ -64,6 +69,15 @@ function renderCelpipWorkPanel(array $sections): void {
     foreach ($sections as $sec) {
         if (empty($sec['questions'])) continue;
         echo '<p class="fw-semibold small mb-2" style="color:#1f2937;">' . $sec['instructions'] . '</p>';
+
+        // Reply/email passages: render the full text here (right panel) with
+        // each (N)___ marker swapped for its dropdown, inline in the sentence —
+        // matching the real CELPIP UI — instead of a detached question list.
+        if (!empty($sec['inline_blanks'])) {
+            echo '<div class="celpip-inline-passage">' . renderCelpipInlineBlanks($sec['passage'], $sec['questions']) . '</div>';
+            continue;
+        }
+
         $options = $sec['options'] ?? null;
         $optionLabels = $sec['option_labels'] ?? [];
         foreach ($sec['questions'] as $q) {
@@ -79,6 +93,23 @@ function renderCelpipWorkPanel(array $sections): void {
             echo '</select></div>';
         }
     }
+}
+
+// Swaps each "<strong>(N)</strong>___" marker in a reply/email passage for
+// the matching question's dropdown, so the blank sits inline in the sentence.
+function renderCelpipInlineBlanks(string $passage, array $questions): string {
+    $byNum = [];
+    foreach ($questions as $q) { $byNum[$q['q']] = $q; }
+
+    return preg_replace_callback('/<strong>\((\d+)\)<\/strong>___/', function (array $m) use ($byNum) {
+        $q = $byNum[(int)$m[1]] ?? null;
+        if (!$q) return $m[0];
+        $select = '<select class="celpip-select celpip-select-inline" data-q="' . $q['q'] . '"><option value="">–</option>';
+        foreach ($q['options'] as $letter => $text) {
+            $select .= '<option value="' . strtolower($letter) . '">' . htmlspecialchars($letter) . '. ' . htmlspecialchars($text) . '</option>';
+        }
+        return $select . '</select>';
+    }, $passage);
 }
 ?>
 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">

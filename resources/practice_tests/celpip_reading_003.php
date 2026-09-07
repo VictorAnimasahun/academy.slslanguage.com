@@ -38,6 +38,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => "Christen's Reply",
                 'passage'       => "<p>Hi Cara!</p>
 <p>You are crazy! I was reading things twice to catch up with all your thoughts jumbled into one letter! Well, you're right that the ice scene in Korea <strong>(7)</strong>___; I do miss it though. I haven't been commuting much actually, as buses can be pretty crowded in Seoul, so <strong>(8)</strong>___. That's where I am staying for now, and yes, <strong>(9)</strong>___!</p>
@@ -71,6 +72,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => "Charles's Email to Maria",
                 'passage'       => "<p><em>Subject: Brochures</em></p>
 <p>Hi Maria,</p>
@@ -155,6 +157,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => 'A Visitor Comment',
                 'passage'       => "<p>Though I am not really a minimalist, I cannot help but <strong>(34)</strong>___. I currently drive a Mercedes, and I must tell you that the comfort I find in this car is out of this world! However, a Japanese automobile could have provided me <strong>(35)</strong>___. Then again, it's also a matter of the social world — do I need to show off with my car, or do I simply consider <strong>(36)</strong>___?</p>
 <p>Honestly, in the future, a change of car may be necessary as I get older. After retirement, <strong>(37)</strong>___ will be an important factor as I live off what I have left. Safety will become another very crucial priority, and considering <strong>(38)</strong>___, it gives me more things to think about.</p>",

@@ -35,6 +35,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => "Ms. Green's Reply",
                 'passage'       => "<p>Dear Else,</p>
 <p>Thank you for your recent email asking me to <strong>(7)</strong>___. I would like to assure you that I very much appreciate your comments about our policy. You are certainly not the first employee here at the Fabulous Furniture Company to <strong>(8)</strong>___ the requirements. I am aware, as your email suggests, that other companies are <strong>(9)</strong>___ policies.</p>
@@ -74,6 +75,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => "Alan's Email to Lucy",
                 'passage'       => "<p><em>Subject: Gardening</em></p>
 <p>Hey Lucy,<br>Any interest in planting a vegetable garden? It'd be a great way to get cheap, nutritious food. I know you're not a fan of dirt, but it could be fun! Check out the brochure!</p>
@@ -156,6 +158,7 @@ $parts = [
             ],
             [
                 'type'          => 'mcq',
+                'inline_blanks' => true,
                 'passage_title' => 'Visitor Comment',
                 'passage'       => "<p>I'm Metis, of French and Cree descent. Having just 1,000 remaining speakers, Michif, the language of my people, is being sustained through Canadian federal government funded programs like those described in the article. The goal is to save it through transmission to <strong>(34)</strong>___. I have two points. First, I remind the <strong>(35)</strong>___ that historically, the demise of Michif was anything but an organic process; Michif endured systematic government efforts to erase it. Michif therefore merits government efforts to help it <strong>(36)</strong>___. I strongly disagree with the notion that language-targeted government redress and reconciliation programs are <strong>(37)</strong>___. Second, Michif has several dialects; we chose to revitalize two. While Ms. Ducharme may think targeting languages for revival is <strong>(38)</strong>___, we think Michif is worth reviving.</p>",
                 'instructions' => 'Complete the comment by choosing the best option to fill in each blank.',
