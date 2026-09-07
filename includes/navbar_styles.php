@@ -211,10 +211,13 @@
 		margin-left: 260px;
 		margin-right: 0;
 		padding: 2rem;
-		transition: margin-left 0.3s ease;
+		transition: margin-left 0.3s ease, margin-right 0.3s ease;
 	}
 	body:has(.advert-sidebar) .main-wrapper {
 		margin-right: 280px;
+	}
+	body.ads-collapsed:has(.advert-sidebar) .main-wrapper {
+		margin-right: 0;
 	}
 
 	/* ── Right advert sidebar ─────────────────────────────────────── */
@@ -228,7 +231,55 @@
 		border-left: 1px solid rgba(15,23,42,0.04);
 		padding: 1.25rem;
 		overflow-y: auto;
+		transition: transform 0.3s ease;
 	}
+	body.ads-collapsed .advert-sidebar {
+		transform: translateX(100%);
+	}
+
+	/* ── Ad sidebar voluntary collapse toggle (test screens only) ──── */
+	.ads-toggle-btn {
+		position: absolute;
+		top: .5rem;
+		right: .5rem;
+		width: 1.75rem;
+		height: 1.75rem;
+		border: none;
+		border-radius: 6px;
+		background: rgba(15,23,42,0.06);
+		color: #64748b;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		font-size: .85rem;
+	}
+	.ads-toggle-btn:hover { background: rgba(15,23,42,0.12); color: #0f172a; }
+	body.dark .ads-toggle-btn { background: rgba(255,255,255,0.08); color: #94a3b8; }
+	body.dark .ads-toggle-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+	.ads-restore-tab {
+		display: none;
+		position: fixed;
+		top: 50%;
+		right: 0;
+		transform: translateY(-50%);
+		z-index: 1000;
+		width: 1.75rem;
+		height: 2.75rem;
+		align-items: center;
+		justify-content: center;
+		background: var(--sidebar-bg, #fff);
+		border: 1px solid rgba(15,23,42,0.08);
+		border-right: none;
+		border-radius: 8px 0 0 8px;
+		box-shadow: -2px 0 8px rgba(15,23,42,0.06);
+		color: #64748b;
+		cursor: pointer;
+	}
+	.ads-restore-tab:hover { color: #0f172a; }
+	body.ads-collapsed .ads-restore-tab { display: flex; }
+	body.dark .ads-restore-tab { background: #1e1e1e; border-color: rgba(255,255,255,0.08); color: #94a3b8; }
 
 	/* ── Content card styles ──────────────────────────────────────── */
 	.course-card {

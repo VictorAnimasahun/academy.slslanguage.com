@@ -334,6 +334,7 @@ PASSAGE,
         @media (max-width:1399px) { .sticky-header { right:0; } }
         @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
         body.sidebar-collapsed .sticky-header { left:0; }
+        body.ads-collapsed .sticky-header { right:0; }
         body.sidebar-collapsed .submit-bar  { left:0; }
     </style>
 </head>
@@ -497,7 +498,7 @@ PASSAGE,
     </main>
 </div>
 
-<?php include INCLUDES_PATH . '/adverts.php'; ?>
+<?php define('ADS_SIDEBAR_TOGGLE', true); include INCLUDES_PATH . '/adverts.php'; ?>
 
 <div class="submit-bar">
     <div style="display:flex;align-items:center;gap:.5rem;">

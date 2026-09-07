@@ -201,6 +201,8 @@ $DURATION_SECS = 40 * 60; // 30 min audio + 10 min transfer
         @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
         body.sidebar-collapsed .sticky-header { left:0; }
         body.sidebar-collapsed .submit-bar { left:0; }
+        body.ads-collapsed .sticky-header { right:0; }
+        body.ads-collapsed .submit-bar { right:0; }
     </style>
 </head>
 <body>
@@ -464,7 +466,7 @@ $DURATION_SECS = 40 * 60; // 30 min audio + 10 min transfer
     </main>
 </div><!-- end main-wrapper -->
 
-<?php include INCLUDES_PATH . '/adverts.php'; ?>
+<?php define('ADS_SIDEBAR_TOGGLE', true); include INCLUDES_PATH . '/adverts.php'; ?>
 
 <div class="submit-bar">
     <div style="display:flex; align-items:center; gap:.5rem;">
