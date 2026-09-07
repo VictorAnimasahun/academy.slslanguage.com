@@ -834,6 +834,45 @@ DELETE FROM vocabulary_words WHERE sort_order BETWEEN 31 AND 33;
 
 ---
 
+## 060 — Seed "consumerism" into vocabulary_words
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-06 | 1 row confirmed — sort_order 34, id 34 |
+| Live  | [ ] | | |
+
+**What it does:**
+- Adds "consumerism" (noun, C1) to `vocabulary_words`, continuing from batch 2 (migration 059)
+- Includes phonetic, definition, secondary definition, synonyms, antonyms, collocations, and word family
+- INSERT IGNORE — safe to re-run
+
+**Rollback:**
+```sql
+DELETE FROM vocabulary_words WHERE sort_order = 34;
+```
+
+---
+
+## 061 — Seed "canopy" and "understory" into vocabulary_words
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-07 | 2 rows confirmed — sort_order 35-36, ids 35-36 |
+| Live  | [ ] | | |
+
+**What it does:**
+- Adds 2 words to `vocabulary_words`, continuing from migration 060: canopy (noun, B2), understory (noun, C1)
+- Paired as antonyms of each other (forest canopy vs. understory layer) for matching/antonym quiz questions
+- Includes phonetic, definition, secondary definition (canopy only), synonyms, antonyms, collocations, and word family
+- INSERT IGNORE — safe to re-run
+
+**Rollback:**
+```sql
+DELETE FROM vocabulary_words WHERE sort_order BETWEEN 35 AND 36;
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
