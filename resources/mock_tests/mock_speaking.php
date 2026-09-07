@@ -90,8 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
         body.sidebar-collapsed .sticky-header { left:0; }
         body.sidebar-collapsed .submit-bar { left:0; }
-        body.ads-collapsed .sticky-header { right:0; }
-        body.ads-collapsed .submit-bar { right:0; }
     </style>
 </head>
 <body class="light">
@@ -184,6 +182,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
-    <?php define('ADS_SIDEBAR_TOGGLE', true); include INCLUDES_PATH . '/footer.php'; ?>
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
 </html>

@@ -205,7 +205,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     </main>
 
-    <?php define('ADS_SIDEBAR_TOGGLE', true); include INCLUDES_PATH . '/adverts.php'; ?>
+    <?php include INCLUDES_PATH . '/adverts.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>

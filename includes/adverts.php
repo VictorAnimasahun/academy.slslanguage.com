@@ -1,11 +1,6 @@
 <?php if (defined('ADVERTS_RENDERED')) return; define('ADVERTS_RENDERED', true); ?>
 <!-- Right Advertisement Sidebar -->
     <aside class="advert-sidebar">
-        <?php if (defined('ADS_SIDEBAR_TOGGLE')): ?>
-        <button type="button" class="ads-toggle-btn" onclick="toggleAdsSidebar()" title="Hide sidebar" aria-label="Hide sidebar">
-            <i class="bi bi-x-lg"></i>
-        </button>
-        <?php endif; ?>
 		 <!-- Internal Promo -->
         <div class="course-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
             <h6 class="mb-2">🎯 Quick Access</h6>
@@ -43,20 +38,3 @@
             </div>
         </div>
     </aside>
-
-    <?php if (defined('ADS_SIDEBAR_TOGGLE')): ?>
-    <button type="button" id="adsRestoreTab" class="ads-restore-tab" onclick="toggleAdsSidebar()" title="Show sidebar" aria-label="Show sidebar">
-        <i class="bi bi-chevron-left"></i>
-    </button>
-    <script>
-        (function() {
-            if (localStorage.getItem('eduhub-ads-collapsed') === 'true') {
-                document.body.classList.add('ads-collapsed');
-            }
-        })();
-        function toggleAdsSidebar() {
-            const collapsed = document.body.classList.toggle('ads-collapsed');
-            localStorage.setItem('eduhub-ads-collapsed', collapsed);
-        }
-    </script>
-    <?php endif; ?>

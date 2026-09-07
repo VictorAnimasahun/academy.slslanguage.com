@@ -107,8 +107,6 @@ if ($writingTest) {
         @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
         body.sidebar-collapsed .sticky-header { left:0; }
         body.sidebar-collapsed .submit-bar { left:0; }
-        body.ads-collapsed .sticky-header { right:0; }
-        body.ads-collapsed .submit-bar { right:0; }
     </style>
 </head>
 <body class="light">
@@ -220,7 +218,7 @@ if ($writingTest) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
-    <?php define('ADS_SIDEBAR_TOGGLE', true); include INCLUDES_PATH . '/footer.php'; ?>
+    <?php include INCLUDES_PATH . '/footer.php'; ?>
     <script>
     const SESSION_ID  = <?= $session_id ?>;
     const T1_Q = <?= json_encode($task1['question']) ?>;
