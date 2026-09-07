@@ -96,15 +96,22 @@ try {
         $t2q = trim($input['task2_question'] ?? '');
         $t2e = trim($input['task2_essay'] ?? '');
 
-        $r1 = $t1e ? gradeMockEssay($t1q, $t1e, 'writing_task1') : ['band' => 0.0, 'overall_feedback' => ''];
-        $r2 = $t2e ? gradeMockEssay($t2q, $t2e, 'writing_task2') : ['band' => 0.0, 'overall_feedback' => ''];
-
+        $r1    = $t1e ? gradeMockEssay($t1q, $t1e, 'writing_task1') : ['band' => 0.0, 'overall_feedback' => ''];
         $band1 = (float)($r1['band'] ?? 0);
-        $band2 = (float)($r2['band'] ?? 0);
-        $writing_band = round((($band1 + $band2) / 2) * 2) / 2;
 
-        $writing_feedback = "Task 1 — Band {$band1}\n" . ($r1['overall_feedback'] ?? '')
-            . "\n\nTask 2 — Band {$band2}\n" . ($r2['overall_feedback'] ?? '');
+        // Task 2 only counts if this mock actually configured a Task 2 question
+        // (e.g. the abridged diagnostic is Task 1 only) — otherwise an empty,
+        // never-asked-for Task 2 would drag the average down to roughly half.
+        if ($t2q !== '') {
+            $r2    = $t2e ? gradeMockEssay($t2q, $t2e, 'writing_task2') : ['band' => 0.0, 'overall_feedback' => ''];
+            $band2 = (float)($r2['band'] ?? 0);
+            $writing_band = round((($band1 + $band2) / 2) * 2) / 2;
+            $writing_feedback = "Task 1 — Band {$band1}\n" . ($r1['overall_feedback'] ?? '')
+                . "\n\nTask 2 — Band {$band2}\n" . ($r2['overall_feedback'] ?? '');
+        } else {
+            $writing_band = $band1;
+            $writing_feedback = "Task 1 — Band {$band1}\n" . ($r1['overall_feedback'] ?? '');
+        }
 
         $stmt = $db->prepare("
             INSERT INTO test_attempts
@@ -210,7 +217,11 @@ try {
             $answer_rows[] = [$q_id, $opt_id, $user_answer !== '' ? $user_answer : null, $score_awd];
         }
 
-        $band_score = $section === 'listening' ? listeningBand($score) : readingBand($score);
+        // The band tables below are calibrated for a 40-question section (the Full
+        // Mock tests). Scale shorter sections (e.g. the abridged diagnostic) up to
+        // that scale first — a no-op when max_score is already 40.
+        $scaledScore = $max_score > 0 ? $score * (40 / $max_score) : $score;
+        $band_score  = $section === 'listening' ? listeningBand($scaledScore) : readingBand($scaledScore);
 
         $stmt = $db->prepare("
             INSERT INTO test_attempts
@@ -276,7 +287,7 @@ function gradeMockEssay(string $question, string $essay, string $taskType): arra
         . '{"band":<0-9 in 0.5 steps>,"task_achievement":"...","coherence_cohesion":"...","lexical_resource":"...","grammatical_range":"...","overall_feedback":"...","improvements":["..."]}'
         . "\n\nCandidate response:\n{$essay}";
 
-    $url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=" . GEMINI_API_KEY;
+    $url = "https://generativelanguage.googleapis.com/v1/models/gemini-3.6-flash:generateContent?key=" . GEMINI_API_KEY;
     $ch  = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,

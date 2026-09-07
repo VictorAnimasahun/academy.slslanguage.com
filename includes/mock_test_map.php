@@ -35,4 +35,11 @@ return [
         'reading'   => ['file' => 'full_mock_004_reading.php',  'test_code' => 'IELTS_FM4_R'],
         'writing'   => ['file' => 'mock_writing.php',           'test_code' => 'IELTS_FM4_W'],
     ],
+    // Abridged diagnostic (IELTS Academic Masterclass, Week 1 Class 2) — same
+    // session-driven architecture as the Full Mock tests, just shorter content.
+    'IELTS_ACA_DIAGNOSTIC' => [
+        'listening' => ['file' => 'diagnostic_aca_listening.php', 'test_code' => 'IELTS_ACA_DIAG_L'],
+        'reading'   => ['file' => 'diagnostic_aca_reading.php',  'test_code' => 'IELTS_ACA_DIAG_R'],
+        'writing'   => ['file' => 'mock_writing.php',            'test_code' => 'IELTS_ACA_DIAG_W'],
+    ],
 ];

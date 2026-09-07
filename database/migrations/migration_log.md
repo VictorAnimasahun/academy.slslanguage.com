@@ -873,6 +873,54 @@ DELETE FROM vocabulary_words WHERE sort_order BETWEEN 35 AND 36;
 
 ---
 
+## 062 — Build out the IELTS Academic Masterclass (course_id=4)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-07 | 8 modules, 26 lessons confirmed |
+| Live  | [ ] | | |
+
+**What it does:**
+- The course row and its `intro.php` marketing copy already existed (8-week, 8-module, all-4-skills plan) but had zero modules/lessons in the DB, and its folder had a stray trailing dot (`IELTS_Aca_Mst.`) that broke every "Start Course" link — fixed via `git mv` in the same commit, not this migration.
+- Seeds all 8 weekly modules and 26 lessons: Week 1 (orientation + diagnostic test lesson), Weeks 2-4 (Listening/Reading/Vocab & Grammar, new content), Weeks 5-6 (Writing Task 1 / Task 2, using the user's Day 1-7 curriculum), Week 7 (Speaking), Week 8 (mock + review).
+- New pages `courses/IELTS_Aca_Mst/course_overview.php` and `lesson.php` render this content (generic DB-driven lesson viewer — first course to actually use the `lessons.content` column, which had never been rendered anywhere before).
+- Lesson 2 (Diagnostic Self-Assessment) links out via `file_path` to the diagnostic test — see migration 063.
+
+**Rollback:**
+```sql
+DELETE FROM lessons WHERE course_id = 4;
+DELETE FROM modules WHERE course_id = 4;
+UPDATE courses SET description = 'Advanced academic training for IELTS test-takers aiming for high band scores.', total_lessons = 8 WHERE id = 4;
+```
+
+---
+
+## 063 — Rebuild the IELTS Academic Diagnostic Test on the real mock architecture
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-07 | Full session flow (Listening → Reading → Writing → Speaking handoff) verified end-to-end with real scoring |
+| Live  | [ ] | | |
+
+**What it does:**
+- Replaces the old `diagnostic_IELTS.php` — a hardcoded, single-file page with fake client-side JS grading, mislabeled "IELTS Full Practice Test" — with the same DB-driven `tests`/`questions`/`mock_sessions` architecture the Full Mock tests use. `diagnostic_IELTS.php` is now a thin redirect stub for old bookmarks.
+- New container test `IELTS_ACA_DIAGNOSTIC` + 3 section tests (`IELTS_ACA_DIAG_L/R/W`), registered in `includes/mock_test_map.php`.
+- Listening reuses the real audio + questions/answers that were already hardcoded in the old page (copied to `assets/audio/IELTS_ACA_DIAGNOSTIC/`). The old Reading passage was an unfinished stub with no answer key, and the old Writing task was a General Training letter — wrong for an Academic course — so both were replaced with real, complete, Academic-appropriate content (a short passage + summary-completion questions; an Academic Task 1 bar-chart prompt, described in text since no chart image asset exists yet).
+- New launcher `resources/mock_tests/ielts_aca_diagnostic.php` and section runners `diagnostic_aca_listening.php` / `diagnostic_aca_reading.php`, modeled directly on the Full Mock 1 files. Writing and Speaking reuse the existing `mock_writing.php`/`mock_speaking.php` unmodified (already generic).
+- **Bug fixes made to shared `mock_save_section.php` while verifying this end-to-end** (backward-compatible — no-op for the existing 40-question Full Mocks):
+  - Listening/Reading band-score tables are calibrated for 40 questions; short sections now scale up first instead of producing nonsense bands (a perfect 10/10 was mapping to "Band 4").
+  - Writing band was unconditionally averaging Task 1 and Task 2 — an empty, never-configured Task 2 (as in this Task-1-only diagnostic) was dragging a real Task 1 Band 9 down to 4.5. Now only averages when Task 2 is actually configured for that mock.
+  - `gradeMockEssay()` was calling `gemini-2.0-flash`, which now 404s (deprecated) — **this was silently breaking Writing AI-grading for the Full Mock tests too**, not just the diagnostic. Updated to `gemini-3.6-flash`.
+
+**Rollback:**
+```sql
+DELETE FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'IELTS_ACA_DIAG%');
+DELETE FROM tests WHERE code LIKE 'IELTS_ACA_DIAG%';
+DELETE FROM mock_exams WHERE code = 'IELTS_ACA_DIAGNOSTIC';
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

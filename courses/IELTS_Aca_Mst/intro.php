@@ -191,8 +191,8 @@ if (!isset($_SESSION['user_id'])) {
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <a href="module1.php" class="btn btn-success btn-lg">
-                <i class="bi bi-play-circle me-2"></i>Start Week 1 — Module 1
+            <a href="course_overview.php" class="btn btn-success btn-lg">
+                <i class="bi bi-play-circle me-2"></i>Start Week 1 — Class 1
             </a>
             <a href="../courses_catalogue.php" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left-circle me-2"></i>Back to Courses
@@ -209,14 +209,7 @@ if (!isset($_SESSION['user_id'])) {
     <div class="course-card" style="background:linear-gradient(135deg,#ec4899 0%,#f472b6 100%);color:white;">
         <h6 class="mb-2">🎯 Quick Navigation</h6>
         <div class="d-grid gap-2">
-            <a href="module1.php" class="btn btn-light btn-sm"><i class="bi bi-1-circle me-1"></i>Module 1</a>
-            <a href="module2.php" class="btn btn-light btn-sm"><i class="bi bi-2-circle me-1"></i>Module 2</a>
-            <a href="module3.php" class="btn btn-light btn-sm"><i class="bi bi-3-circle me-1"></i>Module 3</a>
-            <a href="module4.php" class="btn btn-light btn-sm"><i class="bi bi-4-circle me-1"></i>Module 4</a>
-            <a href="module5.php" class="btn btn-light btn-sm"><i class="bi bi-5-circle me-1"></i>Module 5</a>
-            <a href="module6.php" class="btn btn-light btn-sm"><i class="bi bi-6-circle me-1"></i>Module 6</a>
-            <a href="module7.php" class="btn btn-light btn-sm"><i class="bi bi-7-circle me-1"></i>Module 7</a>
-            <a href="module8.php" class="btn btn-light btn-sm"><i class="bi bi-8-circle me-1"></i>Module 8</a>
+            <a href="course_overview.php" class="btn btn-light btn-sm"><i class="bi bi-list-check me-1"></i>Full Course Content</a>
         </div>
     </div>
     <h6 class="mb-3 text-muted mt-3"><i class="bi bi-megaphone me-2"></i>Sponsored</h6>
