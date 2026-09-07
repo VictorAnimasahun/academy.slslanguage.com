@@ -921,6 +921,26 @@ DELETE FROM mock_exams WHERE code = 'IELTS_ACA_DIAGNOSTIC';
 
 ---
 
+## 064 — Replace diagnostic Writing Task 1 placeholder with real prompt + chart image
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | |
+| Live  | [ ] | | |
+
+**What it does:**
+- Updates the `IELTS_ACA_DIAG_W` Task 1 question row seeded in 063 (which described a bar chart in text, since no image asset existed yet) with the real Cambridge Academic Task 1A prompt and its actual chart image, now on disk at `assets/img/mock_tests/IELTS_ACA_DIAGNOSTIC/writing_task1_chart.png`. The image path is stored in `questions.instructions`, the same convention `mock_writing.php` already used for Full Mock Task 1 visuals.
+- `diagnostic_aca_writing.php` now reads that path and renders the chart next to the prompt.
+- `slslanguage.com/sls-admin/mock_session_detail.php`'s Writing review modal now renders the same chart image (it was already selecting `instructions AS visual_note` but never displaying it) so instructors grading Task 1 can see the chart, not just the text prompt.
+
+**Rollback:**
+```sql
+-- Re-run migration 063's original Writing Task 1 INSERT values (text-described chart),
+-- or restore question_text/instructions from a pre-064 backup.
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

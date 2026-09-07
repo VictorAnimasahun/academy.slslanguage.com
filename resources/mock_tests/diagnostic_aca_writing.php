@@ -58,12 +58,16 @@ $stmt = $db->prepare("SELECT id FROM tests WHERE code = ? AND is_active = 1 LIMI
 $stmt->execute([$testCode]);
 $writingTest = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$task1 = ['question' => ''];
+$task1 = ['question' => '', 'visual' => null];
 
 if ($writingTest) {
-    $stmt = $db->prepare("SELECT question_text FROM questions WHERE test_id = ? AND question_number = 1 LIMIT 1");
+    $stmt = $db->prepare("SELECT question_text, instructions FROM questions WHERE test_id = ? AND question_number = 1 LIMIT 1");
     $stmt->execute([(int)$writingTest['id']]);
-    $task1['question'] = $stmt->fetchColumn() ?: '';
+    $wq = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($wq) {
+        $task1['question'] = $wq['question_text'] ?? '';
+        $task1['visual']   = $wq['instructions'] ? ACADEMY_URL . $wq['instructions'] : null;
+    }
 }
 
 $DURATION_SECS = 20 * 60; // 20 minutes — Task 1 only
@@ -150,6 +154,9 @@ $wordMin       = 150;
                     <div class="col-lg-5">
                         <p class="small fw-semibold text-uppercase text-muted mb-2">Writing Task 1</p>
                         <div class="prompt-box"><?= htmlspecialchars($task1['question']) ?></div>
+                        <?php if ($task1['visual']): ?>
+                            <img src="<?= htmlspecialchars($task1['visual']) ?>" alt="Task 1 chart" class="img-fluid rounded border">
+                        <?php endif; ?>
                     </div>
                     <div class="col-lg-7">
                         <div class="d-flex justify-content-between align-items-center mb-2">
