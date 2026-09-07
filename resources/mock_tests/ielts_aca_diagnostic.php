@@ -41,9 +41,9 @@ if ($existing) {
     } elseif (is_null($existing['reading_attempt_id'])) {
         header("Location: diagnostic_aca_reading.php?session_id={$sid}");
     } elseif (is_null($existing['writing_attempt_id'])) {
-        header("Location: mock_writing.php?session_id={$sid}");
+        header("Location: diagnostic_aca_writing.php?session_id={$sid}");
     } else {
-        header("Location: mock_speaking.php?session_id={$sid}");
+        header("Location: diagnostic_aca_speaking.php?session_id={$sid}");
     }
     exit();
 }

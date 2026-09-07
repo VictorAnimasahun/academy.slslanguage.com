@@ -249,8 +249,8 @@ PASSAGE,
                 <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
                 <a href="diagnostic_aca_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
                 <a href="diagnostic_aca_reading.php?session_id=<?= $session_id ?>"   style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">📖 Reading</a>
-                <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
-                <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
+                <a href="diagnostic_aca_writing.php?session_id=<?= $session_id ?>"  style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
+                <a href="diagnostic_aca_speaking.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
             </div>
             <?php endif; ?>
             <div class="d-flex align-items-center justify-content-between">

@@ -252,15 +252,12 @@ try {
 }
 
 function nextSection(string $section, int $session_id, string $mockCode): string {
-    if ($section === 'writing') {
-        return 'mock_speaking.php?session_id=' . $session_id;
-    }
-    $next = ['listening' => 'reading', 'reading' => 'writing'];
+    $next = ['listening' => 'reading', 'reading' => 'writing', 'writing' => 'speaking'];
     $nextSection = $next[$section] ?? null;
     if (!$nextSection) return 'mock_start.php';
 
     $map = require INCLUDES_PATH . '/mock_test_map.php';
-    $file = $map[$mockCode][$nextSection]['file'] ?? 'mock_start.php';
+    $file = $map[$mockCode][$nextSection]['file'] ?? 'mock_speaking.php';
     return $file . '?session_id=' . $session_id;
 }
 

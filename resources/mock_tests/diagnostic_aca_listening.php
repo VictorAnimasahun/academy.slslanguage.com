@@ -233,8 +233,8 @@ $DURATION_SECS  = 15 * 60; // short audio + transfer time
                 <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
                 <a href="diagnostic_aca_listening.php?session_id=<?= $session_id ?>" style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎧 Listening</a>
                 <a href="diagnostic_aca_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
-                <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
-                <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
+                <a href="diagnostic_aca_writing.php?session_id=<?= $session_id ?>"  style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
+                <a href="diagnostic_aca_speaking.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
             </div>
             <?php endif; ?>
             <div class="d-flex align-items-center justify-content-between">
@@ -352,8 +352,10 @@ $DURATION_SECS  = 15 * 60; // short audio + transfer time
                 <?php endif; ?>
 
                 <?php
-                    // Stimulus heading (form title, etc.)
-                    if (!empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStimulus):
+                    // Stimulus heading (form title). Scoped to form_note_completion only —
+                    // matching questions also carry stimulus_text (it gates the shared
+                    // A/B/C legend box below) and would otherwise get this title box too.
+                    if ($qtype === 'form_note_completion' && !empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStimulus):
                         $prevStimulus = $q['stimulus_text'];
                 ?>
                     <div class="ff-title"><?= htmlspecialchars($q['stimulus_text']) ?></div>
