@@ -7,22 +7,32 @@
 -- old Writing task was a General Training letter — wrong content for an Academic
 -- course — so both are replaced with real, complete, Academic-appropriate content.
 -- Run on LOCAL first, then LIVE.
+-- Idempotent: every INSERT below is guarded so re-running this file only fills
+-- in whatever's missing — safe to paste again after a partial/failed run.
 
 -- ── Container + section tests ────────────────────────────────────────────────
 INSERT INTO tests (code, title, description, test_type, category, duration_minutes, total_questions, is_active, is_mock_section)
-VALUES ('IELTS_ACA_DIAGNOSTIC', 'IELTS Academic Diagnostic Test',
-        'A short diagnostic across Listening, Reading, Writing Task 1, and Speaking Part 2 — used to show where a student stands before starting the Masterclass.',
-        'IELTS_Academic', 'Full', 60, 18, 1, 1);
+SELECT 'IELTS_ACA_DIAGNOSTIC', 'IELTS Academic Diagnostic Test',
+       'A short diagnostic across Listening, Reading, Writing Task 1, and Speaking Part 2 — used to show where a student stands before starting the Masterclass.',
+       'IELTS_Academic', 'Full', 60, 18, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM tests WHERE code = 'IELTS_ACA_DIAGNOSTIC');
 
 INSERT INTO tests (code, title, test_type, category, duration_minutes, total_questions, is_active, is_mock_section)
-VALUES
-('IELTS_ACA_DIAG_L', 'IELTS Academic Diagnostic — Listening', 'IELTS_Academic', 'Listening', 20, 10, 1, 1),
-('IELTS_ACA_DIAG_R', 'IELTS Academic Diagnostic — Reading',   'IELTS_Academic', 'Reading',   20, 7,  1, 1),
-('IELTS_ACA_DIAG_W', 'IELTS Academic Diagnostic — Writing',   'IELTS_Academic', 'Writing',   20, 1,  1, 1);
+SELECT 'IELTS_ACA_DIAG_L', 'IELTS Academic Diagnostic — Listening', 'IELTS_Academic', 'Listening', 20, 10, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM tests WHERE code = 'IELTS_ACA_DIAG_L');
+
+INSERT INTO tests (code, title, test_type, category, duration_minutes, total_questions, is_active, is_mock_section)
+SELECT 'IELTS_ACA_DIAG_R', 'IELTS Academic Diagnostic — Reading', 'IELTS_Academic', 'Reading', 20, 7, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM tests WHERE code = 'IELTS_ACA_DIAG_R');
+
+INSERT INTO tests (code, title, test_type, category, duration_minutes, total_questions, is_active, is_mock_section)
+SELECT 'IELTS_ACA_DIAG_W', 'IELTS Academic Diagnostic — Writing', 'IELTS_Academic', 'Writing', 20, 1, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM tests WHERE code = 'IELTS_ACA_DIAG_W');
 
 INSERT INTO mock_exams (code, exam_type, title, description, total_duration_minutes)
-VALUES ('IELTS_ACA_DIAGNOSTIC', 'IELTS_Academic', 'IELTS Academic Diagnostic Test',
-        'Abridged diagnostic covering all four skills, taken before Week 2 of the Masterclass.', 60);
+SELECT 'IELTS_ACA_DIAGNOSTIC', 'IELTS_Academic', 'IELTS Academic Diagnostic Test',
+       'Abridged diagnostic covering all four skills, taken before Week 2 of the Masterclass.', 60
+WHERE NOT EXISTS (SELECT 1 FROM mock_exams WHERE code = 'IELTS_ACA_DIAGNOSTIC');
 
 -- ── Listening — Q1-6 form completion, Q7-10 matching (real answers, matches the
 --    real audio already on disk at assets/audio/IELTS_ACA_DIAGNOSTIC/listening_part1.mp3) ──
@@ -45,7 +55,8 @@ FROM tests t,
   UNION ALL SELECT 9,  'matching', 'Where does the agent suggest packing: family photos?',  'Where does the agent suggest packing the following items? Choose the correct letter A, B, or C.', NULL
   UNION ALL SELECT 10, 'matching', 'Where does the agent suggest packing: computers?',      'Where does the agent suggest packing the following items? Choose the correct letter A, B, or C.', NULL
 ) d
-WHERE t.code = 'IELTS_ACA_DIAG_L';
+WHERE t.code = 'IELTS_ACA_DIAG_L'
+  AND NOT EXISTS (SELECT 1 FROM questions q2 WHERE q2.test_id = t.id AND q2.question_number = d.qn);
 
 INSERT INTO question_correct_answers (question_id, answer_text, is_case_sensitive, is_alternative)
 SELECT q.id, d.ans, 0, 0
@@ -54,7 +65,8 @@ FROM questions q JOIN tests t ON t.id = q.test_id,
   SELECT 1 qn, '0215551234' ans UNION ALL SELECT 2, 'Queen Street' UNION ALL SELECT 3, 'Maple Road'
   UNION ALL SELECT 4, 'January 6th' UNION ALL SELECT 5, 'January 11th' UNION ALL SELECT 6, '2'
 ) d
-WHERE t.code = 'IELTS_ACA_DIAG_L' AND q.question_number = d.qn;
+WHERE t.code = 'IELTS_ACA_DIAG_L' AND q.question_number = d.qn
+  AND NOT EXISTS (SELECT 1 FROM question_correct_answers qca WHERE qca.question_id = q.id AND qca.answer_text = d.ans);
 
 -- question_options here is for DISPLAY only (the shared "Personal meanings" legend
 -- box on Q7 reads from this). Scoring for question_type='matching' is NOT based on
@@ -69,7 +81,8 @@ FROM questions q JOIN tests t ON t.id = q.test_id,
   UNION ALL SELECT 9, 'A', 'readily accessible', 0, 1 UNION ALL SELECT 9, 'B', 'personal objects', 0, 2 UNION ALL SELECT 9, 'C', 'precious items', 1, 3
   UNION ALL SELECT 10,'A', 'readily accessible', 0, 1 UNION ALL SELECT 10,'B', 'personal objects', 0, 2 UNION ALL SELECT 10,'C', 'precious items', 1, 3
 ) d
-WHERE t.code = 'IELTS_ACA_DIAG_L' AND q.question_number = d.qn;
+WHERE t.code = 'IELTS_ACA_DIAG_L' AND q.question_number = d.qn
+  AND NOT EXISTS (SELECT 1 FROM question_options qo WHERE qo.question_id = q.id AND qo.option_label = d.lbl);
 
 INSERT INTO question_correct_answers (question_id, answer_text, is_case_sensitive, is_alternative)
 SELECT q.id, d.ans, 0, 0
@@ -77,7 +90,8 @@ FROM questions q JOIN tests t ON t.id = q.test_id,
 (
   SELECT 7 qn, 'b' ans UNION ALL SELECT 8, 'a' UNION ALL SELECT 9, 'c' UNION ALL SELECT 10, 'c'
 ) d
-WHERE t.code = 'IELTS_ACA_DIAG_L' AND q.question_number = d.qn;
+WHERE t.code = 'IELTS_ACA_DIAG_L' AND q.question_number = d.qn
+  AND NOT EXISTS (SELECT 1 FROM question_correct_answers qca WHERE qca.question_id = q.id AND qca.answer_text = d.ans);
 
 -- ── Reading — one short academic passage (Urban Beekeeping), summary completion ──
 -- NOTE: the passage text itself is hardcoded in diagnostic_aca_reading.php (matching
@@ -95,7 +109,8 @@ FROM tests t,
   UNION ALL SELECT 6, 'Many municipalities require beekeepers to _____ their hives with the local authority.'
   UNION ALL SELECT 7, 'Many new beekeepers now join _____ that provide training.'
 ) d
-WHERE t.code = 'IELTS_ACA_DIAG_R';
+WHERE t.code = 'IELTS_ACA_DIAG_R'
+  AND NOT EXISTS (SELECT 1 FROM questions q2 WHERE q2.test_id = t.id AND q2.question_number = d.qn);
 
 INSERT INTO question_correct_answers (question_id, answer_text, is_case_sensitive, is_alternative)
 SELECT q.id, d.ans, 0, 0
@@ -109,7 +124,8 @@ FROM questions q JOIN tests t ON t.id = q.test_id,
   UNION ALL SELECT 6, 'register'
   UNION ALL SELECT 7, 'associations' UNION ALL SELECT 7, 'beekeeping associations'
 ) d
-WHERE t.code = 'IELTS_ACA_DIAG_R' AND q.question_number = d.qn;
+WHERE t.code = 'IELTS_ACA_DIAG_R' AND q.question_number = d.qn
+  AND NOT EXISTS (SELECT 1 FROM question_correct_answers qca WHERE qca.question_id = q.id AND qca.answer_text = d.ans);
 
 -- ── Writing — Task 1 only (bar chart data given as text; no chart image asset
 --    exists yet, so the data is described in the prompt itself instead) ──────
@@ -128,7 +144,9 @@ United Kingdom  60%     96%
 
 Write at least 150 words.',
 1.0, 1
-FROM tests t WHERE t.code = 'IELTS_ACA_DIAG_W';
+FROM tests t
+WHERE t.code = 'IELTS_ACA_DIAG_W'
+  AND NOT EXISTS (SELECT 1 FROM questions q2 WHERE q2.test_id = t.id AND q2.question_number = 1);
 
 -- ── Speaking — Part 2, administered live for now, same as mock_speaking.php for the
 --    Full Mock tests: it's a pure status/handoff screen (marks the session

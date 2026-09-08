@@ -899,13 +899,17 @@ UPDATE courses SET description = 'Advanced academic training for IELTS test-take
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [x] | 2026-09-07 | Full session flow (Listening → Reading → Writing → Speaking handoff) verified end-to-end with real scoring |
-| Live  | [ ] | | |
+| Local | [x] | 2026-09-07 | Full session flow (Listening → Reading → Writing → Speaking handoff) verified end-to-end with real scoring. **Listening content itself was WRONG — see correction below and migration 065.** |
+| Live  | [ ] | | Blocked on first INSERT — see "Live re-run" note below. Content-wise, run the corrected/idempotent version of this file (065 fixes Listening on top of it). |
+
+> **Correction (2026-09-08):** the Listening section below reused the old `diagnostic_IELTS.php` page's audio + questions, which were never verified against real IELTS material. The original instruction was to reuse a Full Mock's already-confirmed audio + content instead. Fixed in migration 065 (deletes this section's Listening content and reseeds from `IELTS_FM1_L` Part 1). Reading and Writing content in this migration are unaffected and correct as written below.
+>
+> **Live re-run note:** the original (non-idempotent) version of this file failed live with `Duplicate entry 'IELTS_ACA_DIAGNOSTIC' for key 'code'` — a prior partial attempt had already inserted the container `tests` row. The file on disk now has every `INSERT` guarded with `WHERE NOT EXISTS`, so it's safe to paste and re-run as-is; it only fills in what's missing. Run in order on live: 063 (idempotent) → 064 → 065.
 
 **What it does:**
 - Replaces the old `diagnostic_IELTS.php` — a hardcoded, single-file page with fake client-side JS grading, mislabeled "IELTS Full Practice Test" — with the same DB-driven `tests`/`questions`/`mock_sessions` architecture the Full Mock tests use. `diagnostic_IELTS.php` is now a thin redirect stub for old bookmarks.
 - New container test `IELTS_ACA_DIAGNOSTIC` + 3 section tests (`IELTS_ACA_DIAG_L/R/W`), registered in `includes/mock_test_map.php`.
-- Listening reuses the real audio + questions/answers that were already hardcoded in the old page (copied to `assets/audio/IELTS_ACA_DIAGNOSTIC/`). The old Reading passage was an unfinished stub with no answer key, and the old Writing task was a General Training letter — wrong for an Academic course — so both were replaced with real, complete, Academic-appropriate content (a short passage + summary-completion questions; an Academic Task 1 bar-chart prompt, described in text since no chart image asset exists yet).
+- ~~Listening reuses the real audio + questions/answers that were already hardcoded in the old page (copied to `assets/audio/IELTS_ACA_DIAGNOSTIC/`).~~ **Superseded by migration 065** — see correction note above. The old Reading passage was an unfinished stub with no answer key, and the old Writing task was a General Training letter — wrong for an Academic course — so both were replaced with real, complete, Academic-appropriate content (a short passage + summary-completion questions; an Academic Task 1 bar-chart prompt, described in text since no chart image asset exists yet).
 - New launcher `resources/mock_tests/ielts_aca_diagnostic.php` and section runners `diagnostic_aca_listening.php` / `diagnostic_aca_reading.php`, modeled directly on the Full Mock 1 files. Writing and Speaking reuse the existing `mock_writing.php`/`mock_speaking.php` unmodified (already generic).
 - **Bug fixes made to shared `mock_save_section.php` while verifying this end-to-end** (backward-compatible — no-op for the existing 40-question Full Mocks):
   - Listening/Reading band-score tables are calibrated for 40 questions; short sections now scale up first instead of producing nonsense bands (a perfect 10/10 was mapping to "Band 4").
@@ -925,7 +929,7 @@ DELETE FROM mock_exams WHERE code = 'IELTS_ACA_DIAGNOSTIC';
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | |
+| Local | [x] | 2026-09-07 | Question row updated, chart renders on diagnostic_aca_writing.php |
 | Live  | [ ] | | |
 
 **What it does:**
@@ -937,6 +941,28 @@ DELETE FROM mock_exams WHERE code = 'IELTS_ACA_DIAGNOSTIC';
 ```sql
 -- Re-run migration 063's original Writing Task 1 INSERT values (text-described chart),
 -- or restore question_text/instructions from a pre-064 backup.
+```
+
+---
+
+## 065 — Fix IELTS Academic Diagnostic Listening: use real Full Mock 1 content, not the old page's
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-08 | Verified: 10 questions, 13 answer rows (3 with a spelling/case alternative), matches FM1 Part 1 exactly |
+| Live  | [ ] | | Run after 063 (idempotent) and 064 |
+
+**What it does:**
+- Migration 063 wired the diagnostic's Listening section to `diagnostic_IELTS.php`'s old hardcoded audio + questions — content that was never verified against real IELTS material, just carried over during the architecture rebuild. The actual instruction was to reuse a Full Mock's audio + written content, since the Full Mocks (1-4) are already confirmed correct.
+- Deletes whatever Listening content exists for `IELTS_ACA_DIAG_L` (the old page's Q1-10 form/matching content locally; nothing on live, since 063 never got past its first `INSERT` there) and reseeds it from `IELTS_FM1_L` Part 1 — "Children's Engineering Workshops", 10 note-completion questions, real Cambridge content, already used and confirmed correct by the Full Mock 1 listening test.
+- Swapped `assets/audio/IELTS_ACA_DIAGNOSTIC/listening_part1.mp3` for a copy of `assets/audio/IELTS_FULL_MOCK_001/listening_part1.mp3` (checksum-verified identical). `diagnostic_aca_listening.php` needed no code change — same file path, same page template (plain form/note completion, no matching UI needed now).
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_ACA_DIAG_L'));
+DELETE FROM question_options WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_ACA_DIAG_L'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_ACA_DIAG_L');
+-- then re-run migration 063's original (now-superseded) Listening INSERTs if reverting to the old page's content.
 ```
 
 ---
