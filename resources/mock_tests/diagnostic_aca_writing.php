@@ -67,13 +67,15 @@ if ($writingTest) {
     if ($wq) {
         $task1['question'] = $wq['question_text'] ?? '';
         // `instructions` doubles as plain task notes for GT-style letter tasks
-        // and as an image path for Academic chart tasks -- only treat it as a
-        // visual if it actually looks like a path, otherwise it renders a
-        // broken <img>.
-        $rawInstructions  = $wq['instructions'] ?? null;
-        $task1['visual']  = ($rawInstructions && (str_contains($rawInstructions, '/') || str_contains($rawInstructions, '.'))
-                              && !str_contains($rawInstructions, ' '))
-                             ? ACADEMY_URL . $rawInstructions : null;
+        // and as an image path for Academic chart tasks (charts are static
+        // uploaded files, never rendered live) -- only treat it as a visual
+        // if it actually ends in an image extension. Uploaded filenames in
+        // this project often contain spaces (see the CELPIP PPTX imports),
+        // so "no spaces" is not a safe way to detect a path -- the
+        // extension is.
+        $rawInstructions = $wq['instructions'] ?? null;
+        $task1['visual'] = ($rawInstructions && preg_match('/\.(png|jpe?g|gif|webp|svg)$/i', trim($rawInstructions)))
+                            ? ACADEMY_URL . $rawInstructions : null;
     }
 }
 

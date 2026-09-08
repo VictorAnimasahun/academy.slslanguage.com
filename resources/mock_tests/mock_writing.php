@@ -68,13 +68,14 @@ if ($writingTest) {
             $task1['question'] = $wq['question_text'] ?? '';
             // `instructions` doubles as plain task notes for GT letter tasks
             // (e.g. "Write at least 150 words...") and as an image path for
-            // Academic chart tasks -- only treat it as a visual if it
-            // actually looks like a path, otherwise it renders a broken
-            // <img> for every GT-style Task 1.
-            $rawInstructions  = $wq['instructions'] ?? null;
-            $task1['visual']  = ($rawInstructions && (str_contains($rawInstructions, '/') || str_contains($rawInstructions, '.'))
-                                  && !str_contains($rawInstructions, ' '))
-                                 ? $rawInstructions : null;
+            // Academic chart tasks (charts are static uploaded files, never
+            // rendered live) -- only treat it as a visual if it actually
+            // ends in an image extension. Uploaded filenames in this project
+            // often contain spaces (see the CELPIP PPTX imports), so "no
+            // spaces" is not a safe way to detect a path -- the extension is.
+            $rawInstructions = $wq['instructions'] ?? null;
+            $task1['visual'] = ($rawInstructions && preg_match('/\.(png|jpe?g|gif|webp|svg)$/i', trim($rawInstructions)))
+                                ? $rawInstructions : null;
         } elseif ((int)$wq['question_number'] === 2) {
             $task2['question'] = $wq['question_text'] ?? '';
         }
