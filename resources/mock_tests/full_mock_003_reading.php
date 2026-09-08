@@ -257,74 +257,7 @@ PASSAGE,
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
-    <style>
-        /* ── Part tabs ──────────────────────────────────────── */
-        .part-tabs-bar { display:flex; align-items:center; border-bottom:1px solid #e5e7eb; margin-bottom:1.5rem; }
-        .part-tabs-scrollable { display:flex; flex:1; overflow-x:auto; }
-        .part-tab-btn { display:flex; flex-direction:column; align-items:center; padding:.5rem 1.1rem; border:none; border-bottom:3px solid transparent; background:transparent; cursor:pointer; font-size:.82rem; font-weight:600; color:#6b7280; transition:all .2s; gap:1px; position:relative; white-space:nowrap; }
-        .part-tab-btn:hover { color:#667eea; }
-        .part-tab-btn.active { color:#667eea; border-bottom-color:#667eea; }
-        .tab-qrange { font-size:.67rem; color:#9ca3af; }
-        .part-tab-btn.active .tab-qrange { color:#a5b4fc; }
-        .done-dot { position:absolute; top:5px; right:6px; width:7px; height:7px; border-radius:50%; background:#10b981; display:none; }
-        .part-tab-btn.all-answered .done-dot { display:block; }
-        .inline-timer { display:flex; align-items:center; gap:.35rem; font-size:.88rem; font-weight:700; color:#facc15; background:#1a2236; border-radius:8px; padding:.3rem .85rem; margin-left:auto; flex-shrink:0; white-space:nowrap; }
-        .inline-timer.warning { color:#ef4444; animation:blink 1s infinite; }
-        @keyframes blink { 0%,100%{opacity:1}50%{opacity:.4} }
-
-        /* ── Layout ─────────────────────────────────────────── */
-        .section-content { background:#fff; border-radius:12px; padding:2rem; box-shadow:0 4px 20px rgba(0,0,0,.06); }
-        .btn-exit { background:#f3f4f6; border:1.5px solid #e5e7eb; color:#374151; border-radius:6px; padding:.28rem .85rem; font-size:.8rem; font-weight:600; cursor:pointer; transition:all .2s; }
-        .btn-exit:hover { background:#ef4444; border-color:#ef4444; color:#fff; }
-        .part-panel { display:none; }
-        .part-panel.active { display:block; }
-
-        /* ── Passage ────────────────────────────────────────── */
-        .passage-box { background:#fafafa; border:1px solid #e5e7eb; border-radius:8px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; max-height:420px; overflow-y:auto; }
-        .passage-box p { font-size:.9rem; line-height:1.75; color:#374151; margin-bottom:.55rem; }
-        .passage-box .passage-title-main { font-size:1rem; font-weight:700; color:#111827; margin-bottom:.85rem; }
-        .passage-box .para-label { font-weight:700; color:#374151; margin-right:.4rem; }
-
-        /* ── Question blocks ────────────────────────────────── */
-        .q-instructions { background:#eff6ff; border-left:3px solid #667eea; border-radius:0 6px 6px 0; padding:.6rem 1rem; font-size:.875rem; color:#1e40af; margin-bottom:1rem; line-height:1.5; }
-        .q-block { margin-bottom:1.25rem; }
-        .q-badge { display:inline-flex; align-items:center; justify-content:center; background:#667eea; color:#fff; font-size:.68rem; font-weight:700; border-radius:4px; min-width:20px; height:18px; padding:0 4px; margin-right:4px; vertical-align:middle; }
-        .q-text { font-size:.9rem; color:#1f2937; line-height:1.6; }
-
-        /* TRUE/FALSE/NOT GIVEN */
-        .tfng-wrap { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.4rem; }
-        .tfng-opt { display:flex; align-items:center; gap:.35rem; padding:.3rem .75rem; border:1.5px solid #d1d5db; border-radius:6px; cursor:pointer; font-size:.82rem; font-weight:600; color:#374151; transition:all .15s; }
-        .tfng-opt:has(input:checked) { background:#667eea; border-color:#667eea; color:#fff; }
-
-        /* MCQ */
-        .mc-option { display:flex; align-items:flex-start; gap:.5rem; padding:.35rem .65rem; border-radius:7px; cursor:pointer; font-size:.85rem; color:#374151; transition:background .15s; margin-bottom:.15rem; line-height:1.4; }
-        .mc-option:hover { background:#f3f4f6; }
-        .mc-option input { accent-color:#667eea; margin-top:3px; flex-shrink:0; }
-
-        /* Matching dropdown */
-        .match-select { border:1.5px solid #d1d5db; border-radius:7px; padding:.3rem .65rem; font-size:.85rem; outline:none; color:#111827; cursor:pointer; transition:border-color .2s; max-width:420px; width:100%; margin-top:.35rem; }
-        .match-select:focus { border-color:#667eea; }
-        .match-select.answered { border-color:#10b981; color:#059669; }
-
-        /* Text input (sentence / note / summary completion) */
-        .ff-input { border:none; border-bottom:2px solid #c4b5fd; outline:none; width:220px; font-size:.87rem; padding:2px 4px; background:transparent; color:#111827; transition:border-color .2s; vertical-align:middle; margin-top:.35rem; display:block; }
-        .ff-input:focus { border-bottom-color:#667eea; }
-        .ff-input.answered { border-bottom-color:#10b981; }
-
-        /* Submit bar */
-        .submit-bar { position:fixed; bottom:0; left:var(--sidebar-w,220px); right:280px; background:#fff; border-top:1px solid #e2e8f0; padding:.85rem 1.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; z-index:200; box-shadow:0 -2px 8px rgba(0,0,0,.06); }
-        @media (max-width:1399px) { .submit-bar { right:0; } }
-        @media (max-width:1199px) { .submit-bar { left:0; right:0; } }
-        .progress-steps { display:flex; gap:.5rem; align-items:center; }
-        .step { display:flex; align-items:center; gap:.35rem; font-size:.8rem; color:#94a3b8; }
-        .step.done { color:#10b981; } .step.current { color:#f59e0b; font-weight:600; }
-        .step-dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
-        .sticky-header { position:fixed; top:var(--topbar-h,60px); left:var(--sidebar-w,220px); right:280px; z-index:150; background:#f1f5f9; padding:.6rem 1.5rem .5rem; border-bottom:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(0,0,0,.05); }
-        @media (max-width:1399px) { .sticky-header { right:0; } }
-        @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
-        body.sidebar-collapsed .sticky-header { left:0; }
-        body.sidebar-collapsed .submit-bar  { left:0; }
-    </style>
+    <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
 </head>
 <body>
 

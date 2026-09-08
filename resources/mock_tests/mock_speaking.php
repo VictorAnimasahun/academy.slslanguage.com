@@ -77,20 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
-    <style>
-        .panel { background:#fff; border-radius:16px; padding:2.5rem; box-shadow:0 4px 20px rgba(0,0,0,.07); max-width:680px; margin:2rem auto; text-align:center; }
-        .section-badge { background:linear-gradient(135deg,#10b981,#34d399); color:#fff; padding:.45rem 1.25rem; border-radius:50px; font-weight:700; font-size:.88rem; }
-        .icon-circle { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:1.5rem auto; font-size:2.2rem; }
-        .progress-steps { display:flex; gap:.5rem; align-items:center; }
-        .step { display:flex; align-items:center; gap:.35rem; font-size:.8rem; color:#94a3b8; }
-        .step.done { color:#10b981; } .step.current { color:#f59e0b; font-weight:600; }
-        .step-dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
-        .sticky-header { position:fixed; top:var(--topbar-h,60px); left:var(--sidebar-w,220px); right:280px; z-index:150; background:#f1f5f9; padding:.6rem 1.5rem .5rem; border-bottom:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(0,0,0,.05); }
-        @media (max-width:1399px) { .sticky-header { right:0; } }
-        @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
-        body.sidebar-collapsed .sticky-header { left:0; }
-        body.sidebar-collapsed .submit-bar { left:0; }
-    </style>
+    <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
 </head>
 <body class="light">
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>

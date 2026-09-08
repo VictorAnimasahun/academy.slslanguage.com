@@ -1,0 +1,315 @@
+/* ============================================================================
+   Exam Theme — shared design system for every test-taking page (Listening,
+   Reading, Writing, Speaking — mock tests + the Academic diagnostic).
+
+   Design language lifted from the instructor-provided reference
+   (ielts_writing_task_layouts.html): muted blue-gray palette, IBM Plex
+   Sans/Serif, hairline 1px borders, small 4-8px radii, barely-there shadows,
+   no gradients. Replaces the old per-page inline <style> blocks (each test
+   page used to duplicate ~150-230 lines of near-identical CSS with drift
+   between copies) with one linked stylesheet.
+
+   Load this AFTER navbar_styles.php in <head> — the site chrome (sidebar,
+   topbar, advert sidebar) still comes from there; this file only restyles
+   the exam content area and intentionally overrides navbar_styles.php's
+   .main-wrapper padding + Bootstrap's .p-3 utility (hence the lone
+   !important — Bootstrap's own utility classes are !important by design,
+   so nothing else can beat them) to remove the redundant stacked padding
+   that used to leave ~80px of dead space on each side inside the already
+   narrow column between the sidebar and the advert bar. This is scoped to
+   test pages only, since only they link this file — the rest of the site
+   is untouched.
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;600&display=swap');
+
+:root {
+  --exam-bg: #EEF1F5;
+  --exam-surface: #FFFFFF;
+  --exam-ink: #1B2430;
+  --exam-ink-muted: #5B6472;
+  --exam-line: #D7DCE3;
+  --exam-accent: #2F5D8A;
+  --exam-accent-soft: #E6EDF4;
+  --exam-warn: #B54708;
+  --exam-warn-soft: #FDF2E9;
+  --exam-good: #2F7D5D;
+  --exam-good-soft: #EAF5F0;
+  --exam-radius: 4px;
+  --exam-radius-lg: 6px;
+  --exam-shadow: 0 1px 2px rgba(20,30,45,0.06);
+}
+
+/* ── Root spacing fix (see file header) ─────────────────────────────────── */
+.content.p-3 { padding: 0 !important; }
+.main-wrapper { padding: 1.25rem 1.5rem !important; background: var(--exam-bg); }
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+body { font-family: 'IBM Plex Sans', sans-serif; }
+
+/* ── Page chrome: sticky header, submit bar, progress steps ────────────────── */
+.sticky-header {
+  position: fixed; top: var(--topbar-h,60px); left: var(--sidebar-w,220px); right: 280px;
+  z-index: 150; background: var(--exam-bg);
+  padding: .6rem 1.5rem .5rem; border-bottom: 1px solid var(--exam-line);
+  box-shadow: none;
+}
+@media (max-width:1399px) { .sticky-header { right: 0; } }
+@media (max-width:1199px) { .sticky-header { left: 0; right: 0; } }
+body.sidebar-collapsed .sticky-header { left: 0; }
+body.sidebar-collapsed .submit-bar { left: 0; }
+
+.submit-bar {
+  position: fixed; bottom: 0; left: var(--sidebar-w,220px); right: 280px;
+  background: var(--exam-surface); border-top: 1px solid var(--exam-line);
+  padding: .85rem 1.5rem; display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; z-index: 200; box-shadow: var(--exam-shadow);
+}
+@media (max-width:1399px) { .submit-bar { right: 0; } }
+@media (max-width:1199px) { .submit-bar { left: 0; right: 0; } }
+
+.progress-steps { display: flex; gap: .5rem; align-items: center; }
+.step { display: flex; align-items: center; gap: .35rem; font-size: .8rem; color: var(--exam-ink-muted); }
+.step.done { color: var(--exam-good); }
+.step.current { color: var(--exam-accent); font-weight: 600; }
+.step-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+.btn-exit {
+  background: var(--exam-surface); border: 1px solid var(--exam-line); color: var(--exam-ink-muted);
+  border-radius: var(--exam-radius); padding: .28rem .85rem; font-size: .8rem; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+}
+.btn-exit:hover { background: var(--exam-warn); border-color: var(--exam-warn); color: #fff; }
+
+/* ── Main content card (was .section-content / .panel) ──────────────────────── */
+.section-content, .panel {
+  background: var(--exam-surface); border: 1px solid var(--exam-line);
+  border-radius: var(--exam-radius-lg); padding: 1.5rem 1.75rem; box-shadow: var(--exam-shadow);
+}
+.test-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.test-meta { display: flex; align-items: center; gap: .5rem; }
+.test-meta-tag { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--exam-ink-muted); }
+.test-meta-name { font-size: .9rem; font-weight: 600; color: var(--exam-ink); }
+.section-badge {
+  background: var(--exam-accent-soft); color: var(--exam-accent);
+  padding: .4rem 1.1rem; border-radius: 50px; font-weight: 600; font-size: .85rem;
+}
+
+/* ── Part tabs (Listening/Reading) ───────────────────────────────────────── */
+.part-tabs-bar { display: flex; align-items: center; border-bottom: 1px solid var(--exam-line); margin-bottom: 1.5rem; }
+.part-tabs-scrollable { display: flex; flex: 1; overflow-x: auto; }
+.part-tab-btn {
+  display: flex; flex-direction: column; align-items: center; padding: .5rem 1.1rem;
+  border: none; border-bottom: 2px solid transparent; background: transparent; cursor: pointer;
+  font-size: .82rem; font-weight: 500; color: var(--exam-ink-muted); transition: all .15s;
+  gap: 1px; position: relative; white-space: nowrap;
+}
+.part-tab-btn:hover { color: var(--exam-accent); }
+.part-tab-btn.active { color: var(--exam-accent); border-bottom-color: var(--exam-accent); font-weight: 600; }
+.tab-qrange { font-size: .67rem; color: var(--exam-ink-muted); opacity: .8; }
+.done-dot { position: absolute; top: 5px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--exam-good); display: none; }
+.part-tab-btn.all-answered .done-dot { display: block; }
+.part-panel { display: none; } .part-panel.active { display: block; }
+
+.inline-timer, .timer-display {
+  display: flex; align-items: center; gap: .35rem; font-size: .88rem; font-weight: 600;
+  font-variant-numeric: tabular-nums; color: var(--exam-accent); margin-left: auto; flex-shrink: 0; white-space: nowrap;
+}
+.inline-timer::before, .timer-display::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: inline-block;
+}
+.inline-timer.warning, .timer-display.warning { color: var(--exam-warn); animation: exam-blink 1s infinite; }
+@keyframes exam-blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── Audio player (Listening) ────────────────────────────────────────────── */
+.audio-box {
+  background: var(--exam-ink); border-radius: var(--exam-radius-lg); padding: .7rem 1rem;
+  display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem;
+  position: sticky; z-index: 140; box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.btn-play {
+  width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--exam-accent);
+  color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+  flex-shrink: 0; transition: background .15s;
+}
+.btn-play:hover { background: #24476b; }
+.progress-wrap { flex: 1; }
+.progress-wrap input[type=range] { width: 100%; accent-color: var(--exam-accent); pointer-events: none; display: block; }
+.audio-time { font-size: .7rem; color: rgba(255,255,255,.5); text-align: right; }
+.vol-wrap { display: flex; align-items: center; gap: .4rem; }
+.vol-wrap i { font-size: .9rem; color: rgba(255,255,255,.6); cursor: pointer; }
+.vol-wrap input[type=range] { width: 60px; accent-color: var(--exam-accent); }
+.preview-pill { background: var(--exam-warn-soft); border-radius: 20px; padding: .2rem .75rem; font-size: .75rem; color: var(--exam-warn); white-space: nowrap; flex-shrink: 0; }
+.preview-pill.hidden { display: none; }
+.audio-notice {
+  background: var(--exam-accent-soft); border-left: 3px solid var(--exam-accent); border-radius: 0 var(--exam-radius) var(--exam-radius) 0;
+  padding: .65rem 1rem; font-size: .84rem; color: var(--exam-ink); margin-bottom: 1.5rem; line-height: 1.5;
+}
+.worksheet-img-wrap { margin-bottom: 1.75rem; border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); overflow: hidden; background: var(--exam-surface); text-align: center; }
+.worksheet-img-wrap img { max-height: 320px; width: auto; max-width: 100%; display: inline-block; }
+.worksheet-img-caption { font-size: .75rem; color: var(--exam-ink-muted); text-align: center; padding: .4rem .75rem; background: var(--exam-bg); border-top: 1px solid var(--exam-line); }
+
+/* ── Question blocks (shared) ────────────────────────────────────────────── */
+.section-block { margin-bottom: 2rem; }
+.q-instructions {
+  background: var(--exam-accent-soft); border-left: 3px solid var(--exam-accent); border-radius: 0 var(--exam-radius) var(--exam-radius) 0;
+  padding: .6rem 1rem; font-size: .875rem; color: var(--exam-ink); margin-bottom: 1rem; line-height: 1.5;
+}
+.q-block { margin-bottom: 1.1rem; }
+.q-badge {
+  display: inline-flex; align-items: center; justify-content: center; background: var(--exam-accent); color: #fff;
+  font-size: .68rem; font-weight: 700; border-radius: 3px; min-width: 19px; height: 18px; padding: 0 4px;
+  margin-right: 4px; vertical-align: middle;
+}
+.q-text { font-size: .9rem; color: var(--exam-ink); margin-bottom: .5rem; line-height: 1.6; }
+
+/* Form/note completion (Listening) */
+.ff-title {
+  text-align: center; font-weight: 600; font-size: .92rem; color: var(--exam-ink);
+  margin-bottom: .75rem; padding: .5rem 1rem; background: var(--exam-bg); border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
+}
+.ff-subtitle { font-weight: 600; font-size: .82rem; color: var(--exam-accent); margin: 1.1rem 0 .5rem; padding-left: .65rem; border-left: 3px solid var(--exam-accent); }
+.ff-sentence { font-size: .875rem; color: var(--exam-ink); margin-bottom: .65rem; line-height: 1.75; padding-left: .65rem; }
+.ff-input {
+  border: none; border-bottom: 2px solid var(--exam-line); outline: none; width: 180px; font-size: .87rem;
+  padding: 2px 4px; background: transparent; color: var(--exam-ink); transition: border-color .15s; vertical-align: middle;
+}
+.ff-input:focus { border-bottom-color: var(--exam-accent); }
+.ff-input.answered { border-bottom-color: var(--exam-good); }
+.map-row { display: flex; align-items: center; gap: .6rem; margin-bottom: .55rem; font-size: .875rem; color: var(--exam-ink); }
+.map-row-label { min-width: 180px; font-weight: 500; }
+
+/* MCQ (Listening + Reading) */
+.mc-question { margin-bottom: 1.15rem; }
+.mc-q-label { font-size: .88rem; font-weight: 600; color: var(--exam-ink); margin-bottom: .5rem; }
+.mc-option {
+  display: flex; align-items: flex-start; gap: .5rem; padding: .35rem .65rem; border-radius: var(--exam-radius);
+  cursor: pointer; font-size: .85rem; color: var(--exam-ink); transition: background .15s; margin-bottom: .1rem; line-height: 1.4;
+}
+.mc-option:hover { background: var(--exam-bg); }
+.mc-option input { accent-color: var(--exam-accent); margin-top: 3px; flex-shrink: 0; }
+
+/* Matching (Listening) */
+.match-box { background: var(--exam-bg); border: 1px solid var(--exam-line); border-radius: var(--exam-radius); padding: .75rem 1rem; margin-bottom: 1.25rem; font-size: .84rem; color: var(--exam-ink); }
+.match-box-title { font-weight: 600; margin-bottom: .5rem; font-size: .85rem; color: var(--exam-ink); }
+.match-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .2rem .5rem; }
+.match-key { font-weight: 700; color: var(--exam-accent); }
+.match-q { display: flex; align-items: center; gap: .75rem; margin-bottom: .55rem; font-size: .875rem; color: var(--exam-ink); }
+.match-q-text { flex: 1; }
+.match-input {
+  border: none; border-bottom: 2px solid var(--exam-line); outline: none; width: 44px; font-size: .87rem;
+  padding: 2px 4px; background: transparent; color: var(--exam-ink); text-align: center; text-transform: uppercase; transition: border-color .15s;
+}
+.match-input:focus { border-bottom-color: var(--exam-accent); }
+.match-input.answered { border-bottom-color: var(--exam-good); }
+.match-select {
+  border: 1px solid var(--exam-line); border-radius: var(--exam-radius); padding: .3rem .65rem; font-size: .85rem;
+  outline: none; color: var(--exam-ink); cursor: pointer; transition: border-color .15s; max-width: 380px; width: 100%; background: var(--exam-surface);
+}
+.match-select:focus { border-color: var(--exam-accent); }
+.match-select.answered { border-color: var(--exam-good); color: var(--exam-good); }
+
+/* True/False/Not Given (Reading) */
+.tfng-wrap { display: flex; gap: .5rem; flex-wrap: wrap; }
+.tfng-opt {
+  display: flex; align-items: center; gap: .35rem; padding: .3rem .75rem; border: 1px solid var(--exam-line);
+  border-radius: var(--exam-radius); cursor: pointer; font-size: .82rem; font-weight: 500; color: var(--exam-ink); transition: all .15s;
+}
+.tfng-opt:has(input:checked) { background: var(--exam-accent); border-color: var(--exam-accent); color: #fff; }
+
+/* Reading passage */
+.passage-box {
+  background: var(--exam-bg); border: 1px solid var(--exam-line); border-radius: var(--exam-radius); padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem; max-height: 420px; overflow-y: auto;
+}
+.passage-box p { font-family: 'IBM Plex Serif', serif; font-size: .9rem; line-height: 1.75; color: var(--exam-ink); margin-bottom: .6rem; }
+.passage-box .passage-title-main { font-family: 'IBM Plex Sans', sans-serif; font-size: 1rem; font-weight: 600; color: var(--exam-ink); margin-bottom: .75rem; }
+.passage-box .pupil-name { font-family: 'IBM Plex Sans', sans-serif; font-size: .9rem; font-weight: 600; color: var(--exam-ink); margin-top: .85rem; margin-bottom: .2rem; }
+.passage-box .para-label { font-weight: 700; color: var(--exam-ink-muted); margin-right: .35rem; }
+.passage-divider { border: none; border-top: 1px dashed var(--exam-line); margin: 1rem 0; }
+
+/* ── Speaking ─────────────────────────────────────────────────────────────── */
+.panel.speaking-panel { max-width: 640px; margin: 1rem auto; text-align: center; padding: 2.25rem 2rem; }
+.icon-circle { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 1.25rem auto; font-size: 2rem; background: var(--exam-good-soft); }
+
+/* ── Writing: prompt + essay ──────────────────────────────────────────────── */
+.prompt-box {
+  background: var(--exam-accent-soft); border-left: 3px solid var(--exam-accent); border-radius: 0 var(--exam-radius) var(--exam-radius) 0;
+  padding: 1.1rem 1.4rem; font-size: .9rem; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-line;
+  font-family: 'IBM Plex Serif', serif; color: var(--exam-ink);
+}
+.essay-area {
+  width: 100%; min-height: 340px; padding: 1rem; border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
+  font-size: .95rem; line-height: 1.8; resize: vertical; font-family: 'IBM Plex Sans', sans-serif; color: var(--exam-ink);
+}
+.essay-area:focus { border-color: var(--exam-accent); outline: none; }
+.word-count { font-size: 1.2rem; font-weight: 700; }
+.word-count.below { color: var(--exam-warn); }
+.word-count.ok { color: var(--exam-good); }
+.chart-placeholder {
+  background: var(--exam-bg); border: 1px dashed var(--exam-line); border-radius: var(--exam-radius); height: 200px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--exam-ink-muted); font-size: .88rem; margin-bottom: 1rem;
+}
+.task-tab { border: none; background: none; padding: .6rem 1.25rem; color: var(--exam-ink-muted); font-weight: 500; border-bottom: 2px solid transparent; cursor: pointer; }
+.task-tab.active { color: var(--exam-accent); border-bottom-color: var(--exam-accent); font-weight: 600; }
+.task-panel { display: none; } .task-panel.active { display: block; }
+
+/* ── Writing Task 1: split / stacked layout toggle ───────────────────────────
+   Ported from the instructor's reference (ielts_writing_task_layouts.html).
+   Prefixed `wt-` since this file is linked on every test page and must not
+   collide with Bootstrap's own .accordion classes used elsewhere. ─────────── */
+.wt-shell { border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); overflow: hidden; }
+.wt-switcher {
+  display: inline-flex; gap: 1px; border: 1px solid var(--exam-line); background: var(--exam-line);
+  border-radius: var(--exam-radius); overflow: hidden; margin-bottom: .85rem;
+}
+.wt-switcher button {
+  font-family: inherit; font-size: .78rem; font-weight: 500; padding: .4rem .9rem; border: none;
+  background: var(--exam-surface); color: var(--exam-ink-muted); cursor: pointer;
+}
+.wt-switcher button.active { background: var(--exam-accent); color: #fff; }
+
+.wt-view { display: none; }
+.wt-view.active { display: block; }
+
+/* Layout A: split view */
+.wt-split { display: grid; grid-template-columns: 1fr 6px 1fr; min-height: 420px; }
+.wt-split .wt-pane { overflow-y: auto; padding: 1.1rem 1.25rem; }
+.wt-split .wt-divider { background: var(--exam-bg); position: relative; cursor: col-resize; }
+.wt-split .wt-divider::after {
+  content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 3px; height: 34px; border-radius: 2px; background: var(--exam-line);
+}
+.wt-split .wt-pane.right { display: flex; flex-direction: column; }
+.wt-split .essay-area { flex: 1; min-height: 0; border: none; }
+.wt-right-head { font-size: .72rem; font-weight: 600; color: var(--exam-ink-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .6rem; }
+@media (max-width: 900px) {
+  .wt-split { grid-template-columns: 1fr; }
+  .wt-split .wt-divider { display: none; }
+}
+
+/* Layout B: stacked view */
+.wt-stack { display: flex; flex-direction: column; }
+.wt-accordion { border-bottom: 1px solid var(--exam-line); }
+.wt-accordion-head { display: flex; align-items: center; gap: 8px; padding: .8rem 1.1rem; cursor: pointer; background: var(--exam-bg); user-select: none; }
+.wt-accordion-head .wt-chev { font-size: .7rem; color: var(--exam-ink-muted); transition: transform .15s ease; display: inline-block; }
+.wt-accordion-head.open .wt-chev { transform: rotate(90deg); }
+.wt-accordion-head span.wt-label { font-size: .85rem; font-weight: 500; }
+.wt-accordion-body { padding: .5rem 1.1rem 1.1rem; display: none; }
+.wt-accordion-body.open { display: block; }
+.wt-graph-strip { display: flex; align-items: center; gap: 14px; padding: .75rem 1.1rem; border-bottom: 1px solid var(--exam-line); background: var(--exam-surface); }
+.wt-graph-strip .wt-thumb {
+  width: 110px; height: 68px; border: 1px solid var(--exam-line); border-radius: 3px; background: #fff;
+  flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+.wt-graph-strip .wt-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.wt-graph-strip .wt-meta { flex: 1; font-size: .8rem; color: var(--exam-ink-muted); }
+.wt-expand-link { font-size: .78rem; font-weight: 500; color: var(--exam-accent); background: none; border: none; cursor: pointer; white-space: nowrap; font-family: inherit; }
+.wt-write-zone { padding: 1.1rem 1.1rem 0; min-height: 320px; display: flex; }
+.wt-stack .essay-area { border: none; }
+
+.wt-modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(20,28,40,.5); align-items: center; justify-content: center; z-index: 1000; }
+.wt-modal-backdrop.open { display: flex; }
+.wt-modal { background: #fff; border-radius: var(--exam-radius-lg); padding: 1.25rem; width: min(600px, 92vw); max-height: 85vh; overflow-y: auto; }
+.wt-modal img { width: 100%; border-radius: var(--exam-radius); }
+.wt-modal .wt-close { float: right; background: none; border: none; font-size: .8rem; color: var(--exam-ink-muted); cursor: pointer; margin-bottom: .5rem; }

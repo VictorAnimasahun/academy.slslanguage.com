@@ -66,7 +66,14 @@ if ($writingTest) {
     $wq = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($wq) {
         $task1['question'] = $wq['question_text'] ?? '';
-        $task1['visual']   = $wq['instructions'] ? ACADEMY_URL . $wq['instructions'] : null;
+        // `instructions` doubles as plain task notes for GT-style letter tasks
+        // and as an image path for Academic chart tasks -- only treat it as a
+        // visual if it actually looks like a path, otherwise it renders a
+        // broken <img>.
+        $rawInstructions  = $wq['instructions'] ?? null;
+        $task1['visual']  = ($rawInstructions && (str_contains($rawInstructions, '/') || str_contains($rawInstructions, '.'))
+                              && !str_contains($rawInstructions, ' '))
+                             ? ACADEMY_URL . $rawInstructions : null;
     }
 }
 
@@ -82,25 +89,7 @@ $wordMin       = 150;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
-    <style>
-        .panel { background:#fff; border-radius:16px; padding:1.75rem; box-shadow:0 4px 20px rgba(0,0,0,.07); }
-        .section-badge { background:linear-gradient(135deg,#f59e0b,#fbbf24); color:#fff; padding:.45rem 1.25rem; border-radius:50px; font-weight:700; font-size:.88rem; }
-        .timer-display { font-size:2rem; font-weight:700; font-family:monospace; color:#d97706; }
-        .timer-display.warning { color:#ef4444; }
-        .prompt-box { background:#fffbeb; border-left:4px solid #f59e0b; border-radius:8px; padding:1.25rem 1.5rem; font-size:.9rem; line-height:1.75; margin-bottom:1.25rem; white-space:pre-line; }
-        .essay-area { width:100%; min-height:340px; padding:1rem; border:2px solid #e5e7eb; border-radius:10px; font-size:.95rem; line-height:1.8; resize:vertical; font-family:system-ui,sans-serif; }
-        .essay-area:focus { border-color:#f59e0b; outline:none; }
-        .word-count { font-size:1.4rem; font-weight:700; }
-        .word-count.below { color:#ef4444; } .word-count.ok { color:#10b981; }
-        .progress-steps { display:flex; gap:.5rem; align-items:center; }
-        .step { display:flex; align-items:center; gap:.35rem; font-size:.8rem; color:#94a3b8; }
-        .step.done { color:#10b981; } .step.current { color:#f59e0b; font-weight:600; }
-        .step-dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
-        .sticky-header { position:fixed; top:var(--topbar-h,60px); left:var(--sidebar-w,220px); right:280px; z-index:150; background:#f1f5f9; padding:.6rem 1.5rem .5rem; border-bottom:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(0,0,0,.05); }
-        @media (max-width:1399px) { .sticky-header { right:0; } }
-        @media (max-width:1199px) { .sticky-header { left:0; right:0; } }
-        body.sidebar-collapsed .sticky-header { left:0; }
-    </style>
+    <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
 </head>
 <body class="light">
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
@@ -150,26 +139,69 @@ $wordMin       = 150;
                     No writing task loaded yet. Please run database migration 063 and contact your instructor.
                 </div>
                 <?php else: ?>
-                <div class="row g-3">
-                    <div class="col-lg-5">
-                        <p class="small fw-semibold text-uppercase text-muted mb-2">Writing Task 1</p>
-                        <div class="prompt-box"><?= htmlspecialchars($task1['question']) ?></div>
-                        <?php if ($task1['visual']): ?>
-                            <img src="<?= htmlspecialchars($task1['visual']) ?>" alt="Task 1 chart" class="img-fluid rounded border">
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-lg-7">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label class="fw-semibold small">Your Response</label>
-                            <div><span id="wc1" class="word-count below">0</span><span class="text-muted small ms-1">/ <?= $wordMin ?>+ words</span></div>
-                        </div>
-                        <textarea id="essay1" class="essay-area" placeholder="Write your Task 1 response here…"></textarea>
-                    </div>
+                <div class="wt-switcher">
+                    <button class="active" id="wt-switch-a" onclick="wtShowView('a')">Split view</button>
+                    <button id="wt-switch-b" onclick="wtShowView('b')">Stacked view</button>
                 </div>
-                <div class="d-flex justify-content-end mt-3">
+                <div class="wt-shell">
+
+                    <!-- Layout A: split view -->
+                    <div class="wt-view active" id="wt-view-a">
+                        <div class="wt-split" id="wtSplit">
+                            <div class="wt-pane left">
+                                <p class="small fw-semibold text-uppercase text-muted mb-2" style="font-size:.72rem;">Writing Task 1</p>
+                                <div class="prompt-box"><?= htmlspecialchars($task1['question']) ?></div>
+                                <?php if ($task1['visual']): ?>
+                                    <img src="<?= htmlspecialchars($task1['visual']) ?>" alt="Task 1 visual" class="img-fluid" style="border:1px solid var(--exam-line);border-radius:4px;">
+                                <?php endif; ?>
+                            </div>
+                            <div class="wt-divider" id="wtDivider"></div>
+                            <div class="wt-pane right">
+                                <div class="wt-right-head">Your answer</div>
+                                <div id="wtEssaySlotA" style="flex:1;min-height:0;display:flex;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layout B: stacked view -->
+                    <div class="wt-view" id="wt-view-b">
+                        <div class="wt-stack">
+                            <div class="wt-accordion">
+                                <div class="wt-accordion-head open" onclick="wtToggleAccordion(this)">
+                                    <span class="wt-chev">▸</span>
+                                    <span class="wt-label">Task instructions</span>
+                                </div>
+                                <div class="wt-accordion-body open">
+                                    <div class="prompt-box" style="margin-bottom:0;"><?= htmlspecialchars($task1['question']) ?></div>
+                                </div>
+                            </div>
+                            <?php if ($task1['visual']): ?>
+                            <div class="wt-graph-strip">
+                                <div class="wt-thumb"><img src="<?= htmlspecialchars($task1['visual']) ?>" alt="Task 1 visual"></div>
+                                <div class="wt-meta">Task 1 chart / diagram</div>
+                                <button class="wt-expand-link" onclick="wtOpenModal()">Enlarge ⤢</button>
+                            </div>
+                            <?php endif; ?>
+                            <div class="wt-write-zone" id="wtEssaySlotB"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div><span id="wc1" class="word-count below">0</span><span class="text-muted small ms-1">/ <?= $wordMin ?>+ words</span></div>
                     <button class="btn btn-success px-4 fw-bold" id="submitBtn" onclick="confirmSubmit()">
                         <i class="bi bi-check-lg me-1"></i>Submit Writing
                     </button>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($task1['visual']): ?>
+                <div class="wt-modal-backdrop" id="wtModal" onclick="if(event.target===this) wtCloseModal()">
+                    <div class="wt-modal">
+                        <button class="wt-close" onclick="wtCloseModal()">Close ✕</button>
+                        <img src="<?= htmlspecialchars($task1['visual']) ?>" alt="Task 1 visual, enlarged">
+                    </div>
                 </div>
                 <?php endif; ?>
             </div>
@@ -199,13 +231,60 @@ $wordMin       = 150;
         if (timeLeft <= 0) { clearInterval(ticker); doSubmit(); }
     }, 1000);
 
-    const essay1 = document.getElementById('essay1');
-    essay1?.addEventListener('input', () => {
-        const n = countWords(essay1.value);
-        const el = document.getElementById('wc1');
-        el.textContent = n;
-        el.className = 'word-count ' + (n >= T1_MIN ? 'ok' : 'below');
-    });
+    // One real <textarea>, moved between the split/stacked views on switch
+    // so both layouts edit the same content (no sync needed).
+    const wtEssaySlotA = document.getElementById('wtEssaySlotA');
+    let essay1;
+    if (wtEssaySlotA) {
+        essay1 = document.createElement('textarea');
+        essay1.id = 'essay1';
+        essay1.className = 'essay-area';
+        essay1.style.border = 'none';
+        essay1.placeholder = 'Begin writing your response here…';
+        essay1.addEventListener('input', () => {
+            const n = countWords(essay1.value);
+            const el = document.getElementById('wc1');
+            el.textContent = n;
+            el.className = 'word-count ' + (n >= T1_MIN ? 'ok' : 'below');
+        });
+        wtEssaySlotA.appendChild(essay1);
+    }
+
+    function wtShowView(which) {
+        document.querySelectorAll('.wt-switcher button').forEach(b => b.classList.remove('active'));
+        document.getElementById('wt-switch-' + which)?.classList.add('active');
+        document.querySelectorAll('.wt-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('wt-view-' + which)?.classList.add('active');
+
+        if (!essay1) return;
+        const slot = which === 'a' ? document.getElementById('wtEssaySlotA') : document.getElementById('wtEssaySlotB');
+        if (slot && essay1.parentElement !== slot) slot.appendChild(essay1);
+    }
+
+    function wtToggleAccordion(head) {
+        head.classList.toggle('open');
+        head.nextElementSibling.classList.toggle('open');
+    }
+
+    function wtOpenModal() { document.getElementById('wtModal')?.classList.add('open'); }
+    function wtCloseModal() { document.getElementById('wtModal')?.classList.remove('open'); }
+
+    (function initWtDivider() {
+        const divider = document.getElementById('wtDivider');
+        const split = document.getElementById('wtSplit');
+        if (!divider || !split) return;
+        let dragging = false;
+
+        divider.addEventListener('mousedown', () => { dragging = true; document.body.style.userSelect = 'none'; });
+        document.addEventListener('mouseup', () => { dragging = false; document.body.style.userSelect = ''; });
+        document.addEventListener('mousemove', (e) => {
+            if (!dragging) return;
+            const rect = split.getBoundingClientRect();
+            let pct = ((e.clientX - rect.left) / rect.width) * 100;
+            pct = Math.min(75, Math.max(25, pct));
+            split.style.gridTemplateColumns = pct + '% 6px ' + (100 - pct) + '%';
+        });
+    })();
 
     function confirmSubmit() {
         const w1 = countWords(essay1.value);
