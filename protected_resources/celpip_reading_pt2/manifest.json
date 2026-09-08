@@ -1,0 +1,215 @@
+{
+    "slides": [
+        {
+            "n": 1,
+            "type": "image",
+            "file": "01.jpg"
+        },
+        {
+            "n": 2,
+            "type": "image",
+            "file": "02.jpg"
+        },
+        {
+            "n": 3,
+            "type": "image",
+            "file": "03.jpg"
+        },
+        {
+            "n": 4,
+            "type": "image",
+            "file": "04.jpg"
+        },
+        {
+            "n": 5,
+            "type": "image",
+            "file": "05.jpg"
+        },
+        {
+            "n": 6,
+            "type": "image",
+            "file": "06.jpg"
+        },
+        {
+            "n": 7,
+            "type": "image",
+            "file": "07.jpg"
+        },
+        {
+            "n": 8,
+            "type": "image",
+            "file": "08.jpg"
+        },
+        {
+            "n": 9,
+            "type": "image",
+            "file": "09.jpg"
+        },
+        {
+            "n": 10,
+            "type": "image",
+            "file": "10.jpg"
+        },
+        {
+            "n": 11,
+            "type": "image",
+            "file": "11.jpg"
+        },
+        {
+            "n": 12,
+            "type": "text",
+            "file": "12.json"
+        },
+        {
+            "n": 13,
+            "type": "text",
+            "file": "13.json"
+        },
+        {
+            "n": 14,
+            "type": "text",
+            "file": "14.json"
+        },
+        {
+            "n": 15,
+            "type": "text",
+            "file": "15.json"
+        },
+        {
+            "n": 16,
+            "type": "text",
+            "file": "16.json"
+        },
+        {
+            "n": 17,
+            "type": "text",
+            "file": "17.json"
+        },
+        {
+            "n": 18,
+            "type": "image",
+            "file": "18.jpg"
+        },
+        {
+            "n": 19,
+            "type": "image",
+            "file": "19.jpg"
+        },
+        {
+            "n": 20,
+            "type": "image",
+            "file": "20.jpg"
+        },
+        {
+            "n": 21,
+            "type": "image",
+            "file": "21.jpg"
+        },
+        {
+            "n": 22,
+            "type": "image",
+            "file": "22.jpg"
+        },
+        {
+            "n": 23,
+            "type": "image",
+            "file": "23.jpg"
+        },
+        {
+            "n": 24,
+            "type": "image",
+            "file": "24.jpg"
+        },
+        {
+            "n": 25,
+            "type": "image",
+            "file": "25.jpg"
+        },
+        {
+            "n": 26,
+            "type": "image",
+            "file": "26.jpg"
+        },
+        {
+            "n": 27,
+            "type": "image",
+            "file": "27.jpg"
+        },
+        {
+            "n": 28,
+            "type": "image",
+            "file": "28.jpg"
+        },
+        {
+            "n": 29,
+            "type": "image",
+            "file": "29.jpg"
+        },
+        {
+            "n": 30,
+            "type": "image",
+            "file": "30.jpg"
+        },
+        {
+            "n": 31,
+            "type": "image",
+            "file": "31.jpg"
+        },
+        {
+            "n": 32,
+            "type": "image",
+            "file": "32.jpg"
+        },
+        {
+            "n": 33,
+            "type": "image",
+            "file": "33.jpg"
+        },
+        {
+            "n": 34,
+            "type": "image",
+            "file": "34.jpg"
+        },
+        {
+            "n": 35,
+            "type": "image",
+            "file": "35.jpg"
+        },
+        {
+            "n": 36,
+            "type": "image",
+            "file": "36.jpg"
+        },
+        {
+            "n": 37,
+            "type": "image",
+            "file": "37.jpg"
+        },
+        {
+            "n": 38,
+            "type": "image",
+            "file": "38.jpg"
+        },
+        {
+            "n": 39,
+            "type": "image",
+            "file": "39.jpg"
+        },
+        {
+            "n": 40,
+            "type": "image",
+            "file": "40.jpg"
+        },
+        {
+            "n": 41,
+            "type": "image",
+            "file": "41.jpg"
+        },
+        {
+            "n": 42,
+            "type": "image",
+            "file": "42.jpg"
+        }
+    ],
+    "total": 42
+}

@@ -992,6 +992,33 @@ WHERE t.code IN ('IELTS_FM1_L', 'IELTS_ACA_DIAG_L') AND q.question_number IN (4,
 
 ---
 
+## 067 — Seed CELPIP_Gen_2Mo / CELPIP_Gen_3Mo class curriculum, wire in protected Reading Part 1-4 resources
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-08 | Verified: 16 lessons for CELPIP_Gen_2Mo, 24 for CELPIP_Gen_3Mo, 5 file_path wirings confirmed |
+| Live  | [ ] | | |
+
+**What it does:**
+- `CELPIP_Gen_2Mo` (course_id 13) and `CELPIP_Gen_3Mo` (course_id 14) had their `modules` rows (Month 1/2, Month 1/2/3) but **zero lessons** under them — the 24/16-class curriculum only existed as unrun draft SQL in `documentation/migrations/add_celpip_ieltsaca_pte_courses.sql`. This migration applies that draft for real, guarded so each course's insert is a no-op if it already has lessons.
+- Deliberately does **not** touch `CELPIP_Gen_1Mo` (course_id 12, which already has a duplicate "Month 1" module row from some earlier run, plus an orphan duplicate course row at id 19) — out of scope for this task, flagged to the instructor rather than silently fixed.
+- Wires the 4 new protected CELPIP Reading Part 1-4 slide-deck resources (see below) into the Reading-titled classes both courses share: Part 1 → "Reading — Correspondence & Diagram", Part 2 → "Reading — Extended Passage & Graph Strategies" (same class titles/tier in both courses, since Month 1-2 content is identical between the two plans). Part 3 → "Advanced Reading — Speed & Accuracy Drills" in the 3-month plan; since the 2-month plan has no Month 3 (where Part 4 naturally sits, "Mastery Reading — Inference & Complex Structures"), its Month-2 Reading class instead links to a small hub page listing both Part 3 and Part 4, so 2-month students (most students, per instructor) still get all four parts.
+
+**New protected-viewer feature** (first of its kind in this codebase — no prior PDF/PPT/no-copy viewer existed anywhere):
+- The 4 source PPTX decks (`CELPIP Reading Test: Part 1-4`, ~150MB total, each slide a full-page screenshot except Part 2 slides 12-17 which are native text Q&A review slides) were extracted slide-by-slide in true presentation order (resolved via `presentation.xml`'s `sldIdLst`, not slide filename number, which does not reflect display order) into `academy/protected_resources/celpip_reading_pt{1-4}/` — JPEGs resized/compressed to 1600px/82% (~25MB total, down from ~150MB) for image slides, JSON for the 6 text slides. That directory has its own `.htaccess` (`Deny from all`) — nothing in it is directly web-reachable.
+- `academy/includes/protected_reading_resources.php` — registry of the 4 resources (title + required subscription tier, matching `tier_access.php`'s existing tier system — not course enrollment, since class access here is already tier-gated, not enrollment-gated).
+- `academy/resources/protected_viewer/celpip_reading.php?part=...` — the viewer. Renders one slide at a time (image or styled text card), fetched through `serve_slide.php` rather than a direct file URL. Includes a per-viewer tiled watermark (student name/email/timestamp) and best-effort deterrents (blocked right-click/selection/print shortcuts, disabled image dragging). **None of this can block an OS-level screenshot or screen recording** — no browser API exposes that capability to a page — so the watermark, which does survive a screenshot, is the actual protection; the rest is friction against casual copying only.
+- `academy/resources/protected_viewer/serve_slide.php` — streams one slide's bytes. Independently re-checks login + tier per request (a hidden link is not access control on its own).
+- `academy/resources/protected_viewer/reading_hub.php?parts=...` — the small multi-resource landing page described above (`lessons.file_path` only holds one URL per class).
+
+**Rollback:**
+```sql
+UPDATE lessons SET file_path = NULL WHERE file_path LIKE 'resources/protected_viewer%';
+DELETE FROM lessons WHERE course_id IN (SELECT id FROM courses WHERE folder_name IN ('CELPIP_Gen_2Mo','CELPIP_Gen_3Mo'));
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
