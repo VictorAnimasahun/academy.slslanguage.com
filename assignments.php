@@ -43,20 +43,33 @@ $sql = "
 $stmt        = executeQuery($db, $sql, [$user_id, $user_id]);
 $assignments = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
-// URL map: test_code → relative path from academy root
-$testUrlMap = [
-    'IELTS_PT_L_001'  => 'resources/practice_tests/ielts_listening_001.php',
-    'IELTS_PT_R_001'  => 'resources/practice_tests/ielts_reading_001.php',
-    'IELTS_PT_W1_001' => 'resources/practice_tests/ielts_writing_t1_001.php',
-    'IELTS_PT_S_001'  => 'resources/practice_tests/ielts_speaking_001.php',
-];
+// URL derivation for standalone practice tests: their codes follow
+// {PREFIX}_PT_{SECTION}_{NNN} (see documentation/ai_test_page_template.md),
+// which maps 1:1 onto resources/practice_tests/{prefix}_{section}_{nnn}.php.
+// Deriving the path instead of hardcoding it means every practice test
+// (CELPIP included) is assignable/launchable without maintaining a list
+// here by hand -- previously only 4 IELTS codes were mapped, so every
+// other assigned test (all 15 CELPIP tests included) showed up for the
+// student with no way to actually open it.
+$SECTION_FILE_MAP = ['L' => 'listening', 'R' => 'reading', 'S' => 'speaking', 'W1' => 'writing_t1', 'W2' => 'writing_t2'];
 
-function assignmentUrl(array $a, array $map): ?string {
+function assignmentUrl(array $a, array $sectionFileMap): ?string {
     if (empty($a['test_id'])) return null;
     $code = $a['test_code'] ?? '';
-    if (isset($map[$code])) return $map[$code];
-    if (preg_match('/^IELTS_FULL_MOCK_\d+$/', $code))  return 'resources/mock_tests/index.php';
-    if (!empty($a['vocab_word_id']))                    return 'resources/vocabulary_banks/word_quiz.php?word_id=' . $a['vocab_word_id'];
+
+    if (!empty($a['vocab_word_id'])) {
+        return 'resources/vocabulary_banks/word_quiz.php?word_id=' . $a['vocab_word_id'];
+    }
+
+    if (preg_match('/^IELTS_FULL_MOCK_\d+$/', $code)) {
+        return 'resources/mock_tests/take.php?code=' . urlencode($code);
+    }
+
+    if (preg_match('/^([A-Z]+)_PT_(L|R|S|W1|W2)_(\d{3})$/', $code, $m) && isset($sectionFileMap[$m[2]])) {
+        $relPath = 'resources/practice_tests/' . strtolower($m[1]) . '_' . $sectionFileMap[$m[2]] . '_' . $m[3] . '.php';
+        if (file_exists(ACADEMY_ROOT . '/' . $relPath)) return $relPath;
+    }
+
     return null;
 }
 
@@ -156,7 +169,7 @@ $today = date('Y-m-d');
                 $filterTag = $completed ? 'completed' : ($overdue ? 'overdue' : 'pending');
 
                 $displayTitle = !empty($a['title']) ? $a['title'] : ($a['test_title'] ?? 'Assignment');
-                $url = assignmentUrl($a, $testUrlMap);
+                $url = assignmentUrl($a, $SECTION_FILE_MAP);
 
                 // Due date badge
                 if (empty($a['due_date'])) {
