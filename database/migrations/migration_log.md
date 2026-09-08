@@ -967,6 +967,31 @@ DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code = 'IELTS_
 
 ---
 
+## 066 — Add note-group sub-headings to Listening Part 1 ("Children's Engineering Workshops")
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-08 | Verified: stimulus_text updated on Q1/Q4/Q8 for both IELTS_FM1_L and IELTS_ACA_DIAG_L |
+| Live  | [ ] | | |
+
+**What it does:**
+- Redesign of the Part 1 note-completion layout on both `full_mock_001_listening.php` and `diagnostic_aca_listening.php`. Previously the whole 10-question form ("Children's Engineering Workshops") rendered as one flat, undifferentiated block under a single title — the real form has three natural groups (Tiny Engineers activities Q1-3, Junior Engineers activities Q4-7, logistics Q8-10) that weren't visually distinguished.
+- Template change: `stimulus_text` now supports a `"Main Title||Sub Heading"` convention — the first `||`-part renders as the existing boxed `.ff-title` only on the section's first stimulus, everything else (including later stimulus_text changes) renders as a new left-accented `.ff-subtitle`. `full_mock_001_listening.php`'s stimulus block was also scoped to `qtype === 'form_note_completion'` to match a fix `diagnostic_aca_listening.php` already had (matching questions carry stimulus_text too and would otherwise double up on the title box).
+- This migration just populates the data side: Q1's stimulus_text becomes `"Children's Engineering Workshops||Tiny Engineers"`, Q4 becomes `"Junior Engineers"`, Q8 becomes `"Additional information"` — no other template changes needed to get grouped, indented notes instead of a flat list.
+- Also made `.audio-box` `position: sticky` (top offset matches `.section-content`'s existing padding-top) on both pages, so the audio player stays reachable while scrolling through the blanks instead of scrolling out of view — same complaint pattern as the Writing Task 1 image-scroll issue.
+
+**Rollback:**
+```sql
+UPDATE questions q JOIN tests t ON t.id = q.test_id
+SET q.stimulus_text = 'Children''s Engineering Workshops'
+WHERE t.code IN ('IELTS_FM1_L', 'IELTS_ACA_DIAG_L') AND q.question_number = 1;
+UPDATE questions q JOIN tests t ON t.id = q.test_id
+SET q.stimulus_text = NULL
+WHERE t.code IN ('IELTS_FM1_L', 'IELTS_ACA_DIAG_L') AND q.question_number IN (4, 8);
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

@@ -107,7 +107,10 @@ $DURATION_SECS  = 40 * 60; // 30 min audio + 10 min transfer
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         /* ── Audio player ───────────────────────────────────── */
-        .audio-box { background:#1a2236; border-radius:10px; padding:.75rem 1rem; display:flex; align-items:center; gap:.75rem; margin-bottom:1.75rem; }
+        /* Sticky so the player (and replay/scrub controls) stays reachable while
+           scrolling through the note-completion blanks below — top offset matches
+           .section-content's padding-top so it docks flush under .sticky-header. */
+        .audio-box { background:#1a2236; border-radius:10px; padding:.75rem 1rem; display:flex; align-items:center; gap:.75rem; margin-bottom:1.75rem; position:sticky; z-index:140; box-shadow:0 4px 12px rgba(0,0,0,.15); }
         .btn-play  { width:34px; height:34px; border-radius:50%; border:none; background:#667eea; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:background .2s; }
         .btn-play:hover { background:#764ba2; }
         .progress-wrap { flex:1; }
@@ -159,7 +162,8 @@ $DURATION_SECS  = 40 * 60; // 30 min audio + 10 min transfer
 
         /* Form / note fill */
         .ff-title { text-align:center; font-weight:700; font-size:.95rem; color:#374151; margin-bottom:.75rem; padding:.5rem 1rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:6px; }
-        .ff-sentence { font-size:.875rem; color:#374151; margin-bottom:.65rem; line-height:1.75; }
+        .ff-subtitle { font-weight:700; font-size:.85rem; color:#4338ca; margin:1.1rem 0 .5rem; padding-left:.65rem; border-left:3px solid #667eea; }
+        .ff-sentence { font-size:.875rem; color:#374151; margin-bottom:.65rem; line-height:1.75; padding-left:.65rem; }
         .q-badge { display:inline-flex; align-items:center; justify-content:center; background:#667eea; color:#fff; font-size:.68rem; font-weight:700; border-radius:4px; min-width:20px; height:18px; padding:0 4px; margin-right:3px; vertical-align:middle; }
         .ff-input { border:none; border-bottom:2px solid #c4b5fd; outline:none; width:150px; font-size:.87rem; padding:2px 4px; background:transparent; color:#111827; transition:border-color .2s; vertical-align:middle; }
         .ff-input:focus { border-bottom-color:#667eea; }
@@ -262,7 +266,7 @@ $DURATION_SECS  = 40 * 60; // 30 min audio + 10 min transfer
             </audio>
 
             <!-- Audio player UI -->
-            <div class="audio-box">
+            <div class="audio-box" style="top:<?= $isAdmin ? '110px' : '60px' ?>;">
                 <button class="btn-play" onclick="togglePlay()"><i class="bi bi-play-fill" id="playIcon"></i></button>
                 <div class="progress-wrap">
                     <input type="range" id="audioBar" min="0" max="100" value="0">
@@ -355,11 +359,30 @@ $DURATION_SECS  = 40 * 60; // 30 min audio + 10 min transfer
                 <?php endif; ?>
 
                 <?php
-                    // Stimulus heading (form title, etc.)
-                    if (!empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStimulus):
+                    // Stimulus heading (form title + optional sub-headings). Scoped to
+                    // form_note_completion only — matching questions also carry stimulus_text
+                    // (it gates the shared A/B/C legend box below) and would otherwise get
+                    // this title box too.
+                    // A stimulus_text of "Main Title||Sub Heading" renders the first part as
+                    // the form's boxed title (only on the first stimulus of the section) and
+                    // the rest as left-accented sub-headings — lets one set of notes carry a
+                    // top-level title plus grouped sections (e.g. "Tiny Engineers" /
+                    // "Junior Engineers") without any further template changes.
+                    if ($qtype === 'form_note_completion' && !empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStimulus):
+                        $isFirstStimulusInBlock = ($prevStimulus === null);
                         $prevStimulus = $q['stimulus_text'];
+                        $stimParts = explode('||', $q['stimulus_text']);
                 ?>
-                    <div class="ff-title"><?= htmlspecialchars($q['stimulus_text']) ?></div>
+                    <?php if ($isFirstStimulusInBlock): ?>
+                        <div class="ff-title"><?= htmlspecialchars($stimParts[0]) ?></div>
+                        <?php if (isset($stimParts[1])): ?>
+                            <div class="ff-subtitle"><?= htmlspecialchars($stimParts[1]) ?></div>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <?php foreach ($stimParts as $stimPart): ?>
+                            <div class="ff-subtitle"><?= htmlspecialchars($stimPart) ?></div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <?php if ($qtype === 'form_note_completion'): ?>
