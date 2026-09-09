@@ -47,6 +47,16 @@ SET @sql = IF(
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- ── course_pacing_items (the template) ──────────────────────────────────
+-- Explicit charset/collation — a bare CREATE TABLE inherits the DATABASE's
+-- default, which on live turned out to still be latin1_swedish_ci (an old
+-- per-database default that predates this app's utf8mb4 connection charset)
+-- even though every other table here (tests, courses, questions...) is
+-- utf8mb4. That mismatch caused #1267 "Illegal mix of collations" the
+-- moment this table's test_code/title columns were compared against the
+-- utf8mb4 string literals in the INSERT below. The CONVERT statement after
+-- also fixes it if migration 072 already partially ran on an environment
+-- and left this table sitting there with the wrong (empty, since the
+-- INSERT never succeeded) collation — safe to re-run either way.
 CREATE TABLE IF NOT EXISTS course_pacing_items (
     id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     course_id     INT UNSIGNED NOT NULL,
@@ -58,7 +68,9 @@ CREATE TABLE IF NOT EXISTS course_pacing_items (
     display_order INT NOT NULL DEFAULT 0,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_pacing_course (course_id)
-);
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE course_pacing_items CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- ── Seed: IELTS General 3-Month Masterclass (course_id=9), Month 1 ─────
 -- Class 7's practice test (PT Set 2 — Listening) has no seeded test_code
