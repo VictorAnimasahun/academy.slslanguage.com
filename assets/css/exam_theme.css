@@ -4,8 +4,9 @@
 
    Design language lifted from the instructor-provided reference
    (ielts_writing_task_layouts.html): muted blue-gray palette, IBM Plex
-   Sans/Serif, hairline 1px borders, small 4-8px radii, barely-there shadows,
-   no gradients. Replaces the old per-page inline <style> blocks (each test
+   Sans/Serif, hairline 1px borders, small 4-8px radii, flat (no shadows),
+   no gradients — separation between blocks comes from a clean border line,
+   never a raised/shadowed look. Replaces the old per-page inline <style> blocks (each test
    page used to duplicate ~150-230 lines of near-identical CSS with drift
    between copies) with one linked stylesheet.
 
@@ -37,12 +38,16 @@
   --exam-good-soft: #EAF5F0;
   --exam-radius: 4px;
   --exam-radius-lg: 6px;
-  --exam-shadow: 0 1px 2px rgba(20,30,45,0.06);
+  --exam-shadow: none;
 }
 
 /* ── Root spacing fix (see file header) ─────────────────────────────────── */
 .content.p-3 { padding: 0 !important; }
-.main-wrapper { padding: 1.25rem 1.5rem !important; background: var(--exam-bg); }
+.main-wrapper {
+  padding: 1.25rem 1.5rem !important;
+  background: var(--exam-bg);
+  margin-left: var(--sidebar-w, 220px) !important;
+}
 
 /* ── Base ────────────────────────────────────────────────────────────────── */
 body { font-family: 'IBM Plex Sans', sans-serif; }
@@ -125,7 +130,7 @@ body.sidebar-collapsed .submit-bar { left: 0; }
 .audio-box {
   background: var(--exam-ink); border-radius: var(--exam-radius-lg); padding: .7rem 1rem;
   display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem;
-  position: sticky; z-index: 140; box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  position: sticky; z-index: 140; border: 1px solid var(--exam-line);
 }
 .btn-play {
   width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--exam-accent);
