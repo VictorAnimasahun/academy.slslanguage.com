@@ -38,9 +38,13 @@ $session = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$session) { die("Session not found."); }
 $submitted = ($session['status'] !== 'in_progress');
 
+// Loaded unconditionally (not just in the student-forwarding branch below) —
+// the admin-preview nav bar further down needs it too, since this page is
+// shared by the Academic and General Training diagnostics.
+$map = require INCLUDES_PATH . '/mock_test_map.php';
+
 // Students must complete all written sections first; admins can preview freely
 if (!$isAdmin && $session['status'] === 'in_progress') {
-    $map = require INCLUDES_PATH . '/mock_test_map.php';
     if (is_null($session['listening_attempt_id'])) {
         $file = $map[$session['mock_code']]['listening']['file'] ?? 'mock_start.php';
         header("Location: {$file}?session_id={$session_id}"); exit();
@@ -108,11 +112,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         <main class="content p-3">
             <div class="sticky-header">
                 <?php if ($isAdmin): ?>
+                <?php
+                $navListening = $map[$session['mock_code']]['listening']['file'] ?? 'diagnostic_aca_listening.php';
+                $navReading   = $map[$session['mock_code']]['reading']['file']   ?? 'diagnostic_aca_reading.php';
+                $navWriting   = $map[$session['mock_code']]['writing']['file']   ?? 'diagnostic_aca_writing.php';
+                ?>
                 <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
                     <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
-                    <a href="diagnostic_aca_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
-                    <a href="diagnostic_aca_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
-                    <a href="diagnostic_aca_writing.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
+                    <a href="<?= htmlspecialchars($navListening) ?>?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
+                    <a href="<?= htmlspecialchars($navReading) ?>?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
+                    <a href="<?= htmlspecialchars($navWriting) ?>?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
                     <a href="diagnostic_aca_speaking.php?session_id=<?= $session_id ?>"  style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎤 Speaking</a>
                 </div>
                 <?php endif; ?>

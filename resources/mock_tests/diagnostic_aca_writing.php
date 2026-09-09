@@ -104,12 +104,20 @@ $wordMin       = 150;
         <main class="content p-3">
             <div class="sticky-header">
                 <?php if ($isAdmin): ?>
+                <?php
+                // See diagnostic_aca_listening.php's identical comment — this
+                // page is shared by Academic and General Training diagnostics,
+                // so the Reading nav link must resolve per-session, not hardcode.
+                $navListening = $map[$session['mock_code']]['listening']['file'] ?? 'diagnostic_aca_listening.php';
+                $navReading   = $map[$session['mock_code']]['reading']['file']   ?? 'diagnostic_aca_reading.php';
+                $navSpeaking  = $map[$session['mock_code']]['speaking']['file']  ?? 'diagnostic_aca_speaking.php';
+                ?>
                 <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
                     <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
-                    <a href="diagnostic_aca_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
-                    <a href="diagnostic_aca_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
+                    <a href="<?= htmlspecialchars($navListening) ?>?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
+                    <a href="<?= htmlspecialchars($navReading) ?>?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
                     <a href="diagnostic_aca_writing.php?session_id=<?= $session_id ?>"   style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">✍️ Writing</a>
-                    <a href="diagnostic_aca_speaking.php?session_id=<?= $session_id ?>"  style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
+                    <a href="<?= htmlspecialchars($navSpeaking) ?>?session_id=<?= $session_id ?>"  style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
                 </div>
                 <?php endif; ?>
                 <div class="d-flex align-items-center justify-content-between">

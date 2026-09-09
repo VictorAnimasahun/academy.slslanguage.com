@@ -1019,6 +1019,29 @@ DELETE FROM lessons WHERE course_id IN (SELECT id FROM courses WHERE folder_name
 
 ---
 
+## 068 — Seed the IELTS General Training Diagnostic Test
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-09 | Verified end-to-end with Playwright against the real QA login: selection page shows both IELTS cards, GT session launches, shares Listening with the Academic diagnostic, real Reading passage + all 8 questions render, submits and scores correctly (8/8 → Band 9.0, `test_attempts` row confirmed), redirects to Writing, real GT letter prompt renders. Test session/attempt rows cleaned up after. |
+| Live  | [ ] | | |
+
+**What it does:**
+- The diagnostic selection page has always advertised "IELTS — Academic & General Training" under one card, but only `IELTS_ACA_DIAGNOSTIC` (migration 063) was ever built — the card just went straight to Academic regardless. This adds a real, separate `IELTS_GT_DIAGNOSTIC`.
+- Content is reused from Full Mock 3 (Cambridge IELTS GT Test 3, migrations 030-031) per instructor direction, not newly authored: Reading = FM3's Section 2 Passage 1 ("Qualities that make a great barista", Q15-22 renumbered 1-8 as its own standalone `IELTS_GT_DIAG_R` test). Writing = FM3's Task 1 letter task, unchanged, as `IELTS_GT_DIAG_W`.
+- Listening is **not** duplicated — real IELTS Listening is identical between Academic and General Training, so `mock_test_map.php`'s new `IELTS_GT_DIAGNOSTIC` entry points Listening at the exact same `IELTS_ACA_DIAG_L` test/audio the Academic diagnostic already uses. Writing also reuses `diagnostic_aca_writing.php` unmodified (it was already written generically enough to render a GT letter task — see that file's own comment on the `instructions`-as-image-path convention). Only Reading needed its own file (`diagnostic_gt_reading.php`) since `diagnostic_aca_reading.php` hardcodes the Academic passage text.
+- New launcher `resources/mock_tests/ielts_gt_diagnostic.php` (sibling of `ielts_aca_diagnostic.php`) and redirect stub `resources/diagnostic_tests/diagnostic_IELTS_GT.php`. The selection page's single "IELTS" card is now two: "IELTS Academic" and "IELTS General Training".
+- **Bug fix made while building this:** `diagnostic_aca_listening.php`, `diagnostic_aca_writing.php`, and `diagnostic_aca_speaking.php` are shared between both diagnostics, but their admin-preview quick-nav bars hardcoded links to the `diagnostic_aca_*` files — an admin clicking "Reading" while previewing a GT session would have landed on the Academic reading page, which shows the wrong (Academic) passage against the GT session's actual (GT) questions. Fixed to resolve each nav link via `mock_test_map.php` per-session instead of hardcoding.
+
+**Rollback:**
+```sql
+DELETE FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'IELTS_GT_DIAG%');
+DELETE FROM tests WHERE code LIKE 'IELTS_GT_DIAG%';
+DELETE FROM mock_exams WHERE code = 'IELTS_GT_DIAGNOSTIC';
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

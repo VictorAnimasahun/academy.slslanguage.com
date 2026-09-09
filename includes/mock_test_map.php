@@ -49,4 +49,18 @@ return [
         'writing'   => ['file' => 'diagnostic_aca_writing.php',  'test_code' => 'IELTS_ACA_DIAG_W'],
         'speaking'  => ['file' => 'diagnostic_aca_speaking.php'],
     ],
+    // General Training counterpart to IELTS_ACA_DIAGNOSTIC above. Listening is
+    // deliberately NOT its own test — real IELTS Listening is identical between
+    // Academic and General Training, so this reuses the Academic diagnostic's
+    // exact Listening test/audio rather than duplicating it. Writing reuses
+    // diagnostic_aca_writing.php unmodified — that template already renders
+    // GT-style letter tasks correctly (see its own comment on the
+    // `instructions`-as-image-path convention). Only Reading gets its own file,
+    // since diagnostic_aca_reading.php hardcodes the Academic passage text.
+    'IELTS_GT_DIAGNOSTIC' => [
+        'listening' => ['file' => 'diagnostic_aca_listening.php', 'test_code' => 'IELTS_ACA_DIAG_L'],
+        'reading'   => ['file' => 'diagnostic_gt_reading.php',   'test_code' => 'IELTS_GT_DIAG_R'],
+        'writing'   => ['file' => 'diagnostic_aca_writing.php',  'test_code' => 'IELTS_GT_DIAG_W'],
+        'speaking'  => ['file' => 'diagnostic_aca_speaking.php'],
+    ],
 ];

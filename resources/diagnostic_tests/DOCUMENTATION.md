@@ -12,7 +12,8 @@ Placement/assessment tests used to gauge a new student's level before recommendi
 
 | File | Purpose |
 |---|---|
-| `diagnostic_IELTS.php` | IELTS-specific diagnostic/placement test |
+| `diagnostic_IELTS.php` | IELTS Academic diagnostic/placement test — redirect stub to `resources/mock_tests/ielts_aca_diagnostic.php` |
+| `diagnostic_IELTS_GT.php` | IELTS General Training diagnostic/placement test — redirect stub to `resources/mock_tests/ielts_gt_diagnostic.php` (migration 068). Shares Listening + Writing engine with the Academic diagnostic; has its own Reading content |
 | `diagnostic_basic_english.php` | General English placement test (for students not yet ready for exam-specific prep) |
 | `diagnostic_celpip.php` | Authenticated entry point for the CELPIP mini mock test |
 

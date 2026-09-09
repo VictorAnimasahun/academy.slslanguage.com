@@ -105,13 +105,24 @@ if (!isset($_SESSION['user_id'])) {
 					</div>
 				</a>
 
-				<!-- IELTS Card -->
-				<a href="diagnostic_IELTS.php" class="test-type-card" 
+				<!-- IELTS Academic Card -->
+				<a href="diagnostic_IELTS.php" class="test-type-card"
 					style="background: linear-gradient(135deg, #ec4899, #f43f5e);">
 					<div class="card-body">
 						<i class="bi bi-pencil-square test-icon"></i>
-						<h3 class="mb-2">IELTS</h3>
-						<p class="mb-0 opacity-90">Academic & General Training</p>
+						<h3 class="mb-2">IELTS Academic</h3>
+						<p class="mb-0 opacity-90">Charts, reports & essays</p>
+						<p class="mb-0 opacity-90 small">Diagnostic Assessment</p>
+					</div>
+				</a>
+
+				<!-- IELTS General Training Card -->
+				<a href="diagnostic_IELTS_GT.php" class="test-type-card"
+					style="background: linear-gradient(135deg, #f97316, #fb923c);">
+					<div class="card-body">
+						<i class="bi bi-envelope-paper test-icon"></i>
+						<h3 class="mb-2">IELTS General Training</h3>
+						<p class="mb-0 opacity-90">Letters & everyday texts</p>
 						<p class="mb-0 opacity-90 small">Diagnostic Assessment</p>
 					</div>
 				</a>
