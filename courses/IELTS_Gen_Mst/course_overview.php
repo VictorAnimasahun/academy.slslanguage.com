@@ -99,6 +99,9 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                         <strong><?= htmlspecialchars($course['instructor_name'] ?? 'SLS') ?></strong>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
+                        <a href="../course_schedule.php?id=<?= (int) $course['id'] ?>" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-calendar-check me-1"></i>View Full Schedule
+                        </a>
                         <?php if ($student_tier_level >= 4): ?>
                             <span class="badge bg-success px-3 py-2">
                                 <i class="bi bi-check-circle me-1"></i>Access: Fluent Plan

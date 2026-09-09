@@ -52,47 +52,21 @@ $assignments = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
 // here by hand -- previously only 4 IELTS codes were mapped, so every
 // other assigned test (all 15 CELPIP tests included) showed up for the
 // student with no way to actually open it.
-$SECTION_FILE_MAP = ['L' => 'listening', 'R' => 'reading', 'S' => 'speaking', 'W1' => 'writing_t1', 'W2' => 'writing_t2'];
-
-function assignmentUrl(array $a, array $sectionFileMap): ?string {
-    if (empty($a['test_id'])) return null;
-    $code = $a['test_code'] ?? '';
-
-    if (!empty($a['vocab_word_id'])) {
-        return 'resources/vocabulary_banks/word_quiz.php?word_id=' . $a['vocab_word_id'];
-    }
-
-    if (preg_match('/^IELTS_FULL_MOCK_\d+$/', $code)) {
-        return 'resources/mock_tests/take.php?code=' . urlencode($code);
-    }
-
-    // Course-pacing class quizzes (see migration 072 / course_pacing_items),
-    // e.g. IELTS_GM_C3_QUIZ — any course's class-quiz codes follow this
-    // "ends in _QUIZ" convention so future courses need no new branch here.
-    if (preg_match('/_QUIZ$/', $code)) {
-        return 'resources/quizzes/class_quiz.php?test_code=' . urlencode($code);
-    }
-
-    if (preg_match('/^([A-Z]+)_PT_(L|R|S|W1|W2)_(\d{3})$/', $code, $m) && isset($sectionFileMap[$m[2]])) {
-        $relPath = 'resources/practice_tests/' . strtolower($m[1]) . '_' . $sectionFileMap[$m[2]] . '_' . $m[3] . '.php';
-        if (file_exists(ACADEMY_ROOT . '/' . $relPath)) return $relPath;
-    }
-
-    return null;
-}
-
-function typeBadge(string $type): string {
-    $map = [
-        'test'       => ['bg:#dbeafe;color:#1d4ed8', 'bi-journal-check',   'Test'],
-        'quiz'       => ['bg:#ede9fe;color:#6d28d9', 'bi-patch-question',  'Quiz'],
-        'vocabulary' => ['bg:#dcfce7;color:#15803d', 'bi-alphabet',        'Vocabulary'],
-        'task'       => ['bg:#f3f4f6;color:#4b5563', 'bi-check2-square',   'Task'],
-    ];
-    [$style, $icon, $label] = $map[$type] ?? $map['task'];
-    return "<span style='display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:999px;font-size:.7rem;font-weight:700;{$style}'><i class='bi {$icon}'></i>{$label}</span>";
-}
+require_once INCLUDES_PATH . '/assignment_helpers.php';
 
 $today = date('Y-m-d');
+
+// Due-this-week / due-this-month counts for the summary strip at the top of
+// the page — computed from the same $assignments list the cards below use,
+// so the numbers can never drift out of sync with what's actually shown.
+$dueWeekCount = $dueMonthCount = $overdueCount = 0;
+$dueWeekItems = [];
+foreach ($assignments as $a) {
+    $tags = assignmentFilterTags($a, $today);
+    if (in_array('overdue', $tags, true)) $overdueCount++;
+    if (in_array('week', $tags, true))  { $dueWeekCount++;  $dueWeekItems[] = $a; }
+    if (in_array('month', $tags, true)) $dueMonthCount++;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -131,6 +105,25 @@ $today = date('Y-m-d');
         .due-upcoming { background:#fef3c7; color:#92400e; }
         .due-overdue  { background:#fee2e2; color:#b91c1c; }
         .due-none     { background:#f3f4f6; color:#6b7280; }
+
+        .due-soon-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; }
+        .due-soon-tile {
+            text-align:left; border:1.5px solid #e5e7eb; background:#fff; border-radius:16px;
+            padding:1.1rem 1.25rem; cursor:pointer; transition:border-color .15s, box-shadow .15s;
+        }
+        .due-soon-tile:hover { box-shadow:0 6px 20px rgba(0,0,0,.08); }
+        .due-soon-tile.active { border-color:#0b77ff; box-shadow:0 0 0 3px rgba(11,119,255,.12); }
+        .due-soon-num { font-size:1.9rem; font-weight:800; line-height:1; color:#1e293b; }
+        .due-soon-tile.week .due-soon-num   { color:#0b77ff; }
+        .due-soon-tile.month .due-soon-num  { color:#6366f1; }
+        .due-soon-tile.overdue .due-soon-num{ color:#dc2626; }
+        .due-soon-label { font-size:.82rem; font-weight:700; color:#475569; margin:.15rem 0 .65rem; }
+        .due-soon-preview { border-top:1px dashed #e5e7eb; padding-top:.6rem; }
+        .due-soon-preview-row { display:flex; justify-content:space-between; gap:.5rem; font-size:.78rem; color:#334155; margin-bottom:.3rem; }
+        .due-soon-preview-title { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .due-soon-preview-date { flex-shrink:0; color:#64748b; font-weight:600; }
+        .due-soon-preview-more { font-size:.75rem; color:#94a3b8; }
+        .due-soon-empty { font-size:.78rem; color:#94a3b8; }
     </style>
 </head>
 <body class="light">
@@ -161,6 +154,41 @@ $today = date('Y-m-d');
             </div>
         <?php else: ?>
 
+            <!-- Due soon summary -->
+            <div class="due-soon-grid mb-4">
+                <button type="button" class="due-soon-tile week" data-quickfilter="week">
+                    <div class="due-soon-num"><?= $dueWeekCount ?></div>
+                    <div class="due-soon-label"><i class="bi bi-calendar-week me-1"></i>Due this week</div>
+                    <?php if ($dueWeekItems): ?>
+                    <div class="due-soon-preview">
+                        <?php foreach (array_slice($dueWeekItems, 0, 3) as $item): ?>
+                        <div class="due-soon-preview-row">
+                            <span class="due-soon-preview-title"><?= htmlspecialchars(!empty($item['title']) ? $item['title'] : ($item['test_title'] ?? 'Assignment')) ?></span>
+                            <span class="due-soon-preview-date"><?= date('D j', strtotime($item['due_date'])) ?></span>
+                        </div>
+                        <?php endforeach; ?>
+                        <?php if (count($dueWeekItems) > 3): ?>
+                        <div class="due-soon-preview-more">+<?= count($dueWeekItems) - 3 ?> more</div>
+                        <?php endif; ?>
+                    </div>
+                    <?php else: ?>
+                    <div class="due-soon-preview due-soon-empty">Nothing due this week</div>
+                    <?php endif; ?>
+                </button>
+
+                <button type="button" class="due-soon-tile month" data-quickfilter="month">
+                    <div class="due-soon-num"><?= $dueMonthCount ?></div>
+                    <div class="due-soon-label"><i class="bi bi-calendar-month me-1"></i>Due this month</div>
+                    <div class="due-soon-preview due-soon-empty">Includes this week's items above</div>
+                </button>
+
+                <button type="button" class="due-soon-tile overdue" data-quickfilter="overdue">
+                    <div class="due-soon-num"><?= $overdueCount ?></div>
+                    <div class="due-soon-label"><i class="bi bi-exclamation-circle me-1"></i>Overdue</div>
+                    <div class="due-soon-preview due-soon-empty"><?= $overdueCount ? 'Needs attention' : 'You\'re all caught up' ?></div>
+                </button>
+            </div>
+
             <!-- Filter tabs -->
             <div class="filter-bar">
                 <button class="filter-btn active" data-filter="all">All <span class="ms-1 badge bg-secondary" id="cnt-all"></span></button>
@@ -174,7 +202,7 @@ $today = date('Y-m-d');
                 $completed = $a['attempt_status'] === 'completed';
                 $overdue   = !$completed && !empty($a['due_date']) && $a['due_date'] < $today;
                 $cardClass = $completed ? 'completed' : ($overdue ? 'overdue' : '');
-                $filterTag = $completed ? 'completed' : ($overdue ? 'overdue' : 'pending');
+                $filterTag = implode(' ', assignmentFilterTags($a, $today));
 
                 $displayTitle = !empty($a['title']) ? $a['title'] : ($a['test_title'] ?? 'Assignment');
                 $url = assignmentUrl($a, $SECTION_FILE_MAP);
@@ -248,26 +276,29 @@ $today = date('Y-m-d');
     document.body.classList.add(saved);
 })();
 
-// Filter tabs
-const cards   = document.querySelectorAll('.asgn-card');
-const buttons = document.querySelectorAll('.filter-btn');
+// Filter tabs + due-soon quick filters — a card's data-filter can hold
+// several space-separated tags (e.g. "pending week month"), so both sets of
+// controls just test tag membership rather than exact string equality.
+const cards        = document.querySelectorAll('.asgn-card');
+const buttons      = document.querySelectorAll('.filter-btn');
+const quickTiles   = document.querySelectorAll('.due-soon-tile');
+const cardTags     = Array.from(cards).map(c => c.dataset.filter.split(' '));
 
-// Count totals
 const counts = { all: cards.length, pending: 0, completed: 0, overdue: 0 };
-cards.forEach(c => { const f = c.dataset.filter; if (counts[f] !== undefined) counts[f]++; });
+cardTags.forEach(tags => tags.forEach(t => { if (counts[t] !== undefined) counts[t]++; }));
 const cntEl = document.getElementById('cnt-all');
 if (cntEl) cntEl.textContent = counts.all;
 
-buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.dataset.filter;
-        cards.forEach(c => {
-            c.style.display = (filter === 'all' || c.dataset.filter === filter) ? '' : 'none';
-        });
+function applyFilter(filter) {
+    cards.forEach((c, i) => {
+        c.style.display = (filter === 'all' || cardTags[i].includes(filter)) ? '' : 'none';
     });
-});
+    buttons.forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+    quickTiles.forEach(t => t.classList.toggle('active', t.dataset.quickfilter === filter));
+}
+
+buttons.forEach(btn => btn.addEventListener('click', () => applyFilter(btn.dataset.filter)));
+quickTiles.forEach(tile => tile.addEventListener('click', () => applyFilter(tile.dataset.quickfilter)));
 </script>
 </body>
 </html>

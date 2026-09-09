@@ -314,6 +314,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                             <a href="<?= $startLink ?>" class="btn btn-success w-100 mb-2">
                                 <i class="bi bi-play-fill me-1"></i><?= $startLabel ?>
                             </a>
+                            <a href="course_schedule.php?id=<?= $course_id ?>" class="btn btn-outline-primary w-100 mb-2" style="font-size:.85rem;">
+                                <i class="bi bi-calendar-check me-1"></i>View Full Schedule
+                            </a>
                             <a href="../learning_dashboard.php" class="btn btn-outline-secondary w-100" style="font-size:.85rem;">
                                 <i class="bi bi-speedometer2 me-1"></i>Back to Dashboard
                             </a>
