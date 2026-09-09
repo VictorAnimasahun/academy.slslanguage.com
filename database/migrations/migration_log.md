@@ -1067,6 +1067,26 @@ ALTER TABLE courses DROP COLUMN is_visible;
 
 ---
 
+## 070 — Resolve the two remaining duplicates flagged in 069
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-09 | Verified: catalogue now shows exactly one card per course, zero duplicates. |
+| Live  | [ ] | | |
+
+**What it does:** instructor decided id=4 stays the canonical IELTS Academic Masterclass ("whichever is faster/more efficient" — id=4 already has 26 real lessons vs. id=17's empty shell), and asked for the CELPIP 1-Month duplicate to be cleaned up too.
+- `id=17` "IELTS Academic Masterclass — 3 Months" (empty shell) → hidden.
+- `id=19` (exact-duplicate "CELPIP General — 1-Month Plan" row) → hidden, keeping `id=12`.
+- `id=12`'s own internal duplicate — two identical "Month 1 — CELPIP Foundations" module rows (16 and 29), both with zero lessons — the redundant one (29) is deleted outright (not just hidden — an empty module row isn't user-facing content, and this isn't a full course/enrollment-bearing record).
+
+**Rollback:**
+```sql
+UPDATE courses SET is_visible = 1 WHERE id IN (17, 19);
+INSERT INTO modules (id, course_id, module_title, module_order, min_tier) VALUES (29, 12, 'Month 1 — CELPIP Foundations', 1, 'beginner');
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
