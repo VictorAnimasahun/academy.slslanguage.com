@@ -299,6 +299,20 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </div>
 
+            <!-- Quiz -->
+            <div class="content-section">
+                <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class 1 Quiz</h2>
+                <div class="highlight-box" style="border-left-color: #16a34a; background: #f0fdf4;">
+                    <h5 style="color: #16a34a;"><i class="bi bi-check2-square me-2"></i>IELTS Format Knowledge Quiz</h5>
+                    <p class="mb-2">
+                        10 quick questions on the format of the test itself — section timings, question counts,
+                        and band ranges — covered in today's orientation.
+                    </p>
+                    <p class="mb-2"><strong>Format:</strong> 10 questions | Multiple choice</p>
+                    <a href="<?= ACADEMY_URL ?>resources/quizzes/class_quiz.php?test_code=IELTS_GM_C1_QUIZ&return=<?= urlencode('../../courses/IELTS_Gen/lessons/intro.php') ?>" class="btn btn-success btn-sm"><i class="bi bi-play-fill me-1"></i>Start Quiz</a>
+                </div>
+            </div>
+
             <!-- Take-Home -->
             <div class="content-section">
                 <h2><i class="bi bi-house-heart me-2"></i>Take-Home Exercise</h2>

@@ -260,7 +260,7 @@ if (!can_access('intermediate')) {
                         Cohesion, Lexical Resource, or Grammatical Range &amp; Accuracy?
                     </p>
                     <p class="mb-2"><strong>Format:</strong> 10 questions | Matching exercise</p>
-                    <p class="text-muted mb-0"><i class="bi bi-clock me-1"></i>Quiz questions coming soon</p>
+                    <a href="<?= ACADEMY_URL ?>resources/quizzes/class_quiz.php?test_code=IELTS_GM_C2_QUIZ&return=<?= urlencode('../../courses/IELTS_Gen/lessons/class02.php') ?>" class="btn btn-success btn-sm"><i class="bi bi-play-fill me-1"></i>Start Quiz</a>
                 </div>
             </div>
 

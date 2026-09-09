@@ -293,7 +293,7 @@ if (!can_access('intermediate')) {
                         For example: "The appointment is scheduled for ___" — what type of answer do you expect?
                     </p>
                     <p class="mb-2"><strong>Format:</strong> 10 questions | Prediction categorisation exercise</p>
-                    <p class="text-muted mb-0"><i class="bi bi-clock me-1"></i>Quiz questions coming soon</p>
+                    <a href="<?= ACADEMY_URL ?>resources/quizzes/class_quiz.php?test_code=IELTS_GM_C3_QUIZ&return=<?= urlencode('../../courses/IELTS_Gen/lessons/class03.php') ?>" class="btn btn-success btn-sm"><i class="bi bi-play-fill me-1"></i>Start Quiz</a>
                 </div>
             </div>
 

@@ -1087,6 +1087,49 @@ INSERT INTO modules (id, course_id, module_title, module_order, min_tier) VALUES
 
 ---
 
+## 071 — Seed real quiz content for IELTS General 3-Month Masterclass, Month 1
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-09 | Verified via Playwright: all 7 quizzes (Classes 1-7) load with correct question counts, correct titles, score/grade correctly on submit. Every question confirmed to have exactly one correct option. |
+| Live  | [ ] | | |
+
+**What it does:** `documentation/ielts_general_3month_syllabus.md` specifies an exact quiz format for every teaching class, but every class page has only ever shown "Quiz questions coming soon." Authors real questions for Classes 1-7 (Class 8 is Mock Test 1, no quiz). Content was written to match each class page's own (more specific) description, not just the syllabus doc's one-line summary — e.g. Class 2's real task is matching descriptor phrases to marking criteria (Task Achievement / Coherence & Cohesion / Lexical Resource / Grammatical Range & Accuracy), not band-range guessing as the syllabus doc's shorthand suggested; Class 4 is a skim-vs-scan classification drill, not a reading-comprehension quiz; Class 6 folds "which system applies" (TFNG or YNNG) and "what's the answer" into one 5-option MCQ per statement, using two short texts (one factual, one opinion) since TFNG-only text can't test YNNG. All 66 questions use `multiple_choice_single` for one consistent grading path.
+
+**Rollback:**
+```sql
+DELETE FROM question_options WHERE question_id IN (SELECT id FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'IELTS_GM_%'));
+DELETE FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'IELTS_GM_%');
+DELETE FROM tests WHERE code LIKE 'IELTS_GM_%';
+```
+
+---
+
+## 072 — Enrollment-anchored course pacing (platform feature) + Month 1 wiring
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-09 | Verified via Playwright end-to-end: enrolling in course_id=9 generates 12 personalized assignment rows (13 pacing items minus 1 skipped for not-yet-seeded content) with due dates exactly matching enrollment date + offset (day 0/3/7/10/14/17/21/24); assignments.php displays them with correct titles and working launch links; class_quiz.php scores and records attempts correctly. |
+| Live  | [ ] | | |
+
+**What it does:** instructor: assignment due dates should start counting "when a student registers for the course now — every course should work like that," not a fixed shared calendar date. `assignments` had no `student_id` at all before this (one shared due date for every enrolled student) and was essentially unused platform-wide (1 stray row total). Adds:
+- `assignments.student_id` (nullable — NULL preserves today's shared-row behavior for anything created by hand via sls-admin; a value personalizes a row to one student).
+- `course_pacing_items` — the per-course template (item type, title, `tests.code`, days-after-enrollment offset). Authored once per course, like any other seeded content.
+- `includes/course_pacing.php`'s `generateAssignmentsForEnrollment()` — reads the template and materializes personalized `assignments` rows the moment a student enrolls (hooked into `courses/courses_detail.php`'s enroll handler). Missing test content is skipped, never fatal to enrollment.
+- `assignments.php` updated: query now matches student-owned rows too, and `assignmentUrl()` routes any `*_QUIZ`-suffixed test code to the new `resources/quizzes/class_quiz.php` engine (a generic DB-driven MCQ quiz, same pattern as `word_quiz.php` but keyed by `tests.code` instead of a vocabulary word).
+- Seeds course_id=9's Month 1 (Classes 1-8) pacing: 7 quizzes (migration 071) + PT Set 1 (Classes 3-6, real existing content) + PT Set 2 Listening for Class 7 (**pre-existing gap** — `ielts_listening_002.php` exists on disk but was never wired to a `tests` row; the pacing item is seeded anyway so it activates automatically once that content is finished) + Mock Test 1 for Class 8, mapped to `IELTS_FULL_MOCK_003` (the only Full Mock with real, complete General Training content — Mocks 2/3 for Classes 16/24 are Month 2/3, out of this scope, and have no equivalent real GT mock content yet either).
+- Wired the "Start Quiz" button into Classes 1-7's lesson pages (`intro.php` needed a new section added; it never had one).
+- **Also fixed while doing this:** the identical fatal parse-error bug found in Class 4 (see the 2026-09-09 "Fix fatal PHP parse error" commit) turned out to affect Classes 8-24 too — fixed separately, same day, own commit.
+
+**Rollback:**
+```sql
+DELETE FROM assignments WHERE student_id IS NOT NULL;
+DROP TABLE course_pacing_items;
+ALTER TABLE assignments DROP COLUMN student_id;
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

@@ -15,7 +15,7 @@ if (!can_access('intermediate')) { ?>
 <div class="mt-3"><a href="intro.php" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i>Back to Class 1 (Free)</a></div>
 </div></main><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>const m=document.getElementById('menuToggle'),s=document.querySelector('.sidebar'),o=document.getElementById('mobileOverlay');function t(){s.classList.toggle('active');o.classList.toggle('active');m.querySelector('i').className=s.classList.contains('active')?'bi bi-x-lg':'bi bi-list';}m.addEventListener('click',t);o.addEventListener('click',t);</script>
-</body></html><?php exit(); ?>
+</body></html><?php exit(); } ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,7 +128,7 @@ if (!can_access('intermediate')) { ?>
                 <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                     <h4 style="color:#15803d;margin-top:0;">Map Orientation Drill + Part 2 Planning</h4>
                     <p class="mb-2">Part A: Study a sample IELTS map for 60 seconds, then answer 5 location questions based on a written description of the route. Part B: Given a cue card, write a 4-keyword outline in exactly 60 seconds.</p>
-                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:8px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
+                    <a href="<?= ACADEMY_URL ?>resources/quizzes/class_quiz.php?test_code=IELTS_GM_C7_QUIZ&return=<?= urlencode('../../courses/IELTS_Gen/lessons/class07.php') ?>" class="btn btn-success btn-sm"><i class="bi bi-play-fill me-1"></i>Start Quiz</a>
                 </div>
             </div>
 

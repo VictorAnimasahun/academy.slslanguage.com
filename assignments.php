@@ -35,12 +35,13 @@ $sql = "
             GROUP BY test_id
         ) ta2 ON ta1.id = ta2.max_id
     ) latest ON latest.test_id = a.test_id
+    WHERE a.student_id IS NULL OR a.student_id = ?
     ORDER BY
         CASE WHEN a.due_date IS NULL THEN 1 ELSE 0 END,
         a.due_date ASC,
         a.created_at DESC
 ";
-$stmt        = executeQuery($db, $sql, [$user_id, $user_id]);
+$stmt        = executeQuery($db, $sql, [$user_id, $user_id, $user_id]);
 $assignments = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
 // URL derivation for standalone practice tests: their codes follow
@@ -63,6 +64,13 @@ function assignmentUrl(array $a, array $sectionFileMap): ?string {
 
     if (preg_match('/^IELTS_FULL_MOCK_\d+$/', $code)) {
         return 'resources/mock_tests/take.php?code=' . urlencode($code);
+    }
+
+    // Course-pacing class quizzes (see migration 072 / course_pacing_items),
+    // e.g. IELTS_GM_C3_QUIZ — any course's class-quiz codes follow this
+    // "ends in _QUIZ" convention so future courses need no new branch here.
+    if (preg_match('/_QUIZ$/', $code)) {
+        return 'resources/quizzes/class_quiz.php?test_code=' . urlencode($code);
     }
 
     if (preg_match('/^([A-Z]+)_PT_(L|R|S|W1|W2)_(\d{3})$/', $code, $m) && isset($sectionFileMap[$m[2]])) {

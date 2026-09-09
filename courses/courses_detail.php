@@ -36,6 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course
     try {
         $db->prepare("INSERT INTO enrollments (student_id, course_id, enrolled_at, progress_percentage)
                       VALUES (?, ?, NOW(), 0)")->execute([$user_id, $course_id]);
+
+        require_once INCLUDES_PATH . '/course_pacing.php';
+        generateAssignmentsForEnrollment($db, $user_id, $course_id);
+
         header("Location: courses_detail.php?id={$course_id}&enrolled=1");
         exit();
     } catch (PDOException $e) {
