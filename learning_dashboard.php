@@ -32,7 +32,8 @@ $enrolled_courses = $enrolledStmt ? $enrolledStmt->fetchAll(PDO::FETCH_ASSOC) : 
 
 // Recommended courses (not yet enrolled)
 $availableStmt = executeQuery($db, "SELECT c.* FROM courses c
-    WHERE c.id NOT IN (SELECT course_id FROM enrollments WHERE student_id = ?)
+    WHERE c.is_visible = 1
+      AND c.id NOT IN (SELECT course_id FROM enrollments WHERE student_id = ?)
     ORDER BY c.created_at DESC LIMIT " . MAX_COURSE_RECOMMENDATIONS, [$user_id]);
 $available_courses = $availableStmt ? $availableStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 

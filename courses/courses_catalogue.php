@@ -18,7 +18,7 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $price_filter = isset($_GET['price']) ? trim($_GET['price']) : '';
 
 // Build query conditions
-$conditions = [];
+$conditions = ["c.is_visible = 1"];
 $params = [];
 
 if (!empty($search)) {

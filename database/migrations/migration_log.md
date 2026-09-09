@@ -1024,7 +1024,7 @@ DELETE FROM lessons WHERE course_id IN (SELECT id FROM courses WHERE folder_name
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-09 | Verified end-to-end with Playwright against the real QA login: selection page shows both IELTS cards, GT session launches, shares Listening with the Academic diagnostic, real Reading passage + all 8 questions render, submits and scores correctly (8/8 → Band 9.0, `test_attempts` row confirmed), redirects to Writing, real GT letter prompt renders. Test session/attempt rows cleaned up after. |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-09-09 | Run by user on live. |
 
 **What it does:**
 - The diagnostic selection page has always advertised "IELTS — Academic & General Training" under one card, but only `IELTS_ACA_DIAGNOSTIC` (migration 063) was ever built — the card just went straight to Academic regardless. This adds a real, separate `IELTS_GT_DIAGNOSTIC`.
@@ -1038,6 +1038,31 @@ DELETE FROM lessons WHERE course_id IN (SELECT id FROM courses WHERE folder_name
 DELETE FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'IELTS_GT_DIAG%');
 DELETE FROM tests WHERE code LIKE 'IELTS_GT_DIAG%';
 DELETE FROM mock_exams WHERE code = 'IELTS_GT_DIAGNOSTIC';
+```
+
+---
+
+## 069 — Add `courses.is_visible`; hide dead/duplicate course cards
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-09 | Verified: catalogue no longer lists ids 2/7/11; dashboard "Recommended" query also fixed (same unfiltered-`courses` bug). Course 17 (empty Academic Masterclass duplicate) and courses 12/19 (exact-duplicate CELPIP 1-Month Plan) deliberately left visible — need a product decision, not a mechanical hide. |
+| Live  | [ ] | | |
+
+**What it does:** instructor reported the CELPIP Masterclass course overview "isn't working" and that the IELTS General 3-Month Masterclass and 2-Month Intensive are the same course. Investigation found the student catalogue (`courses/courses_catalogue.php`) has never filtered on anything but search/price — every row in `courses` renders as a card, including dead ones. Found:
+- `id=2` "IELTS Masterclass" and `id=7` "CELPIP Masterclass" — 0 modules, 0 lessons, 0 enrollments each. Legacy records superseded by `id=4`/`id=14`. `id=7` is the "not working" course — it isn't erroring, it was simply never built.
+- `id=11` "IELTS General - 2 Month Intensive" — 2 modules/16 lessons, but its two module titles ("Month 1 - Foundations", "Month 2 - Skill Development") are identical to the first two months of `id=9`'s ("IELTS General - 3 Month Masterclass") curriculum — a redundant subset, confirming the instructor's "same as" observation. Has 1 real student enrollment, so this is **hidden, not deleted** — that student keeps dashboard/direct-URL access; it's just no longer offered to new students.
+
+Adds `courses.is_visible` (default 1, guarded add via the `information_schema` + `PREPARE`/`EXECUTE` pattern — see [[mysql-alter-syntax]] correction, bare `ADD COLUMN IF NOT EXISTS` 1064s even on real MySQL 8.0), sets it to 0 for ids 2/7/11, and filters on it in `courses_catalogue.php` and `learning_dashboard.php`'s "Recommended courses" query (same unfiltered-`courses` bug, found while fixing the first one). `courses_detail.php` and enrolled-course lookups are untouched — a hidden course stays reachable for anyone already enrolled in or directly linking to it.
+
+**Left open, needs a decision before further migrations:**
+- `id=17` "IELTS Academic Masterclass — 3 Months" — 3 modules, **zero lessons**. Empty shell duplicate of `id=4` "IELTS Academic Masterclass" (26 real lessons, migration 062). Both still show on the catalogue.
+- `id=12`/`id=19` — exact duplicate rows, both titled "CELPIP General — 1-Month Plan", both empty (0/2 lessons). Predates this session (see migration 067's notes) — still unresolved.
+
+**Rollback:**
+```sql
+UPDATE courses SET is_visible = 1 WHERE id IN (2, 7, 11);
+ALTER TABLE courses DROP COLUMN is_visible;
 ```
 
 ---
