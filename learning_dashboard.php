@@ -530,12 +530,16 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                 doc.setFont('helvetica', 'normal');
                 doc.setTextColor(...muted);
                 doc.setFontSize(7.5);
-                doc.text(p.note, L + 50, pY + 18);
+                // Wrap + cap at 2 lines so a long instructor note (free text)
+                // can't run off the right edge of the page unclipped.
+                const noteLines = doc.splitTextToSize(p.note, R - (L + 50) - 2).slice(0, 2);
+                doc.text(noteLines, L + 50, pY + 18);
             } else {
                 doc.setFontSize(7.5);
                 doc.setFont('helvetica', 'normal');
                 doc.setTextColor(...muted);
-                doc.text(p.note, L + 5, pY + 18);
+                const noteLines = doc.splitTextToSize(p.note, W - 10).slice(0, 2);
+                doc.text(noteLines, L + 5, pY + 18);
             }
             pY += 26;
         });

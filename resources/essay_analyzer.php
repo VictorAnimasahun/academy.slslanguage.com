@@ -946,80 +946,74 @@ function closeResultsModal() {
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
+
     const question = document.getElementById('modalQuestion').textContent;
     const essay = document.getElementById('modalEssay').textContent;
     const score = document.getElementById('modalScore').textContent;
     const scoreLabel = document.getElementById('modalScoreLabel').textContent;
     const feedback = document.getElementById('modalFeedback').innerText;
     const grammar = document.getElementById('modalGrammar').innerText;
-    
-    let yPos = 20;
+
     const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 20;
     const maxWidth = pageWidth - (margin * 2);
-    
+    const bottomLimit = pageHeight - margin;
+    let yPos = 20;
+
+    // Every line is checked against the page bottom as it's drawn, instead of
+    // only checking once per section — a long essay/feedback block used to
+    // just keep drawing past the bottom edge of the page and get clipped.
+    function ensureRoom(neededHeight) {
+        if (yPos + neededHeight > bottomLimit) {
+            doc.addPage();
+            yPos = 20;
+        }
+    }
+
+    function addHeading(text) {
+        ensureRoom(10);
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont(undefined, 'bold');
+        doc.text(text, margin, yPos);
+        yPos += 7;
+        doc.setFont(undefined, 'normal');
+    }
+
+    function addBody(text, lineHeight = 7) {
+        doc.splitTextToSize(text, maxWidth).forEach(line => {
+            ensureRoom(lineHeight);
+            doc.text(line, margin, yPos);
+            yPos += lineHeight;
+        });
+        yPos += 10;
+    }
+
     // Title
     doc.setFontSize(20);
     doc.setTextColor(102, 126, 234);
     doc.text('Essay Analysis Report', margin, yPos);
     yPos += 15;
-    
+
     // Score
     doc.setFontSize(16);
     doc.setTextColor(16, 185, 129);
     doc.text(`${scoreLabel}: ${score}`, margin, yPos);
     yPos += 15;
-    
-    // Question
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.setFont(undefined, 'bold');
-    doc.text('Essay Question:', margin, yPos);
-    yPos += 7;
-    doc.setFont(undefined, 'normal');
-    const questionLines = doc.splitTextToSize(question, maxWidth);
-    doc.text(questionLines, margin, yPos);
-    yPos += (questionLines.length * 7) + 10;
-    
-    // Essay
-    if (yPos > 250) {
-        doc.addPage();
-        yPos = 20;
-    }
-    doc.setFont(undefined, 'bold');
-    doc.text('Your Essay:', margin, yPos);
-    yPos += 7;
-    doc.setFont(undefined, 'normal');
-    const essayLines = doc.splitTextToSize(essay, maxWidth);
-    doc.text(essayLines, margin, yPos);
-    yPos += (essayLines.length * 7) + 10;
-    
-    // Feedback
-    if (yPos > 250) {
-        doc.addPage();
-        yPos = 20;
-    }
-    doc.setFont(undefined, 'bold');
-    doc.text('AI Examiner Feedback:', margin, yPos);
-    yPos += 7;
-    doc.setFont(undefined, 'normal');
-    const feedbackLines = doc.splitTextToSize(feedback, maxWidth);
-    doc.text(feedbackLines, margin, yPos);
-    yPos += (feedbackLines.length * 7) + 10;
-    
-    // Grammar
-    if (yPos > 250) {
-        doc.addPage();
-        yPos = 20;
-    }
-    doc.setFont(undefined, 'bold');
-    doc.text('Grammar & Spelling:', margin, yPos);
-    yPos += 7;
-    doc.setFont(undefined, 'normal');
-    const grammarLines = doc.splitTextToSize(grammar, maxWidth);
-    doc.text(grammarLines, margin, yPos);
-    
+
+    addHeading('Essay Question:');
+    addBody(question);
+
+    addHeading('Your Essay:');
+    addBody(essay);
+
+    addHeading('AI Examiner Feedback:');
+    addBody(feedback);
+
+    addHeading('Grammar & Spelling:');
+    addBody(grammar);
+
     // Save
     doc.save(`Essay_Analysis_${score}_${new Date().toISOString().split('T')[0]}.pdf`);
 }

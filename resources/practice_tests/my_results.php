@@ -732,8 +732,8 @@ function downloadMockPDF(data) {
         doc.setTextColor(...white); doc.setFontSize(9.5); doc.setFont('helvetica','bold');
         doc.text(p.label,L+5,pY+7); doc.text('Band '+p.band,R,pY+7,{align:'right'});
         doc.setFillColor(...light); doc.rect(L,pY+10,W,14,'F');
-        if(p.score){ doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(...dark); doc.text('Raw Score: '+p.score,L+5,pY+18); doc.setFont('helvetica','normal'); doc.setTextColor(...muted); doc.setFontSize(7.5); doc.text(p.note,L+50,pY+18); }
-        else { doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(...muted); doc.text(p.note,L+5,pY+18); }
+        if(p.score){ doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(...dark); doc.text('Raw Score: '+p.score,L+5,pY+18); doc.setFont('helvetica','normal'); doc.setTextColor(...muted); doc.setFontSize(7.5); doc.text(doc.splitTextToSize(p.note, R-(L+50)-2).slice(0,2),L+50,pY+18); }
+        else { doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(...muted); doc.text(doc.splitTextToSize(p.note, W-10).slice(0,2),L+5,pY+18); }
         pY+=26;
     });
 
