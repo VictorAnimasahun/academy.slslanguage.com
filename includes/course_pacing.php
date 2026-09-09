@@ -11,6 +11,8 @@
  * personalized `assignments` rows the moment a student enrolls.
  */
 
+require_once INCLUDES_PATH . '/admin_check.php';
+
 /**
  * Create this student's personalized assignment rows for a course, based on
  * that course's course_pacing_items template. Call once, right after the
@@ -59,6 +61,8 @@ function generateAssignmentsForEnrollment(PDO $db, int $studentId, int $courseId
  * student out of content entirely.
  */
 function getIncompletePriorPacingItems(PDO $db, int $studentId, int $courseId, int $lessonId): array {
+    if (is_platform_admin()) return [];
+
     $posStmt = $db->prepare("
         SELECT m.module_order, l.lesson_order
         FROM lessons l JOIN modules m ON m.id = l.module_id

@@ -21,6 +21,8 @@
 if (defined('TIER_ACCESS_LOADED')) return;
 define('TIER_ACCESS_LOADED', true);
 
+require_once INCLUDES_PATH . '/admin_check.php';
+
 // ── Tier map ────────────────────────────────────────────────────────────────
 
 const TIER_LEVELS = [
@@ -100,6 +102,7 @@ function get_student_tier_level(): int {
  * @param string $min_tier  One of: beginner | intermediate | advanced | fluent
  */
 function can_access(string $min_tier): bool {
+    if (is_platform_admin()) return true;
     $required = TIER_LEVELS[$min_tier] ?? 1;
     return get_student_tier_level() >= $required;
 }

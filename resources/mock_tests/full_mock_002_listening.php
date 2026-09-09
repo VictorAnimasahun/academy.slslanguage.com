@@ -13,8 +13,8 @@ if (!$session_id) {
 }
 
 $student_id  = (int)$_SESSION['user_id'];
-$adminEmails = ['v.animasahun@slslanguage.com', 'animasahunvictor1@gmail.com', 'ashonibarevik@gmail.com'];
-$isAdmin     = in_array($_SESSION['user_email'] ?? '', $adminEmails);
+require_once INCLUDES_PATH . '/admin_check.php';
+$isAdmin     = is_platform_admin();
 
 $stmt = $db->prepare("
     SELECT ms.*, t.title AS mock_title, t.code AS mock_code
