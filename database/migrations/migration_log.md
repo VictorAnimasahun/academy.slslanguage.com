@@ -1130,6 +1130,34 @@ ALTER TABLE assignments DROP COLUMN student_id;
 
 ---
 
+## 073 — Seed CELPIP Full Mock Tests A & B
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-10 | Ran clean, no errors after fixing 3 missing derived-table column aliases (`d.part` resolution failures on the first row of 3 Reading sub-blocks). Verified via direct SQL: 38/38/38/38 questions across FMA_L/FMA_R/FMB_L/FMB_R with no gaps or duplicates in question_number; every question has exactly one `is_correct` option (161 options on each Reading test = 29 MCQ×4 + 9 matching×5); 18 `question_correct_answers` rows on each Reading test (9 matching questions × upper/lower alternates); both Writing tests have exactly 2 essay-type questions; container tests, section tests, and both `mock_exams` rows all present. |
+| Live  | [ ] | | |
+
+**What it does:** instructor: "The CELPIP Masterclass course will have two Mock Tests, one each at the end of a month... I have placed a folder in the downloads folder... called 'CelpipTeacherSupportPack' and it has every single file to set up those two Full Mock tests," built for course_id=13 (CELPIP General — 2-Month Plan), both tests built together per instructor's "Both at once" decision. Seeds the real official CELPIP General Practice Tests A & B (Paragon Testing Enterprises), transcribed verbatim from the source PDFs in `~/Downloads/CelpipTeacherSupportPack/` and cross-checked question-by-question against the official Answer Key PDFs (via two parallel extraction passes — see note below on a transcription mix-up caught before this migration was finalized).
+- Container tests `CELPIP_FULL_MOCK_A` / `CELPIP_FULL_MOCK_B` + matching `mock_exams` rows.
+- Section tests `CELPIP_FMA_L/R/W` and `CELPIP_FMB_L/R/W` (Speaking has no DB test row — same as the IELTS mock precedent, since `mock_speaking.php` is a collation/handoff page with no gradable content).
+- All 152 Listening+Reading questions (38×2 tests×2 skills), typed `multiple_choice_single` except each test's Reading Part 3 (paragraph-matching, official format is letters A-E where E means "not given in any paragraph") which uses `question_type='matching'` — same convention as migration 017 (IELTS FM1 Reading): shared A-E legend duplicated into `question_options` for on-page display, actual scoring via `question_correct_answers` (both-case alternates).
+- Both tests' 2 Writing tasks each, seeded as `essay`-type questions (AI/manual-graded, same as existing IELTS mock writing tasks).
+- Real audio/video/image assets already placed in `assets/audio/CELPIP_FULL_MOCK_A(/B)/` and `assets/img/mock_tests/CELPIP_FULL_MOCK_A(/B)/` in a prior step (not part of this SQL file) — Part 5 videos re-encoded via ffmpeg for browser compatibility, Speaking-task images copied as full, uncropped page renders rather than precision-cropped illustrations (a deliberate time/effort trade-off, not yet run past the instructor).
+- **Known simplifications, both flagged in-file:** (1) one Listening Part 1 question per test has 4 official answer choices that are photographs, not text — rendered as short bracketed text descriptions of each photo (`[Photo] ...`) since no per-option image asset pipeline exists yet; this preserves 4 uniquely distinct choices without changing the correct answer. (2) A few verbatim option/passage typos from the official source PDFs are preserved exactly as printed (e.g. Test A Reading Part 4's "the students excitement" missing apostrophe; Test B Reading Part 4's garbled option text "eliminating do so without economic intervention"), rather than silently corrected, per the instructor's implicit expectation of verbatim official content.
+- **Caught and fixed before finalizing:** the two parallel extraction agents' Reading Part 3 articles were initially transcribed into the wrong test in this file (dragonfly article written into Test A instead of Test B, narwhal article omitted) — caught by re-checking both agents' raw reports side-by-side before running the migration, and corrected (Test A Part 3 = narwhal/tusk article, Test B Part 3 = dragonfly article) prior to any DB write.
+- Not yet done: wiring lesson 163 (course 13, Month 1) to launch Mock A instead of the old hardcoded `celpip_mini_mock.php`, wiring lesson 178 (Month 2, currently `file_path=NULL`) to launch Mock B, adding `mock_test_map.php` entries for `CELPIP_FULL_MOCK_A/B`, adding `course_pacing_items` rows for course 13, and building the actual PHP rendering pages for CELPIP full-mock sessions (no existing CELPIP full-mock UI exists yet — the closest precedent is `resources/mock_tests/full_mock_003_reading.php` for IELTS). Tracked as follow-up work, not part of this migration.
+
+**Rollback:**
+```sql
+DELETE FROM question_correct_answers WHERE question_id IN (SELECT id FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'CELPIP_FM%'));
+DELETE FROM question_options WHERE question_id IN (SELECT id FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'CELPIP_FM%'));
+DELETE FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'CELPIP_FM%');
+DELETE FROM mock_exams WHERE code LIKE 'CELPIP_FULL_MOCK_%';
+DELETE FROM tests WHERE code LIKE 'CELPIP_FM%' OR code LIKE 'CELPIP_FULL_MOCK_%';
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
