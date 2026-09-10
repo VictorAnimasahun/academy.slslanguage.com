@@ -121,6 +121,18 @@ if (!function_exists('celpipIsBlankStyle')) {
     }
 }
 
+// Passages store their heading inline as the first line of stimulus_text
+// (e.g. "Reading Part 1: Reading Correspondence — Hi Mea,") rather than as a
+// separate field — bold just that "Reading/Listening Part N: Title" prefix
+// so it reads as a heading, leaving the rest of the passage (including the
+// letter's own salutation) at normal weight.
+function celpipRenderPassageText(string $text): string
+{
+    $escaped = htmlspecialchars($text);
+    $escaped = preg_replace('/^((?:Reading|Listening) Part \d+:[^\n—]*)/', '<strong>$1</strong>', $escaped, 1);
+    return nl2br($escaped);
+}
+
 // Custom dropdown widget matching the real CELPIP interface: a small trigger
 // field that opens a floating panel of radio-style options, and collapses to
 // show the chosen answer as bold inline text once selected (see the
@@ -356,7 +368,7 @@ function renderCelpipReadingQuestion(array $q, array $options): void
                         foreach ($partQuestions as $q):
                             if (!empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStim):
                                 $prevStim = $q['stimulus_text'];
-                                echo '<div class="passage-box">' . nl2br(htmlspecialchars($q['stimulus_text'])) . '</div>';
+                                echo '<div class="passage-box">' . celpipRenderPassageText($q['stimulus_text']) . '</div>';
                             endif;
                         endforeach;
                         ?>

@@ -170,7 +170,7 @@ body.sidebar-collapsed .submit-bar { left: 0; }
 
 /* Form/note completion (Listening) */
 .ff-title {
-  text-align: center; font-weight: 600; font-size: .92rem; color: var(--exam-ink);
+  text-align: center; font-weight: 700; font-size: .92rem; color: var(--exam-ink);
   margin-bottom: .75rem; padding: .5rem 1rem; background: var(--exam-bg); border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
 }
 .ff-subtitle { font-weight: 600; font-size: .82rem; color: var(--exam-accent); margin: 1.1rem 0 .5rem; padding-left: .65rem; border-left: 3px solid var(--exam-accent); }

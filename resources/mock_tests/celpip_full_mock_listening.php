@@ -248,7 +248,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
         .celpip-seq-header {
             display: flex; align-items: center; justify-content: space-between;
             background: var(--exam-accent-soft); padding: .6rem 1rem;
-            border-bottom: 1px solid var(--exam-line); font-size: .85rem; font-weight: 600;
+            border-bottom: 1px solid var(--exam-line); font-size: .85rem; font-weight: 700;
             color: var(--exam-ink);
         }
         .celpip-seq-timer-wrap { display: flex; align-items: center; gap: .75rem; }
