@@ -51,7 +51,7 @@ $mockSessionsStmt = executeQuery($db, "
     SELECT ms.id, ms.status, ms.overall_band, ms.writing_band, ms.created_at,
            ms.listening_attempt_id, ms.reading_attempt_id, ms.writing_attempt_id,
            ms.speaking_notes, ms.speaking_band,
-           t.title AS mock_title,
+           t.title AS mock_title, t.test_type AS mock_test_type, t.code AS mock_code,
            ta_l.band_score AS l_band, ta_l.score AS l_score, ta_l.max_score AS l_max,
            ta_r.band_score AS r_band, ta_r.score AS r_score, ta_r.max_score AS r_max
     FROM mock_sessions ms
@@ -302,10 +302,16 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                 <div class="text-muted" style="font-size:.75rem;"><?php echo $msDate; ?></div>
                             </div>
                             <div class="text-end" style="flex-shrink:0;">
+                                <?php
+                                $msIsCelpip  = str_starts_with((string)($ms['mock_test_type'] ?? ''), 'CELPIP');
+                                $msScoreWord = $msIsCelpip ? 'CLB Level' : 'Band';
+                                ?>
                                 <?php if ($ms['status'] === 'in_progress'): ?>
                                     <?php
-                                    if (is_null($ms['listening_attempt_id']))   $resumeUrl = "resources/mock_tests/full_mock_001_listening.php?session_id={$ms['id']}";
-                                    elseif (is_null($ms['reading_attempt_id'])) $resumeUrl = "resources/mock_tests/full_mock_001_reading.php?session_id={$ms['id']}";
+                                    $mtMap = require INCLUDES_PATH . '/mock_test_map.php';
+                                    $mtSections = $mtMap[$ms['mock_code'] ?? ''] ?? [];
+                                    if (is_null($ms['listening_attempt_id']))   $resumeUrl = "resources/mock_tests/" . ($mtSections['listening']['file'] ?? 'full_mock_001_listening.php') . "?session_id={$ms['id']}";
+                                    elseif (is_null($ms['reading_attempt_id'])) $resumeUrl = "resources/mock_tests/" . ($mtSections['reading']['file'] ?? 'full_mock_001_reading.php') . "?session_id={$ms['id']}";
                                     elseif (is_null($ms['writing_attempt_id'])) $resumeUrl = "resources/mock_tests/mock_writing.php?session_id={$ms['id']}";
                                     else                                        $resumeUrl = "resources/mock_tests/mock_speaking.php?session_id={$ms['id']}";
                                     ?>
@@ -314,7 +320,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                     <span style="background:#fef3c7;color:#92400e;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:600;">Awaiting Speaking</span>
                                 <?php elseif ($ms['status'] === 'results_released'): ?>
                                     <div class="d-flex flex-column align-items-end gap-1">
-                                        <span style="font-size:1.1rem;font-weight:800;color:#10b981;">Band <?php echo number_format((float)$ms['overall_band'], 1); ?></span>
+                                        <span style="font-size:1.1rem;font-weight:800;color:#10b981;"><?php echo htmlspecialchars($msScoreWord); ?> <?php echo number_format((float)$ms['overall_band'], 1); ?></span>
                                         <div style="font-size:.7rem;color:#94a3b8;display:flex;gap:.4rem;">
                                             <span>L:<?php echo number_format((float)$ms['l_band'],1); ?></span>
                                             <span>R:<?php echo number_format((float)$ms['r_band'],1); ?></span>
@@ -322,7 +328,8 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                             <span>S:<?php echo number_format((float)$ms['speaking_band'],1); ?></span>
                                         </div>
                                         <button onclick="downloadMockPDF(<?php echo htmlspecialchars(json_encode([
-                                            'title'   => $ms['mock_title'],
+                                            'title'      => $ms['mock_title'],
+                                            'scoreLabel' => $msScoreWord,
                                             'date'    => $msDate,
                                             'overall' => number_format((float)$ms['overall_band'], 1),
                                             'l'       => number_format((float)$ms['l_band'], 1),
@@ -437,7 +444,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
         doc.text(data.title.toUpperCase(), L, 22);
         doc.setFontSize(10.5);
         doc.setFont('helvetica', 'italic');
-        doc.text('Full Band Assessment Report', L, 31);
+        doc.text('Full ' + (data.scoreLabel || 'Band') + ' Assessment Report', L, 31);
         doc.setDrawColor(100, 140, 200);
         doc.setLineWidth(0.25);
         doc.line(L, 35, R, 35);
@@ -491,7 +498,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
         doc.setTextColor(...white);
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
-        doc.text('OVERALL BAND SCORE', L + 5, oY + 9.5);
+        doc.text('OVERALL ' + (data.scoreLabel || 'Band').toUpperCase() + ' SCORE', L + 5, oY + 9.5);
         doc.setFillColor(...pink);
         doc.rect(L + 120, oY, 60, 14, 'F');
         doc.setTextColor(...white);
@@ -503,7 +510,13 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'italic');
         doc.setTextColor(...muted);
-        doc.text('(' + data.l + ' + ' + data.r + ' + ' + data.w + ' + ' + data.s + ') ÷ 4 = ' + avg + '  →  rounded to ' + data.overall, L, oY + 21);
+        const avgFormula = '(' + data.l + ' + ' + data.r + ' + ' + data.w + ' + ' + data.s + ') ÷ 4 = ' + avg + '  →  rounded to ' + data.overall;
+        doc.text(
+            (data.scoreLabel === 'CLB Level')
+                ? avgFormula + '  (informal average — CELPIP reports each skill\'s CLB level separately, not a single composite score)'
+                : avgFormula,
+            L, oY + 21
+        );
 
         const panels = [
             { label: 'LISTENING', band: data.l, score: data.l_score, note: 'Raw score shown. Part-by-part breakdown available in your online results.' },
@@ -520,7 +533,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             doc.setFontSize(9.5);
             doc.setFont('helvetica', 'bold');
             doc.text(p.label, L + 5, pY + 7);
-            doc.text('Band ' + p.band, R, pY + 7, { align: 'right' });
+            doc.text((data.scoreLabel || 'Band') + ' ' + p.band, R, pY + 7, { align: 'right' });
             doc.setFillColor(...light);
             doc.rect(L, pY + 10, W, 14, 'F');
             if (p.score) {
