@@ -6,7 +6,8 @@
 		--card-radius: 14px;
 		--soft: #eef6ff;
 		--topbar-h: 60px;
-		--sidebar-w: 220px;
+		--sidebar-w: 180px;
+		--advert-w: 220px;
 	}
 
 	body {
@@ -208,18 +209,18 @@
 
 	/* ── Main content area ────────────────────────────────────────── */
 	.main-wrapper {
-		margin-left: 260px;
+		margin-left: var(--sidebar-w);
 		margin-right: 0;
 		padding: 2rem;
 		transition: margin-left 0.3s ease;
 	}
 	body:has(.advert-sidebar) .main-wrapper {
-		margin-right: 280px;
+		margin-right: var(--advert-w);
 	}
 
 	/* ── Right advert sidebar ─────────────────────────────────────── */
 	.advert-sidebar {
-		width: 280px;
+		width: var(--advert-w);
 		position: fixed;
 		top: 0;
 		right: 0;

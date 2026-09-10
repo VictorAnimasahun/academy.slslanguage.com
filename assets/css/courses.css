@@ -12,7 +12,7 @@ body {
 }
 
 .sidebar {
-	width: 260px;
+	width: 180px;
 	background: var(--sidebar-bg);
 	min-height: 100vh;
 	border-right: 1px solid rgba(15,23,42,0.04);
@@ -107,13 +107,13 @@ body {
 }
 
 .main-wrapper {
-	margin-left: 260px;
-	margin-right: 280px;
+	margin-left: 180px;
+	margin-right: 220px;
 	padding: 2rem;
 }
 
 .advert-sidebar {
-	width: 280px;
+	width: 220px;
 	position: fixed;
 	top: 0;
 	right: 0;
