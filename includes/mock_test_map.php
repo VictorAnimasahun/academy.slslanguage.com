@@ -63,4 +63,22 @@ return [
         'writing'   => ['file' => 'diagnostic_aca_writing.php',  'test_code' => 'IELTS_GT_DIAG_W'],
         'speaking'  => ['file' => 'diagnostic_aca_speaking.php'],
     ],
+    // CELPIP Full Mock Tests A & B (CELPIP Masterclass, course_id=13 — end of Month 1
+    // and end of Month 2). Both share the same generic celpip_full_mock_listening.php /
+    // celpip_full_mock_reading.php templates (audio/image asset paths are derived from
+    // the session's mock_code, same pattern as full_mock_00N_listening.php but reused
+    // across both tests since their part structure is identical). Content seeded by
+    // migration 073.
+    'CELPIP_FULL_MOCK_A' => [
+        'listening' => ['file' => 'celpip_full_mock_listening.php', 'test_code' => 'CELPIP_FMA_L'],
+        'reading'   => ['file' => 'celpip_full_mock_reading.php',  'test_code' => 'CELPIP_FMA_R'],
+        'writing'   => ['file' => 'mock_writing.php',              'test_code' => 'CELPIP_FMA_W'],
+        'speaking'  => ['file' => 'mock_speaking.php'],
+    ],
+    'CELPIP_FULL_MOCK_B' => [
+        'listening' => ['file' => 'celpip_full_mock_listening.php', 'test_code' => 'CELPIP_FMB_L'],
+        'reading'   => ['file' => 'celpip_full_mock_reading.php',  'test_code' => 'CELPIP_FMB_R'],
+        'writing'   => ['file' => 'mock_writing.php',              'test_code' => 'CELPIP_FMB_W'],
+        'speaking'  => ['file' => 'mock_speaking.php'],
+    ],
 ];

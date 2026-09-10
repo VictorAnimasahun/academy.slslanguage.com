@@ -17,7 +17,7 @@ $error         = '';
 if (!$session_id) { header("Location: index.php"); exit(); }
 
 $stmt = $db->prepare("
-    SELECT ms.*, t.title AS mock_title, t.code AS mock_code,
+    SELECT ms.*, t.title AS mock_title, t.code AS mock_code, t.test_type AS mock_test_type,
            s.firstname, s.email AS student_email
     FROM mock_sessions ms
     JOIN tests t ON t.id = ms.mock_test_id
@@ -30,10 +30,14 @@ $session = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$session) { die("Session not found."); }
 $submitted = ($session['status'] !== 'in_progress');
 
+$examLabel = str_starts_with((string)$session['mock_test_type'], 'CELPIP') ? 'CELPIP' : 'IELTS';
+
 // Students must complete all written sections first; admins can preview freely
 if (!$isAdmin && $session['status'] === 'in_progress') {
-    if (is_null($session['listening_attempt_id'])) { header("Location: full_mock_001_listening.php?session_id={$session_id}"); exit(); }
-    if (is_null($session['reading_attempt_id']))   { header("Location: full_mock_001_reading.php?session_id={$session_id}"); exit(); }
+    $map = require INCLUDES_PATH . '/mock_test_map.php';
+    $sectionFiles = $map[$session['mock_code']] ?? [];
+    if (is_null($session['listening_attempt_id'])) { $f = $sectionFiles['listening']['file'] ?? 'full_mock_001_listening.php'; header("Location: {$f}?session_id={$session_id}"); exit(); }
+    if (is_null($session['reading_attempt_id']))   { $f = $sectionFiles['reading']['file'] ?? 'full_mock_001_reading.php'; header("Location: {$f}?session_id={$session_id}"); exit(); }
     if (is_null($session['writing_attempt_id']))   { header("Location: mock_writing.php?session_id={$session_id}"); exit(); }
 }
 
@@ -126,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                 <span class="section-badge mb-3 d-inline-block">Written Sections Complete</span>
                 <h2 class="h4 fw-bold mt-3">You're all done with the written test!</h2>
                 <p class="text-muted mt-2 mb-4">
-                    An instructor will contact you to schedule and administer your <strong>IELTS Speaking</strong> assessment.
+                    An instructor will contact you to schedule and administer your <strong><?= htmlspecialchars($examLabel) ?> Speaking</strong> assessment.
                     Please check your email for scheduling details.
                     Once your speaking test is graded, your full results will be released on your dashboard.
                 </p>

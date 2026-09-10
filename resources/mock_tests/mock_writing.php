@@ -14,7 +14,7 @@ $isAdmin     = is_platform_admin();
 if (!$session_id) { header("Location: index.php"); exit(); }
 
 $stmt = $db->prepare("
-    SELECT ms.*, t.title AS mock_title, t.code AS mock_code
+    SELECT ms.*, t.title AS mock_title, t.code AS mock_code, t.test_type AS mock_test_type
     FROM mock_sessions ms
     JOIN tests t ON t.id = ms.mock_test_id
     WHERE ms.id = ? AND ms.student_id = ?
@@ -40,9 +40,14 @@ if (!$isAdmin && !is_null($session['writing_attempt_id'])) {
     header("Location: mock_speaking.php?session_id={$session_id}"); exit();
 }
 
-$timeLimit = 60 * 60;
+// CELPIP Writing Task 1 & 2 both require ~150-200 words and total 53 minutes;
+// IELTS GT Task 1 needs 150+/Task 2 needs 250+ over 60 minutes -- these differ
+// enough that a shared default is wrong.
+$isCelpip  = str_starts_with((string)$session['mock_test_type'], 'CELPIP');
 $t1WordMin = 150;
-$t2WordMin = 250;
+$t2WordMin = $isCelpip ? 150 : 250;
+$timeLimitMinutes = $isCelpip ? 53 : 60;
+$timeLimit = $timeLimitMinutes * 60;
 
 // Load writing prompts from DB
 $testCode = $map[$mockCode]['writing']['test_code'] ?? '';
@@ -132,17 +137,17 @@ if ($writingTest) {
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="d-flex align-items-center gap-3">
                         <span class="section-badge"><i class="bi bi-pencil-square me-1"></i>Writing</span>
-                        <span class="text-muted small">Task 1 + Task 2 · 60 Minutes</span>
+                        <span class="text-muted small">Task 1 + Task 2 · <?= $timeLimitMinutes ?> Minutes</span>
                     </div>
-                    <div class="timer-display" id="timerEl">60:00</div>
+                    <div class="timer-display" id="timerEl"><?= sprintf('%02d:00', $timeLimitMinutes) ?></div>
                 </div>
 
                 <div class="d-flex border-bottom mb-4">
                     <?php if (!empty($task1['question'])): ?>
-                    <button class="task-tab active" onclick="switchTask(1)" id="ttab-1">Task 1 <span class="text-muted" style="font-size:.72rem;">150+ words</span></button>
+                    <button class="task-tab active" onclick="switchTask(1)" id="ttab-1">Task 1 <span class="text-muted" style="font-size:.72rem;"><?= $t1WordMin ?>+ words</span></button>
                     <?php endif; ?>
                     <?php if (!empty($task2['question'])): ?>
-                    <button class="task-tab <?= empty($task1['question']) ? 'active' : '' ?>" onclick="switchTask(2)" id="ttab-2">Task 2 <span class="text-muted" style="font-size:.72rem;">250+ words</span></button>
+                    <button class="task-tab <?= empty($task1['question']) ? 'active' : '' ?>" onclick="switchTask(2)" id="ttab-2">Task 2 <span class="text-muted" style="font-size:.72rem;"><?= $t2WordMin ?>+ words</span></button>
                     <?php endif; ?>
                 </div>
 

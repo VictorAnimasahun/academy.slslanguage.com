@@ -1145,7 +1145,7 @@ ALTER TABLE assignments DROP COLUMN student_id;
 - Real audio/video/image assets already placed in `assets/audio/CELPIP_FULL_MOCK_A(/B)/` and `assets/img/mock_tests/CELPIP_FULL_MOCK_A(/B)/` in a prior step (not part of this SQL file) — Part 5 videos re-encoded via ffmpeg for browser compatibility, Speaking-task images copied as full, uncropped page renders rather than precision-cropped illustrations (a deliberate time/effort trade-off, not yet run past the instructor).
 - **Known simplifications, both flagged in-file:** (1) one Listening Part 1 question per test has 4 official answer choices that are photographs, not text — rendered as short bracketed text descriptions of each photo (`[Photo] ...`) since no per-option image asset pipeline exists yet; this preserves 4 uniquely distinct choices without changing the correct answer. (2) A few verbatim option/passage typos from the official source PDFs are preserved exactly as printed (e.g. Test A Reading Part 4's "the students excitement" missing apostrophe; Test B Reading Part 4's garbled option text "eliminating do so without economic intervention"), rather than silently corrected, per the instructor's implicit expectation of verbatim official content.
 - **Caught and fixed before finalizing:** the two parallel extraction agents' Reading Part 3 articles were initially transcribed into the wrong test in this file (dragonfly article written into Test A instead of Test B, narwhal article omitted) — caught by re-checking both agents' raw reports side-by-side before running the migration, and corrected (Test A Part 3 = narwhal/tusk article, Test B Part 3 = dragonfly article) prior to any DB write.
-- Not yet done: wiring lesson 163 (course 13, Month 1) to launch Mock A instead of the old hardcoded `celpip_mini_mock.php`, wiring lesson 178 (Month 2, currently `file_path=NULL`) to launch Mock B, adding `mock_test_map.php` entries for `CELPIP_FULL_MOCK_A/B`, adding `course_pacing_items` rows for course 13, and building the actual PHP rendering pages for CELPIP full-mock sessions (no existing CELPIP full-mock UI exists yet — the closest precedent is `resources/mock_tests/full_mock_003_reading.php` for IELTS). Tracked as follow-up work, not part of this migration.
+- Not yet done at the time this entry was written: wiring lesson 163/178, `mock_test_map.php`, `course_pacing_items`, and the rendering pages themselves — see migration 074 below for the wiring, which followed immediately after.
 
 **Rollback:**
 ```sql
@@ -1154,6 +1154,26 @@ DELETE FROM question_options WHERE question_id IN (SELECT id FROM questions WHER
 DELETE FROM questions WHERE test_id IN (SELECT id FROM tests WHERE code LIKE 'CELPIP_FM%');
 DELETE FROM mock_exams WHERE code LIKE 'CELPIP_FULL_MOCK_%';
 DELETE FROM tests WHERE code LIKE 'CELPIP_FM%' OR code LIKE 'CELPIP_FULL_MOCK_%';
+```
+
+---
+
+## 074 — Wire CELPIP Full Mock A/B into course 13's lessons + pacing
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-10 | Verified via SQL: lesson 163 → `celpip_full_mock_a.php`, lesson 178 → `celpip_full_mock_b.php`; 2 `course_pacing_items` rows created for course 13 (offset_days 24 and 52). |
+| Live  | [ ] | | |
+
+**What it does:** points lesson 163 (course 13, Month 1, Class 8) at the new `resources/mock_tests/celpip_full_mock_a.php` launcher instead of the old hardcoded `courses/CELPIP_intro/celpip_mini_mock.php`, and lesson 178 (Month 2, Class 16, previously `file_path=NULL`) at `celpip_full_mock_b.php`. Adds 2 `course_pacing_items` rows so both mocks integrate with the enrollment-anchored due-date system from migration 072 — offset_days 24 and 52, continuing the same ~3-4-day-per-class cadence established for course_id=9's Month 1 pacing (see migration 072), uninterrupted across the month boundary. These offsets are a reasonable default, not a locked-in schedule — easy to adjust later if the instructor wants different in-between-class pacing for course 13 (only the two Mock lessons have pacing items so far; lessons 1-7 and 9-15 have none yet, which is fine — `generateAssignmentsForEnrollment()` skips any lesson with no pacing item).
+- Also created two new launcher files (`resources/mock_tests/celpip_full_mock_{a,b}.php`), mechanically modeled on `ielts_full_mock_003.php`'s session-create/resume pattern, and added `CELPIP_FULL_MOCK_A`/`_B` entries to `includes/mock_test_map.php`.
+- Along the way, fixed two pre-existing IELTS-only assumptions in the shared `mock_writing.php` and `mock_speaking.php` templates that would otherwise have shown wrong information to CELPIP students: `mock_writing.php` hardcoded a 250-word Task 2 minimum and a 60-minute timer (CELPIP is 150 words / 53 minutes) — now derived from the session's `test_type`; `mock_speaking.php` hardcoded the label "IELTS Speaking" and a `full_mock_001_listening.php` redirect fallback for the "skipped ahead" edge case — now derived from `test_type` and `mock_test_map.php` respectively.
+
+**Rollback:**
+```sql
+DELETE FROM course_pacing_items WHERE course_id = 13 AND lesson_id IN (163, 178);
+UPDATE lessons SET file_path = 'courses/CELPIP_intro/celpip_mini_mock.php' WHERE id = 163;
+UPDATE lessons SET file_path = NULL WHERE id = 178;
 ```
 
 ---
