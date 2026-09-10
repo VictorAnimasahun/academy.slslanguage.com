@@ -49,7 +49,6 @@ foreach ($mockExams as $mock) {
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     
     <style>
-        .main-wrapper { padding: 2rem 1.5rem; min-height: 100vh; }
         .mock-card {
             background: white;
             border-radius: 16px;
@@ -85,7 +84,9 @@ foreach ($mockExams as $mock) {
     <div class="mobile-overlay" id="mobileOverlay"></div>
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
-    <main class="main-wrapper">
+    <div class="main-wrapper flex-grow-1" style="flex:1;">
+        <?php include INCLUDES_PATH . '/topbar.php'; ?>
+        <main class="content p-4">
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -129,7 +130,10 @@ foreach ($mockExams as $mock) {
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-    </main>
+        </main>
+    </div><!-- /.main-wrapper -->
+
+    <?php include INCLUDES_PATH . '/adverts.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
