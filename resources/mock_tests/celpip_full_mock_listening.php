@@ -147,11 +147,34 @@ if (!function_exists('celpipIsBlankStyle')) {
     }
 }
 
+// Custom dropdown widget matching the real CELPIP interface — same component
+// as celpip_full_mock_reading.php: a small trigger that opens a floating panel
+// of radio-style options, then collapses to show the chosen answer as bold
+// inline text once selected. Duplicated here rather than shared via an
+// include, matching this file-set's existing convention of each mock page
+// being self-contained (see e.g. celpipIsBlankStyle in both files already).
+function renderCelpipDropdown(int $qnum, array $qopts): void
+{
+    ?>
+    <span class="celpip-dd" data-qnum="<?= $qnum ?>">
+        <button type="button" class="celpip-dd-trigger" data-role="dd-trigger">
+            <span data-role="dd-label">— Select —</span> <i class="bi bi-caret-down-fill"></i>
+        </button>
+        <input type="hidden" name="answers[<?= $qnum ?>]" class="answer-field celpip-dd-value" data-qnum="<?= $qnum ?>" value="">
+        <span class="celpip-dd-panel" data-role="dd-panel" hidden>
+            <?php foreach ($qopts as $opt): ?>
+            <label class="celpip-dd-option">
+                <input type="radio" name="celpip_dd_radio_<?= $qnum ?>" value="<?= htmlspecialchars($opt['option_label']) ?>" data-text="<?= htmlspecialchars($opt['option_label'] . '. ' . $opt['option_text']) ?>">
+                <?= htmlspecialchars($opt['option_label']) ?>.&nbsp;<?= htmlspecialchars($opt['option_text']) ?>
+            </label>
+            <?php endforeach; ?>
+        </span>
+    </span>
+    <?php
+}
+
 // Renders one Listening question's answer control: an inline-dropdown sentence
 // for blank-style MC questions, otherwise a standard radio-button MC block.
-// $locked wraps everything in a disabled state (used for sequential parts once
-// a question has been advanced past — matches "can't go back" real behavior:
-// the inputs stay visible as a record of what was answered, but frozen).
 function renderCelpipListeningQuestion(array $q, array $options): void
 {
     $qid     = (int)$q['id'];
@@ -160,20 +183,14 @@ function renderCelpipListeningQuestion(array $q, array $options): void
     $isBlank = celpipIsBlankStyle($q['question_text'] ?? '');
     ?>
     <?php if ($isBlank): ?>
-    <div class="ff-sentence">
+    <div class="ff-sentence celpip-inline-q">
         <?php
         $escaped = htmlspecialchars($q['question_text']);
         $badge   = '<span class="q-badge">' . $qnum . '</span>';
-        $select  = '<select name="answers[' . $qnum . ']" class="match-select answer-field" '
-                 . 'data-qnum="' . $qnum . '" onchange="this.classList.toggle(\'answered\', this.value!==\'\')">'
-                 . '<option value="">— choose —</option>';
-        foreach ($qopts as $opt) {
-            $select .= '<option value="' . htmlspecialchars($opt['option_label']) . '">'
-                     . htmlspecialchars($opt['option_label']) . '. ' . htmlspecialchars($opt['option_text'])
-                     . '</option>';
-        }
-        $select .= '</select>';
-        echo preg_replace('/_{2,}/', $badge . $select, $escaped, 1);
+        ob_start();
+        renderCelpipDropdown($qnum, $qopts);
+        $ddHtml = ob_get_clean();
+        echo preg_replace('/_{2,}/', $badge . $ddHtml, $escaped, 1);
         ?>
     </div>
     <?php else: ?>
@@ -279,6 +296,32 @@ function renderCelpipListeningQuestion(array $q, array $options): void
         .celpip-next-btn:disabled { opacity: .5; }
         .celpip-locked { opacity: .55; pointer-events: none; }
         video.celpip-media, audio.celpip-media { display: none; }
+
+        /* Custom dropdown widget matching the real CELPIP interface — same
+           component as celpip_full_mock_reading.php: a small trigger that
+           opens a floating panel of radio-style options, then collapses to
+           show the chosen answer as bold inline text. */
+        .celpip-inline-q { line-height: 2.4; }
+        .celpip-dd { position: relative; display: inline-block; margin: 0 .25rem; }
+        .celpip-dd-trigger {
+            background: var(--exam-surface); border: 1px solid var(--exam-accent);
+            border-radius: var(--exam-radius); padding: .25rem .7rem; font-size: .85rem;
+            color: var(--exam-ink-muted); cursor: pointer; display: inline-flex;
+            align-items: center; gap: .4rem; min-width: 90px;
+        }
+        .celpip-dd-trigger.answered { color: var(--exam-ink); font-weight: 700; border-color: var(--exam-good); }
+        .celpip-dd-trigger .bi { font-size: .65rem; color: var(--exam-ink-muted); }
+        .celpip-dd-panel {
+            position: absolute; z-index: 50; top: calc(100% + 4px); left: 0; min-width: 260px;
+            background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg);
+            box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: .5rem 0;
+        }
+        .celpip-dd-option {
+            display: flex; align-items: flex-start; gap: .5rem; padding: .5rem .9rem;
+            font-size: .85rem; font-weight: 400; cursor: pointer; white-space: normal;
+        }
+        .celpip-dd-option:hover { background: var(--exam-bg); }
+        .celpip-dd-option input { accent-color: var(--exam-accent); margin-top: 3px; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -441,7 +484,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                 <div class="celpip-seq-card celpip-media-stage" data-role="allscreen-media" data-src="<?= htmlspecialchars($playerSrc) ?>" data-video="<?= $isVideoPart ? '1' : '0' ?>">
                     <div class="celpip-media-label">
                         <i class="bi bi-<?= $isVideoPart ? 'camera-video-fill' : 'volume-up-fill' ?>"></i>
-                        <?= htmlspecialchars($playerLabel) ?> — <?= $isVideoPart ? 'watch' : 'listen to' ?> once, then answer every question below (in any order, any amount of time left in this part).
+                        <?= htmlspecialchars($playerLabel) ?> — <?= $isVideoPart ? 'watch' : 'listen to' ?> once. The questions will appear once it finishes.
                     </div>
                     <?php if ($isVideoPart): ?>
                     <video class="celpip-media" data-role="media-el" preload="none" playsinline style="width:100%;max-width:640px;display:block;margin:0 auto;border:1px solid var(--exam-line);border-radius:var(--exam-radius);"></video>
@@ -449,6 +492,9 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                     <div class="celpip-progress-track"><div class="celpip-progress-fill" data-role="progress-fill"></div></div>
                 </div>
 
+                <!-- Hidden until the media above finishes -- audio/video and
+                     questions are never shown at once, same rule as Parts 1-3. -->
+                <div data-role="allscreen-questions" style="display:none;">
                 <?php
                 $prevInstr = null;
                 $prevStim  = null;
@@ -478,6 +524,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                 <button type="button" class="celpip-next-btn" data-role="part-continue-btn" data-next-part="<?= $partNum + 1 ?>">Continue to Part <?= $partNum + 1 ?> →</button>
                 <div style="clear:both;"></div>
                 <?php endif; ?>
+                </div><!-- end allscreen-questions -->
                 <?php endif; ?>
 
             </div><!-- end part-panel -->
@@ -731,7 +778,16 @@ function initAllScreenPart(panel) {
     else mediaEl.src = stage.dataset.src;
 
     const onTime = () => { if (mediaEl.duration) fill.style.width = Math.min(100, (mediaEl.currentTime / mediaEl.duration) * 100) + '%'; };
-    const onEnded = () => { mediaEl.removeEventListener('timeupdate', onTime); mediaEl.removeEventListener('ended', onEnded); };
+    const onEnded = () => {
+        mediaEl.removeEventListener('timeupdate', onTime);
+        mediaEl.removeEventListener('ended', onEnded);
+        // Audio/video and questions are never shown at once: the media stage
+        // disappears entirely, then the questions appear — same rule as Parts 1-3.
+        stage.style.display = 'none';
+        const qs = panel.querySelector('[data-role="allscreen-questions"]');
+        if (qs) qs.style.display = '';
+        updateProgress();
+    };
     mediaEl.addEventListener('timeupdate', onTime);
     mediaEl.addEventListener('ended', onEnded);
     playWithFallback(mediaEl, stage);
@@ -750,9 +806,42 @@ function collectAnswers() {
         if (el.type === 'checkbox'  && el.checked)      ans[n] = el.value;
         if (el.tagName === 'SELECT' && el.value)         ans[n] = el.value;
         if (el.type === 'text'      && el.value.trim())  ans[n] = el.value.trim();
+        if (el.type === 'hidden'    && el.value)         ans[n] = el.value;
     });
     return ans;
 }
+
+// ── Custom dropdown widget (celpip-dd) — same behavior as the Reading page ──
+function closeAllDropdowns(except = null) {
+    document.querySelectorAll('.celpip-dd-panel').forEach(p => { if (p !== except) p.hidden = true; });
+}
+document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.celpip-dd-trigger');
+    if (trigger) {
+        const dd = trigger.closest('.celpip-dd');
+        const panel = dd.querySelector('[data-role="dd-panel"]');
+        const willOpen = panel.hidden;
+        closeAllDropdowns();
+        panel.hidden = !willOpen;
+        return;
+    }
+    const option = e.target.closest('.celpip-dd-option');
+    if (option) {
+        const dd = option.closest('.celpip-dd');
+        const radio = option.querySelector('input[type=radio]');
+        const hidden = dd.querySelector('.celpip-dd-value');
+        const label = dd.querySelector('[data-role="dd-label"]');
+        radio.checked = true;
+        hidden.value = radio.value;
+        label.textContent = radio.dataset.text;
+        dd.querySelector('.celpip-dd-trigger').classList.add('answered');
+        closeAllDropdowns();
+        hidden.dispatchEvent(new Event('change', { bubbles: true }));
+        return;
+    }
+    if (!e.target.closest('.celpip-dd-panel')) closeAllDropdowns();
+});
+
 function updateProgress() {
     const ans   = collectAnswers();
     const count = Object.keys(ans).length;
