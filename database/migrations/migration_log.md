@@ -1198,6 +1198,24 @@ DELETE FROM mock_exam_sections WHERE mock_code IN ('CELPIP_FULL_MOCK_A', 'CELPIP
 
 ---
 
+## 076 — Rename course 13 to include "Masterclass"
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-10 | Verified: `courses.id=13` title is now "CELPIP General Masterclass — 2 Months". |
+| Live  | [ ] | | |
+
+**What it does:** course 13's title ("CELPIP General — 2-Month Plan") and description never said "Masterclass" anywhere, even though the instructor has consistently called it that throughout this project (and it's exactly what migrations 073-075's CELPIP Full Mock A/B build was for). This made it impossible to find on the Courses catalogue page by that name, and inconsistent with course 14's naming ("CELPIP General Masterclass — 3 Months"). Renamed to "CELPIP General Masterclass — 2 Months" and updated the description to match course 14's style (CLB level, not IELTS band, per this session's earlier scoring work).
+
+**Rollback:**
+```sql
+UPDATE courses SET title = 'CELPIP General — 2-Month Plan',
+  description = 'An 8-week comprehensive CELPIP program. Month 1 builds foundational skills; Month 2 introduces advanced strategies, exam timing, and a second full mock exam.'
+WHERE id = 13;
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
