@@ -7,17 +7,26 @@
  * exactly like full_mock_00N_listening.php does for IELTS. Do not hardcode a
  * specific mock code anywhere in this file.
  *
- * CELPIP Listening has 6 parts (not IELTS's 4). Audio assets are nested per
- * part (assets/audio/{mockCode}/partN/...), not the flat listening_partN.mp3
- * naming IELTS uses:
+ * CELPIP Listening has 6 parts. Per the real CELPIP interface (confirmed via
+ * official Prometric/Paragon reference material: "CELPIP Listening Pro Study
+ * Pack" and "CELPIP General Complete Guide" screenshots), Parts 1-3 and Parts
+ * 4-6 use genuinely different UIs, not just different content:
+ *   - Parts 1-3: ONE question appears onscreen at a time, each with its own
+ *     30-second countdown and audio (played once, no pausing/scrubbing). You
+ *     cannot go back once you move on.
+ *   - Parts 4-6: ALL of that part's questions appear onscreen together after
+ *     one audio/video play, with a single timer for the whole part.
+ * Students get this real, linear, no-going-back flow; admins keep free
+ * tab-navigation for previewing content (existing $isAdmin bypass pattern).
+ *
+ * Audio assets are nested per part (assets/audio/{mockCode}/partN/...):
  *   part1/track1.mp3, track2.mp3, track3.mp3  — Q1-3, Q4-6, Q7-8 (fixed 3/3/2 split)
- *   part2/track1.mp3                          — all of Part 2
- *   part3/track1.mp3                          — all of Part 3
- *   part4/track1.mp3                          — all of Part 4
+ *   part1/q1.mp3 .. q8.mp3                    — each question read aloud individually
+ *   part2/track1.mp3 + part2/q1.mp3..q5.mp3   — all of Part 2
+ *   part3/track1.mp3 + part3/q1.mp3..q6.mp3   — all of Part 3
+ *   part4/track1.mp3                          — all of Part 4 (no per-question audio)
  *   part5/video1.mp4                          — Part 5 is a VIDEO, not audio
- *   part6/track1.mp3                          — all of Part 6
- * Optional per-question clips (q1.mp3 etc.) exist on disk but are intentionally
- * NOT wired up here — see the accompanying build report for why.
+ *   part6/track1.mp3                          — all of Part 6 (no per-question audio)
  */
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 
@@ -105,8 +114,6 @@ foreach ($questions as $q) {
 }
 ksort($parts);
 foreach ($parts as $pNum => $pqs) {
-    // Re-index each part's question list 0..n-1 so array_slice()/positional
-    // lookups below (Part 1's 3/3/2 track split) work regardless of gaps.
     $parts[$pNum] = array_values($pqs);
 }
 
@@ -122,6 +129,10 @@ $mockCode      = $session['mock_code']; // CELPIP_FULL_MOCK_A or CELPIP_FULL_MOC
 $audioBase     = ACADEMY_URL . 'assets/audio/' . $mockCode . '/';
 $DURATION_SECS = (int)($test['duration_minutes'] ?? 50) * 60;
 
+// Parts 1-3 use the real one-question-at-a-time flow; Parts 4-6 show everything
+// on one screen (matches the official interface exactly — see file header).
+$SEQUENTIAL_PARTS = [1, 2, 3];
+
 // A fill-in-the-blank style MC question (Listening Parts 4 & 6 — "Choose the
 // best way to complete each statement", e.g. "The news item is about ___")
 // renders as an inline dropdown instead of a radio list. Detected generically
@@ -136,8 +147,11 @@ if (!function_exists('celpipIsBlankStyle')) {
     }
 }
 
-// Renders one Listening question: an inline-dropdown sentence for blank-style
-// MC questions, otherwise a standard radio-button MC block.
+// Renders one Listening question's answer control: an inline-dropdown sentence
+// for blank-style MC questions, otherwise a standard radio-button MC block.
+// $locked wraps everything in a disabled state (used for sequential parts once
+// a question has been advanced past — matches "can't go back" real behavior:
+// the inputs stay visible as a record of what was answered, but frozen).
 function renderCelpipListeningQuestion(array $q, array $options): void
 {
     $qid     = (int)$q['id'];
@@ -193,6 +207,66 @@ function renderCelpipListeningQuestion(array $q, array $options): void
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
+    <style>
+        /* CELPIP-authentic sequential question flow (Parts 1-3). Reuses the
+           exam_theme.css palette so it stays visually consistent with the
+           rest of the platform, not a separate skin. */
+        .celpip-seq-card {
+            background: var(--exam-surface); border: 1px solid var(--exam-line);
+            border-radius: var(--exam-radius-lg); overflow: hidden; margin-bottom: 1.5rem;
+        }
+        .celpip-seq-header {
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--exam-accent-soft); padding: .6rem 1rem;
+            border-bottom: 1px solid var(--exam-line); font-size: .85rem; font-weight: 600;
+            color: var(--exam-ink);
+        }
+        .celpip-seq-timer-wrap { display: flex; align-items: center; gap: .75rem; }
+        .celpip-seq-timer { font-variant-numeric: tabular-nums; color: var(--exam-warn); font-weight: 700; }
+        .celpip-seq-timer.calm { color: var(--exam-ink-muted); }
+        .celpip-seq-body { padding: 1.25rem 1.5rem; }
+
+        /* Media stage: the main conversation/video, played alone and centered —
+           not tucked in a thin top strip — before any question appears. */
+        .celpip-media-stage { padding: 2rem 1.5rem; text-align: center; }
+        .celpip-media-stage-main { padding: 3rem 1.5rem; }
+        .celpip-media-caption { font-size: .85rem; color: var(--exam-accent); margin-bottom: 1rem; }
+        .celpip-media-caption .bi { margin-right: .3rem; }
+        .celpip-audio-widget {
+            display: flex; align-items: center; gap: 1rem; background: var(--exam-bg);
+            border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg);
+            padding: 1rem 1.25rem; max-width: 480px; margin: 0 auto;
+        }
+        .celpip-audio-widget i { font-size: 1.4rem; color: var(--exam-ink-muted); flex-shrink: 0; }
+        .celpip-audio-widget-lg { max-width: 560px; padding: 1.5rem 1.75rem; }
+        .celpip-audio-widget-lg i { font-size: 2rem; }
+        .celpip-progress-track {
+            flex: 1; height: 8px; background: var(--exam-surface); border: 1px solid var(--exam-line);
+            border-radius: 999px; overflow: hidden;
+        }
+        .celpip-progress-fill { height: 100%; width: 0%; background: var(--exam-accent); transition: width .2s linear; }
+        .celpip-playing-label { font-size: .8rem; color: var(--exam-ink-muted); margin-top: .6rem; font-style: italic; }
+
+        /* Answer stage (shown only after the question's audio finishes —
+           never at the same time as the audio stage). */
+        .celpip-q-of { font-size: .82rem; color: var(--exam-ink-muted); margin-bottom: .5rem; }
+        .celpip-q-instr { font-size: .85rem; color: var(--exam-accent); margin-bottom: 1rem; }
+        .celpip-q-instr .bi { margin-right: .3rem; }
+
+        .celpip-next-btn {
+            background: var(--exam-accent); color: #fff; border: none; border-radius: var(--exam-radius);
+            padding: .45rem 1.4rem; font-weight: 700; font-size: .85rem;
+        }
+        .celpip-next-btn-inline { padding: .3rem 1.1rem; font-size: .8rem; }
+        .celpip-tap-to-play {
+            display: block; margin: 1rem auto 0; background: var(--exam-warn); color: #fff; border: none;
+            border-radius: var(--exam-radius); padding: .55rem 1.5rem; font-weight: 700; font-size: .85rem;
+        }
+        .celpip-tap-to-play .bi { margin-right: .35rem; }
+        .celpip-next-btn:disabled { opacity: .5; }
+        .celpip-locked { opacity: .55; pointer-events: none; }
+        video.celpip-media, audio.celpip-media { display: none; }
+    </style>
 </head>
 <body>
 
@@ -208,7 +282,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
         <div class="sticky-header">
             <?php if ($isAdmin): ?>
             <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
-                <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
+                <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview — free navigation (students get the real linear flow)</span>
                 <a href="celpip_full_mock_listening.php?session_id=<?= $session_id ?>" style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎧 Listening</a>
                 <a href="celpip_full_mock_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
                 <a href="mock_writing.php?session_id=<?= $session_id ?>"               style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
@@ -234,7 +308,8 @@ function renderCelpipListeningQuestion(array $q, array $options): void
 
         <div class="section-content" style="padding-top:<?= $isAdmin ? '110px' : '60px' ?>;">
 
-            <!-- Part tab bar + timer -->
+            <!-- Part tab bar + timer. Tabs are click-navigable for admins only —
+                 students follow the real, enforced linear flow (see JS below). -->
             <div class="part-tabs-bar">
                 <div class="part-tabs-scrollable">
                     <?php foreach ($parts as $pNum => $pqs):
@@ -242,7 +317,8 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                     ?>
                     <button class="part-tab-btn <?= $pNum === 1 ? 'active' : '' ?>"
                             id="ptab-<?= $pNum ?>"
-                            onclick="switchPart(<?= $pNum ?>, this)">
+                            onclick="switchPart(<?= $pNum ?>, this)"
+                            <?= (!$isAdmin && $pNum !== 1) ? 'disabled style="cursor:default;"' : '' ?>>
                         <span class="done-dot"></span>
                         Part <?= $pNum ?>
                         <span class="tab-qrange">Q<?= $f ?>–<?= $l ?></span>
@@ -261,61 +337,110 @@ function renderCelpipListeningQuestion(array $q, array $options): void
 
             <form id="listeningForm">
 
-            <?php foreach ($parts as $partNum => $partQuestions): ?>
-            <div class="part-panel <?= $partNum === 1 ? 'active' : '' ?>" id="panel-<?= $partNum ?>">
+            <?php foreach ($parts as $partNum => $partQuestions):
+                $isSequential = in_array($partNum, $SEQUENTIAL_PARTS, true);
+                $isVideoPart  = ($partNum === 5);
+            ?>
+            <div class="part-panel <?= $partNum === 1 ? 'active' : '' ?>" id="panel-<?= $partNum ?>" data-part="<?= $partNum ?>" data-sequential="<?= $isSequential ? '1' : '0' ?>">
 
+                <?php if ($isSequential): ?>
                 <?php
-                // Media "breaks" — index (within this part's question list) at which
-                // to insert a player before rendering that question. Part 1 gets three
-                // (the fixed 3/3/2 track split); every other part gets exactly one
-                // (video for Part 5, audio for everything else).
-                $isVideoPart = ($partNum === 5);
-                $playerBreaks = [];
+                // Build the track "groups" this part's questions are split into.
+                // Part 1 = three tracks (fixed 3/3/2 split); Parts 2-3 = one
+                // track covering every question in the part.
                 if ($partNum === 1 && count($partQuestions) === 8) {
-                    $playerBreaks[0] = ['label' => 'Recording 1 of 3', 'src' => $audioBase . 'part1/track1.mp3',
-                                         'from' => $partQuestions[0]['question_number'], 'to' => $partQuestions[2]['question_number']];
-                    $playerBreaks[3] = ['label' => 'Recording 2 of 3', 'src' => $audioBase . 'part1/track2.mp3',
-                                         'from' => $partQuestions[3]['question_number'], 'to' => $partQuestions[5]['question_number']];
-                    $playerBreaks[6] = ['label' => 'Recording 3 of 3', 'src' => $audioBase . 'part1/track3.mp3',
-                                         'from' => $partQuestions[6]['question_number'], 'to' => $partQuestions[7]['question_number']];
+                    $groups = [
+                        ['label' => 'Recording 1 of 3', 'src' => $audioBase . 'part1/track1.mp3', 'qs' => array_slice($partQuestions, 0, 3)],
+                        ['label' => 'Recording 2 of 3', 'src' => $audioBase . 'part1/track2.mp3', 'qs' => array_slice($partQuestions, 3, 3)],
+                        ['label' => 'Recording 3 of 3', 'src' => $audioBase . 'part1/track3.mp3', 'qs' => array_slice($partQuestions, 6, 2)],
+                    ];
                 } else {
-                    $playerBreaks[0] = [
-                        'label' => $isVideoPart ? 'Video' : 'Recording',
-                        'src'   => $audioBase . "part{$partNum}/" . ($isVideoPart ? 'video1.mp4' : 'track1.mp3'),
-                        'from'  => $partRanges[$partNum][0],
-                        'to'    => $partRanges[$partNum][1],
+                    $groups = [
+                        ['label' => 'Recording', 'src' => $audioBase . "part{$partNum}/track1.mp3", 'qs' => $partQuestions],
                     ];
                 }
+                // Part title/instructions are set once (on the first question of the
+                // part) per migration 073's convention — reuse them in every question
+                // card's header/body rather than only showing them on question 1.
+                $partTitle = $partQuestions[0]['stimulus_text'] ?? ('Listening Part ' . $partNum);
+                $partInstr = $partQuestions[0]['instructions'] ?? 'Listen to the question. You will hear it only once.';
+                ?>
+                <div class="celpip-seq" data-groups='<?= htmlspecialchars(json_encode(array_map(fn($g) => [
+                    'label' => $g['label'], 'src' => $g['src'], 'qnums' => array_column($g['qs'], 'question_number'),
+                ], $groups))) ?>'>
 
+                    <!-- Media stage: main conversation/video plays alone, centered, before
+                         any question appears — matches the real CELPIP interface exactly. -->
+                    <div class="celpip-seq-card celpip-media-stage celpip-media-stage-main" data-role="media-stage">
+                        <div class="celpip-media-caption"><i class="bi bi-info-circle-fill"></i> Listen to <span data-role="media-label">the recording</span>. You will hear it only once.</div>
+                        <?php if ($isVideoPart): ?>
+                        <video class="celpip-media" data-role="media-el" preload="none" playsinline style="width:100%;max-width:640px;"></video>
+                        <?php else: ?>
+                        <div class="celpip-audio-widget celpip-audio-widget-lg">
+                            <i class="bi bi-volume-up-fill"></i>
+                            <div class="celpip-progress-track"><div class="celpip-progress-fill" data-role="progress-fill"></div></div>
+                        </div>
+                        <?php endif; ?>
+                        <div class="celpip-playing-label">Playing…</div>
+                    </div>
+
+                    <!-- One question card per question; JS shows exactly one at a time.
+                         Split layout: audio widget on the left (auto-plays this question
+                         read aloud, ~5s), question + options on the right. -->
+                    <?php foreach ($partQuestions as $qi => $q):
+                        $qid  = (int)$q['id'];
+                        $qnum = (int)$q['question_number'];
+                        $qopts = $options[$qid] ?? [];
+                    ?>
+                    <div class="celpip-seq-card" data-role="q-card" data-qnum="<?= $qnum ?>" data-audio="<?= htmlspecialchars($audioBase . "part{$partNum}/q" . ($qi + 1) . ".mp3") ?>" style="display:none;">
+                        <div class="celpip-seq-header">
+                            <span><?= htmlspecialchars($partTitle) ?></span>
+                            <span class="celpip-seq-timer-wrap">
+                                <span class="celpip-seq-timer" data-role="q-timer">Time remaining: <strong data-role="q-timer-val">25</strong> seconds</span>
+                                <button type="button" class="celpip-next-btn celpip-next-btn-inline" data-role="next-btn">NEXT</button>
+                            </span>
+                        </div>
+                        <!-- Audio and options are NEVER shown at once — the question's
+                             audio plays alone first (centered, like the main recording),
+                             then this stage is replaced entirely by the answer stage. -->
+                        <div class="celpip-media-stage" data-role="q-audio-stage">
+                            <div class="celpip-media-caption"><i class="bi bi-info-circle-fill"></i> Listen to the question. You will hear it only once.</div>
+                            <div class="celpip-audio-widget">
+                                <i class="bi bi-volume-up-fill"></i>
+                                <div class="celpip-progress-track"><div class="celpip-progress-fill" data-role="q-progress-fill"></div></div>
+                            </div>
+                            <div class="celpip-playing-label" data-role="q-playing-label">Playing…</div>
+                        </div>
+                        <div class="celpip-seq-body" data-role="q-answer-stage" style="display:none;">
+                            <div class="celpip-q-of">Question <?= $qi + 1 ?> of <?= count($partQuestions) ?></div>
+                            <p class="celpip-q-instr"><i class="bi bi-info-circle-fill"></i> <?= htmlspecialchars($partInstr) ?></p>
+                            <?php renderCelpipListeningQuestion($q, $options); ?>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php else: /* Parts 4-6: everything visible on one screen, matches real CELPIP */ ?>
+                <?php
+                $playerLabel = $isVideoPart ? 'Video' : 'Recording';
+                $playerSrc   = $audioBase . "part{$partNum}/" . ($isVideoPart ? 'video1.mp4' : 'track1.mp3');
+                ?>
+                <div class="celpip-seq-card celpip-media-stage" data-role="allscreen-media" data-src="<?= htmlspecialchars($playerSrc) ?>" data-video="<?= $isVideoPart ? '1' : '0' ?>">
+                    <div class="celpip-media-label">
+                        <i class="bi bi-<?= $isVideoPart ? 'camera-video-fill' : 'volume-up-fill' ?>"></i>
+                        <?= htmlspecialchars($playerLabel) ?> — <?= $isVideoPart ? 'watch' : 'listen to' ?> once, then answer every question below (in any order, any amount of time left in this part).
+                    </div>
+                    <?php if ($isVideoPart): ?>
+                    <video class="celpip-media" data-role="media-el" preload="none" playsinline style="width:100%;max-width:640px;display:block;margin:0 auto;border:1px solid var(--exam-line);border-radius:var(--exam-radius);"></video>
+                    <?php endif; ?>
+                    <div class="celpip-progress-track"><div class="celpip-progress-fill" data-role="progress-fill"></div></div>
+                </div>
+
+                <?php
                 $prevInstr = null;
                 $prevStim  = null;
                 $blockOpen = false;
-
-                foreach ($partQuestions as $idx => $q):
-                    if (isset($playerBreaks[$idx])):
-                        $pb = $playerBreaks[$idx];
-                ?>
-                    <div class="audio-notice">
-                        <i class="bi bi-<?= $isVideoPart ? 'camera-video-fill' : 'mic-fill' ?> me-1"></i>
-                        <?= htmlspecialchars($pb['label']) ?> — <?= $isVideoPart ? 'watch' : 'listen to' ?> the
-                        <?= $isVideoPart ? 'video' : 'recording' ?> (played once). Covers questions <?= $pb['from'] ?>–<?= $pb['to'] ?>.
-                    </div>
-                    <?php if ($isVideoPart): ?>
-                    <video controls preload="none" style="width:100%;max-width:640px;display:block;margin:0 auto 1.25rem;border:1px solid var(--exam-line);border-radius:var(--exam-radius);">
-                        <source src="<?= htmlspecialchars($pb['src']) ?>" type="video/mp4">
-                    </video>
-                    <?php else: ?>
-                    <audio controls preload="none" style="width:100%;margin-bottom:1.25rem;">
-                        <source src="<?= htmlspecialchars($pb['src']) ?>" type="audio/mpeg">
-                    </audio>
-                    <?php endif; ?>
-                <?php
-                    endif;
-
-                    // Open/continue the instructions block. CELPIP data sets
-                    // `instructions` only on the first question of a contiguous
-                    // group (NULL after) — only react to real, changed values so
-                    // we never print an empty box on the NULL continuation rows.
+                foreach ($partQuestions as $q):
                     if (!empty($q['instructions']) && $q['instructions'] !== $prevInstr):
                         if ($blockOpen) echo '</div>';
                         $prevInstr = $q['instructions'];
@@ -326,7 +451,6 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                         echo '<div class="section-block">';
                     endif;
 
-                    // Stimulus heading (same null-after-first convention).
                     if (!empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStim):
                         $prevStim = $q['stimulus_text'];
                         echo '<div class="ff-title">' . htmlspecialchars($q['stimulus_text']) . '</div>';
@@ -334,9 +458,14 @@ function renderCelpipListeningQuestion(array $q, array $options): void
 
                     renderCelpipListeningQuestion($q, $options);
                 endforeach;
-
-                if ($blockOpen) echo '</div>'; // close last section-block
+                if ($blockOpen) echo '</div>';
                 ?>
+
+                <?php if ($partNum !== 6): ?>
+                <button type="button" class="celpip-next-btn" data-role="part-continue-btn" data-next-part="<?= $partNum + 1 ?>">Continue to Part <?= $partNum + 1 ?> →</button>
+                <div style="clear:both;"></div>
+                <?php endif; ?>
+                <?php endif; ?>
 
             </div><!-- end part-panel -->
             <?php endforeach; ?>
@@ -367,13 +496,15 @@ function renderCelpipListeningQuestion(array $q, array $options): void
 const DURATION   = <?= $DURATION_SECS ?>;
 const SESSION_ID = <?= $session_id ?>;
 const totalQs    = <?= count($questions) ?>;
+const IS_ADMIN   = <?= $isAdmin ? 'true' : 'false' ?>;
+const Q_SECONDS  = 25; // per-question countdown AFTER the ~5s question audio finishes (real CELPIP budget is ~30s total: audio + 25s to answer)
 let elapsed      = 0;
 let timerInterval;
 let submitting   = false;
 
 const timerEl = document.getElementById('inlineTimer');
 
-// ── Timer ─────────────────────────────────────────────────
+// ── Overall test timer (always running, total time budget) ──────────
 function fmt(sec) {
     return String(Math.floor(sec/60)).padStart(2,'0') + ':' + String(sec%60).padStart(2,'0');
 }
@@ -388,16 +519,212 @@ function startTimer() {
     }, 1000);
 }
 
-// ── Part switching ─────────────────────────────────────────
-function switchPart(pNum, btn) {
+// ── Part switching (admin free-nav only; students move via the sequence
+//    controller / part-continue buttons below) ──────────────────────────
+function switchPart(pNum, btn, force = false) {
+    if (!force && !IS_ADMIN && btn && btn.disabled) return;
     document.querySelectorAll('.part-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.part-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('panel-' + pNum).classList.add('active');
-    btn.classList.add('active');
+    if (btn) btn.classList.add('active');
 
-    // Stop any audio/video left playing in a panel we just navigated away from.
     document.querySelectorAll('.part-panel:not(#panel-' + pNum + ') audio, .part-panel:not(#panel-' + pNum + ') video')
         .forEach(m => m.pause());
+
+    maybeStartPart(pNum);
+}
+
+function goToNextPart(fromPartNum) {
+    const tab = document.getElementById('ptab-' + fromPartNum);
+    if (tab) tab.classList.add('all-answered');
+    const nextPanel = document.getElementById('panel-' + (fromPartNum + 1));
+    if (!nextPanel) return; // was the last part
+    if (!IS_ADMIN) {
+        // Unlock the next tab visually (still non-clickable for students —
+        // navigation happens only through the forced sequence/continue button).
+        const nextTab = document.getElementById('ptab-' + (fromPartNum + 1));
+        if (nextTab) nextTab.disabled = true;
+    }
+    switchPart(fromPartNum + 1, document.getElementById('ptab-' + (fromPartNum + 1)), true);
+}
+
+// ── Sequential parts (1-3): one question at a time, own audio, own 30s timer ──
+const seqState = {}; // partNum -> { groups, flatQuestions, idx, qTimer }
+
+function initSequentialPart(panel) {
+    const partNum = parseInt(panel.dataset.part, 10);
+    if (seqState[partNum]) return; // already initialized
+    const seqEl  = panel.querySelector('.celpip-seq');
+    const groups = JSON.parse(seqEl.dataset.groups);
+    const flat   = [];
+    groups.forEach((g, gi) => g.qnums.forEach((qn, qiInGroup) => flat.push({ qnum: qn, groupIdx: gi, isFirstInGroup: qiInGroup === 0 })));
+    seqState[partNum] = { groups, flat, idx: -1, qTimerInterval: null, panel, seqEl };
+}
+
+function advanceSequential(partNum) {
+    const st = seqState[partNum];
+    if (!st) return;
+    if (st.qTimerInterval) { clearInterval(st.qTimerInterval); st.qTimerInterval = null; }
+
+    // Lock the just-finished question card (record stays visible, frozen).
+    if (st.idx >= 0) {
+        const prevCard = st.seqEl.querySelector(`[data-role="q-card"][data-qnum="${st.flat[st.idx].qnum}"]`);
+        if (prevCard) {
+            prevCard.style.display = 'none';
+            prevCard.classList.add('celpip-locked');
+        }
+    }
+
+    st.idx++;
+    if (st.idx >= st.flat.length) {
+        // Part finished — auto-advance to the next part, exactly like the real test.
+        goToNextPart(partNum);
+        return;
+    }
+
+    const item = st.flat[st.idx];
+    if (item.isFirstInGroup) {
+        playGroupMedia(partNum, item.groupIdx, () => showSequentialQuestion(partNum));
+    } else {
+        showSequentialQuestion(partNum);
+    }
+}
+
+// Attempts to autoplay `mediaEl`. If the browser blocks it (no prior user
+// gesture on this page — common right after a fresh navigation, rare once a
+// student has already clicked through "Start Full Mock Test"), shows a
+// "Tap to play" button inside `containerEl` instead of silently skipping the
+// audio — a student must always actually hear it, never see it skipped.
+function playWithFallback(mediaEl, containerEl) {
+    mediaEl.play().catch(() => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'celpip-tap-to-play';
+        btn.innerHTML = '<i class="bi bi-play-fill"></i> Tap to play';
+        btn.onclick = () => { mediaEl.play(); btn.remove(); };
+        containerEl.appendChild(btn);
+    });
+}
+
+function playGroupMedia(partNum, groupIdx, onDone) {
+    const st = seqState[partNum];
+    const group = st.groups[groupIdx];
+    const stage = st.seqEl.querySelector('[data-role="media-stage"]');
+    stage.style.display = '';
+    stage.querySelector('[data-role="media-label"]').textContent = group.label;
+    const fill = stage.querySelector('[data-role="progress-fill"]');
+    fill.style.width = '0%';
+
+    const videoEl = stage.querySelector('video[data-role="media-el"]');
+    const mediaEl = videoEl || new Audio();
+    if (videoEl) { videoEl.style.display = 'block'; videoEl.src = group.src; }
+    else mediaEl.src = group.src;
+
+    const onTime = () => {
+        if (mediaEl.duration) fill.style.width = Math.min(100, (mediaEl.currentTime / mediaEl.duration) * 100) + '%';
+    };
+    const onEnded = () => {
+        mediaEl.removeEventListener('timeupdate', onTime);
+        mediaEl.removeEventListener('ended', onEnded);
+        stage.style.display = 'none';
+        onDone();
+    };
+    mediaEl.addEventListener('timeupdate', onTime);
+    mediaEl.addEventListener('ended', onEnded);
+    playWithFallback(mediaEl, stage);
+}
+
+function showSequentialQuestion(partNum) {
+    const st = seqState[partNum];
+    const item = st.flat[st.idx];
+    const card = st.seqEl.querySelector(`[data-role="q-card"][data-qnum="${item.qnum}"]`);
+    card.style.display = '';
+    card.classList.remove('celpip-locked');
+
+    const audioStage  = card.querySelector('[data-role="q-audio-stage"]');
+    const answerStage = card.querySelector('[data-role="q-answer-stage"]');
+    const timerVal    = card.querySelector('[data-role="q-timer-val"]');
+    const timerWrap   = card.querySelector('[data-role="q-timer"]');
+    const nextBtn     = card.querySelector('[data-role="next-btn"]');
+
+    // Audio and options are NEVER shown at once: audio stage first, then it's
+    // swapped out entirely for the answer stage once the audio finishes.
+    audioStage.style.display = '';
+    answerStage.style.display = 'none';
+    timerVal.textContent = Q_SECONDS;
+    timerWrap.classList.add('calm'); // grey while the question is being read aloud, not counting yet
+    nextBtn.disabled = true;
+    nextBtn.onclick = () => advanceSequential(partNum);
+
+    function revealAnswerStage() {
+        audioStage.style.display = 'none';
+        answerStage.style.display = '';
+        nextBtn.disabled = false;
+
+        let remaining = Q_SECONDS;
+        timerVal.textContent = remaining;
+        timerWrap.classList.remove('calm');
+        st.qTimerInterval = setInterval(() => {
+            remaining--;
+            timerVal.textContent = Math.max(0, remaining);
+            if (remaining <= 0) { clearInterval(st.qTimerInterval); st.qTimerInterval = null; advanceSequential(partNum); }
+        }, 1000);
+    }
+
+    // Play this question's individual "read aloud" audio (~5s) first; the
+    // answer stage (and its 25-second countdown) only appears once that
+    // finishes — matches the real CELPIP timing and never overlaps the audio.
+    const qAudioSrc = card.dataset.audio;
+    const playingLabel = card.querySelector('[data-role="q-playing-label"]');
+    const qFill = card.querySelector('[data-role="q-progress-fill"]');
+    if (qAudioSrc) {
+        const a = new Audio(qAudioSrc);
+        if (playingLabel) playingLabel.textContent = 'Playing…';
+        if (qFill) qFill.style.width = '0%';
+        a.addEventListener('timeupdate', () => { if (a.duration && qFill) qFill.style.width = Math.min(100, (a.currentTime / a.duration) * 100) + '%'; });
+        a.addEventListener('ended', revealAnswerStage);
+        playWithFallback(a, audioStage);
+    } else {
+        revealAnswerStage();
+    }
+
+    updateProgress();
+}
+
+function maybeStartPart(pNum) {
+    const panel = document.getElementById('panel-' + pNum);
+    if (!panel) return;
+    if (panel.dataset.sequential === '1') {
+        initSequentialPart(panel);
+        if (seqState[pNum].idx === -1) advanceSequential(pNum);
+    } else {
+        initAllScreenPart(panel);
+    }
+}
+
+// ── Parts 4-6: play the shared media once, then reveal the continue button ──
+const allScreenStarted = {};
+function initAllScreenPart(panel) {
+    const partNum = parseInt(panel.dataset.part, 10);
+    if (allScreenStarted[partNum]) return;
+    allScreenStarted[partNum] = true;
+
+    const stage = panel.querySelector('[data-role="allscreen-media"]');
+    if (!stage) return;
+    const fill = stage.querySelector('[data-role="progress-fill"]');
+    const videoEl = stage.querySelector('video[data-role="media-el"]');
+    const mediaEl = videoEl || new Audio();
+    if (videoEl) { videoEl.style.display = 'block'; videoEl.src = stage.dataset.src; }
+    else mediaEl.src = stage.dataset.src;
+
+    const onTime = () => { if (mediaEl.duration) fill.style.width = Math.min(100, (mediaEl.currentTime / mediaEl.duration) * 100) + '%'; };
+    const onEnded = () => { mediaEl.removeEventListener('timeupdate', onTime); mediaEl.removeEventListener('ended', onEnded); };
+    mediaEl.addEventListener('timeupdate', onTime);
+    mediaEl.addEventListener('ended', onEnded);
+    playWithFallback(mediaEl, stage);
+
+    const contBtn = panel.querySelector('[data-role="part-continue-btn"]');
+    if (contBtn) contBtn.onclick = () => goToNextPart(partNum);
 }
 
 // ── Progress ───────────────────────────────────────────────
@@ -440,6 +767,7 @@ function submitListening(auto = false) {
     }
     submitting = true;
     clearInterval(timerInterval);
+    Object.values(seqState).forEach(st => { if (st.qTimerInterval) clearInterval(st.qTimerInterval); });
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting…';
@@ -475,6 +803,7 @@ window.addEventListener('beforeunload', e => { if (!submitting) { e.preventDefau
 
 startTimer();
 updateProgress();
+maybeStartPart(1);
 </script>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>

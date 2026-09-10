@@ -187,6 +187,31 @@ function renderCelpipReadingQuestion(array $q, array $options): void
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
+    <style>
+        /* Real CELPIP Reading layout: passage left, questions right, each
+           scrolling independently within a fixed-height split view. */
+        .celpip-reading-split {
+            display: flex; gap: 1.25rem; align-items: stretch;
+            height: calc(100vh - 260px); min-height: 420px;
+        }
+        .celpip-reading-pane {
+            flex: 1; min-width: 0; overflow-y: auto;
+            background: var(--exam-surface); border: 1px solid var(--exam-line);
+            border-radius: var(--exam-radius-lg); padding: 1.25rem 1.5rem;
+        }
+        /* The pane itself already provides the border/background/scroll —
+           strip passage-box's own copy of those so passages don't render as
+           a nested box-within-a-box. */
+        .celpip-passage-pane .passage-box {
+            background: none; border: none; padding: 0; max-height: none; overflow: visible;
+            margin-bottom: 1.5rem;
+        }
+        .celpip-passage-pane .passage-box:last-child { margin-bottom: 0; }
+        @media (max-width: 900px) {
+            .celpip-reading-split { flex-direction: column; height: auto; }
+            .celpip-reading-pane { height: 50vh; }
+        }
+    </style>
 </head>
 <body>
 
@@ -257,27 +282,37 @@ function renderCelpipReadingQuestion(array $q, array $options): void
             <form id="readingForm">
             <?php foreach ($parts as $partNum => $partQuestions): ?>
             <div class="part-panel <?= $partNum === 1 ? 'active' : '' ?>" id="panel-<?= $partNum ?>">
+                <!-- Real CELPIP Reading layout: passage on the left, questions on the
+                     right, each scrolling independently — not a single top-to-bottom
+                     column. See "CELPIP General Complete Guide" reference screenshots. -->
+                <div class="celpip-reading-split">
+                    <div class="celpip-reading-pane celpip-passage-pane">
+                        <?php
+                        $prevStim = null;
+                        foreach ($partQuestions as $q):
+                            if (!empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStim):
+                                $prevStim = $q['stimulus_text'];
+                                echo '<div class="passage-box">' . nl2br(htmlspecialchars($q['stimulus_text'])) . '</div>';
+                            endif;
+                        endforeach;
+                        ?>
+                    </div>
+                    <div class="celpip-reading-pane celpip-questions-pane">
+                        <?php
+                        $prevInstr = null;
+                        foreach ($partQuestions as $q):
+                            // Instructions bar — set on the first question of a block that
+                            // shares it, NULL after. Render once per block, deduped.
+                            if (!empty($q['instructions']) && $q['instructions'] !== $prevInstr):
+                                $prevInstr = $q['instructions'];
+                                echo '<div class="q-instructions">' . htmlspecialchars($q['instructions']) . '</div>';
+                            endif;
 
-                <?php
-                $prevInstr = null;
-                $prevStim  = null;
-                foreach ($partQuestions as $q):
-                    // Passage/table text — set on the first question of a block that
-                    // shares it, NULL after. Render once per block, deduped.
-                    if (!empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStim):
-                        $prevStim = $q['stimulus_text'];
-                        echo '<div class="passage-box">' . nl2br(htmlspecialchars($q['stimulus_text'])) . '</div>';
-                    endif;
-
-                    // Instructions bar — same null-after-first convention.
-                    if (!empty($q['instructions']) && $q['instructions'] !== $prevInstr):
-                        $prevInstr = $q['instructions'];
-                        echo '<div class="q-instructions">' . htmlspecialchars($q['instructions']) . '</div>';
-                    endif;
-
-                    renderCelpipReadingQuestion($q, $options);
-                endforeach;
-                ?>
+                            renderCelpipReadingQuestion($q, $options);
+                        endforeach;
+                        ?>
+                    </div>
+                </div>
             </div>
             <?php endforeach; ?>
             </form>
