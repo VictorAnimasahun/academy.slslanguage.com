@@ -89,7 +89,10 @@ $sections = getMockExamSections($mockCode);
 
             <div class="mock-overview">
                 <div class="text-center mb-5">
-                    <span class="mock-badge"><?= htmlspecialchars($mock['exam_type']) ?> GENERAL TRAINING</span>
+                    <?php $examBadge = str_starts_with($mock['exam_type'], 'CELPIP')
+                        ? 'CELPIP GENERAL'
+                        : htmlspecialchars($mock['exam_type']) . ' GENERAL TRAINING'; ?>
+                    <span class="mock-badge"><?= $examBadge ?></span>
                     <h1 class="mt-4 mb-3"><?= htmlspecialchars($mock['title']) ?></h1>
                     <p class="lead text-muted"><?= htmlspecialchars($mock['description']) ?></p>
                 </div>

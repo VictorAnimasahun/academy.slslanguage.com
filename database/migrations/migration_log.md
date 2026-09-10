@@ -1135,7 +1135,7 @@ ALTER TABLE assignments DROP COLUMN student_id;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-10 | Ran clean, no errors after fixing 3 missing derived-table column aliases (`d.part` resolution failures on the first row of 3 Reading sub-blocks). Verified via direct SQL: 38/38/38/38 questions across FMA_L/FMA_R/FMB_L/FMB_R with no gaps or duplicates in question_number; every question has exactly one `is_correct` option (161 options on each Reading test = 29 MCQ×4 + 9 matching×5); 18 `question_correct_answers` rows on each Reading test (9 matching questions × upper/lower alternates); both Writing tests have exactly 2 essay-type questions; container tests, section tests, and both `mock_exams` rows all present. **First run was corrupted** (see warning below) — deleted via this entry's own rollback SQL and re-run correctly; re-verified with the same checks plus a byte-level scan for the corruption signature (zero hits) and full Playwright end-to-end walkthrough (Listening→Reading→Writing, both Test A and B, real submission scoring into correct CLB levels). |
-| Live  | [x] | 2026-09-10 | User ran this on live. Not yet independently confirmed clean (no live DB access from this environment) — see charset warning above; worth a spot-check per the question below before treating this as fully verified. |
+| Live  | [x] | 2026-09-10 | User ran this via phpMyAdmin's import (defaults to UTF-8), so the `mysql`-CLI charset bug documented above does not apply here. |
 
 **⚠️ Charset warning — read before running on live:** this file contains real em-dashes and other non-ASCII punctuation (transcribed verbatim from the official CELPIP PDFs). The first local run was piped through `mysql ... < 073_....sql` without specifying a client charset, so the CLI defaulted to `latin1` and double-encoded every such character into corrupted mojibake bytes on write (confirmed via `HEX()` — a proper UTF-8 em-dash is 3 bytes `E28094`; the corrupted version was 9 bytes `C3A2E282ACE2809D`). If importing via the `mysql` CLI, always add `--default-character-set=utf8mb4`: `mysql --default-character-set=utf8mb4 -u ... slslanguage_db < 073_seed_celpip_full_mock_a_b.sql`. phpMyAdmin's file-import tool defaults to UTF-8 already, so importing through the web UI does not need this flag — but confirm the import dialog's "Character set of the file" is set to `utf-8` before running.
 
@@ -1177,6 +1177,23 @@ DELETE FROM tests WHERE code LIKE 'CELPIP_FM%' OR code LIKE 'CELPIP_FULL_MOCK_%'
 DELETE FROM course_pacing_items WHERE course_id = 13 AND lesson_id IN (163, 178);
 UPDATE lessons SET file_path = 'courses/CELPIP_intro/celpip_mini_mock.php' WHERE id = 163;
 UPDATE lessons SET file_path = NULL WHERE id = 178;
+```
+
+---
+
+## 075 — Register CELPIP Full Mock A/B in mock_exam_sections
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-10 | Verified via SQL (6 rows, 3 per mock, correct test_codes/order) and Playwright: `take.php?code=CELPIP_FULL_MOCK_A` no longer shows "No sections configured for this mock yet.", lists all 3 sections with correct titles/durations/question counts, and "Start Full Mock Test" correctly resolves into the already-verified `mock_sessions` flow. |
+| Live  | [ ] | | |
+
+**What it does:** user reported "No sections configured for this mock yet." when opening a CELPIP Full Mock from the general Resources > Mock Tests catalog page (`resources/mock_tests/index.php` → `take.php`). Root cause: that catalog page is driven by a second, older table (`mock_exam_sections`) entirely separate from the `mock_sessions` + `mock_test_map.php` architecture migrations 073-074 wired up — migration 073 created a `mock_exams` catalog row for each CELPIP mock (following the `IELTS_ACA_DIAGNOSTIC`/`IELTS_GT_DIAGNOSTIC` precedent, which deliberately skips `mock_exam_sections` since diagnostics are only ever reached via their course lesson), but it turns out the CELPIP Full Mocks — unlike the diagnostics — are also being opened directly from this general catalog, so they need the fuller `IELTS_FULL_MOCK_001-004` pattern instead: 3 `mock_exam_sections` rows each (Listening, Reading, Writing_Task1 — Speaking is deliberately absent here for every full mock, IELTS included, since it's instructor-scheduled outside the timed flow). No PHP changes needed for this part: `take.php`'s "Start Full Mock Test" button already resolves the first section to `strtolower(mock_code) . '.php'`, which is exactly `celpip_full_mock_a.php`/`_b.php` (already built, migration 074) and those files already ignore the `?code=` query param they're invoked with, doing their own hardcoded lookup — same convention `ielts_full_mock_003.php` already uses.
+- Also fixed, in the same investigation: `take.php`'s exam-type badge hardcoded a trailing " GENERAL TRAINING" suffix regardless of exam type, so CELPIP mocks showed the confusing "CELPIP_General GENERAL TRAINING" (CELPIP has no such designation — that's IELTS terminology). Now shows "CELPIP GENERAL" for any `exam_type` starting with `CELPIP`; every IELTS `exam_type` value keeps its exact prior display unchanged.
+
+**Rollback:**
+```sql
+DELETE FROM mock_exam_sections WHERE mock_code IN ('CELPIP_FULL_MOCK_A', 'CELPIP_FULL_MOCK_B');
 ```
 
 ---
