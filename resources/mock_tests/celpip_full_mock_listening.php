@@ -211,9 +211,22 @@ function renderCelpipListeningQuestion(array $q, array $options): void
         /* CELPIP-authentic sequential question flow (Parts 1-3). Reuses the
            exam_theme.css palette so it stays visually consistent with the
            rest of the platform, not a separate skin. */
+
+        /* Stable frame: the outer box never resizes as content changes
+           (media stage <-> question 1 <-> question with a long passage,
+           etc.) -- it fills the remaining viewport height and its content
+           centers within it, matching the reading pane's stable box. */
+        .part-panel.active { min-height: calc(100vh - 280px); }
+        .celpip-seq {
+            display: flex; flex-direction: column; justify-content: center;
+            min-height: calc(100vh - 280px);
+        }
+        .celpip-seq > .celpip-seq-card { margin-bottom: 0; }
+
         .celpip-seq-card {
             background: var(--exam-surface); border: 1px solid var(--exam-line);
-            border-radius: var(--exam-radius-lg); overflow: hidden; margin-bottom: 1.5rem;
+            border-radius: var(--exam-radius-lg); overflow-y: auto; margin-bottom: 1.5rem;
+            max-height: calc(100vh - 280px);
         }
         .celpip-seq-header {
             display: flex; align-items: center; justify-content: space-between;

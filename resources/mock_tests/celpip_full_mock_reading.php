@@ -121,6 +121,33 @@ if (!function_exists('celpipIsBlankStyle')) {
     }
 }
 
+// Custom dropdown widget matching the real CELPIP interface: a small trigger
+// field that opens a floating panel of radio-style options, and collapses to
+// show the chosen answer as bold inline text once selected (see the
+// instructor-provided reference screenshots) -- a native <select> can't be
+// styled this way, so this builds the whole thing from a hidden input +
+// JS-driven trigger/panel (wired up once for the whole page, see the
+// celpip-dd-* delegated listeners in the page script).
+function renderCelpipDropdown(int $qnum, array $qopts): void
+{
+    ?>
+    <span class="celpip-dd" data-qnum="<?= $qnum ?>">
+        <button type="button" class="celpip-dd-trigger" data-role="dd-trigger">
+            <span data-role="dd-label">— Select —</span> <i class="bi bi-caret-down-fill"></i>
+        </button>
+        <input type="hidden" name="answers[<?= $qnum ?>]" class="answer-field celpip-dd-value" data-qnum="<?= $qnum ?>" value="">
+        <span class="celpip-dd-panel" data-role="dd-panel" hidden>
+            <?php foreach ($qopts as $opt): ?>
+            <label class="celpip-dd-option">
+                <input type="radio" name="celpip_dd_radio_<?= $qnum ?>" value="<?= htmlspecialchars($opt['option_label']) ?>" data-text="<?= htmlspecialchars($opt['option_label'] . '. ' . $opt['option_text']) ?>">
+                <?= htmlspecialchars($opt['option_label']) ?>.&nbsp;<?= htmlspecialchars($opt['option_text']) ?>
+            </label>
+            <?php endforeach; ?>
+        </span>
+    </span>
+    <?php
+}
+
 // Renders one Reading question: a dropdown for 'matching' rows and
 // blank-style MC rows, otherwise a standard radio-button MC block.
 function renderCelpipReadingQuestion(array $q, array $options): void
@@ -132,6 +159,23 @@ function renderCelpipReadingQuestion(array $q, array $options): void
     $isBlank = in_array($qtype, ['multiple_choice_single', 'multiple_choice_multiple'], true)
              && celpipIsBlankStyle($q['question_text'] ?? '');
     ?>
+    <?php if ($isBlank): ?>
+        <!-- Blank-style: the dropdown is embedded inline where the "___" was,
+             matching the real interface (e.g. "1. Adam now lives [dropdown]"),
+             not shown as literal underscores with a separate control below. -->
+        <div class="q-block" id="qblock-<?= $qnum ?>">
+            <div class="celpip-inline-q">
+                <span class="q-badge"><?= $qnum ?></span>
+                <?php
+                $escaped = htmlspecialchars($q['question_text']);
+                ob_start();
+                renderCelpipDropdown($qnum, $qopts);
+                $ddHtml = ob_get_clean();
+                echo preg_replace('/_{2,}/', $ddHtml, $escaped, 1);
+                ?>
+            </div>
+        </div>
+    <?php else: ?>
     <div class="q-block" id="qblock-<?= $qnum ?>">
         <div style="margin-bottom:.3rem;">
             <span class="q-badge"><?= $qnum ?></span>
@@ -140,18 +184,8 @@ function renderCelpipReadingQuestion(array $q, array $options): void
             <?php endif; ?>
         </div>
 
-        <?php if ($qtype === 'matching' || $isBlank): ?>
-            <select name="answers[<?= $qnum ?>]"
-                    class="match-select answer-field"
-                    data-qnum="<?= $qnum ?>"
-                    onchange="this.classList.toggle('answered',this.value!=='')">
-                <option value="">— Select —</option>
-                <?php foreach ($qopts as $opt): ?>
-                <option value="<?= htmlspecialchars($opt['option_label']) ?>">
-                    <?= htmlspecialchars($opt['option_label']) ?>.&nbsp;<?= htmlspecialchars($opt['option_text']) ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
+        <?php if ($qtype === 'matching'): ?>
+            <?php renderCelpipDropdown($qnum, $qopts); ?>
 
         <?php elseif (in_array($qtype, ['multiple_choice_single', 'multiple_choice_multiple'], true)): ?>
             <?php foreach ($qopts as $opt): ?>
@@ -174,6 +208,7 @@ function renderCelpipReadingQuestion(array $q, array $options): void
                    oninput="this.classList.toggle('answered',this.value.trim()!=='')">
         <?php endif; ?>
     </div>
+    <?php endif; ?>
     <?php
 }
 ?>
@@ -211,6 +246,35 @@ function renderCelpipReadingQuestion(array $q, array $options): void
             .celpip-reading-split { flex-direction: column; height: auto; }
             .celpip-reading-pane { height: 50vh; }
         }
+
+        /* Custom dropdown widget matching the real CELPIP interface: a small
+           trigger that opens a floating panel of radio-style options, then
+           collapses to show the chosen answer as bold inline text. */
+        .celpip-inline-q { line-height: 2.4; }
+        .celpip-dd { position: relative; display: inline-block; margin: 0 .25rem; }
+        .celpip-dd-trigger {
+            background: var(--exam-surface); border: 1px solid var(--exam-accent);
+            border-radius: var(--exam-radius); padding: .25rem .7rem; font-size: .85rem;
+            color: var(--exam-ink-muted); cursor: pointer; display: inline-flex;
+            align-items: center; gap: .4rem; min-width: 90px;
+        }
+        .celpip-dd-trigger.answered { color: var(--exam-ink); font-weight: 700; border-color: var(--exam-good); }
+        .celpip-dd-trigger .bi { font-size: .65rem; color: var(--exam-ink-muted); }
+        .celpip-dd-panel {
+            position: absolute; z-index: 50; top: calc(100% + 4px); left: 0; min-width: 260px;
+            background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg);
+            box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: .5rem 0;
+        }
+        .celpip-dd-option {
+            display: flex; align-items: flex-start; gap: .5rem; padding: .5rem .9rem;
+            font-size: .85rem; font-weight: 400; cursor: pointer; white-space: normal;
+        }
+        .celpip-dd-option:hover { background: var(--exam-bg); }
+        .celpip-dd-option input { accent-color: var(--exam-accent); margin-top: 3px; flex-shrink: 0; }
+        /* Standalone dropdowns (Part 3 matching, not embedded in a sentence)
+           should block-stack like the old select did. */
+        .q-block > .celpip-dd { display: block; margin: 0; }
+        .q-block > .celpip-dd .celpip-dd-trigger { min-width: 220px; }
     </style>
 </head>
 <body>
@@ -377,6 +441,7 @@ function collectAnswers() {
         if (el.type === 'checkbox' && el.checked)          ans[n] = el.value;
         if (el.tagName === 'SELECT' && el.value)           ans[n] = el.value;
         if (el.type === 'text'     && el.value.trim())     ans[n] = el.value.trim();
+        if (el.type === 'hidden'   && el.value)            ans[n] = el.value;
     });
     return ans;
 }
@@ -396,6 +461,39 @@ function updateProgress() {
 document.querySelectorAll('.answer-field').forEach(el => {
     el.addEventListener('input',  updateProgress);
     el.addEventListener('change', updateProgress);
+});
+
+// ── Custom dropdown widget (celpip-dd) ──────────────────────────────
+// Delegated listeners: opens/closes the floating options panel, and
+// collapses to bold inline text once an option is chosen.
+function closeAllDropdowns(except = null) {
+    document.querySelectorAll('.celpip-dd-panel').forEach(p => { if (p !== except) p.hidden = true; });
+}
+document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.celpip-dd-trigger');
+    if (trigger) {
+        const dd = trigger.closest('.celpip-dd');
+        const panel = dd.querySelector('[data-role="dd-panel"]');
+        const willOpen = panel.hidden;
+        closeAllDropdowns();
+        panel.hidden = !willOpen;
+        return;
+    }
+    const option = e.target.closest('.celpip-dd-option');
+    if (option) {
+        const dd = option.closest('.celpip-dd');
+        const radio = option.querySelector('input[type=radio]');
+        const hidden = dd.querySelector('.celpip-dd-value');
+        const label = dd.querySelector('[data-role="dd-label"]');
+        radio.checked = true;
+        hidden.value = radio.value;
+        label.textContent = radio.dataset.text;
+        dd.querySelector('.celpip-dd-trigger').classList.add('answered');
+        closeAllDropdowns();
+        hidden.dispatchEvent(new Event('change', { bubbles: true }));
+        return;
+    }
+    if (!e.target.closest('.celpip-dd-panel')) closeAllDropdowns();
 });
 
 function submitReading(auto = false) {
