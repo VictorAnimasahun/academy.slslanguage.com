@@ -1166,7 +1166,7 @@ DELETE FROM tests WHERE code LIKE 'CELPIP_FM%' OR code LIKE 'CELPIP_FULL_MOCK_%'
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-10 | Verified via SQL: lesson 163 → `celpip_full_mock_a.php`, lesson 178 → `celpip_full_mock_b.php`; 2 `course_pacing_items` rows created for course 13 (offset_days 24 and 52). First run's pacing-item titles were corrupted by the same `mysql` CLI charset bug as migration 073 (see that entry) — deleted and re-run with `--default-character-set=utf8mb4`, re-verified clean. |
-| Live  | [x] | 2026-09-10 | User ran this on live. Not yet independently confirmed clean — see the same charset caveat as migration 073 above. |
+| Live  | [x] | 2026-09-10 | ⚠️ **Re-flagged 2026-09-10, later same day:** discovered (while investigating "only 8 courses in the catalogue") that course_id 9-19, course 13 included, were never actually migrated to live before this ran — see migration 077. `UPDATE ... WHERE id = 163/178` and `INSERT ... course_id = 13` against a live DB with no such rows would have silently affected 0 rows / created orphaned pacing rows, with no error. This checkbox reflects "the user ran the file," not "the wiring took effect" — treat it as unverified until migration 078 (folder_name-based re-wire, safe to run regardless) has been run and confirmed on live. |
 
 **What it does:** points lesson 163 (course 13, Month 1, Class 8) at the new `resources/mock_tests/celpip_full_mock_a.php` launcher instead of the old hardcoded `courses/CELPIP_intro/celpip_mini_mock.php`, and lesson 178 (Month 2, Class 16, previously `file_path=NULL`) at `celpip_full_mock_b.php`. Adds 2 `course_pacing_items` rows so both mocks integrate with the enrollment-anchored due-date system from migration 072 — offset_days 24 and 52, continuing the same ~3-4-day-per-class cadence established for course_id=9's Month 1 pacing (see migration 072), uninterrupted across the month boundary. These offsets are a reasonable default, not a locked-in schedule — easy to adjust later if the instructor wants different in-between-class pacing for course 13 (only the two Mock lessons have pacing items so far; lessons 1-7 and 9-15 have none yet, which is fine — `generateAssignmentsForEnrollment()` skips any lesson with no pacing item).
 - Also created two new launcher files (`resources/mock_tests/celpip_full_mock_{a,b}.php`), mechanically modeled on `ielts_full_mock_003.php`'s session-create/resume pattern, and added `CELPIP_FULL_MOCK_A`/`_B` entries to `includes/mock_test_map.php`.
@@ -1202,17 +1202,55 @@ DELETE FROM mock_exam_sections WHERE mock_code IN ('CELPIP_FULL_MOCK_A', 'CELPIP
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [x] | 2026-09-10 | Verified: `courses.id=13` title is now "CELPIP General Masterclass — 2 Months". |
+| Local | [x] | 2026-09-10 | Verified: `courses.id=13` title is now "CELPIP General Masterclass — 2 Months". Re-verified after the folder_name fix below (re-ran, still correct, no duplicate/regression). |
 | Live  | [ ] | | |
 
 **What it does:** course 13's title ("CELPIP General — 2-Month Plan") and description never said "Masterclass" anywhere, even though the instructor has consistently called it that throughout this project (and it's exactly what migrations 073-075's CELPIP Full Mock A/B build was for). This made it impossible to find on the Courses catalogue page by that name, and inconsistent with course 14's naming ("CELPIP General Masterclass — 3 Months"). Renamed to "CELPIP General Masterclass — 2 Months" and updated the description to match course 14's style (CLB level, not IELTS band, per this session's earlier scoring work).
+
+**⚠️ Fixed 2026-09-10, before ever running on live:** originally targeted `WHERE id = 13`. Discovered the same day (investigating "only 8 courses in the catalogue") that course 13 was never migrated to live at all — see migration 077. If 077 runs first, live's auto-increment will not assign this course id 13, so the original version would have silently renamed whatever unrelated course did land on id 13. Re-keyed on the stable `folder_name = 'CELPIP_Gen_2Mo'` instead. Safe to run on live any time after migration 077.
 
 **Rollback:**
 ```sql
 UPDATE courses SET title = 'CELPIP General — 2-Month Plan',
   description = 'An 8-week comprehensive CELPIP program. Month 1 builds foundational skills; Month 2 introduces advanced strategies, exam timing, and a second full mock exam.'
-WHERE id = 13;
+WHERE folder_name = 'CELPIP_Gen_2Mo';
 ```
+
+---
+
+## 077 — Formalize CELPIP General / IELTS Academic / PTE Academic course plans
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-10 | Ran against the already-populated local DB: correctly no-op'd on the 7 courses that already existed (CELPIP Gen 1/2/3mo, IELTS Academic 1/2/3mo, PTE 1mo) and created the 2 that were missing even locally (PTE Academic 2-Month, PTE Academic Masterclass 3-Month — ids 20/21, each with correct modules/lessons: 2 modules/16 lessons and 3 modules/24 lessons respectively). Re-ran a second time to confirm idempotency: course count unchanged (21), no duplicates. Visible course count went from 14 to 16. |
+| Live  | [ ] | | |
+
+**What it does:** user reported "There are only 8 courses in the courses_catalogue." Investigation found `courses_catalogue.php`'s query has no bug — it correctly filters on `is_visible = 1` with no other limit. The real cause: course_id 9-19 (every CELPIP General / IELTS Academic / PTE Academic course track beyond the original 8) trace back to `documentation/migrations/add_celpip_ieltsaca_pte_courses.sql`, a 455-line draft file that was applied to local at some point *outside* the numbered, live-tracked migration system entirely — it has no entry anywhere in this log. It was therefore never run on live, which still only has the original 8 courses (ids 1-8). It also turns out that draft file was never even fully applied locally either: 2 of its 9 course tracks (PTE Academic 2-Month and 3-Month) were missing from local too.
+
+This migration formalizes that draft file into the tracked system: same 9 course/module/lesson trees (3× CELPIP General, 3× IELTS Academic, 3× PTE Academic, each 1/2/3-month), but every INSERT is now guarded — `NOT EXISTS` on `folder_name` for courses, on `(course_id, module_order)` for modules, and "this module already has any lessons" for lessons (same guard style as migration 067) — so it is safe to run on an environment that already has some of these rows (local) or none of them (live), without creating duplicates.
+
+**⚠️ Live sequencing matters:** migrations 074 and 076 (already written) hardcode ids that only happen to be correct locally (`course_id = 13`, `lesson id = 163/178`) because course 13 already existed there before those were written. On live, this migration will create these 9 courses via fresh auto-increment — almost certainly NOT landing course 13 (CELPIP_Gen_2Mo) on id 13. Migration 076 has been re-keyed on `folder_name` to handle this safely; migration 078 replaces 074's hardcoded-id wiring with an equivalent folder_name/module_order/lesson_order lookup. **Run order on live: 077, then 078, then 076** (076's order relative to 078 doesn't matter, but both must come after 077).
+
+**Rollback:**
+```sql
+DELETE FROM lessons WHERE course_id IN (SELECT id FROM courses WHERE folder_name IN ('CELPIP_Gen_1Mo','CELPIP_Gen_2Mo','CELPIP_Gen_3Mo','IELTS_Aca_1Mo','IELTS_Aca_2Mo','IELTS_Aca_3Mo','PTE_Gen_1Mo','PTE_Gen_2Mo','PTE_Gen_3Mo'));
+DELETE FROM modules WHERE course_id IN (SELECT id FROM courses WHERE folder_name IN ('CELPIP_Gen_1Mo','CELPIP_Gen_2Mo','CELPIP_Gen_3Mo','IELTS_Aca_1Mo','IELTS_Aca_2Mo','IELTS_Aca_3Mo','PTE_Gen_1Mo','PTE_Gen_2Mo','PTE_Gen_3Mo'));
+DELETE FROM courses WHERE folder_name IN ('CELPIP_Gen_1Mo','CELPIP_Gen_2Mo','CELPIP_Gen_3Mo','IELTS_Aca_1Mo','IELTS_Aca_2Mo','IELTS_Aca_3Mo','PTE_Gen_1Mo','PTE_Gen_2Mo','PTE_Gen_3Mo');
+```
+(On local, do NOT run this rollback carelessly — most of these rows predate this migration and have real enrollments/history. Only intended for a live environment where 077 just introduced them.)
+
+---
+
+## 078 — Re-wire CELPIP Full Mock A/B using stable lookups
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-10 | Ran after 074 already wired this correctly (hardcoded ids happened to be right locally) — confirmed a clean no-op: `course_pacing_items` count for CELPIP_FULL_MOCK_A/B unchanged (2), lessons 163/178 `file_path` unchanged. |
+| Live  | [ ] | | |
+
+**What it does:** supersedes migration 074's live effect, which was likely a silent no-op there (see 074 and 077's entries above — course 13 / lessons 163/178 did not exist on live when 074 ran). Same wiring (lesson → `celpip_full_mock_a/b.php`, 2 `course_pacing_items` rows), but resolved via `courses.folder_name = 'CELPIP_Gen_2Mo'` joined to `modules.module_order` and `lessons.lesson_order` instead of raw ids, so it works no matter what auto-increment values migration 077 produces. Idempotent — harmless to run even where 074 already worked (confirmed above).
+
+**Rollback:** see the file's own inline rollback comment (deletes by `test_code`, resets `file_path` by folder_name/module_order/lesson_order lookup — same pattern as the migration itself, not repeated here).
 
 ---
 
