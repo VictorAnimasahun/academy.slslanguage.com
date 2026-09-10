@@ -14,6 +14,11 @@
 -- later if the instructor wants a different cadence for this course.
 --
 -- Idempotent — safe to re-run.
+--
+-- ⚠️ CHARSET WARNING: the pacing item titles below contain em-dashes. If
+-- importing via the `mysql` CLI, pass --default-character-set=utf8mb4 (see
+-- migration 073's header for the full explanation — the same bug bit this
+-- file's titles on the first local run).
 -- ============================================================
 
 UPDATE lessons

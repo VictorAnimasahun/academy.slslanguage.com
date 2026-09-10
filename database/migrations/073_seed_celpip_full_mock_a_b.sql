@@ -25,6 +25,14 @@
 -- same data.
 --
 -- Idempotent — every INSERT guarded. Run on LOCAL first, then LIVE.
+--
+-- ⚠️ CHARSET WARNING: this file contains real em-dashes and other non-ASCII
+-- punctuation. If importing via the `mysql` CLI (not phpMyAdmin), you MUST
+-- pass --default-character-set=utf8mb4, or the client's latin1 default will
+-- silently double-encode every such character into corrupted mojibake bytes
+-- on write (this happened on the first local run — see migration_log.md's
+-- entry for 073 for the full diagnosis and the exact HEX() signature to
+-- check for). phpMyAdmin's file import already defaults to UTF-8.
 -- ============================================================
 
 -- ── Container + section tests ────────────────────────────────────────────

@@ -1,0 +1,481 @@
+<?php
+/**
+ * CELPIP Full Mock — Listening.
+ * Generic across CELPIP_FULL_MOCK_A / CELPIP_FULL_MOCK_B (and any future CELPIP
+ * full mock added to mock_test_map.php) — the DB test_code, audio/video asset
+ * base path, and timer duration are all derived from the session's mock_code,
+ * exactly like full_mock_00N_listening.php does for IELTS. Do not hardcode a
+ * specific mock code anywhere in this file.
+ *
+ * CELPIP Listening has 6 parts (not IELTS's 4). Audio assets are nested per
+ * part (assets/audio/{mockCode}/partN/...), not the flat listening_partN.mp3
+ * naming IELTS uses:
+ *   part1/track1.mp3, track2.mp3, track3.mp3  — Q1-3, Q4-6, Q7-8 (fixed 3/3/2 split)
+ *   part2/track1.mp3                          — all of Part 2
+ *   part3/track1.mp3                          — all of Part 3
+ *   part4/track1.mp3                          — all of Part 4
+ *   part5/video1.mp4                          — Part 5 is a VIDEO, not audio
+ *   part6/track1.mp3                          — all of Part 6
+ * Optional per-question clips (q1.mp3 etc.) exist on disk but are intentionally
+ * NOT wired up here — see the accompanying build report for why.
+ */
+require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../edu_hub_registration.php?message=Please+login");
+    exit();
+}
+
+$session_id = (int)($_GET['session_id'] ?? 0);
+if (!$session_id) {
+    header("Location: mock_start.php");
+    exit();
+}
+
+$student_id  = (int)$_SESSION['user_id'];
+require_once INCLUDES_PATH . '/admin_check.php';
+$isAdmin     = is_platform_admin();
+
+$stmt = $db->prepare("
+    SELECT ms.*, t.title AS mock_title, t.code AS mock_code
+    FROM mock_sessions ms
+    JOIN tests t ON t.id = ms.mock_test_id
+    WHERE ms.id = ? AND ms.student_id = ?
+");
+$stmt->execute([$session_id, $student_id]);
+$session = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$session || $session['status'] !== 'in_progress') {
+    header("Location: mock_start.php");
+    exit();
+}
+
+// Admins can revisit any section freely; students are forwarded once a section is done
+if (!$isAdmin && !is_null($session['listening_attempt_id'])) {
+    $map  = require INCLUDES_PATH . '/mock_test_map.php';
+    $file = $map[$session['mock_code']]['reading']['file'] ?? 'mock_start.php';
+    header("Location: {$file}?session_id={$session_id}");
+    exit();
+}
+
+// Load questions from DB
+$map      = require INCLUDES_PATH . '/mock_test_map.php';
+$testCode = $map[$session['mock_code']]['listening']['test_code'] ?? '';
+
+$stmt = $db->prepare("SELECT id, duration_minutes FROM tests WHERE code = ? AND is_active = 1 LIMIT 1");
+$stmt->execute([$testCode]);
+$test = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$test) {
+    die("Listening test not configured. Please contact support.");
+}
+$test_id = (int)$test['id'];
+
+$stmt = $db->prepare("
+    SELECT q.id, q.question_number, q.question_type, q.question_text,
+           q.instructions, q.part_number, q.stimulus_text
+    FROM questions q
+    WHERE q.test_id = ?
+    ORDER BY q.question_number
+");
+$stmt->execute([$test_id]);
+$questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt = $db->prepare("
+    SELECT qo.question_id, qo.option_label, qo.option_text, qo.display_order
+    FROM question_options qo
+    JOIN questions q ON q.id = qo.question_id
+    WHERE q.test_id = ?
+    ORDER BY q.question_number, qo.display_order
+");
+$stmt->execute([$test_id]);
+$optionsRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$options = [];
+foreach ($optionsRaw as $o) {
+    $options[(int)$o['question_id']][] = $o;
+}
+
+// Only render questions that have actual content entered
+$questions = array_values(array_filter($questions, fn($q) => trim($q['question_text'] ?? '') !== ''));
+
+// Group by part
+$parts = [];
+foreach ($questions as $q) {
+    $parts[(int)($q['part_number'] ?? 1)][] = $q;
+}
+ksort($parts);
+foreach ($parts as $pNum => $pqs) {
+    // Re-index each part's question list 0..n-1 so array_slice()/positional
+    // lookups below (Part 1's 3/3/2 track split) work regardless of gaps.
+    $parts[$pNum] = array_values($pqs);
+}
+
+// Compute Q ranges per part
+$partRanges = [];
+foreach ($parts as $pNum => $pqs) {
+    $nums = array_column($pqs, 'question_number');
+    $partRanges[$pNum] = [min($nums), max($nums)];
+}
+
+// Audio/video assets derive from the session's mock_code automatically
+$mockCode      = $session['mock_code']; // CELPIP_FULL_MOCK_A or CELPIP_FULL_MOCK_B
+$audioBase     = ACADEMY_URL . 'assets/audio/' . $mockCode . '/';
+$DURATION_SECS = (int)($test['duration_minutes'] ?? 50) * 60;
+
+// A fill-in-the-blank style MC question (Listening Parts 4 & 6 — "Choose the
+// best way to complete each statement", e.g. "The news item is about ___")
+// renders as an inline dropdown instead of a radio list. Detected generically
+// by a run of 2+ underscores in the question text — the same convention used
+// for Reading's blank-style items in celpip_full_mock_reading.php. All of
+// these are still stored/scored as plain multiple_choice_single rows; only
+// the on-page rendering differs (see migration 073's header comment).
+if (!function_exists('celpipIsBlankStyle')) {
+    function celpipIsBlankStyle(string $text): bool
+    {
+        return (bool) preg_match('/_{2,}/', $text);
+    }
+}
+
+// Renders one Listening question: an inline-dropdown sentence for blank-style
+// MC questions, otherwise a standard radio-button MC block.
+function renderCelpipListeningQuestion(array $q, array $options): void
+{
+    $qid     = (int)$q['id'];
+    $qnum    = (int)$q['question_number'];
+    $qopts   = $options[$qid] ?? [];
+    $isBlank = celpipIsBlankStyle($q['question_text'] ?? '');
+    ?>
+    <?php if ($isBlank): ?>
+    <div class="ff-sentence">
+        <?php
+        $escaped = htmlspecialchars($q['question_text']);
+        $badge   = '<span class="q-badge">' . $qnum . '</span>';
+        $select  = '<select name="answers[' . $qnum . ']" class="match-select answer-field" '
+                 . 'data-qnum="' . $qnum . '" onchange="this.classList.toggle(\'answered\', this.value!==\'\')">'
+                 . '<option value="">— choose —</option>';
+        foreach ($qopts as $opt) {
+            $select .= '<option value="' . htmlspecialchars($opt['option_label']) . '">'
+                     . htmlspecialchars($opt['option_label']) . '. ' . htmlspecialchars($opt['option_text'])
+                     . '</option>';
+        }
+        $select .= '</select>';
+        echo preg_replace('/_{2,}/', $badge . $select, $escaped, 1);
+        ?>
+    </div>
+    <?php else: ?>
+    <div class="mc-question">
+        <div class="mc-q-label">
+            <span class="q-badge"><?= $qnum ?></span>
+            <?= htmlspecialchars($q['question_text']) ?>
+        </div>
+        <?php foreach ($qopts as $opt): ?>
+        <label class="mc-option">
+            <input type="radio"
+                   name="answers[<?= $qnum ?>]"
+                   value="<?= htmlspecialchars($opt['option_label']) ?>"
+                   class="answer-field"
+                   data-qnum="<?= $qnum ?>">
+            <strong><?= htmlspecialchars($opt['option_label']) ?></strong>&nbsp;
+            <?= htmlspecialchars($opt['option_text']) ?>
+        </label>
+        <?php endforeach; ?>
+    </div>
+    <?php endif;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listening — <?= htmlspecialchars($session['mock_title']) ?> | EduHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
+    <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
+</head>
+<body>
+
+<?php include INCLUDES_PATH . '/mobile_header.php'; ?>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+<?php include INCLUDES_PATH . '/navbar.php'; ?>
+
+<div class="main-wrapper flex-grow-1" style="flex:1;">
+    <?php include INCLUDES_PATH . '/topbar.php'; ?>
+
+    <main class="content p-3">
+
+        <div class="sticky-header">
+            <?php if ($isAdmin): ?>
+            <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
+                <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
+                <a href="celpip_full_mock_listening.php?session_id=<?= $session_id ?>" style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎧 Listening</a>
+                <a href="celpip_full_mock_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
+                <a href="mock_writing.php?session_id=<?= $session_id ?>"               style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
+                <a href="mock_speaking.php?session_id=<?= $session_id ?>"              style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
+            </div>
+            <?php endif; ?>
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="progress-steps">
+                    <div class="step current"><div class="step-dot"></div>Listening</div>
+                    <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                    <div class="step"><div class="step-dot"></div>Reading</div>
+                    <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                    <div class="step"><div class="step-dot"></div>Writing</div>
+                    <i class="bi bi-chevron-right text-muted" style="font-size:.7rem;"></i>
+                    <div class="step"><div class="step-dot"></div>Speaking</div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <small class="text-muted"><?= htmlspecialchars($session['mock_title']) ?></small>
+                    <button class="btn-exit" onclick="confirmExit()"><i class="bi bi-box-arrow-right me-1"></i> Exit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-content" style="padding-top:<?= $isAdmin ? '110px' : '60px' ?>;">
+
+            <!-- Part tab bar + timer -->
+            <div class="part-tabs-bar">
+                <div class="part-tabs-scrollable">
+                    <?php foreach ($parts as $pNum => $pqs):
+                        [$f, $l] = $partRanges[$pNum];
+                    ?>
+                    <button class="part-tab-btn <?= $pNum === 1 ? 'active' : '' ?>"
+                            id="ptab-<?= $pNum ?>"
+                            onclick="switchPart(<?= $pNum ?>, this)">
+                        <span class="done-dot"></span>
+                        Part <?= $pNum ?>
+                        <span class="tab-qrange">Q<?= $f ?>–<?= $l ?></span>
+                    </button>
+                    <?php endforeach; ?>
+                </div>
+                <div class="inline-timer" id="inlineTimer"><i class="bi bi-clock-fill"></i> 00:00</div>
+            </div>
+
+            <?php if (empty($questions)): ?>
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                No questions loaded yet. Please run the database migration for this test and contact your instructor.
+            </div>
+            <?php endif; ?>
+
+            <form id="listeningForm">
+
+            <?php foreach ($parts as $partNum => $partQuestions): ?>
+            <div class="part-panel <?= $partNum === 1 ? 'active' : '' ?>" id="panel-<?= $partNum ?>">
+
+                <?php
+                // Media "breaks" — index (within this part's question list) at which
+                // to insert a player before rendering that question. Part 1 gets three
+                // (the fixed 3/3/2 track split); every other part gets exactly one
+                // (video for Part 5, audio for everything else).
+                $isVideoPart = ($partNum === 5);
+                $playerBreaks = [];
+                if ($partNum === 1 && count($partQuestions) === 8) {
+                    $playerBreaks[0] = ['label' => 'Recording 1 of 3', 'src' => $audioBase . 'part1/track1.mp3',
+                                         'from' => $partQuestions[0]['question_number'], 'to' => $partQuestions[2]['question_number']];
+                    $playerBreaks[3] = ['label' => 'Recording 2 of 3', 'src' => $audioBase . 'part1/track2.mp3',
+                                         'from' => $partQuestions[3]['question_number'], 'to' => $partQuestions[5]['question_number']];
+                    $playerBreaks[6] = ['label' => 'Recording 3 of 3', 'src' => $audioBase . 'part1/track3.mp3',
+                                         'from' => $partQuestions[6]['question_number'], 'to' => $partQuestions[7]['question_number']];
+                } else {
+                    $playerBreaks[0] = [
+                        'label' => $isVideoPart ? 'Video' : 'Recording',
+                        'src'   => $audioBase . "part{$partNum}/" . ($isVideoPart ? 'video1.mp4' : 'track1.mp3'),
+                        'from'  => $partRanges[$partNum][0],
+                        'to'    => $partRanges[$partNum][1],
+                    ];
+                }
+
+                $prevInstr = null;
+                $prevStim  = null;
+                $blockOpen = false;
+
+                foreach ($partQuestions as $idx => $q):
+                    if (isset($playerBreaks[$idx])):
+                        $pb = $playerBreaks[$idx];
+                ?>
+                    <div class="audio-notice">
+                        <i class="bi bi-<?= $isVideoPart ? 'camera-video-fill' : 'mic-fill' ?> me-1"></i>
+                        <?= htmlspecialchars($pb['label']) ?> — <?= $isVideoPart ? 'watch' : 'listen to' ?> the
+                        <?= $isVideoPart ? 'video' : 'recording' ?> (played once). Covers questions <?= $pb['from'] ?>–<?= $pb['to'] ?>.
+                    </div>
+                    <?php if ($isVideoPart): ?>
+                    <video controls preload="none" style="width:100%;max-width:640px;display:block;margin:0 auto 1.25rem;border:1px solid var(--exam-line);border-radius:var(--exam-radius);">
+                        <source src="<?= htmlspecialchars($pb['src']) ?>" type="video/mp4">
+                    </video>
+                    <?php else: ?>
+                    <audio controls preload="none" style="width:100%;margin-bottom:1.25rem;">
+                        <source src="<?= htmlspecialchars($pb['src']) ?>" type="audio/mpeg">
+                    </audio>
+                    <?php endif; ?>
+                <?php
+                    endif;
+
+                    // Open/continue the instructions block. CELPIP data sets
+                    // `instructions` only on the first question of a contiguous
+                    // group (NULL after) — only react to real, changed values so
+                    // we never print an empty box on the NULL continuation rows.
+                    if (!empty($q['instructions']) && $q['instructions'] !== $prevInstr):
+                        if ($blockOpen) echo '</div>';
+                        $prevInstr = $q['instructions'];
+                        $blockOpen = true;
+                        echo '<div class="section-block"><p class="q-instructions">' . htmlspecialchars($q['instructions']) . '</p>';
+                    elseif (!$blockOpen):
+                        $blockOpen = true;
+                        echo '<div class="section-block">';
+                    endif;
+
+                    // Stimulus heading (same null-after-first convention).
+                    if (!empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStim):
+                        $prevStim = $q['stimulus_text'];
+                        echo '<div class="ff-title">' . htmlspecialchars($q['stimulus_text']) . '</div>';
+                    endif;
+
+                    renderCelpipListeningQuestion($q, $options);
+                endforeach;
+
+                if ($blockOpen) echo '</div>'; // close last section-block
+                ?>
+
+            </div><!-- end part-panel -->
+            <?php endforeach; ?>
+
+            </form>
+        </div><!-- end section-content -->
+
+        <div style="height:80px;"></div>
+    </main>
+</div><!-- end main-wrapper -->
+
+<?php include INCLUDES_PATH . '/adverts.php'; ?>
+
+<div class="submit-bar">
+    <div style="display:flex; align-items:center; gap:.5rem;">
+        <i class="bi bi-check2-circle text-success fs-5"></i>
+        <span id="answeredCount" style="font-size:.9rem; font-weight:600; color:#374151;">0 of <?= count($questions) ?> answered</span>
+    </div>
+    <button type="button" class="btn btn-primary fw-bold px-4" id="submitBtn" onclick="submitListening()">
+        <i class="bi bi-arrow-right-circle me-2"></i>Submit &amp; Continue to Reading
+    </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
+
+<script>
+const DURATION   = <?= $DURATION_SECS ?>;
+const SESSION_ID = <?= $session_id ?>;
+const totalQs    = <?= count($questions) ?>;
+let elapsed      = 0;
+let timerInterval;
+let submitting   = false;
+
+const timerEl = document.getElementById('inlineTimer');
+
+// ── Timer ─────────────────────────────────────────────────
+function fmt(sec) {
+    return String(Math.floor(sec/60)).padStart(2,'0') + ':' + String(sec%60).padStart(2,'0');
+}
+function startTimer() {
+    timerEl.querySelector('i').nextSibling.textContent = ' ' + fmt(DURATION);
+    timerInterval = setInterval(() => {
+        elapsed++;
+        const rem = DURATION - elapsed;
+        timerEl.querySelector('i').nextSibling.textContent = ' ' + fmt(Math.max(0, rem));
+        if (rem <= 300) timerEl.classList.add('warning');
+        if (rem <= 0) { clearInterval(timerInterval); submitListening(true); }
+    }, 1000);
+}
+
+// ── Part switching ─────────────────────────────────────────
+function switchPart(pNum, btn) {
+    document.querySelectorAll('.part-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.part-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + pNum).classList.add('active');
+    btn.classList.add('active');
+
+    // Stop any audio/video left playing in a panel we just navigated away from.
+    document.querySelectorAll('.part-panel:not(#panel-' + pNum + ') audio, .part-panel:not(#panel-' + pNum + ') video')
+        .forEach(m => m.pause());
+}
+
+// ── Progress ───────────────────────────────────────────────
+function collectAnswers() {
+    const ans = {};
+    document.querySelectorAll('.answer-field').forEach(el => {
+        const n = el.dataset.qnum;
+        if (!n) return;
+        if (el.type === 'radio'     && el.checked)      ans[n] = el.value;
+        if (el.type === 'checkbox'  && el.checked)      ans[n] = el.value;
+        if (el.tagName === 'SELECT' && el.value)         ans[n] = el.value;
+        if (el.type === 'text'      && el.value.trim())  ans[n] = el.value.trim();
+    });
+    return ans;
+}
+function updateProgress() {
+    const ans   = collectAnswers();
+    const count = Object.keys(ans).length;
+    <?php foreach ($parts as $pNum => $pqs): ?>
+    (function() {
+        const pNums   = [<?= implode(',', array_column($pqs,'question_number')) ?>];
+        const allDone = pNums.every(n => ans[n]);
+        document.getElementById('ptab-<?= $pNum ?>').classList.toggle('all-answered', allDone);
+    })();
+    <?php endforeach; ?>
+    document.getElementById('answeredCount').textContent = count + ' of ' + totalQs + ' answered';
+}
+document.querySelectorAll('.answer-field').forEach(el => {
+    el.addEventListener('input',  updateProgress);
+    el.addEventListener('change', updateProgress);
+});
+
+// ── Submit ─────────────────────────────────────────────────
+function submitListening(auto = false) {
+    if (submitting) return;
+    const ans     = collectAnswers();
+    const missing = totalQs - Object.keys(ans).length;
+    if (!auto && missing > 0) {
+        if (!confirm(`You have ${missing} unanswered question(s). Submit anyway?`)) return;
+    }
+    submitting = true;
+    clearInterval(timerInterval);
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting…';
+
+    fetch('mock_save_section.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: SESSION_ID, section: 'listening', time_spent: elapsed, answers: ans })
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.redirect) { window.location.href = d.redirect; }
+        else {
+            alert(d.error || 'An error occurred. Please try again.');
+            submitting = false;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-arrow-right-circle me-2"></i>Submit &amp; Continue to Reading';
+        }
+    })
+    .catch(() => {
+        alert('Network error. Please try again.');
+        submitting = false;
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-arrow-right-circle me-2"></i>Submit &amp; Continue to Reading';
+    });
+}
+
+function confirmExit() {
+    if (confirm('Exit the test? Your progress will be lost.')) window.location.href = 'index.php';
+}
+
+window.addEventListener('beforeunload', e => { if (!submitting) { e.preventDefault(); e.returnValue = ''; } });
+
+startTimer();
+updateProgress();
+</script>
+<?php include INCLUDES_PATH . '/footer.php'; ?>
+</body>
+</html>
