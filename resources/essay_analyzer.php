@@ -21,6 +21,7 @@ if (isset($_GET['type']) && isset($_GET['question'])) {
         'timeLimit' => intval($_GET['time'] ?? 40),
         'wordTarget' => intval($_GET['words'] ?? 250),
         'testType' => htmlspecialchars($_GET['testType'] ?? 'Writing Test', ENT_QUOTES, 'UTF-8'),
+        'taskType' => htmlspecialchars($_GET['task_type'] ?? 'writing_task2', ENT_QUOTES, 'UTF-8'),
         'visualType' => $_GET['visualType'] ?? null,
         'chartConfig' => $_GET['chartConfig'] ?? null,
         'tableData' => $_GET['tableData'] ?? null,
@@ -403,6 +404,15 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
                     </button>
                 </div>
 
+                <!-- CELPIP Task Type Selector (only relevant for CELPIP: Task 1 Email vs Task 2 Survey Response) -->
+                <div class="mb-4" id="celpipTaskTypeWrap" style="display:none;">
+                    <label class="form-label fw-bold">CELPIP Task</label>
+                    <select id="celpipTaskType" class="form-select" style="max-width:320px;">
+                        <option value="writing_task1">Task 1 — Email</option>
+                        <option value="writing_task2" selected>Task 2 — Survey Response</option>
+                    </select>
+                </div>
+
                 <!-- Question Display -->
                 <div class="question-display">
                     <h5><i class="bi bi-question-circle-fill me-2"></i>Essay Question</h5>
@@ -572,9 +582,19 @@ if (practiceMode && practiceData) {
             updateWordCount();
         }
         
-        // Set exam type based on practice data
-        if (practiceData.type.includes('celpip')) {
-            document.querySelector('.exam-btn[data-exam="CELPIP"]').click();
+        // Set exam type based on practice data.
+        // (practiceData.type is just 'writing_task1'/'writing_task2' -- never
+        // contains "celpip" -- so testType, which the runner sets to the
+        // literal string 'CELPIP', is the field that actually identifies the
+        // exam. The old .type-based check here never matched. On top of that,
+        // .click() alone wouldn't have worked anyway: the exam-btn click
+        // handler immediately returns during practiceMode ("Exam type is
+        // locked for this practice test") without ever updating selectedExam
+        // -- so real CELPIP practice-test submissions were silently graded
+        // under the IELTS rubric this whole time. setExamTypeForPracticeMode()
+        // below sets the UI state directly instead of simulating a click.)
+        if (practiceData.testType && practiceData.testType.toUpperCase().includes('CELPIP')) {
+            setExamTypeForPracticeMode('CELPIP');
         }
         
         // Initialize chart if present
@@ -705,6 +725,23 @@ function showNotification(message, type = 'info') {
 
 // Exam selector
 let selectedExam = 'IELTS';
+
+// Used for practice-mode initialization only, where the exam is locked to
+// what the test actually is -- bypasses the click handler below, which
+// intentionally refuses to change selectedExam once practiceMode is active.
+function setExamTypeForPracticeMode(exam) {
+    selectedExam = exam;
+    document.querySelectorAll('.exam-btn').forEach(b => {
+        const isMatch = b.dataset.exam === exam;
+        b.classList.toggle('active', isMatch);
+        b.querySelector('i').className = isMatch ? 'bi bi-check-circle-fill me-2' : 'bi bi-circle me-2';
+    });
+    document.getElementById('celpipTaskTypeWrap').style.display = exam === 'CELPIP' ? 'block' : 'none';
+    if (exam === 'CELPIP' && practiceData && practiceData.taskType) {
+        document.getElementById('celpipTaskType').value = practiceData.taskType;
+    }
+}
+
 document.querySelectorAll('.exam-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         if (practiceMode) {
@@ -719,6 +756,7 @@ document.querySelectorAll('.exam-btn').forEach(btn => {
         this.classList.add('active');
         this.querySelector('i').className = 'bi bi-check-circle-fill me-2';
         selectedExam = this.dataset.exam;
+        document.getElementById('celpipTaskTypeWrap').style.display = selectedExam === 'CELPIP' ? 'block' : 'none';
     });
 });
 
@@ -814,6 +852,7 @@ document.getElementById('analyzerForm').addEventListener('submit', async functio
                 question: question,
                 essay: essay,
                 exam_type: selectedExam,
+                task_type: selectedExam === 'CELPIP' ? document.getElementById('celpipTaskType').value : 'writing_task2',
                 word_count: parseInt(document.getElementById('wordCount').textContent, 10) || 0
             })
         });

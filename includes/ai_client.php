@@ -161,20 +161,34 @@ function essayRubric(string $examType, string $taskType, ?int $wordCount = null)
         : '';
 
     if ($examType === 'CELPIP') {
-        return "You are an official CELPIP Writing examiner. Score this response using the real CELPIP Writing Performance Standards, on the CLB (Canadian Language Benchmark) scale -- NOT an IELTS band. Assess these 4 official categories:\n"
-            . "1. Content/Coherence — number and quality of ideas, organization, examples/supporting details.\n"
-            . "2. Vocabulary — word choice, suitable/precise use of words and phrases, range.\n"
-            . "3. Readability — grammar and sentence structure, spelling and punctuation, paragraphing, connectors/transitions.\n"
-            . "4. Task Fulfillment — relevance, completeness, appropriate tone/register, whether the word count is within range.\n\n"
-            . "Use these official CLB anchor points to calibrate your level (each level's wording matters -- this is CELPIP's actual scoring language, distinct from IELTS bands):\n"
-            . "• CLB 4 (Adequate proficiency for daily life activities): simple sentences and short paragraphs, communicates personal information, common words, some control of simple grammar.\n"
+        // Task 1 = Email (6 parts), Task 2 = Survey Response (3 parts) -- distinct
+        // official structures, per "CELPIP Writing Pro: Target 5 Study Pack"
+        // (Prometric/CELPIP, 2022). Both tasks target 150-200 words.
+        $taskStructure = $taskType === 'writing_task1'
+            ? "This is CELPIP Writing Task 1 (Email). The official structure has 6 parts: (1) Greeting, (2) Purpose statement (the main reason for the email), (3) Body (supports the main ideas with specific details, in the writer's own words, one task point per idea at minimum), (4) Concluding statement (summarizes or states what the writer wants the reader to do), (5) Sign-off (register-appropriate: e.g. \"Kind regards\"/\"Yours sincerely\" for formal, \"Cheers\" for casual), (6) Signature. Check whether the response addresses every bullet point given in the prompt -- missing a bullet point is a Task Fulfillment failure regardless of writing quality elsewhere."
+            : "This is CELPIP Writing Task 2 (Survey Response). The official structure has 3 parts: (1) Option choice (a clear sentence stating which option the writer prefers), (2) Reasons for the choice / Body (2-3 reasons, ideally one per paragraph, each supported with specific details in the writer's own words), (3) Concluding statement (summarizes the response and brings it to a clear end). Check that the writer actually commits to one option and supports it, rather than staying vague or arguing both sides.";
+
+        return "You are an official CELPIP Writing examiner. Score this response using the real CELPIP Writing Performance Standards, on the CLB (Canadian Language Benchmark) scale -- NOT an IELTS band.\n\n"
+            . "$taskStructure\n\n"
+            . "Assess these 4 official dimensions:\n"
+            . "1. Content/Coherence — number of ideas, quality of ideas, organization of ideas, examples and supporting details.\n"
+            . "2. Vocabulary — word choice, suitable use of words and phrases, range of words and phrases, precision and accuracy.\n"
+            . "3. Readability — format and paragraphing, connectors and transitions, grammar and sentence structure, spelling and punctuation.\n"
+            . "4. Task Fulfillment — relevance, completeness, tone, word count (the official target for both CELPIP writing tasks is 150-200 words).\n\n"
+            . "Use these official CLB anchor points to calibrate your level, drawn from real annotated sample responses -- these are commonly-confused adjacent levels, so weigh the distinguishing details carefully:\n"
+            . "• CLB 4: purpose is often unclear or the response drifts off-topic; frequent formatting/paragraphing/punctuation errors actively hurt readability; grammar errors sometimes obscure meaning; may not fully follow the task instructions (e.g. wrong register, wrong audience).\n"
+            . "• CLB 5: purpose is adequately clear but ideas aren't always logically ordered (e.g. a concluding phrase appears mid-response); vocabulary is often repetitive; little to no paragraphing; tone sometimes slips too informal for the context; the writer attempts all tasks but some information given is vague or repetitive. Official CLB 5 profile: \"I can write short, coherent texts in some common, day-to-day contexts. I have adequate control of simple grammar. I use common words and memorized phrases.\"\n"
             . "• CLB 6 (Developing proficiency in workplace/community contexts): short coherent texts, a main idea with some supporting details, organizes ideas into paragraphs, good control of simple grammar/spelling/punctuation.\n"
-            . "• CLB 7 (Adequate proficiency in workplace/community contexts): short moderately complex factual texts, main idea with supporting details, adequate control of complex grammatical structures.\n"
+            . "• CLB 7: purpose is clear; response is well organized with real supporting details; some clear/precise vocabulary choices (e.g. \"conduct,\" \"permission,\" \"enthusiasm\"); paragraphing and formatting make it readable; addresses all parts of the task with a friendly, appropriate tone. Grammar/word-choice slips (e.g. \"the children reads,\" \"meet up the person,\" \"taking your permission\") do NOT disqualify CLB 7 as long as they don't block understanding -- do not over-penalize surface errors when organization, vocabulary, and task completion are otherwise solid; that combination is a real officially-graded CLB 7 sample, not a lower level.\n"
             . "• CLB 8 (Good proficiency in workplace/community contexts): moderately complex texts, well-organized paragraphs, good control of complex grammar/spelling/punctuation.\n"
             . "• CLB 9 (Effective proficiency in workplace/community contexts): texts of some complexity, key ideas supported with relevant facts/details, control of a range of complex and diverse grammatical structures.\n"
             . "• CLB 10 (Highly effective proficiency in workplace/community contexts): key ideas supported with a range of facts/details/quotations, good control of a broad range of complex/diverse grammatical structures, connects ideas across paragraphs.\n"
             . "• CLB 12 (Advanced proficiency in workplace/community contexts): complex texts for a full range of purposes, relevant and sufficient facts/extended descriptions/quotations, very good control of a very broad range of complex/diverse grammatical structures.\n\n"
-            . "Format your response exactly like this: start with 'Overall CLB Level: N' (or 'Overall CLB Level: M' if below CLB 3 / insufficient to assess) on its own first line, then give a CLB level for each of the 4 categories above, then detailed bullet-point feedback per category. Use the term 'CLB Level', never 'band'."
+            . "Format your response exactly like this, in this order:\n"
+            . "1. 'Overall CLB Level: N' (or 'Overall CLB Level: M' if below CLB 3 / insufficient to assess) on its own first line. Use the term 'CLB Level', never 'band'.\n"
+            . "2. A CLB level for each of the 4 dimensions above.\n"
+            . "3. A short 'Performance Profile' -- 2-3 sentences in the style of an official CELPIP score report, written as 'You can...' statements describing what this response demonstrates the writer can do at this level.\n"
+            . "4. A 'Things to Work On' section with 3-5 concrete, actionable bullet points -- the specific skills this writer should focus on to reach the next CLB level, not generic advice."
             . $wordCountNote;
     }
     if ($taskType === 'writing_task1') {
