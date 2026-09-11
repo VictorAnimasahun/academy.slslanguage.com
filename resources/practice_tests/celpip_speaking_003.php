@@ -107,14 +107,14 @@ $tasks = [
         .speaking-instructions { color: #1f2937; font-size: .92rem; line-height: 1.6; white-space: pre-line; flex-shrink: 0; height: 19vh; overflow-y: auto; padding-right: .4rem; }
         /* Fixed-height container (in vh, not flex:1-derived from leftover
            space) so it's identical regardless of instructions length. The
-           image gets its own fixed-size box to shrink INTO (max-width/
-           max-height + width/height:auto means it only ever shrinks to fit,
-           never stretches up to fill the box) instead of expanding to claim
-           all available space. The timer stays a small, fixed, top-aligned
-           box -- it does not stretch to match the image's height. */
+           image fills its fixed-size box in both directions (width/height:
+           100% + object-fit:contain) -- it scales up small images and down
+           large ones, always filling the box while preserving aspect ratio.
+           The timer stays a small, fixed, top-aligned box -- it does not
+           stretch to match the image's height. */
         .speaking-content-row { flex: 0 0 auto; height: 30vh; display: flex; flex-direction: row; align-items: flex-start; gap: 1.25rem; }
-        .speaking-image-wrap { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; gap: .6rem; overflow: hidden; }
-        .speaking-task-image { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+        .speaking-image-wrap { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; gap: .6rem; overflow: hidden; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+        .speaking-task-image { width: 100%; height: 100%; object-fit: contain; }
         .speaking-image-wrap.multi .speaking-task-image { max-width: calc(50% - .3rem); }
         /* Grey band fills the whole remaining area right under the text (like
            real CELPIP screens), with the timer sitting near its top instead
