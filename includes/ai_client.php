@@ -150,7 +150,16 @@ function callGemini($prompt) {
  * CELPIP scores on the CLB (Canadian Language Benchmark) scale, 1-12 (or "M" for
  * minimal/insufficient) -- never an IELTS-style "band".
  */
-function essayRubric(string $examType, string $taskType): string {
+function essayRubric(string $examType, string $taskType, ?int $wordCount = null): string {
+    // LLMs count words in raw text unreliably. The word count shown live in
+    // the essay textarea (JS split-on-whitespace) is exact, so it's passed in
+    // and the model is told to trust it rather than recount from the text --
+    // this matters directly for CELPIP/IELTS Task Fulfillment/Achievement,
+    // which explicitly score whether the word count is in range.
+    $wordCountNote = $wordCount !== null
+        ? "\n\nThe response is exactly {$wordCount} words long (counted programmatically by the app, not by you) -- use this exact number for any word-count assessment. Do not recount the words yourself."
+        : '';
+
     if ($examType === 'CELPIP') {
         return "You are an official CELPIP Writing examiner. Score this response using the real CELPIP Writing Performance Standards, on the CLB (Canadian Language Benchmark) scale -- NOT an IELTS band. Assess these 4 official categories:\n"
             . "1. Content/Coherence — number and quality of ideas, organization, examples/supporting details.\n"
@@ -165,12 +174,15 @@ function essayRubric(string $examType, string $taskType): string {
             . "• CLB 9 (Effective proficiency in workplace/community contexts): texts of some complexity, key ideas supported with relevant facts/details, control of a range of complex and diverse grammatical structures.\n"
             . "• CLB 10 (Highly effective proficiency in workplace/community contexts): key ideas supported with a range of facts/details/quotations, good control of a broad range of complex/diverse grammatical structures, connects ideas across paragraphs.\n"
             . "• CLB 12 (Advanced proficiency in workplace/community contexts): complex texts for a full range of purposes, relevant and sufficient facts/extended descriptions/quotations, very good control of a very broad range of complex/diverse grammatical structures.\n\n"
-            . "Format your response exactly like this: start with 'Overall CLB Level: N' (or 'Overall CLB Level: M' if below CLB 3 / insufficient to assess) on its own first line, then give a CLB level for each of the 4 categories above, then detailed bullet-point feedback per category. Use the term 'CLB Level', never 'band'.";
+            . "Format your response exactly like this: start with 'Overall CLB Level: N' (or 'Overall CLB Level: M' if below CLB 3 / insufficient to assess) on its own first line, then give a CLB level for each of the 4 categories above, then detailed bullet-point feedback per category. Use the term 'CLB Level', never 'band'."
+            . $wordCountNote;
     }
     if ($taskType === 'writing_task1') {
-        return "You are an official IELTS General Training Writing Task 1 examiner. The candidate has written a letter in response to the prompt. Score the letter for:\n• Task Achievement (does it cover all bullet points and use the right tone/register?)\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nFormat your response exactly like this: start with 'Overall Band Score: X.X' (out of 9.0, in 0.5 increments) on its own first line, then give a band for each of the 4 criteria above, then 5–7 specific improvement suggestions. Note whether the letter is formal, semi-formal, or informal and whether the register matches what the task requires. Be accurate and strict like a real examiner. Use the term 'Band', never 'CLB' or 'level'.";
+        return "You are an official IELTS General Training Writing Task 1 examiner. The candidate has written a letter in response to the prompt. Score the letter for:\n• Task Achievement (does it cover all bullet points and use the right tone/register?)\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nFormat your response exactly like this: start with 'Overall Band Score: X.X' (out of 9.0, in 0.5 increments) on its own first line, then give a band for each of the 4 criteria above, then 5–7 specific improvement suggestions. Note whether the letter is formal, semi-formal, or informal and whether the register matches what the task requires. Be accurate and strict like a real examiner. Use the term 'Band', never 'CLB' or 'level'."
+            . $wordCountNote;
     }
-    return "You are an official IELTS Writing Task 2 examiner. Score this essay for:\n• Task Response\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nFormat your response exactly like this: start with 'Overall Band Score: X.X' (out of 9.0, in 0.5 increments) on its own first line, then give a band for each of the 4 criteria above, then 5–7 specific improvement suggestions. Be accurate and strict like a real examiner. Use the term 'Band', never 'CLB' or 'level'.";
+    return "You are an official IELTS Writing Task 2 examiner. Score this essay for:\n• Task Response\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nFormat your response exactly like this: start with 'Overall Band Score: X.X' (out of 9.0, in 0.5 increments) on its own first line, then give a band for each of the 4 criteria above, then 5–7 specific improvement suggestions. Be accurate and strict like a real examiner. Use the term 'Band', never 'CLB' or 'level'."
+        . $wordCountNote;
 }
 
 /**

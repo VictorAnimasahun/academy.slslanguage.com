@@ -813,7 +813,8 @@ document.getElementById('analyzerForm').addEventListener('submit', async functio
                 action: 'analyze_essay',
                 question: question,
                 essay: essay,
-                exam_type: selectedExam
+                exam_type: selectedExam,
+                word_count: parseInt(document.getElementById('wordCount').textContent, 10) || 0
             })
         });
 

@@ -101,8 +101,9 @@ function handleEssayAnalysis($input, $userId, $rateLimiter) {
     $examType = $input['exam_type'];
     
     $taskType = $input['task_type'] ?? 'writing_task2';
+    $wordCount = isset($input['word_count']) ? (int)$input['word_count'] : null;
 
-    $rubric = essayRubric($examType, $taskType);
+    $rubric = essayRubric($examType, $taskType, $wordCount);
 
     $prompt = "Question: $question\n\n$rubric\n\nResponse:\n$essay";
     
