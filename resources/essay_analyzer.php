@@ -838,13 +838,24 @@ document.getElementById('analyzerForm').addEventListener('submit', async functio
     }
 });
 
+function extractScore(feedback, exam) {
+    if (exam === 'CELPIP') {
+        const m = feedback.match(/overall\s*clb\s*level[:\s]*\(?(M|\d+)\)?/i);
+        if (m) return m[1].toUpperCase();
+    } else {
+        const m = feedback.match(/overall\s*band\s*score[:\s]*\(?(\d+(?:\.\d+)?)\)?/i);
+        if (m) return m[1];
+    }
+    const loose = feedback.match(/(?:overall|band score|level)[:\s]*(?:high proficiency\s*)?\(?(M|\d+(?:\.\d+)?)/i);
+    return loose ? loose[1].toUpperCase() : '-';
+}
+
 function displayResults(feedback, grammarData, exam, remaining) {
-    const overallScoreMatch = feedback.match(/(?:overall|band score|level)[:\s]*(?:high proficiency\s*)?\(?(\d+(?:\.\d+)?)/i);
-    const overallScore = overallScoreMatch ? overallScoreMatch[1] : '-';
-    
+    const overallScore = extractScore(feedback, exam);
+
     // Populate modal
     document.getElementById('modalScore').textContent = overallScore;
-    document.getElementById('modalScoreLabel').textContent = exam === 'IELTS' ? 'Overall Band Score (out of 9.0)' : 'Overall Score (out of 12)';
+    document.getElementById('modalScoreLabel').textContent = exam === 'IELTS' ? 'Overall Band Score (out of 9.0)' : 'Overall CLB Level (M, 3–12)';
     
     document.getElementById('modalQuestion').textContent = document.getElementById('questionInput').value;
     document.getElementById('modalEssay').textContent = document.getElementById('essayInput').value;

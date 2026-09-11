@@ -102,14 +102,7 @@ function handleEssayAnalysis($input, $userId, $rateLimiter) {
     
     $taskType = $input['task_type'] ?? 'writing_task2';
 
-    // Create rubric based on exam type and task
-    if ($examType === 'CELPIP') {
-        $rubric = "Act as a CELPIP examiner. Score this writing 1–12 on: Content/Coherence, Vocabulary Use, Readability, Task Fulfilment. Give overall level and detailed feedback in bullet points.";
-    } elseif ($taskType === 'writing_task1') {
-        $rubric = "You are an official IELTS General Training Writing Task 1 examiner. The candidate has written a letter in response to the prompt. Score the letter (out of 9.0) for:\n• Task Achievement (does it cover all bullet points and use the right tone/register?)\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nGive the overall band score and 5–7 specific improvement suggestions. Note whether the letter is formal, semi-formal, or informal and whether the register matches what the task requires. Be accurate and strict like a real examiner.";
-    } else {
-        $rubric = "You are an official IELTS Writing Task 2 examiner. Score this essay (out of 9.0) for:\n• Task Response\n• Coherence and Cohesion\n• Lexical Resource\n• Grammatical Range and Accuracy\nGive the overall band score and 5–7 specific improvement suggestions. Be accurate and strict like a real examiner.";
-    }
+    $rubric = essayRubric($examType, $taskType);
 
     $prompt = "Question: $question\n\n$rubric\n\nResponse:\n$essay";
     
@@ -214,15 +207,13 @@ function handleSpeakingAnalysis($input, $userId, $rateLimiter) {
     $prompt = trim($input['prompt']);
     $transcription = trim($input['transcription']);
     $examType = $input['exam_type'];
-    
-    $rubric = $examType === 'CELPIP'
-        ? "Act as a CELPIP speaking examiner. Score this response 1–12 on: Content, Vocabulary, Listenability, Task Completion. Give overall level and detailed feedback."
-        : "You are an official IELTS Speaking examiner. Score this response (out of 9.0) for:\n• Fluency and Coherence\n• Lexical Resource\n• Grammatical Range and Accuracy\n• Pronunciation\nGive the overall band score and 5–7 specific improvement suggestions.";
-    
+
+    $rubric = speakingRubric($examType);
+
     $analysisPrompt = "Speaking Task: $prompt\n\n$rubric\n\nCandidate's Response (Transcribed):\n$transcription";
-    
+
     $response = callAI($analysisPrompt, ANALYSIS_API);
-    
+
     if ($response['success']) {
         $rateLimiter->logRequest($userId, 'speaking_analysis', 'analyze');
         
@@ -258,10 +249,10 @@ function handleSpeakingBatchAnalysis($input, $userId, $rateLimiter) {
     $tasks = $input['tasks'];
     $taskCount = count($tasks);
     $examType = $input['exam_type'];
-    
+
     // Check batch limit BEFORE processing
     $batchCheck = $rateLimiter->checkBatchLimit($userId, 'speaking_analysis', $taskCount);
-    
+
     if (!$batchCheck['allowed']) {
         http_response_code(429);
         echo json_encode([
@@ -272,16 +263,14 @@ function handleSpeakingBatchAnalysis($input, $userId, $rateLimiter) {
         ]);
         return;
     }
-    
+
     // Process all tasks
     $results = [];
     $batchId = uniqid('speaking_batch_', true);
     $successCount = 0;
-    
-    $rubric = $examType === 'CELPIP'
-        ? "Act as a CELPIP speaking examiner. Score this response 1–12 on: Content, Vocabulary, Listenability, Task Completion. Give overall level and detailed feedback."
-        : "You are an official IELTS Speaking examiner. Score this response (out of 9.0) for:\n• Fluency and Coherence\n• Lexical Resource\n• Grammatical Range and Accuracy\n• Pronunciation\nGive the overall band score and 5–7 specific improvement suggestions.";
-    
+
+    $rubric = speakingRubric($examType);
+
     foreach ($tasks as $index => $task) {
         if (!isset($task['prompt']) || !isset($task['transcription'])) {
             $results[] = [

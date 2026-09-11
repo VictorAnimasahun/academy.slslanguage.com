@@ -966,8 +966,7 @@ function displayBatchResults(data) {
         resultCard.className = 'card';
         
         if (result.success) {
-            const scoreMatch = result.feedback.match(/(?:overall|band score|level)[:\s]*(\d+(?:\.\d+)?)/i);
-            const score = scoreMatch ? scoreMatch[1] : '-';
+            const score = extractScore(result.feedback, selectedExam);
             
             resultCard.innerHTML = `
                 <div class="card-header bg-primary text-white">
@@ -1217,12 +1216,23 @@ async function analyzeAudio() {
     }
 }
 
+function extractScore(feedback, exam) {
+    if (exam === 'CELPIP') {
+        const m = feedback.match(/overall\s*clb\s*level[:\s]*\(?(M|\d+)\)?/i);
+        if (m) return m[1].toUpperCase();
+    } else {
+        const m = feedback.match(/overall\s*band\s*score[:\s]*\(?(\d+(?:\.\d+)?)\)?/i);
+        if (m) return m[1];
+    }
+    const loose = feedback.match(/(?:overall|band score|level)[:\s]*\(?(M|\d+(?:\.\d+)?)/i);
+    return loose ? loose[1].toUpperCase() : '-';
+}
+
 function displayResults(transcription, feedback, exam, remaining) {
-    const scoreMatch = feedback.match(/(?:overall|band score|level)[:\s]*(\d+(?:\.\d+)?)/i);
-    const score = scoreMatch ? scoreMatch[1] : '-';
-    
+    const score = extractScore(feedback, exam);
+
     document.getElementById('scoreDisplay').textContent = score;
-    document.getElementById('scoreLabel').textContent = exam === 'IELTS' ? 'Overall Band Score (out of 9.0)' : 'Overall Score (out of 12)';
+    document.getElementById('scoreLabel').textContent = exam === 'IELTS' ? 'Overall Band Score (out of 9.0)' : 'Overall CLB Level (M, 3–12)';
     
     document.getElementById('transcriptionText').textContent = transcription;
     
