@@ -96,57 +96,82 @@ $tasks = [
         main.content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
         .celpip-shell { display: flex; flex-direction: column; flex: 1; min-height: 0; width: 100%; }
         .celpip-screen { flex: 1; min-height: 0; width: 100%; display: flex; flex-direction: column; box-sizing: border-box; }
+        /* Grid with fr-proportioned rows instead of hand-tuned vh/px values --
+           text top, images 70% of the middle, timer bottom (~15%), text gets
+           the remaining ~15%. Because fr units divide whatever height this
+           box actually ends up with (itself fixed by the outer flex chain
+           above), the proportions hold exactly regardless of viewport size,
+           with none of the manual-budget overflow bugs the vh-based version
+           had. When a task has no image, the stage row's share folds into
+           the text row instead of leaving an empty gap. */
         .celpip-body.speaking {
-            flex: 1; min-height: 0; display: flex; flex-direction: column;
-            padding: 1rem 1.25rem; background: #fff; gap: .75rem; overflow: hidden;
+            flex: 1; min-height: 0; display: grid;
+            grid-template-rows: 15fr 70fr 15fr auto;
+            gap: .6rem; padding: 1rem 1.25rem; background: #fff; overflow: hidden; box-sizing: border-box;
         }
-        /* Text always sits full-width at the top, fixed height (not
-           max-height) so every task's text box -- and therefore the grey
-           timer area below it -- is exactly the same size regardless of how
-           long that task's prompt is. Longer prompts scroll internally. */
-        .speaking-instructions { color: #1f2937; font-size: .92rem; line-height: 1.6; white-space: pre-line; flex-shrink: 0; height: 19vh; overflow-y: auto; padding-right: .4rem; }
-        /* Fixed-height container (in vh, not flex:1-derived from leftover
-           space) so it's identical regardless of instructions length. The
-           image fills its fixed-size box in both directions (width/height:
-           100% + object-fit:cover) -- it scales up small images and down
-           large ones, always filling the box completely with no letterbox
-           gaps, cropping slightly rather than preserving the full frame.
-           The timer stays a small, fixed, top-aligned box -- it does not
-           stretch to match the image's height. */
-        .speaking-content-row { flex: 0 0 auto; width: 100%; height: 30vh; display: flex; flex-direction: row; align-items: flex-start; gap: 1.25rem; box-sizing: border-box; }
-        .speaking-image-wrap { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; gap: .6rem; overflow: hidden; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
-        .speaking-task-image { width: 100%; height: 100%; object-fit: cover; }
-        .speaking-image-wrap.multi .speaking-task-image { max-width: calc(50% - .3rem); }
-        /* Grey band fills the whole remaining area right under the text (like
-           real CELPIP screens), with the timer sitting near its top instead
-           of vertically centered in a sea of white. */
-        .speaking-status-bar-wrap { flex: 0 0 auto; height: 30vh; background: #eef0f2; border-radius: 8px; display: flex; align-items: flex-start; justify-content: center; padding-top: 1.25rem; }
+        .celpip-body.speaking.no-image { grid-template-rows: 85fr 0fr 15fr auto; }
+        .celpip-body.speaking.no-image .speaking-stage { display: none; }
 
-        .speaking-status-bar {
-            flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem;
-            background: #f1f3f5; border-radius: 12px; padding: .9rem 1.1rem;
+        .speaking-prompt { grid-row: 1; min-height: 0; overflow-y: auto; color: #1f2937; font-size: .92rem; line-height: 1.6; white-space: pre-line; padding-right: .4rem; }
+
+        .speaking-stage { grid-row: 2; min-height: 0; display: grid; gap: 3px; background: #e9ebef; border-radius: 8px; overflow: hidden; }
+        .speaking-stage.slots-1 { grid-template-columns: 1fr; }
+        .speaking-stage.slots-2 { grid-template-columns: 1fr 1fr; }
+        .speaking-tile { position: relative; width: 100%; height: 100%; overflow: hidden; background: #e9ebef; display: flex; align-items: center; justify-content: center; }
+        .speaking-tile img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+        .speaking-tile .tile-label {
+            position: absolute; top: 6px; left: 6px; font-size: 11px; padding: 2px 7px; border-radius: 4px;
+            background: rgba(27,35,48,.72); color: #fff; letter-spacing: .02em;
         }
-        .speaking-content-row .speaking-status-bar { flex: 0 0 220px; align-self: flex-start; }
-        .speaking-status-bar-wrap .speaking-status-bar { width: min(420px, 70%); background: transparent; padding: 0; }
-        .status-header { display: flex; align-items: center; gap: .6rem; }
-        .status-icon { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #9c1f2e; flex-shrink: 0; }
-        .speaking-status-bar.recording .status-icon { color: #dc3545; }
-        .status-label { font-size: .78rem; color: #6b7280; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-        .status-count { font-size: 2.1rem; font-weight: 800; color: #7a1824; font-family: monospace; line-height: 1; }
-        .speaking-status-bar.recording .status-count { color: #dc3545; }
-        .status-bar-track { width: min(360px, 80%); background: #e5e7eb; border-radius: 4px; height: 8px; overflow: hidden; }
-        .status-bar-fill { background: #9c1f2e; height: 100%; width: 100%; transition: width 1s linear; }
-        .speaking-status-bar.recording .status-bar-fill { background: #dc3545; }
 
+        /* Timer bar: fixed 3-column layout (phase pill | progress track |
+           digits), color-coded by phase -- orange while preparing, teal
+           while speaking, red once time's up -- instead of one red/grey
+           scheme for every state. */
+        :root {
+            --prep-fill: #e9932e; --prep-tint: #fdf1e2; --prep-ink: #8a4f0c;
+            --speak-fill: #1f9aa0; --speak-tint: #e3f4f4; --speak-ink: #0e5c60;
+            --done-fill: #b23b3b; --done-tint: #fbe9e9; --done-ink: #7c2626;
+        }
+        .speaking-timerbar { grid-row: 3; min-height: 0; display: grid; grid-template-columns: 110px 1fr 100px; align-items: center; gap: 14px; }
+        .phase-pill {
+            height: 28px; border-radius: 14px; font-size: 12px; font-weight: 700; letter-spacing: .03em;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            background: #f1f3f5; color: #8a92a0; white-space: nowrap; overflow: hidden;
+        }
+        .phase-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: 0 0 auto; }
+        .phase-pill.is-prep { background: var(--prep-tint); color: var(--prep-ink); }
+        .phase-pill.is-speak { background: var(--speak-tint); color: var(--speak-ink); }
+        .phase-pill.is-speak .dot { animation: speakingPulse 1s infinite; }
+        .phase-pill.is-done { background: var(--done-tint); color: var(--done-ink); }
+        @keyframes speakingPulse { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+        .progress-wrap { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        .progress-label { font-size: 11px; color: #8a92a0; height: 13px; }
+        .progress-track { width: 100%; height: 8px; border-radius: 4px; background: #f1f3f5; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: #8a92a0; transition: width 1s linear, background-color .2s ease; }
+        .progress-fill.is-prep { background: var(--prep-fill); }
+        .progress-fill.is-speak { background: var(--speak-fill); }
+        .progress-fill.is-done { background: var(--done-fill); }
+
+        .timer-digits {
+            width: 100px; height: 36px; border-radius: 8px; background: #f1f3f5;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Courier New', monospace; font-weight: 700; font-size: 18px;
+            font-variant-numeric: tabular-nums; letter-spacing: .02em; color: #1f2937;
+        }
+        .timer-digits.is-prep { background: var(--prep-tint); color: var(--prep-ink); }
+        .timer-digits.is-speak { background: var(--speak-tint); color: var(--speak-ink); }
+        .timer-digits.is-done { background: var(--done-tint); color: var(--done-ink); }
+
+        /* Hidden from view -- the underlying textarea still exists and still
+           receives live speech-to-text output; submitAllTasks() reads from
+           it. Only the visible toggle/edit affordance is removed. */
+        .speaking-transcript-wrap { display: none; }
         .transcript-toggle { font-size: .78rem; color: #6b7280; cursor: pointer; flex-shrink: 0; }
         .transcript-box { display: none; flex-shrink: 0; }
         .transcript-box textarea { resize: none; }
         .celpip-progress .dot.done { background: #9c1f2e; }
-
-        @media (max-height: 700px), (max-width: 767px) {
-            .main-wrapper { height: auto; overflow: visible; }
-            .speaking-image-wrap { min-height: 160px; }
-        }
     </style>
 </head>
 <body class="light">
@@ -183,42 +208,39 @@ $tasks = [
                     <button type="button" class="celpip-next-btn" id="nextBtn-<?= $tNum ?>" onclick="celpipSpeakingNext()"><?= $tNum < count($tasks) ? 'Next' : 'Finish Test' ?></button>
                 </div>
             </div>
-            <div class="celpip-body speaking">
-                <div class="celpip-panel-label"><i class="bi bi-info-circle-fill"></i> Instructions</div>
-                <div class="speaking-instructions"><?= htmlspecialchars($task['prompt']) ?></div>
+            <?php
+                $images = !empty($task['images']) ? $task['images'] : (!empty($task['image']) ? [$task['image']] : []);
+                $slots = count($images);
+            ?>
+            <div class="celpip-body speaking<?= $slots === 0 ? ' no-image' : '' ?>">
+                <div class="speaking-prompt"><?= htmlspecialchars($task['prompt']) ?></div>
 
-                <?php $statusBar = '
-                    <div class="speaking-status-bar" id="statusBar-' . $tNum . '">
-                        <div class="status-header">
-                            <div class="status-icon" id="statusIcon-' . $tNum . '"><i class="bi bi-clock-history"></i></div>
-                            <div class="status-label" id="statusLabel-' . $tNum . '">Preparation Time</div>
+                <div class="speaking-stage slots-<?= $slots ?>">
+                    <?php foreach ($images as $i => $img): ?>
+                        <div class="speaking-tile">
+                            <img src="<?= ACADEMY_URL ?>assets/img/practice_tests/CELPIP_PT_S_003/<?= $img ?>" alt="Task <?= $tNum ?> prompt image <?= $i + 1 ?>">
+                            <?php if ($slots === 2): ?><div class="tile-label">Option <?= $i === 0 ? 'A' : 'B' ?></div><?php endif; ?>
                         </div>
-                        <div class="status-count" id="statusCount-' . $tNum . '">' . $task['prep'] . '</div>
-                        <div class="status-bar-track"><div class="status-bar-fill" id="statusBarFill-' . $tNum . '"></div></div>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="speaking-timerbar">
+                    <div class="phase-pill" id="phasePill-<?= $tNum ?>"><span class="dot"></span><span id="phaseLabel-<?= $tNum ?>">Preparing</span></div>
+                    <div class="progress-wrap">
+                        <div class="progress-label" id="progressLabel-<?= $tNum ?>">Preparation time</div>
+                        <div class="progress-track"><div class="progress-fill" id="progressFill-<?= $tNum ?>"></div></div>
                     </div>
-                '; ?>
+                    <div class="timer-digits" id="timerDigits-<?= $tNum ?>"><?= $task['prep'] ?>s</div>
+                </div>
 
-                <?php $images = !empty($task['images']) ? $task['images'] : (!empty($task['image']) ? [$task['image']] : []); ?>
-
-                <?php if (!empty($images)): ?>
-                    <div class="speaking-content-row">
-                        <div class="speaking-image-wrap<?= count($images) > 1 ? ' multi' : '' ?>">
-                            <?php foreach ($images as $img): ?>
-                                <img class="speaking-task-image" src="<?= ACADEMY_URL ?>assets/img/practice_tests/CELPIP_PT_S_003/<?= $img ?>" alt="Task <?= $tNum ?> prompt image">
-                            <?php endforeach; ?>
-                        </div>
-                        <?= $statusBar ?>
+                <div class="speaking-transcript-wrap">
+                    <span class="transcript-toggle" onclick="document.getElementById('transcriptBox-<?= $tNum ?>').style.display = document.getElementById('transcriptBox-<?= $tNum ?>').style.display === 'block' ? 'none' : 'block';">
+                        <i class="bi bi-pencil-square me-1"></i>View / edit your captured transcript
+                    </span>
+                    <div class="transcript-box" id="transcriptBox-<?= $tNum ?>">
+                        <textarea id="transcript-<?= $tNum ?>" class="form-control form-control-sm" rows="2"
+                            placeholder="Your speech is transcribed here automatically as you speak. You can edit it directly if needed."></textarea>
                     </div>
-                <?php else: ?>
-                    <div class="speaking-status-bar-wrap"><?= $statusBar ?></div>
-                <?php endif; ?>
-
-                <span class="transcript-toggle" onclick="document.getElementById('transcriptBox-<?= $tNum ?>').style.display = document.getElementById('transcriptBox-<?= $tNum ?>').style.display === 'block' ? 'none' : 'block';">
-                    <i class="bi bi-pencil-square me-1"></i>View / edit your captured transcript
-                </span>
-                <div class="transcript-box" id="transcriptBox-<?= $tNum ?>">
-                    <textarea id="transcript-<?= $tNum ?>" class="form-control form-control-sm" rows="2"
-                        placeholder="Your speech is transcribed here automatically as you speak. You can edit it directly if needed."></textarea>
                 </div>
             </div>
         </div>
@@ -266,15 +288,31 @@ let prepInterval = null, recInterval = null, recognition = null, recognitionActi
 const TASK_PREP  = <?= json_encode(array_map(fn($t) => $t['prep'], $tasks)) ?>;
 const TASK_SPEAK = <?= json_encode(array_map(fn($t) => $t['speak'], $tasks)) ?>;
 
+function setPhase(tNum, phase) {
+    const pill = document.getElementById('phasePill-' + tNum);
+    const fill = document.getElementById('progressFill-' + tNum);
+    const digits = document.getElementById('timerDigits-' + tNum);
+    [pill, fill, digits].forEach(el => el.classList.remove('is-prep', 'is-speak', 'is-done'));
+    [pill, fill, digits].forEach(el => el.classList.add('is-' + phase));
+}
+
 function startTaskFlow(tNum) {
     const prepSecs0 = TASK_PREP[tNum];
-    const countEl = document.getElementById('statusCount-' + tNum);
-    const fillEl = document.getElementById('statusBarFill-' + tNum);
+    const labelEl = document.getElementById('phaseLabel-' + tNum);
+    const progLabelEl = document.getElementById('progressLabel-' + tNum);
+    const digitsEl = document.getElementById('timerDigits-' + tNum);
+    const fillEl = document.getElementById('progressFill-' + tNum);
     let prepSecs = prepSecs0;
+
+    setPhase(tNum, 'prep');
+    labelEl.textContent = 'Preparing';
+    progLabelEl.textContent = 'Preparation time';
+    digitsEl.textContent = prepSecs + 's';
+    fillEl.style.width = '100%';
 
     prepInterval = setInterval(() => {
         prepSecs--;
-        countEl.textContent = Math.max(prepSecs, 0);
+        digitsEl.textContent = Math.max(prepSecs, 0) + 's';
         fillEl.style.width = Math.max(0, (prepSecs / prepSecs0) * 100) + '%';
         if (prepSecs <= 0) {
             clearInterval(prepInterval);
@@ -284,29 +322,31 @@ function startTaskFlow(tNum) {
 }
 
 function beginRecording(tNum) {
-    const bar = document.getElementById('statusBar-' + tNum);
-    const icon = document.getElementById('statusIcon-' + tNum);
-    const label = document.getElementById('statusLabel-' + tNum);
-    const countEl = document.getElementById('statusCount-' + tNum);
-    const fillEl = document.getElementById('statusBarFill-' + tNum);
+    const labelEl = document.getElementById('phaseLabel-' + tNum);
+    const progLabelEl = document.getElementById('progressLabel-' + tNum);
+    const digitsEl = document.getElementById('timerDigits-' + tNum);
+    const fillEl = document.getElementById('progressFill-' + tNum);
 
-    bar.classList.add('recording');
-    icon.innerHTML = '<i class="bi bi-mic-fill"></i>';
-    label.textContent = 'Speak Now';
+    setPhase(tNum, 'speak');
+    labelEl.textContent = 'Speaking';
+    progLabelEl.textContent = 'Recording your answer';
 
     const speakSecs0 = TASK_SPEAK[tNum];
     let speakSecs = speakSecs0;
-    countEl.textContent = speakSecs;
+    digitsEl.textContent = speakSecs + 's';
     fillEl.style.width = '100%';
 
     startTranscription(tNum);
     recInterval = setInterval(() => {
         speakSecs--;
-        countEl.textContent = Math.max(speakSecs, 0);
+        digitsEl.textContent = Math.max(speakSecs, 0) + 's';
         fillEl.style.width = Math.max(0, (speakSecs / speakSecs0) * 100) + '%';
         if (speakSecs <= 0) {
             clearInterval(recInterval);
             stopTranscription();
+            setPhase(tNum, 'done');
+            labelEl.textContent = "Time's up";
+            progLabelEl.textContent = 'Response complete';
         }
     }, 1000);
 }
