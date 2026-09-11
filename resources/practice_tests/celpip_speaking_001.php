@@ -105,20 +105,27 @@ $tasks = [
            it is always the same size too -- Task 6's longer text made that
            combination look best, so its rendered proportions are now the
            standard, not just its ceiling. Longer prompts scroll internally. */
-        .speaking-instructions { color: #1f2937; font-size: .92rem; line-height: 1.6; white-space: pre-line; flex-shrink: 0; height: 22vh; overflow-y: auto; padding-right: .4rem; }
-        .speaking-content-row { flex: 1; min-height: 0; display: flex; flex-direction: row; align-items: stretch; gap: 1.25rem; }
-        .speaking-image-wrap { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; }
-        .speaking-task-image { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+        .speaking-instructions { color: #1f2937; font-size: .92rem; line-height: 1.6; white-space: pre-line; flex-shrink: 0; height: 19vh; overflow-y: auto; padding-right: .4rem; }
+        /* Fixed-height container (in vh, not flex:1-derived from leftover
+           space) so it's identical regardless of instructions length. The
+           image gets its own fixed-size box to shrink INTO (max-width/
+           max-height + width/height:auto means it only ever shrinks to fit,
+           never stretches up to fill the box) instead of expanding to claim
+           all available space. The timer stays a small, fixed, top-aligned
+           box -- it does not stretch to match the image's height. */
+        .speaking-content-row { flex: 0 0 auto; height: 30vh; display: flex; flex-direction: row; align-items: flex-start; gap: 1.25rem; }
+        .speaking-image-wrap { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .speaking-task-image { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
         /* Grey band fills the whole remaining area right under the text (like
            real CELPIP screens), with the timer sitting near its top instead
            of vertically centered in a sea of white. */
-        .speaking-status-bar-wrap { flex: 1; min-height: 0; background: #eef0f2; border-radius: 8px; display: flex; align-items: flex-start; justify-content: center; padding-top: 1.25rem; }
+        .speaking-status-bar-wrap { flex: 0 0 auto; height: 30vh; background: #eef0f2; border-radius: 8px; display: flex; align-items: flex-start; justify-content: center; padding-top: 1.25rem; }
 
         .speaking-status-bar {
             flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem;
             background: #f1f3f5; border-radius: 12px; padding: .9rem 1.1rem;
         }
-        .speaking-content-row .speaking-status-bar { flex: 0 0 220px; height: 100%; }
+        .speaking-content-row .speaking-status-bar { flex: 0 0 220px; align-self: flex-start; }
         .speaking-status-bar-wrap .speaking-status-bar { width: min(420px, 70%); background: transparent; padding: 0; }
         .status-header { display: flex; align-items: center; gap: .6rem; }
         .status-icon { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #9c1f2e; flex-shrink: 0; }
