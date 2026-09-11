@@ -74,23 +74,71 @@ $tasks = [
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <?php include __DIR__ . '/celpip_screen_styles.php'; ?>
     <style>
-        .celpip-body.speaking { display: block; padding: 1.25rem 1.5rem; background: #fff; }
-        .speaking-instructions { color: #1f2937; font-size: .92rem; line-height: 1.7; white-space: pre-line; }
-        .speaking-task-image { max-width: 100%; border-radius: 8px; margin-top: .75rem; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
-        .speaking-stage { margin-top: 1.25rem; border-top: 1px solid #e5e7eb; padding-top: 1.25rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-        .prep-box { background: #f1f3f5; border-radius: 8px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
-        .prep-box .clock-icon { font-size: 1.8rem; color: #9c1f2e; }
-        .prep-box .prep-label { font-size: .78rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
-        .prep-box .prep-count { font-size: 1.8rem; font-weight: 700; color: #7a1824; font-family: monospace; }
-        .rec-stage { display: none; align-items: center; gap: 1rem; flex: 1 1 auto; min-width: 260px; }
-        .rec-mic { width: 52px; height: 52px; border-radius: 50%; background: #eef1f3; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #dc3545; flex-shrink: 0; }
-        .rec-track { flex: 1 1 auto; }
-        .rec-label { font-size: .78rem; color: #6b7280; font-weight: 600; margin-bottom: .3rem; }
-        .rec-bar-bg { background: #e5e7eb; border-radius: 4px; height: 10px; overflow: hidden; }
-        .rec-bar-fill { background: #9c1f2e; height: 100%; width: 0%; transition: width 1s linear; }
-        .transcript-toggle { font-size: .78rem; color: #6b7280; cursor: pointer; margin-top: 1rem; display: inline-block; }
-        .transcript-box { display: none; margin-top: .5rem; }
+        /* Fixed-viewport speaking screen: everything (instructions, image,
+           status bar, transcript toggle) fits in one screen with no page
+           scroll -- header/progress-dots are fixed height, the body between
+           them flexes, and the image is capped + object-fit:contain so every
+           task's image renders at the same visual size regardless of its
+           source resolution/aspect ratio. */
+        html, body { height: 100%; }
+        /* .main-wrapper already gets margin-top: var(--topbar-h) from the fixed
+           topbar's global CSS -- height must subtract that margin too, or the
+           page overflows by exactly the topbar's height. */
+        .main-wrapper { padding: 1rem 1.25rem; height: calc(100vh - var(--topbar-h, 60px)); min-height: 0; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; }
+        main.content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .celpip-shell { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+        .celpip-screen { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .celpip-body.speaking {
+            flex: 1; min-height: 0; display: flex; flex-direction: column;
+            padding: 1rem 1.25rem; background: #fff; gap: .75rem; overflow: hidden;
+        }
+        /* Text always sits full-width at the top. Below it: if the task has
+           an image, image (big, left) + timer (small, fixed-width, right)
+           sit side by side; if not, the timer sits alone, centered, in the
+           remaining space -- there's nothing to split it against. */
+        /* Capped + internally scrollable so one long question's text (e.g. a
+           two-option "choose one" scenario) can never eat into the row below
+           and shrink it -- every task keeps the same size image/timer area
+           regardless of how long its instructions are. */
+        /* Fixed (not max-) height: every task's text box is the same size
+           regardless of how long its prompt is, so the grey timer area below
+           it is always the same size too -- Task 6's longer text made that
+           combination look best, so its rendered proportions are now the
+           standard, not just its ceiling. Longer prompts scroll internally. */
+        .speaking-instructions { color: #1f2937; font-size: .92rem; line-height: 1.6; white-space: pre-line; flex-shrink: 0; height: 22vh; overflow-y: auto; padding-right: .4rem; }
+        .speaking-content-row { flex: 1; min-height: 0; display: flex; flex-direction: row; align-items: stretch; gap: 1.25rem; }
+        .speaking-image-wrap { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; }
+        .speaking-task-image { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+        /* Grey band fills the whole remaining area right under the text (like
+           real CELPIP screens), with the timer sitting near its top instead
+           of vertically centered in a sea of white. */
+        .speaking-status-bar-wrap { flex: 1; min-height: 0; background: #eef0f2; border-radius: 8px; display: flex; align-items: flex-start; justify-content: center; padding-top: 1.25rem; }
+
+        .speaking-status-bar {
+            flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem;
+            background: #f1f3f5; border-radius: 12px; padding: .9rem 1.1rem;
+        }
+        .speaking-content-row .speaking-status-bar { flex: 0 0 220px; height: 100%; }
+        .speaking-status-bar-wrap .speaking-status-bar { width: min(420px, 70%); background: transparent; padding: 0; }
+        .status-header { display: flex; align-items: center; gap: .6rem; }
+        .status-icon { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #9c1f2e; flex-shrink: 0; }
+        .speaking-status-bar.recording .status-icon { color: #dc3545; }
+        .status-label { font-size: .78rem; color: #6b7280; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+        .status-count { font-size: 2.1rem; font-weight: 800; color: #7a1824; font-family: monospace; line-height: 1; }
+        .speaking-status-bar.recording .status-count { color: #dc3545; }
+        .status-bar-track { width: min(360px, 80%); background: #e5e7eb; border-radius: 4px; height: 8px; overflow: hidden; }
+        .status-bar-fill { background: #9c1f2e; height: 100%; width: 100%; transition: width 1s linear; }
+        .speaking-status-bar.recording .status-bar-fill { background: #dc3545; }
+
+        .transcript-toggle { font-size: .78rem; color: #6b7280; cursor: pointer; flex-shrink: 0; }
+        .transcript-box { display: none; flex-shrink: 0; }
+        .transcript-box textarea { resize: none; }
         .celpip-progress .dot.done { background: #9c1f2e; }
+
+        @media (max-height: 700px), (max-width: 767px) {
+            .main-wrapper { height: auto; overflow: visible; }
+            .speaking-image-wrap { min-height: 160px; }
+        }
     </style>
 </head>
 <body class="light">
@@ -130,32 +178,34 @@ $tasks = [
             <div class="celpip-body speaking">
                 <div class="celpip-panel-label"><i class="bi bi-info-circle-fill"></i> Instructions</div>
                 <div class="speaking-instructions"><?= htmlspecialchars($task['prompt']) ?></div>
-                <?php if (!empty($task['image'])): ?>
-                    <img class="speaking-task-image" src="<?= ACADEMY_URL ?>assets/img/practice_tests/CELPIP_PT_S_001/<?= $task['image'] ?>" alt="Task <?= $tNum ?> prompt image">
-                <?php endif; ?>
 
-                <div class="speaking-stage">
-                    <div class="prep-box" id="prepBox-<?= $tNum ?>">
-                        <i class="bi bi-clock-history clock-icon"></i>
-                        <div>
-                            <div class="prep-label">Preparation Time</div>
-                            <div class="prep-count" id="prepCount-<?= $tNum ?>"><?= $task['prep'] ?></div>
+                <?php $statusBar = '
+                    <div class="speaking-status-bar" id="statusBar-' . $tNum . '">
+                        <div class="status-header">
+                            <div class="status-icon" id="statusIcon-' . $tNum . '"><i class="bi bi-clock-history"></i></div>
+                            <div class="status-label" id="statusLabel-' . $tNum . '">Preparation Time</div>
                         </div>
+                        <div class="status-count" id="statusCount-' . $tNum . '">' . $task['prep'] . '</div>
+                        <div class="status-bar-track"><div class="status-bar-fill" id="statusBarFill-' . $tNum . '"></div></div>
                     </div>
-                    <div class="rec-stage" id="recStage-<?= $tNum ?>">
-                        <div class="rec-mic"><i class="bi bi-mic-fill"></i></div>
-                        <div class="rec-track">
-                            <div class="rec-label">Recording …</div>
-                            <div class="rec-bar-bg"><div class="rec-bar-fill" id="recBar-<?= $tNum ?>"></div></div>
+                '; ?>
+
+                <?php if (!empty($task['image'])): ?>
+                    <div class="speaking-content-row">
+                        <div class="speaking-image-wrap">
+                            <img class="speaking-task-image" src="<?= ACADEMY_URL ?>assets/img/practice_tests/CELPIP_PT_S_001/<?= $task['image'] ?>" alt="Task <?= $tNum ?> prompt image">
                         </div>
+                        <?= $statusBar ?>
                     </div>
-                </div>
+                <?php else: ?>
+                    <div class="speaking-status-bar-wrap"><?= $statusBar ?></div>
+                <?php endif; ?>
 
                 <span class="transcript-toggle" onclick="document.getElementById('transcriptBox-<?= $tNum ?>').style.display = document.getElementById('transcriptBox-<?= $tNum ?>').style.display === 'block' ? 'none' : 'block';">
                     <i class="bi bi-pencil-square me-1"></i>View / edit your captured transcript
                 </span>
                 <div class="transcript-box" id="transcriptBox-<?= $tNum ?>">
-                    <textarea id="transcript-<?= $tNum ?>" class="form-control form-control-sm" rows="3"
+                    <textarea id="transcript-<?= $tNum ?>" class="form-control form-control-sm" rows="2"
                         placeholder="Your speech is transcribed here automatically as you speak. You can edit it directly if needed."></textarea>
                 </div>
             </div>
@@ -201,15 +251,19 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 let currentTask = 1;
 let prepInterval = null, recInterval = null, recognition = null, recognitionActive = false;
 
+const TASK_PREP  = <?= json_encode(array_map(fn($t) => $t['prep'], $tasks)) ?>;
+const TASK_SPEAK = <?= json_encode(array_map(fn($t) => $t['speak'], $tasks)) ?>;
+
 function startTaskFlow(tNum) {
-    const task = TASK_PROMPTS[tNum];
-    // Read prep/speak seconds back out of the DOM (rendered server-side per task)
-    const prepEl = document.getElementById('prepCount-' + tNum);
-    let prepSecs = parseInt(prepEl.textContent, 10);
+    const prepSecs0 = TASK_PREP[tNum];
+    const countEl = document.getElementById('statusCount-' + tNum);
+    const fillEl = document.getElementById('statusBarFill-' + tNum);
+    let prepSecs = prepSecs0;
 
     prepInterval = setInterval(() => {
         prepSecs--;
-        prepEl.textContent = Math.max(prepSecs, 0);
+        countEl.textContent = Math.max(prepSecs, 0);
+        fillEl.style.width = Math.max(0, (prepSecs / prepSecs0) * 100) + '%';
         if (prepSecs <= 0) {
             clearInterval(prepInterval);
             beginRecording(tNum);
@@ -218,18 +272,27 @@ function startTaskFlow(tNum) {
 }
 
 function beginRecording(tNum) {
-    document.getElementById('prepBox-' + tNum).style.display = 'none';
-    const stage = document.getElementById('recStage-' + tNum);
-    stage.style.display = 'flex';
-    const bar = document.getElementById('recBar-' + tNum);
+    const bar = document.getElementById('statusBar-' + tNum);
+    const icon = document.getElementById('statusIcon-' + tNum);
+    const label = document.getElementById('statusLabel-' + tNum);
+    const countEl = document.getElementById('statusCount-' + tNum);
+    const fillEl = document.getElementById('statusBarFill-' + tNum);
 
-    const speakSecsAttr = <?= json_encode(array_map(fn($t) => $t['speak'], $tasks)) ?>[tNum];
-    let elapsed = 0;
+    bar.classList.add('recording');
+    icon.innerHTML = '<i class="bi bi-mic-fill"></i>';
+    label.textContent = 'Speak Now';
+
+    const speakSecs0 = TASK_SPEAK[tNum];
+    let speakSecs = speakSecs0;
+    countEl.textContent = speakSecs;
+    fillEl.style.width = '100%';
+
     startTranscription(tNum);
     recInterval = setInterval(() => {
-        elapsed++;
-        bar.style.width = Math.min(100, (elapsed / speakSecsAttr) * 100) + '%';
-        if (elapsed >= speakSecsAttr) {
+        speakSecs--;
+        countEl.textContent = Math.max(speakSecs, 0);
+        fillEl.style.width = Math.max(0, (speakSecs / speakSecs0) * 100) + '%';
+        if (speakSecs <= 0) {
             clearInterval(recInterval);
             stopTranscription();
         }

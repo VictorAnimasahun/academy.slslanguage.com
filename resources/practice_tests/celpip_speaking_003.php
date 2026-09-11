@@ -1,58 +1,415 @@
 <?php
+// CELPIP Speaking Practice 3 — transcribed from Downloads/CELPIP TASKS/Celpip Speaking/Speaking Test 3
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
     exit();
 }
+
 $testCode = 'CELPIP_PT_S_003';
+
+$tasks = [
+    1 => [
+        'title'  => 'Task 1: Giving Advice',
+        'prep'   => 30,
+        'speak'  => 90,
+        'prompt' => "Your parents are traveling abroad for the first time. Give them advice on what to do in an airport.",
+    ],
+    2 => [
+        'title'  => 'Task 2: Talking about a Personal Experience',
+        'prep'   => 30,
+        'speak'  => 60,
+        'prompt' => "Talk about a time you made a change in your lifestyle. What was the change and how did it affect your life?",
+    ],
+    3 => [
+        'title'  => 'Task 3: Describing a Scene',
+        'prep'   => 30,
+        'speak'  => 60,
+        'prompt' => "Describe this scene. The person with whom you are speaking cannot see the picture.",
+        'image'  => 'scene.jpg',
+    ],
+    4 => [
+        'title'  => 'Task 4: Making Predictions',
+        'prep'   => 30,
+        'speak'  => 60,
+        'prompt' => "In this picture, what do you think will most probably happen next?",
+        'image'  => 'scene.jpg',
+    ],
+    5 => [
+        // Real CELPIP Task 5 has a twist: two options are shown first, then a
+        // third competing option appears that the candidate must also argue
+        // against. Both stages are shown together here (as a single combined
+        // prompt + both source images) since the practice engine only has one
+        // linear prep+speak stage per task, not the real exam's two-stage
+        // selection timing -- a deliberate simplification, noted here rather
+        // than silently dropping the third option.
+        'title'  => 'Task 5: Comparing and Persuading',
+        'prep'   => 60,
+        'speak'  => 60,
+        'prompt' => "You are camping with your friends and discussing your plans for tomorrow. Choose the option you prefer and convince your friends that your idea is best:\n\nOption A - Hike up a mountain: 10 hour hike, amazing view from the summit, natural hot springs on the way, chance to see bighorn sheep.\nOption B - Walk along the river: 4 hour walk, easy path to follow, nice spot for a picnic lunch, lots of birds and deer nearby.\n\nYour friends then suggest a third option - swimming in the lake all afternoon, relaxing in the sun, a chance to catch some fish, and a BBQ beside the lake. Persuade them that your original choice is still best.",
+        'images' => ['task5a.jpg', 'task5b.jpg'],
+    ],
+    6 => [
+        'title'  => 'Task 6: Dealing with a Difficult Situation',
+        'prep'   => 60,
+        'speak'  => 60,
+        'prompt' => "Your cousin recently borrowed your iPad when his family went on a road trip. After he returned it, you noticed a crack in the glass on the corner of the device. Call him up and explain the discovery. Ask him to pay for the repair.",
+    ],
+    7 => [
+        'title'  => 'Task 7: Expressing Opinions',
+        'prep'   => 30,
+        'speak'  => 90,
+        'prompt' => "It is becoming common these days for children to have their own smartphones. Do you think this trend is good or bad? Explain your reasons.",
+    ],
+    8 => [
+        'title'  => 'Task 8: Describing an Unusual Situation',
+        'prep'   => 30,
+        'speak'  => 60,
+        'prompt' => "You are on a safari in Africa and see a very strange animal. Unfortunately, your camera battery died and you couldn't take a picture! Call your friend at the end of the day and describe the animal you saw.",
+        'image'  => 'painting.jpg',
+    ],
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CELPIP Speaking Practice 3 | EduHub</title>
+    <title>CELPIP Speaking Practice Test 3 – EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
+    <?php include __DIR__ . '/celpip_screen_styles.php'; ?>
     <style>
-        .main-wrapper { padding: 2rem 1.5rem; min-height: 100vh; background: #f8f9fa; }
-        .stub-card { background: white; border-radius: 16px; padding: 3rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); max-width: 700px; margin: 2rem auto; text-align: center; }
-        .exam-badge { background: #3b82f6; color: white; padding: .5rem 1.5rem; border-radius: 50px; font-weight: 700; font-size: .95rem; display: inline-block; margin-bottom: 1.5rem; }
+        /* Fixed-viewport speaking screen: everything (instructions, image,
+           status bar, transcript toggle) fits in one screen with no page
+           scroll -- header/progress-dots are fixed height, the body between
+           them flexes, and the image is capped + object-fit:contain so every
+           task's image renders at the same visual size regardless of its
+           source resolution/aspect ratio. */
+        html, body { height: 100%; }
+        /* .main-wrapper already gets margin-top: var(--topbar-h) from the fixed
+           topbar's global CSS -- height must subtract that margin too, or the
+           page overflows by exactly the topbar's height. */
+        .main-wrapper { padding: 1rem 1.25rem; height: calc(100vh - var(--topbar-h, 60px)); min-height: 0; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; }
+        main.content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .celpip-shell { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+        .celpip-screen { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .celpip-body.speaking {
+            flex: 1; min-height: 0; display: flex; flex-direction: column;
+            padding: 1rem 1.25rem; background: #fff; gap: .75rem; overflow: hidden;
+        }
+        /* Text always sits full-width at the top, fixed height (not
+           max-height) so every task's text box -- and therefore the grey
+           timer area below it -- is exactly the same size regardless of how
+           long that task's prompt is. Longer prompts scroll internally. */
+        .speaking-instructions { color: #1f2937; font-size: .92rem; line-height: 1.6; white-space: pre-line; flex-shrink: 0; height: 22vh; overflow-y: auto; padding-right: .4rem; }
+        .speaking-content-row { flex: 1; min-height: 0; display: flex; flex-direction: row; align-items: stretch; gap: 1.25rem; }
+        .speaking-image-wrap { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: .6rem; }
+        .speaking-task-image { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+        .speaking-image-wrap.multi .speaking-task-image { max-width: calc(50% - .3rem); }
+        /* Grey band fills the whole remaining area right under the text (like
+           real CELPIP screens), with the timer sitting near its top instead
+           of vertically centered in a sea of white. */
+        .speaking-status-bar-wrap { flex: 1; min-height: 0; background: #eef0f2; border-radius: 8px; display: flex; align-items: flex-start; justify-content: center; padding-top: 1.25rem; }
+
+        .speaking-status-bar {
+            flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem;
+            background: #f1f3f5; border-radius: 12px; padding: .9rem 1.1rem;
+        }
+        .speaking-content-row .speaking-status-bar { flex: 0 0 220px; height: 100%; }
+        .speaking-status-bar-wrap .speaking-status-bar { width: min(420px, 70%); background: transparent; padding: 0; }
+        .status-header { display: flex; align-items: center; gap: .6rem; }
+        .status-icon { width: 34px; height: 34px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #9c1f2e; flex-shrink: 0; }
+        .speaking-status-bar.recording .status-icon { color: #dc3545; }
+        .status-label { font-size: .78rem; color: #6b7280; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+        .status-count { font-size: 2.1rem; font-weight: 800; color: #7a1824; font-family: monospace; line-height: 1; }
+        .speaking-status-bar.recording .status-count { color: #dc3545; }
+        .status-bar-track { width: min(360px, 80%); background: #e5e7eb; border-radius: 4px; height: 8px; overflow: hidden; }
+        .status-bar-fill { background: #9c1f2e; height: 100%; width: 100%; transition: width 1s linear; }
+        .speaking-status-bar.recording .status-bar-fill { background: #dc3545; }
+
+        .transcript-toggle { font-size: .78rem; color: #6b7280; cursor: pointer; flex-shrink: 0; }
+        .transcript-box { display: none; flex-shrink: 0; }
+        .transcript-box textarea { resize: none; }
+        .celpip-progress .dot.done { background: #9c1f2e; }
+
+        @media (max-height: 700px), (max-width: 767px) {
+            .main-wrapper { height: auto; overflow: visible; }
+            .speaking-image-wrap { min-height: 160px; }
+        }
     </style>
 </head>
-<body>
+<body class="light">
 <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
 <div class="mobile-overlay" id="mobileOverlay"></div>
 <?php include INCLUDES_PATH . '/navbar.php'; ?>
-<main class="main-wrapper">
-    <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
-                <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
-                <li class="breadcrumb-item active">CELPIP Speaking Practice 3</li>
-            </ol>
-        </nav>
-        <div class="stub-card">
-            <span class="exam-badge">CELPIP</span>
-            <h2 class="mb-2">CELPIP Speaking Practice 3</h2>
-            <p class="text-muted mb-4">Speaking · 8 Tasks · ~16 min</p>
-            <div class="alert alert-info text-start">
-                <i class="bi bi-folder2-open me-2"></i>
-                <strong>Source speaking set mapped:</strong><br>
-                This page corresponds to the downloaded speaking prompt bundle in <code>Downloads/CELPIP TASKS/Celpip Speaking / Speaking Test 3</code>.
+
+<div class="main-wrapper flex-grow-1" style="flex:1;">
+    <?php include INCLUDES_PATH . '/topbar.php'; ?>
+
+<main class="content p-4">
+
+    <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb mb-0" style="font-size:.8rem;">
+            <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
+            <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
+            <li class="breadcrumb-item active">CELPIP Speaking – Practice 3</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+        <span class="section-badge" style="background:linear-gradient(135deg,#10b981,#34d399); color:#fff; padding:.3rem 1.1rem; border-radius:50px; font-weight:700; font-size:.8rem;">Speaking</span>
+        <span class="text-muted small">8 Tasks · ~16 minutes</span>
+    </div>
+
+    <div class="celpip-shell" id="celpipShell">
+        <?php foreach ($tasks as $tNum => $task): ?>
+        <div class="celpip-screen" data-task="<?= $tNum ?>" style="<?= $tNum === 1 ? '' : 'display:none;' ?>">
+            <div class="celpip-header">
+                <div class="title"><?= htmlspecialchars($task['title']) ?></div>
+                <div class="meta">
+                    <span>Preparation: <?= $task['prep'] ?> seconds</span>
+                    <span>Recording: <?= $task['speak'] ?> seconds</span>
+                    <button type="button" class="celpip-next-btn" id="nextBtn-<?= $tNum ?>" onclick="celpipSpeakingNext()"><?= $tNum < count($tasks) ? 'Next' : 'Finish Test' ?></button>
+                </div>
             </div>
-            <div class="alert alert-warning text-start">
-                <i class="bi bi-hammer me-2"></i>
-                <strong>Prompt conversion is pending.</strong><br>
-                The task record is registered and the source folder is mapped for final prompt extraction and playback workflow.
+            <div class="celpip-body speaking">
+                <div class="celpip-panel-label"><i class="bi bi-info-circle-fill"></i> Instructions</div>
+                <div class="speaking-instructions"><?= htmlspecialchars($task['prompt']) ?></div>
+
+                <?php $statusBar = '
+                    <div class="speaking-status-bar" id="statusBar-' . $tNum . '">
+                        <div class="status-header">
+                            <div class="status-icon" id="statusIcon-' . $tNum . '"><i class="bi bi-clock-history"></i></div>
+                            <div class="status-label" id="statusLabel-' . $tNum . '">Preparation Time</div>
+                        </div>
+                        <div class="status-count" id="statusCount-' . $tNum . '">' . $task['prep'] . '</div>
+                        <div class="status-bar-track"><div class="status-bar-fill" id="statusBarFill-' . $tNum . '"></div></div>
+                    </div>
+                '; ?>
+
+                <?php $images = !empty($task['images']) ? $task['images'] : (!empty($task['image']) ? [$task['image']] : []); ?>
+
+                <?php if (!empty($images)): ?>
+                    <div class="speaking-content-row">
+                        <div class="speaking-image-wrap<?= count($images) > 1 ? ' multi' : '' ?>">
+                            <?php foreach ($images as $img): ?>
+                                <img class="speaking-task-image" src="<?= ACADEMY_URL ?>assets/img/practice_tests/CELPIP_PT_S_003/<?= $img ?>" alt="Task <?= $tNum ?> prompt image">
+                            <?php endforeach; ?>
+                        </div>
+                        <?= $statusBar ?>
+                    </div>
+                <?php else: ?>
+                    <div class="speaking-status-bar-wrap"><?= $statusBar ?></div>
+                <?php endif; ?>
+
+                <span class="transcript-toggle" onclick="document.getElementById('transcriptBox-<?= $tNum ?>').style.display = document.getElementById('transcriptBox-<?= $tNum ?>').style.display === 'block' ? 'none' : 'block';">
+                    <i class="bi bi-pencil-square me-1"></i>View / edit your captured transcript
+                </span>
+                <div class="transcript-box" id="transcriptBox-<?= $tNum ?>">
+                    <textarea id="transcript-<?= $tNum ?>" class="form-control form-control-sm" rows="2"
+                        placeholder="Your speech is transcribed here automatically as you speak. You can edit it directly if needed."></textarea>
+                </div>
             </div>
-            <a href="index.php" class="btn btn-outline-secondary mt-2">← Back to Practice Tests</a>
+        </div>
+        <?php endforeach; ?>
+        <div class="celpip-progress">
+            <?php for ($i = 1; $i <= count($tasks); $i++): ?>
+            <div class="dot <?= $i === 1 ? 'current' : '' ?>" id="progressDot-<?= $i ?>"></div>
+            <?php endfor; ?>
         </div>
     </div>
+
+    <!-- Loading -->
+    <div id="loadingSection" class="text-center py-5 d-none">
+        <div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem;"></div>
+        <p class="fw-bold">Analysing your speaking with AI…</p>
+        <p class="text-muted small">This may take 20–40 seconds for 8 tasks</p>
+    </div>
+
+    <!-- Results -->
+    <div id="resultsSection" class="d-none mb-5 mt-4">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-success text-white rounded-top-4 py-3">
+                <h5 class="mb-0"><i class="bi bi-trophy-fill me-2"></i>AI Examiner Feedback</h5>
+            </div>
+            <div class="card-body p-4" id="feedbackContent"></div>
+        </div>
+    </div>
+
 </main>
+</div><!-- /.main-wrapper -->
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
+<?php include INCLUDES_PATH . '/footer.php'; ?>
+<script>
+const TASK_PROMPTS = <?= json_encode(array_map(fn($t) => ['title' => $t['title'], 'prompt' => $t['prompt']], $tasks)) ?>;
+const TOTAL_TASKS  = <?= count($tasks) ?>;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let currentTask = 1;
+let prepInterval = null, recInterval = null, recognition = null, recognitionActive = false;
+
+const TASK_PREP  = <?= json_encode(array_map(fn($t) => $t['prep'], $tasks)) ?>;
+const TASK_SPEAK = <?= json_encode(array_map(fn($t) => $t['speak'], $tasks)) ?>;
+
+function startTaskFlow(tNum) {
+    const prepSecs0 = TASK_PREP[tNum];
+    const countEl = document.getElementById('statusCount-' + tNum);
+    const fillEl = document.getElementById('statusBarFill-' + tNum);
+    let prepSecs = prepSecs0;
+
+    prepInterval = setInterval(() => {
+        prepSecs--;
+        countEl.textContent = Math.max(prepSecs, 0);
+        fillEl.style.width = Math.max(0, (prepSecs / prepSecs0) * 100) + '%';
+        if (prepSecs <= 0) {
+            clearInterval(prepInterval);
+            beginRecording(tNum);
+        }
+    }, 1000);
+}
+
+function beginRecording(tNum) {
+    const bar = document.getElementById('statusBar-' + tNum);
+    const icon = document.getElementById('statusIcon-' + tNum);
+    const label = document.getElementById('statusLabel-' + tNum);
+    const countEl = document.getElementById('statusCount-' + tNum);
+    const fillEl = document.getElementById('statusBarFill-' + tNum);
+
+    bar.classList.add('recording');
+    icon.innerHTML = '<i class="bi bi-mic-fill"></i>';
+    label.textContent = 'Speak Now';
+
+    const speakSecs0 = TASK_SPEAK[tNum];
+    let speakSecs = speakSecs0;
+    countEl.textContent = speakSecs;
+    fillEl.style.width = '100%';
+
+    startTranscription(tNum);
+    recInterval = setInterval(() => {
+        speakSecs--;
+        countEl.textContent = Math.max(speakSecs, 0);
+        fillEl.style.width = Math.max(0, (speakSecs / speakSecs0) * 100) + '%';
+        if (speakSecs <= 0) {
+            clearInterval(recInterval);
+            stopTranscription();
+        }
+    }, 1000);
+}
+
+function startTranscription(tNum) {
+    if (!SpeechRecognition) return;
+    const textarea = document.getElementById('transcript-' + tNum);
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+    let savedText = textarea.value;
+    recognition.onresult = e => {
+        let interim = '', final = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+            if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
+            else interim += e.results[i][0].transcript;
+        }
+        savedText += final;
+        textarea.value = savedText + interim;
+        if (final) savedText = textarea.value.replace(interim, '');
+    };
+    recognition.onend = () => { if (recognitionActive) recognition.start(); };
+    recognition.start();
+    recognitionActive = true;
+}
+
+function stopTranscription() {
+    recognitionActive = false;
+    if (recognition) recognition.stop();
+}
+
+function showTask(n) {
+    document.querySelectorAll('.celpip-screen').forEach(s => s.style.display = 'none');
+    document.querySelector('.celpip-screen[data-task="' + n + '"]').style.display = '';
+    for (let i = 1; i <= TOTAL_TASKS; i++) {
+        const dot = document.getElementById('progressDot-' + i);
+        if (!dot) continue;
+        dot.classList.remove('current', 'done');
+        if (i < n) dot.classList.add('done');
+        else if (i === n) dot.classList.add('current');
+    }
+    currentTask = n;
+    startTaskFlow(n);
+}
+
+function celpipSpeakingNext() {
+    clearInterval(prepInterval);
+    clearInterval(recInterval);
+    stopTranscription();
+    if (currentTask < TOTAL_TASKS) {
+        showTask(currentTask + 1);
+    } else {
+        submitAllTasks();
+    }
+}
+
+function buildTasksPayload() {
+    return Object.keys(TASK_PROMPTS).map((key) => {
+        const tNum = parseInt(key, 10);
+        const transcript = (document.getElementById('transcript-' + tNum)?.value || '').trim();
+        return { part: tNum, title: TASK_PROMPTS[key].title, prompt: TASK_PROMPTS[key].title + '\n\n' + TASK_PROMPTS[key].prompt, transcription: transcript };
+    });
+}
+
+async function submitAllTasks() {
+    const tasks = buildTasksPayload();
+    const empty = tasks.filter(t => t.transcription.length < 10);
+    if (empty.length > 0) {
+        const partNames = empty.map(t => 'Task ' + t.part).join(', ');
+        const r = await Swal.fire({
+            title: 'Missing responses',
+            html: `${partNames} ${empty.length > 1 ? 'have' : 'has'} no transcription. Submit anyway?`,
+            icon: 'warning', showCancelButton: true,
+            confirmButtonText: 'Submit anyway', cancelButtonText: 'Go back',
+        });
+        if (!r.isConfirmed) return;
+    }
+
+    document.getElementById('celpipShell').style.display = 'none';
+    document.getElementById('loadingSection').classList.remove('d-none');
+
+    try {
+        const res = await fetch('../../api/api_handler.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'analyze_speaking_batch', exam_type: 'CELPIP', tasks }),
+        });
+        const data = await res.json();
+        document.getElementById('loadingSection').classList.add('d-none');
+        document.getElementById('resultsSection').classList.remove('d-none');
+
+        if (data.success && Array.isArray(data.results)) {
+            document.getElementById('feedbackContent').innerHTML = data.results.map(r => {
+                const body = r.success
+                    ? '<pre style="white-space:pre-wrap;font-family:inherit;line-height:1.7;margin:0;">' + r.feedback.replace(/</g,'&lt;') + '</pre>'
+                    : '<div class="alert alert-danger mb-0">' + (r.error || 'Analysis failed for this task') + '</div>';
+                return '<div class="mb-4"><h6 class="fw-bold">' + (r.task_title || ('Task ' + r.task_number)) + '</h6>' + body + '</div>';
+            }).join('<hr>');
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            document.getElementById('feedbackContent').innerHTML =
+                '<div class="alert alert-danger">' + (data.error || 'Unknown error') + '</div>';
+        }
+    } catch (err) {
+        document.getElementById('loadingSection').classList.add('d-none');
+        Swal.fire({ title: 'Error', text: err.message, icon: 'error' });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => startTaskFlow(1));
+</script>
 </body>
 </html>
