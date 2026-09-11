@@ -86,8 +86,8 @@ $tasks = [
            page overflows by exactly the topbar's height. */
         .main-wrapper { padding: 1rem 1.25rem; height: calc(100vh - var(--topbar-h, 60px)); min-height: 0; overflow: hidden; box-sizing: border-box; display: flex; flex-direction: column; }
         main.content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-        .celpip-shell { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-        .celpip-screen { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .celpip-shell { display: flex; flex-direction: column; flex: 1; min-height: 0; width: 100%; }
+        .celpip-screen { flex: 1; min-height: 0; width: 100%; display: flex; flex-direction: column; box-sizing: border-box; }
         .celpip-body.speaking {
             flex: 1; min-height: 0; display: flex; flex-direction: column;
             padding: 1rem 1.25rem; background: #fff; gap: .75rem; overflow: hidden;
@@ -109,13 +109,14 @@ $tasks = [
         /* Fixed-height container (in vh, not flex:1-derived from leftover
            space) so it's identical regardless of instructions length. The
            image fills its fixed-size box in both directions (width/height:
-           100% + object-fit:contain) -- it scales up small images and down
-           large ones, always filling the box while preserving aspect ratio.
+           100% + object-fit:cover) -- it scales up small images and down
+           large ones, always filling the box completely with no letterbox
+           gaps, cropping slightly rather than preserving the full frame.
            The timer stays a small, fixed, top-aligned box -- it does not
            stretch to match the image's height. */
-        .speaking-content-row { flex: 0 0 auto; height: 30vh; display: flex; flex-direction: row; align-items: flex-start; gap: 1.25rem; }
+        .speaking-content-row { flex: 0 0 auto; width: 100%; height: 30vh; display: flex; flex-direction: row; align-items: flex-start; gap: 1.25rem; box-sizing: border-box; }
         .speaking-image-wrap { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
-        .speaking-task-image { width: 100%; height: 100%; object-fit: contain; }
+        .speaking-task-image { width: 100%; height: 100%; object-fit: cover; }
         /* Grey band fills the whole remaining area right under the text (like
            real CELPIP screens), with the timer sitting near its top instead
            of vertically centered in a sea of white. */
