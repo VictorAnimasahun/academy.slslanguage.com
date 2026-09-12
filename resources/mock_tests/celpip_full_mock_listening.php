@@ -342,7 +342,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                 <a href="celpip_full_mock_listening.php?session_id=<?= $session_id ?>" style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎧 Listening</a>
                 <a href="celpip_full_mock_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
                 <a href="mock_writing.php?session_id=<?= $session_id ?>"               style="color:#a5b4fc;text-decoration:none;">✍️ Writing</a>
-                <a href="mock_speaking.php?session_id=<?= $session_id ?>"              style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
+                <a href="<?= $map[$mockCode]['speaking']['file'] ?? 'mock_speaking.php' ?>?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
             </div>
             <?php endif; ?>
             <div class="d-flex align-items-center justify-content-between">

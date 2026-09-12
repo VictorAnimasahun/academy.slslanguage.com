@@ -37,7 +37,8 @@ if (!$isAdmin && is_null($session['reading_attempt_id'])) {
     header("Location: {$file}?session_id={$session_id}"); exit();
 }
 if (!$isAdmin && !is_null($session['writing_attempt_id'])) {
-    header("Location: mock_speaking.php?session_id={$session_id}"); exit();
+    $file = $map[$mockCode]['speaking']['file'] ?? 'mock_speaking.php';
+    header("Location: {$file}?session_id={$session_id}"); exit();
 }
 
 // CELPIP Writing Task 1 & 2 both require ~150-200 words and total 53 minutes;
@@ -116,7 +117,7 @@ if ($writingTest) {
                     <a href="full_mock_001_listening.php?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎧 Listening</a>
                     <a href="full_mock_001_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>
                     <a href="mock_writing.php?session_id=<?= $session_id ?>"            style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">✍️ Writing</a>
-                    <a href="mock_speaking.php?session_id=<?= $session_id ?>"           style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
+                    <a href="<?= $map[$mockCode]['speaking']['file'] ?? 'mock_speaking.php' ?>?session_id=<?= $session_id ?>" style="color:#a5b4fc;text-decoration:none;">🎤 Speaking</a>
                 </div>
                 <?php endif; ?>
                 <div class="d-flex align-items-center justify-content-between">

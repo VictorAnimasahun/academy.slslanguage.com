@@ -69,16 +69,20 @@ return [
     // the session's mock_code, same pattern as full_mock_00N_listening.php but reused
     // across both tests since their part structure is identical). Content seeded by
     // migration 073.
+    // Speaking uses its own online recorded flow (celpip_full_mock_speaking.php),
+    // NOT mock_speaking.php's in-person-instructor notice -- CELPIP is the only
+    // exam type with a recorded-audio speaking pipeline. Do not point IELTS
+    // entries at this file; mock_speaking.php still handles IELTS speaking.
     'CELPIP_FULL_MOCK_A' => [
         'listening' => ['file' => 'celpip_full_mock_listening.php', 'test_code' => 'CELPIP_FMA_L'],
         'reading'   => ['file' => 'celpip_full_mock_reading.php',  'test_code' => 'CELPIP_FMA_R'],
         'writing'   => ['file' => 'mock_writing.php',              'test_code' => 'CELPIP_FMA_W'],
-        'speaking'  => ['file' => 'mock_speaking.php'],
+        'speaking'  => ['file' => 'celpip_full_mock_speaking.php'],
     ],
     'CELPIP_FULL_MOCK_B' => [
         'listening' => ['file' => 'celpip_full_mock_listening.php', 'test_code' => 'CELPIP_FMB_L'],
         'reading'   => ['file' => 'celpip_full_mock_reading.php',  'test_code' => 'CELPIP_FMB_R'],
         'writing'   => ['file' => 'mock_writing.php',              'test_code' => 'CELPIP_FMB_W'],
-        'speaking'  => ['file' => 'mock_speaking.php'],
+        'speaking'  => ['file' => 'celpip_full_mock_speaking.php'],
     ],
 ];
