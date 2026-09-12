@@ -1259,7 +1259,7 @@ DELETE FROM courses WHERE folder_name IN ('CELPIP_Gen_1Mo','CELPIP_Gen_2Mo','CEL
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-12 | Verified via `DESCRIBE speaking_recordings`. |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-09-12 | |
 
 **What it does:** creates `speaking_recordings`, backing the new CELPIP speaking audio-recording pipeline (MediaRecorder capture in the browser → upload → Groq Whisper transcription → admin grading in sls-admin → optional audio deletion while keeping the transcript). Columns: `student_id`, `test_code`, `task_number`, `task_title`, `prompt`, `audio_path` (nullable — nulled on admin delete, `audio_deleted_at` set), `transcript` + `transcript_status` enum, `ai_feedback`, `graded_at`. `mock_session_id` is nullable and unused for now — added proactively so Phase 2 (CELPIP Full Mock A/B online speaking) can reuse this same table via `mock_sessions.id` without a second migration.
 
@@ -1275,7 +1275,7 @@ DROP TABLE IF EXISTS speaking_recordings;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-12 | Verified via `DESCRIBE staff_notes` and selecting `flagged` from both altered tables. |
-| Live  | [ ] | | |
+| Live  | [x] | 2026-09-12 | |
 
 **What it does:** backs the sls-admin Students page redesign's two new features. `staff_notes` is a new table (student_id, employee_id, author_name, note_text, created_at) for admin-authored notes on a student's profile. `test_attempts.flagged` and `attempt_answers.flagged` (both `TINYINT(1) DEFAULT 0`) let an admin flag a whole test attempt or a single question within it for review, shown in the new Test History section's expandable per-question breakdown.
 
