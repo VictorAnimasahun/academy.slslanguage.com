@@ -1270,6 +1270,24 @@ DROP TABLE IF EXISTS speaking_recordings;
 
 ---
 
+## 080 — Add staff_notes table + flagged columns (Students page redesign)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-12 | Verified via `DESCRIBE staff_notes` and selecting `flagged` from both altered tables. |
+| Live  | [ ] | | |
+
+**What it does:** backs the sls-admin Students page redesign's two new features. `staff_notes` is a new table (student_id, employee_id, author_name, note_text, created_at) for admin-authored notes on a student's profile. `test_attempts.flagged` and `attempt_answers.flagged` (both `TINYINT(1) DEFAULT 0`) let an admin flag a whole test attempt or a single question within it for review, shown in the new Test History section's expandable per-question breakdown.
+
+**Rollback:**
+```sql
+DROP TABLE IF EXISTS staff_notes;
+ALTER TABLE test_attempts DROP COLUMN flagged;
+ALTER TABLE attempt_answers DROP COLUMN flagged;
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
