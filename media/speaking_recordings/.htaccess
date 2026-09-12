@@ -1,0 +1,5 @@
+# Block all direct HTTP access to this directory -- recordings are only
+# served through the auth-checked academy/api/speaking_audio.php (student)
+# or sls-admin/speaking_audio.php (admin) endpoints.
+Order deny,allow
+Deny from all

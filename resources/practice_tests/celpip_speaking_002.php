@@ -253,6 +253,15 @@ $tasks = [
 
     <!-- Results -->
     <div id="resultsSection" class="d-none mb-5 mt-4">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-dark text-white rounded-top-4 py-3">
+                <h5 class="mb-0"><i class="bi bi-mic-fill me-2"></i>Your Recordings</h5>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted small mb-3">Listen back to or download any of your responses below. These are only available on this page right now -- once you leave, they're gone from here (an admin can still access a saved copy for grading).</p>
+                <div id="recordingsList" class="d-flex flex-column gap-2"></div>
+            </div>
+        </div>
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-header bg-success text-white rounded-top-4 py-3">
                 <h5 class="mb-0"><i class="bi bi-trophy-fill me-2"></i>AI Examiner Feedback</h5>
@@ -272,10 +281,13 @@ $tasks = [
 <script>
 const TASK_PROMPTS = <?= json_encode(array_map(fn($t) => ['title' => $t['title'], 'prompt' => $t['prompt']], $tasks)) ?>;
 const TOTAL_TASKS  = <?= count($tasks) ?>;
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const TEST_CODE    = <?= json_encode($testCode) ?>;
 
 let currentTask = 1;
-let prepInterval = null, recInterval = null, recognition = null, recognitionActive = false;
+let prepInterval = null, recInterval = null;
+let mediaStream = null, mediaRecorder = null, audioChunks = [];
+const recordedBlobs = {}; // tNum -> Blob, for the end-of-test playback/download panel
+const uploadPromises = []; // settled before final submission so transcripts are ready
 
 const TASK_PREP  = <?= json_encode(array_map(fn($t) => $t['prep'], $tasks)) ?>;
 const TASK_SPEAK = <?= json_encode(array_map(fn($t) => $t['speak'], $tasks)) ?>;
@@ -328,14 +340,14 @@ function beginRecording(tNum) {
     digitsEl.textContent = speakSecs + 's';
     fillEl.style.width = '100%';
 
-    startTranscription(tNum);
+    startAudioCapture(tNum);
     recInterval = setInterval(() => {
         speakSecs--;
         digitsEl.textContent = Math.max(speakSecs, 0) + 's';
         fillEl.style.width = Math.max(0, (speakSecs / speakSecs0) * 100) + '%';
         if (speakSecs <= 0) {
             clearInterval(recInterval);
-            stopTranscription();
+            stopAudioCaptureAndUpload(tNum);
             setPhase(tNum, 'done');
             labelEl.textContent = "Time's up";
             progLabelEl.textContent = 'Response complete';
@@ -343,32 +355,57 @@ function beginRecording(tNum) {
     }, 1000);
 }
 
-function startTranscription(tNum) {
-    if (!SpeechRecognition) return;
-    const textarea = document.getElementById('transcript-' + tNum);
-    recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
-    let savedText = textarea.value;
-    recognition.onresult = e => {
-        let interim = '', final = '';
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-            if (e.results[i].isFinal) final += e.results[i][0].transcript + ' ';
-            else interim += e.results[i][0].transcript;
-        }
-        savedText += final;
-        textarea.value = savedText + interim;
-        if (final) savedText = textarea.value.replace(interim, '');
-    };
-    recognition.onend = () => { if (recognitionActive) recognition.start(); };
-    recognition.start();
-    recognitionActive = true;
+async function startAudioCapture(tNum) {
+    audioChunks = [];
+    try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(mediaStream);
+        mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
+        mediaRecorder.start();
+    } catch (err) {
+        console.error('Microphone access failed for task ' + tNum + ':', err);
+        mediaRecorder = null;
+        // The prep/speak countdown still runs even without mic access, so a
+        // student who denies the permission prompt isn't blocked from
+        // finishing the test -- they just won't have a recording for this task.
+    }
 }
 
-function stopTranscription() {
-    recognitionActive = false;
-    if (recognition) recognition.stop();
+function stopAudioCaptureAndUpload(tNum) {
+    if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+    const recorder = mediaRecorder;
+    const stream = mediaStream;
+    recorder.onstop = () => {
+        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        if (blob.size > 0) {
+            recordedBlobs[tNum] = blob;
+            uploadPromises.push(uploadRecording(tNum, blob));
+        }
+        stream.getTracks().forEach(t => t.stop());
+    };
+    recorder.stop();
+    mediaRecorder = null;
+}
+
+async function uploadRecording(tNum, blob) {
+    const fd = new FormData();
+    fd.append('audio', blob, 'task' + tNum + '.webm');
+    fd.append('test_code', TEST_CODE);
+    fd.append('task_number', tNum);
+    fd.append('task_title', TASK_PROMPTS[tNum].title);
+    fd.append('prompt', TASK_PROMPTS[tNum].prompt);
+    try {
+        const res = await fetch('<?php echo ACADEMY_URL; ?>api/speaking_upload.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.success && data.transcript) {
+            const textarea = document.getElementById('transcript-' + tNum);
+            if (textarea) textarea.value = data.transcript;
+        }
+        return data;
+    } catch (err) {
+        console.error('Upload failed for task ' + tNum + ':', err);
+        return null;
+    }
 }
 
 function showTask(n) {
@@ -388,7 +425,7 @@ function showTask(n) {
 function celpipSpeakingNext() {
     clearInterval(prepInterval);
     clearInterval(recInterval);
-    stopTranscription();
+    stopAudioCaptureAndUpload(currentTask); // no-op if this task's recording already finished naturally
     if (currentTask < TOTAL_TASKS) {
         showTask(currentTask + 1);
     } else {
@@ -404,7 +441,30 @@ function buildTasksPayload() {
     });
 }
 
+function renderRecordingsPanel() {
+    const list = document.getElementById('recordingsList');
+    if (!list) return;
+    const entries = Object.keys(recordedBlobs).map(Number).sort((a, b) => a - b);
+    if (entries.length === 0) {
+        list.innerHTML = '<p class="text-muted mb-0">No recordings were captured (microphone access may have been denied).</p>';
+        return;
+    }
+    list.innerHTML = entries.map(tNum => {
+        const url = URL.createObjectURL(recordedBlobs[tNum]);
+        const title = (TASK_PROMPTS[tNum] && TASK_PROMPTS[tNum].title) || ('Task ' + tNum);
+        return `<div class="d-flex align-items-center gap-3 flex-wrap p-2 border rounded-3">
+            <span class="fw-semibold" style="min-width:180px;">${title}</span>
+            <audio controls src="${url}" style="height:32px;flex:1;min-width:200px;"></audio>
+            <a href="${url}" download="${TEST_CODE}_task${tNum}.webm" class="btn btn-sm btn-outline-secondary"><i class="bi bi-download me-1"></i>Download</a>
+        </div>`;
+    }).join('');
+}
+
 async function submitAllTasks() {
+    // Let any still-in-flight uploads finish (and populate their transcript
+    // textareas from Groq) before reading transcripts for AI analysis.
+    await Promise.allSettled(uploadPromises);
+
     const tasks = buildTasksPayload();
     const empty = tasks.filter(t => t.transcription.length < 10);
     if (empty.length > 0) {
@@ -418,6 +478,7 @@ async function submitAllTasks() {
         if (!r.isConfirmed) return;
     }
 
+    renderRecordingsPanel();
     document.getElementById('celpipShell').style.display = 'none';
     document.getElementById('loadingSection').classList.remove('d-none');
 

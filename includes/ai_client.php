@@ -263,3 +263,53 @@ function transcribeWithWhisper($audioFilePath) {
         'text' => $result['text']
     ];
 }
+
+/**
+ * Transcribe audio with Groq's hosted Whisper (OpenAI-compatible endpoint,
+ * usable within Groq's free tier). Used by the speaking-recording upload
+ * pipeline (academy/api/speaking_upload.php) instead of paid OpenAI Whisper.
+ */
+function transcribeWithGroq($audioFilePath) {
+    $ch = curl_init('https://api.groq.com/openai/v1/audio/transcriptions');
+
+    $postFields = [
+        'file' => new CURLFile($audioFilePath, 'audio/webm', 'recording.webm'),
+        'model' => 'whisper-large-v3-turbo'
+    ];
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $postFields,
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Bearer ' . GROQ_API_KEY
+        ]
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($curlError) {
+        return ['success' => false, 'error' => 'Network error: ' . $curlError];
+    }
+
+    if ($httpCode !== 200) {
+        $error = json_decode($response, true);
+        return [
+            'success' => false,
+            'error' => $error['error']['message'] ?? "Groq transcription API error (HTTP $httpCode)"
+        ];
+    }
+
+    $result = json_decode($response, true);
+    if (!isset($result['text'])) {
+        return ['success' => false, 'error' => 'Unexpected response format from Groq API'];
+    }
+
+    return [
+        'success' => true,
+        'text' => $result['text']
+    ];
+}
