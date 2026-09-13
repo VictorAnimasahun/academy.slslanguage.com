@@ -45,9 +45,9 @@ if (!can_access('intermediate')) {
 
             <div class="content-section">
                 <h2><i class="bi bi-collection me-2" style="color:#0b77ff;"></i>Six Data Points, One Trend Line</h2>
-                <p>By now you have six full-skill data points per skill: Checkpoints 1-4, Mock 1, and Mock 2. This class is about reading the trend across all six, not just celebrating or worrying about Mock 2's number in isolation.</p>
+                <p>By now you have six full-skill data points per skill: your 4 complete practice-test sittings (Weeks 2-10) plus Mock 1 and Mock 2. This class is about reading the trend across all six, not just celebrating or worrying about Mock 2's number in isolation.</p>
                 <table class="table table-bordered mt-2 mb-3">
-                    <thead style="background:#f1f5f9;"><tr><th>Skill</th><th>CP1</th><th>CP2</th><th>Mock 1</th><th>CP3</th><th>CP4</th><th>Mock 2</th></tr></thead>
+                    <thead style="background:#f1f5f9;"><tr><th>Skill</th><th>Test 1</th><th>Test 2</th><th>Test 3</th><th>Mock 1</th><th>Test 4</th><th>Mock 2</th></tr></thead>
                     <tbody>
                         <tr><td>Listening</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                         <tr><td>Reading</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>

@@ -1308,6 +1308,33 @@ DELETE FROM modules WHERE id BETWEEN 44 AND 55;
 
 ---
 
+## 082 — Redesign CELPIP 3-Month (course 14) classes to one test + one micro-lesson per day
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-13 | Verified: `SELECT COUNT(*) FROM lessons WHERE course_id=14` = 24; all 16 `class_day.php` slot variants + the 5 unchanged classes (C1, C16, C22, C23, C24) return HTTP 200 via Playwright with correct `h1` and expected real-link/placeholder counts per skill; course_overview.php accordion renders all 24 classes numbered 1-24 with correct titles and updated module headers. |
+| Live  | [ ] | | |
+
+**What it does:** supersedes part of migration 081. The user reviewed the paired-checkpoint design (one class testing Listening+Speaking together, the paired class testing Reading+Writing together) and asked for a different shape: every class day pairs exactly ONE complete practice test (one skill) with ONE narrow teaching micro-lesson on a *different* skill, so no class day has more than one complete test and every class day still teaches something new. Replaces the 8 checkpoint_hub.php-served classes and 8 of the old standalone week2/3/5/7 teaching files (16 classes total: C3-C14, C17-C20) with a single new reusable page, `courses/CELPIP_Gen/lessons/class_day.php?slot=cN`, holding real, specific teaching content per slot (e.g. "Reading Part 1 — Correspondence", "Listening Inference & Signal Words") alongside that day's complete-test link. Updates 8 module titles (ids 45-50, 52-53) from "Checkpoint N"/"Targeted Correction"/"Strategy Refinement" labels (concepts that no longer exist in this design) to a plain "Week N — Skill + Skill Focus" label, since every week 2-10 now has the identical one-test/one-lesson shape.
+
+Real-vs-placeholder allocation is unchanged from 081's resource constraints: Reading/Writing/Speaking each get 3 real sittings (celpip_reading/writing/speaking_00N) across their first 3 occurrences per skill, with the 4th (Weeks 9-10) an honest "not built yet" placeholder; Listening has zero real practice tests at all, so all 4 Listening slots (C3, C7, C11, C17) are placeholders. Also fixed stale "Checkpoint 1/2/3/4" references and course_overview.php's now-inapplicable checkpoint-week color-coding, deleted the 8 obsolete week2/3/5/7 files and checkpoint_hub.php (confirmed nothing else referenced them), and updated week8_mock1_review.php's and week11_final_review.php's trend-comparison tables/copy to reflect "Test 1/2/3/4" instead of "Checkpoint 1/2/3/4".
+
+**Rollback:**
+```sql
+DELETE FROM lessons WHERE course_id = 14 AND module_id IN (45,46,47,48,49,50,52,53);
+UPDATE modules SET module_title = 'Week 2 — Core Teaching' WHERE id = 45;
+UPDATE modules SET module_title = 'Week 3 — Core Teaching' WHERE id = 46;
+UPDATE modules SET module_title = 'Week 4 — Checkpoint 1' WHERE id = 47;
+UPDATE modules SET module_title = 'Week 5 — Targeted Correction' WHERE id = 48;
+UPDATE modules SET module_title = 'Week 6 — Checkpoint 2' WHERE id = 49;
+UPDATE modules SET module_title = 'Week 7 — Strategy Refinement (pre-Mock 1)' WHERE id = 50;
+UPDATE modules SET module_title = 'Week 9 — Checkpoint 3' WHERE id = 52;
+UPDATE modules SET module_title = 'Week 10 — Checkpoint 4' WHERE id = 53;
+-- Then restore the deleted week2/3/5/7 files and checkpoint_hub.php from source control history, and re-run migration 081's lesson INSERT block for these 8 modules.
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

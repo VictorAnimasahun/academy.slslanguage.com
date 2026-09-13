@@ -31,14 +31,13 @@ foreach ($rows as $row) {
 }
 
 $student_tier_level = get_student_tier_level();
-// Color-code by week type: checkpoint weeks (paired complete-test classes)
-// and mock weeks (full 4-skill simulations) stand out from regular teaching
-// weeks. Keyed by module_order (1-12), matching the 12-week schedule.
-$checkpoint_weeks = [4, 6, 9, 10];
+// Color-code by week type: mock weeks (full 4-skill simulations) stand out
+// from the regular one-test-per-class weeks. Keyed by module_order (1-12),
+// matching the 12-week schedule.
 $mock_weeks = [8, 11];
 $month_colors = [];
 foreach (range(1, 12) as $w) {
-    $month_colors[$w] = in_array($w, $mock_weeks) ? '#16a34a' : (in_array($w, $checkpoint_weeks) ? '#6366f1' : '#0b77ff');
+    $month_colors[$w] = in_array($w, $mock_weeks) ? '#16a34a' : '#0b77ff';
 }
 ?>
 <!DOCTYPE html>
@@ -164,7 +163,7 @@ foreach (range(1, 12) as $w) {
                     <div class="info-card"><h4><i class="bi bi-play-circle me-2"></i>Lesson Content</h4><p class="mb-0">A dedicated class for every session across the full 12-week schedule.</p></div>
                     <div class="info-card"><h4><i class="bi bi-question-circle me-2"></i>Class Quizzes</h4><p class="mb-0">Consolidation quizzes after every class to lock in strategies and CLB band descriptors.</p></div>
                     <div class="info-card"><h4><i class="bi bi-house-heart me-2"></i>Take-Home Tasks</h4><p class="mb-0">One practical task per class — email drafts, listening notes, or speaking recordings.</p></div>
-                    <div class="info-card"><h4><i class="bi bi-clipboard-check me-2"></i>4 Checkpoint Sittings</h4><p class="mb-0">Every skill gets a complete, full-length practice test 4 separate times across the program (Reading, Writing, Speaking already built; Listening checkpoints are marked as coming soon).</p></div>
+                    <div class="info-card"><h4><i class="bi bi-clipboard-check me-2"></i>4 Complete Test Sittings Per Skill</h4><p class="mb-0">Every skill gets a complete, full-length practice test 4 separate times across the program, one skill per class day (Reading, Writing, Speaking already built; Listening tests are marked as coming soon).</p></div>
                     <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>2 Full Mock Exams</h4><p class="mb-0">Full timed 4-skill mock exams at Weeks 8 and 11, with detailed written feedback and CLB band score reports.</p></div>
                     <div class="info-card"><h4><i class="bi bi-patch-check me-2"></i>Completion Certificate</h4><p class="mb-0">An SLS certificate of completion awarded upon finishing the full Masterclass program.</p></div>
                 </div>

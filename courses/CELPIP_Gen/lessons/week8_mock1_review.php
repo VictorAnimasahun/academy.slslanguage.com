@@ -45,40 +45,40 @@ if (!can_access('intermediate')) {
 
             <div class="content-section">
                 <h2><i class="bi bi-award me-2" style="color:#0b77ff;"></i>Your First Real Full Simulation Is Done</h2>
-                <p>Mock Test 1 (last class) was your first genuinely complete, uninterrupted, all-4-skills simulation — closer to real test-day conditions than any single checkpoint so far, since checkpoints test skills in pairs, not all four back to back.</p>
+                <p>Mock Test 1 (last class) was your first genuinely complete, uninterrupted, all-4-skills simulation — closer to real test-day conditions than any single class so far, since Weeks 2-7 each tested only one skill at a time alongside a different skill's lesson.</p>
             </div>
 
             <div class="content-section">
-                <h2><i class="bi bi-graph-up me-2" style="color:#0b77ff;"></i>Comparing Mock 1 Against Your Checkpoints</h2>
-                <p>Build a simple comparison for each skill:</p>
+                <h2><i class="bi bi-graph-up me-2" style="color:#0b77ff;"></i>Comparing Mock 1 Against Your Three Practice Sittings</h2>
+                <p>By now you've sat each skill's complete practice test three times (Weeks 2, 4, 6 for Listening/Reading; Weeks 3, 5, 7 for Speaking/Writing). Build a simple comparison for each skill:</p>
                 <table class="table table-bordered mt-2 mb-3">
-                    <thead style="background:#f1f5f9;"><tr><th>Skill</th><th>Checkpoint 1</th><th>Checkpoint 2</th><th>Mock 1</th><th>Trend</th></tr></thead>
+                    <thead style="background:#f1f5f9;"><tr><th>Skill</th><th>Test 1</th><th>Test 2</th><th>Test 3</th><th>Mock 1</th><th>Trend</th></tr></thead>
                     <tbody>
-                        <tr><td>Listening</td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>Reading</td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>Writing</td><td></td><td></td><td></td><td></td></tr>
-                        <tr><td>Speaking</td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>Listening</td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>Reading</td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>Writing</td><td></td><td></td><td></td><td></td><td></td></tr>
+                        <tr><td>Speaking</td><td></td><td></td><td></td><td></td><td></td></tr>
                     </tbody>
                 </table>
                 <div class="highlight-box mt-2">
                     <h5><i class="bi bi-lightbulb me-2"></i>Reading Fatigue Into the Picture</h5>
-                    <p class="mb-0">If a skill dropped in Mock 1 versus your checkpoints, consider whether it's a genuine gap or simply mental fatigue from sitting all four skills back to back for the first time — that distinction changes whether Week 9-10's checkpoints should target content or stamina.</p>
+                    <p class="mb-0">If a skill dropped in Mock 1 versus your earlier sittings, consider whether it's a genuine gap or simply mental fatigue from sitting all four skills back to back for the first time — that distinction changes whether Weeks 9-10's practice sittings should target content or stamina.</p>
                 </div>
             </div>
 
             <div class="content-section">
                 <h2><i class="bi bi-bullseye me-2" style="color:#0b77ff;"></i>Setting a Realistic Band Estimate</h2>
-                <p>Using Mock 1's results, write down a realistic current CLB estimate per skill and compare it honestly against your Week 1 target. Two checkpoints and one full mock remain to close any gap.</p>
+                <p>Using Mock 1's results, write down a realistic current CLB estimate per skill and compare it honestly against your Week 1 target. Your 4th practice sitting per skill (Weeks 9-10) and one full mock remain to close any gap.</p>
             </div>
 
             <div class="content-section">
-                <h2><i class="bi bi-house-heart me-2" style="color:#0b77ff;"></i>Before Checkpoint 3</h2>
+                <h2><i class="bi bi-house-heart me-2" style="color:#0b77ff;"></i>Before Week 9</h2>
                 <div class="highlight-box"><p class="mb-0">Finalize your comparison table and identify one specific priority per skill to focus on across Weeks 9-10.</p></div>
             </div>
 
             <div class="action-buttons">
                 <a href="<?= ACADEMY_URL ?>resources/mock_tests/celpip_full_mock_a.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Previous: Mock Test 1</a>
-                <a href="checkpoint_hub.php?slot=c17" class="btn btn-primary" style="background-color:#0b77ff;border-color:#0b77ff;">Next: Checkpoint 3 <i class="bi bi-arrow-right ms-1"></i></a>
+                <a href="class_day.php?slot=c17" class="btn btn-primary" style="background-color:#0b77ff;border-color:#0b77ff;">Next Class <i class="bi bi-arrow-right ms-1"></i></a>
                 <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-primary"><i class="bi bi-grid me-1"></i> Course Overview</a>
             </div>
         </div>
