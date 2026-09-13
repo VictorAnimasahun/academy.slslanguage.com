@@ -31,7 +31,15 @@ foreach ($rows as $row) {
 }
 
 $student_tier_level = get_student_tier_level();
-$month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
+// Color-code by week type: checkpoint weeks (paired complete-test classes)
+// and mock weeks (full 4-skill simulations) stand out from regular teaching
+// weeks. Keyed by module_order (1-12), matching the 12-week schedule.
+$checkpoint_weeks = [4, 6, 9, 10];
+$mock_weeks = [8, 11];
+$month_colors = [];
+foreach (range(1, 12) as $w) {
+    $month_colors[$w] = in_array($w, $mock_weeks) ? '#16a34a' : (in_array($w, $checkpoint_weeks) ? '#6366f1' : '#0b77ff');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,14 +83,14 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                         <strong><?= htmlspecialchars($course['instructor_name'] ?? 'SLS') ?></strong>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <?php if ($student_tier_level >= 4): ?>
-                            <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i>Access: Fluent Plan</span>
+                        <?php if ($student_tier_level >= 2): ?>
+                            <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i>Access: Intermediate Plan</span>
                         <?php else: ?>
-                            <a href="../../upgrade.php?required=fluent" class="btn btn-primary btn-sm">
+                            <a href="../../upgrade.php?required=intermediate" class="btn btn-primary btn-sm">
                                 <i class="bi bi-lightning-charge me-1"></i>Upgrade to Access
                             </a>
                         <?php endif; ?>
-                        <a href="<?= ACADEMY_URL ?>courses/CELPIP_intro/intro.php?from=CELPIP_Gen_3Mo" class="btn btn-outline-primary btn-sm">
+                        <a href="<?= ACADEMY_URL ?>courses/CELPIP_Gen/lessons/week1_foundational_assessment.php?from=CELPIP_Gen_3Mo" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-play-circle me-1"></i>Class 1 (Free Preview)
                         </a>
                     </div>
@@ -92,12 +100,11 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
             <div class="content-section">
                 <h2>Course Content</h2>
                 <p class="text-muted small mb-3">
-                    <i class="bi bi-lock-fill me-1 text-warning"></i>Month 1: <strong>Intermediate</strong> plan.
-                    Month 2: <strong>Advanced</strong> plan.
-                    Month 3: <strong>Fluent</strong> plan.
-                    <i class="bi bi-unlock-fill ms-3 me-1 text-success"></i>Class 1 is free.
+                    <i class="bi bi-unlock-fill me-1 text-success"></i>Classes 1-2 (Week 1) are free.
+                    <i class="bi bi-lock-fill ms-3 me-1 text-warning"></i>Classes 3-24 require the <strong>Intermediate</strong> plan.
                 </p>
                 <div class="accordion" id="courseAccordion">
+                <?php $global_class_counter = 0; ?>
                 <?php foreach ($modules as $month_num => $module): ?>
                     <?php $color = $month_colors[$month_num] ?? '#0b77ff'; $collapse_id = 'month' . $month_num; $is_open = ($month_num === 1); ?>
                     <div class="accordion-item mb-2" style="border-radius:10px;overflow:hidden;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
@@ -114,10 +121,10 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                             <div class="accordion-body p-0">
                                 <ul class="list-unstyled mb-0">
                                 <?php foreach ($module['lessons'] as $idx => $lesson):
-                                    $global_class   = ($month_num - 1) * 8 + (int) $lesson['lesson_order'];
+                                    $global_class   = ++$global_class_counter;
                                     $required_level = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$lesson['min_tier']] ?? 1;
                                     $can_access     = $student_tier_level >= $required_level;
-                                    $is_mock        = in_array($global_class, [8, 16, 24]);
+                                    $is_mock        = in_array($global_class, [15, 21]);
                                     $file_path      = $lesson['file_path'] ?? '';
                                 ?>
                                 <li class="d-flex align-items-center justify-content-between px-3 py-2 <?= $idx < count($module['lessons'])-1 ? 'border-bottom' : '' ?>"
@@ -127,7 +134,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                                             <a href="<?= ACADEMY_URL . htmlspecialchars($file_path) ?>?from=CELPIP_Gen_3Mo" class="text-decoration-none text-dark d-flex align-items-center gap-2">
                                                 <i class="bi <?= htmlspecialchars($lesson['icon'] ?? 'bi-play-circle') ?>" style="color:<?= $color ?>;font-size:1.1rem;min-width:20px;"></i>
                                                 <span><strong>Class <?= $global_class ?>:</strong> <?= htmlspecialchars($lesson['title']) ?>
-                                                    <?php if ($global_class === 1): ?><span class="badge bg-success ms-1">Free</span><?php endif; ?>
+                                                    <?php if ($required_level === 1): ?><span class="badge bg-success ms-1">Free</span><?php endif; ?>
                                                 </span>
                                             </a>
                                         <?php else: ?>
@@ -154,17 +161,17 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
             <div class="content-section">
                 <h2>What's Included</h2>
                 <div class="info-grid">
-                    <div class="info-card"><h4><i class="bi bi-play-circle me-2"></i>Lesson Videos</h4><p class="mb-0">Curated CELPIP-specific video lessons for every class across all three months.</p></div>
+                    <div class="info-card"><h4><i class="bi bi-play-circle me-2"></i>Lesson Content</h4><p class="mb-0">A dedicated class for every session across the full 12-week schedule.</p></div>
                     <div class="info-card"><h4><i class="bi bi-question-circle me-2"></i>Class Quizzes</h4><p class="mb-0">Consolidation quizzes after every class to lock in strategies and CLB band descriptors.</p></div>
                     <div class="info-card"><h4><i class="bi bi-house-heart me-2"></i>Take-Home Tasks</h4><p class="mb-0">One practical task per class — email drafts, listening notes, or speaking recordings.</p></div>
-                    <div class="info-card"><h4><i class="bi bi-clipboard-check me-2"></i>5 Practice Test Sets</h4><p class="mb-0">Full CELPIP practice test sets across all four skills, spread across the 21 teaching classes.</p></div>
-                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>3 Full Mock Exams</h4><p class="mb-0">End-of-month full timed mock exams with detailed written feedback and CLB band score reports.</p></div>
+                    <div class="info-card"><h4><i class="bi bi-clipboard-check me-2"></i>4 Checkpoint Sittings</h4><p class="mb-0">Every skill gets a complete, full-length practice test 4 separate times across the program (Reading, Writing, Speaking already built; Listening checkpoints are marked as coming soon).</p></div>
+                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>2 Full Mock Exams</h4><p class="mb-0">Full timed 4-skill mock exams at Weeks 8 and 11, with detailed written feedback and CLB band score reports.</p></div>
                     <div class="info-card"><h4><i class="bi bi-patch-check me-2"></i>Completion Certificate</h4><p class="mb-0">An SLS certificate of completion awarded upon finishing the full Masterclass program.</p></div>
                 </div>
             </div>
 
             <div class="action-buttons">
-                <a href="<?= ACADEMY_URL ?>courses/CELPIP_intro/intro.php?from=CELPIP_Gen_3Mo" class="btn btn-primary btn-lg">
+                <a href="<?= ACADEMY_URL ?>courses/CELPIP_Gen/lessons/week1_foundational_assessment.php?from=CELPIP_Gen_3Mo" class="btn btn-primary btn-lg">
                     <i class="bi bi-play-circle me-2"></i>Start with Class 1 (Free Preview)
                 </a>
                 <a href="../courses_catalogue.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-circle me-2"></i>All Courses</a>
@@ -178,9 +185,10 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
         <div class="course-card" style="background:linear-gradient(135deg,#16a34a 0%,#0b77ff 100%);color:white;">
             <h6 class="mb-2">Quick Access</h6>
             <div class="d-grid gap-1">
-                <a href="<?= ACADEMY_URL ?>courses/CELPIP_intro/intro.php?from=CELPIP_Gen_3Mo" class="btn btn-light btn-sm">Class 1 — Free Preview</a>
+                <a href="<?= ACADEMY_URL ?>courses/CELPIP_Gen/lessons/week1_foundational_assessment.php?from=CELPIP_Gen_3Mo" class="btn btn-light btn-sm">Class 1 — Free Preview</a>
+                <a href="<?= ACADEMY_URL ?>courses/CELPIP_intro/celpip_mini_mock.php?from=CELPIP_Gen_3Mo" class="btn btn-outline-light btn-sm">Mini Diagnostic (Class 2)</a>
                 <?php if ($student_tier_level >= 2): ?>
-                <a href="<?= ACADEMY_URL ?>courses/CELPIP_intro/celpip_mini_mock.php?from=CELPIP_Gen_3Mo" class="btn btn-outline-light btn-sm">Mock Exam 1</a>
+                <a href="<?= ACADEMY_URL ?>resources/mock_tests/celpip_full_mock_a.php?from=CELPIP_Gen_3Mo" class="btn btn-outline-light btn-sm">Mock Exam 1</a>
                 <?php endif; ?>
                 <?php if ($student_tier_level < 2): ?>
                 <a href="../../upgrade.php?required=intermediate" class="btn btn-warning btn-sm"><i class="bi bi-lightning-charge me-1"></i>Upgrade to Unlock</a>
