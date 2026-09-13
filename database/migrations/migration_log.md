@@ -1288,6 +1288,26 @@ ALTER TABLE attempt_answers DROP COLUMN flagged;
 
 ---
 
+## 081 — Rebuild CELPIP General Masterclass 3-Month (course 14) into an independent 24-class/12-week schedule
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-13 | Verified: `SELECT COUNT(*) FROM lessons WHERE course_id=14` = 24; all 21 unique pages (13 new teaching files + 8 `checkpoint_hub.php` slot variants) return HTTP 200 via Playwright with correct `h1`; course_overview.php for CELPIP_Gen_3Mo renders all 12 "Week N" module headers dynamically from the DB join. |
+| Live  | [ ] | | |
+
+**What it does:** deletes course 14's old 3 modules / 24 lessons (which pointed at the same shared `month1_*`/`month2_*` files still used by courses 12 and 13) and replaces them with 12 new modules (one per week, ids 44-55) and 24 new lessons, decoupling the 3-Month course from that shared content entirely. The new schedule gives each of Listening/Reading/Writing/Speaking 4 complete practice-test sittings via 4 paired checkpoint classes (Weeks 4, 6, 9, 10 — one class per pair runs a full Listening+Speaking test back-to-back, the other a full Reading+Writing test), plus a Week 1 diagnostic and 2 full mocks (Weeks 8, 11). Real, already-built practice tests are wired in directly for Reading/Writing/Speaking checkpoints 1-3 and both mocks. Checkpoint classes are served by one new reusable page, `courses/CELPIP_Gen/lessons/checkpoint_hub.php?slot=cN`, instead of 8 near-duplicate files — it renders real links where content exists and an honest "not built yet" card where it doesn't (all Listening checkpoints, since no real CELPIP Listening practice test exists yet; and checkpoint 4's Reading/Writing/Speaking, since only 3 real practice tests of each exist). 13 new standalone teaching-content files were also added for the non-checkpoint classes (foundational assessment, core teaching, drilling, strategy, mock reviews, final prep) — all `php -l` linted clean.
+
+This is a deliberate wireframe: the goal was a complete, honest 24-class structural skeleton that can be filled in later (specifically: 4 real Listening practice tests, and a 4th Reading/Writing/Speaking practice test), not a claim that all content already exists. Courses 12 (1-Month) and 13 (2-Month) are untouched and keep the shared `month1_*`/`month2_*` content as before.
+
+**Rollback:**
+```sql
+DELETE FROM lessons WHERE course_id = 14 AND module_id BETWEEN 44 AND 55;
+DELETE FROM modules WHERE id BETWEEN 44 AND 55;
+-- Re-run the pre-081 3-module/24-lesson INSERT for course 14 from source control history if reverting fully.
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
