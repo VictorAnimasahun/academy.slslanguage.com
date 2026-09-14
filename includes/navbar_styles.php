@@ -312,16 +312,11 @@
 	}
 
 	/* ── Responsive ───────────────────────────────────────────────── */
-	@media (max-width: 1399px) {
+	@media (max-width: 1199px) {
 		.advert-sidebar {
 			display: none;
 		}
-		.main-wrapper {
-			margin-right: 0;
-		}
-	}
 
-	@media (max-width: 1199px) {
 		/* Hide desktop topbar — mobile-header takes over */
 		.topbar { display: none; }
 
