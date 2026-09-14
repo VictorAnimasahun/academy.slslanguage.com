@@ -19,28 +19,16 @@ if (!isset($_SESSION['user_id'])) {
 
 	<style>
 		.main-wrapper {
-		overflow: hidden !important;           /* ← No scrolling at all */
 		padding: 2rem 1.5rem !important;
-		height: 100vh;                         /* Full viewport height */
-		display: flex;
-		flex-direction: column;
 	}
 
-	/* Container takes remaining space after title */
-	.resources-container {
-		flex: 1;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-	}
-
-	/* Perfect square cards + ultra-tight grid that auto-fits */
+	/* Responsive grid that wraps to as many rows as needed and scrolls
+	   with the page — a fixed row count + hidden overflow previously
+	   clipped any cards past whatever fit in one viewport height. */
 	.resources-grid {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);   /* Exactly 4 columns on large screens */
-		grid-template-rows: repeat(3, 1fr);      /* Exactly 3 rows → 12 cards max visible */
-		gap: 0.75rem;                            /* Minimal spacing */
-		height: 100%;                            /* Fill remaining space */
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 1rem;
 		max-width: 100%;
 	}
 
@@ -72,19 +60,13 @@ if (!isset($_SESSION['user_id'])) {
 	.card-title { font-size: 1.18rem; font-weight: 600; margin-bottom: 0.4rem; }
 	.card-text { font-size: 0.88rem; opacity: 0.9; }
 
-	/* Responsive fallbacks – still no scrolling */
-	@media (max-width: 1399px) {
+	@media (max-width: 576px) {
 		.resources-grid {
-			grid-template-columns: repeat(3, 1fr);
-			grid-template-rows: repeat(4, 1fr);
+			grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+			gap: 0.75rem;
 		}
-	}
-	@media (max-width: 1199px) {
-		.resources-grid {
-			grid-template-columns: repeat(3, 1fr);
-			grid-template-rows: repeat(4, 1fr);
-			gap: 0.9rem;
-		}
+		.card-icon { font-size: 2.4rem; margin-bottom: 0.5rem; }
+		.card-title { font-size: 1rem; }
 	}
 	</style>
 </head>
