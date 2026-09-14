@@ -5,6 +5,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
     exit();
 }
+require_once INCLUDES_PATH . '/admin_check.php';
+$isAdmin = is_platform_admin();
 
 $testCode  = 'IELTS_PT_L_001';
 $timeLimit = 30 * 60;
@@ -387,11 +389,15 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
                     <div class="timer-display" id="timerEl">30:00</div>
                 </div>
 
-                <!-- Part tabs -->
+                <!-- Part tabs — click-navigable for admins only. Students follow
+                     the real IELTS flow: no pausing, no jumping ahead or back,
+                     each part's recording auto-advances to the next once it
+                     finishes (see JS below). -->
                 <div class="d-flex border-bottom mb-4" id="partTabs">
                     <?php foreach ($parts as $pNum => $p): ?>
                     <button class="part-tab <?= $pNum === 1 ? 'active' : '' ?>"
-                            onclick="switchPart(<?= $pNum ?>)" id="ptab-<?= $pNum ?>">
+                            onclick="switchPart(<?= $pNum ?>, this)" id="ptab-<?= $pNum ?>"
+                            <?= (!$isAdmin && $pNum !== 1) ? 'disabled style="cursor:default;"' : '' ?>>
                         <?= $p['title'] ?>
                         <span class="text-muted" style="font-size:.72rem;">
                             Q<?= $p['q_range'][0] ?>–<?= $p['q_range'][1] ?>
@@ -407,13 +413,14 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
                         <i class="bi bi-info-circle me-1"></i><?= htmlspecialchars($p['description']) ?>
                     </p>
 
-                    <!-- Audio player -->
-                    <div class="audio-bar">
-                        <button class="play-btn" onclick="toggleAudio(<?= $pNum ?>)" id="playBtn-<?= $pNum ?>">
-                            <i class="bi bi-play-fill" id="playIcon-<?= $pNum ?>"></i>
-                        </button>
+                    <!-- Audio player — no play/pause control: the recording
+                         plays automatically and continuously, exactly like the
+                         real IELTS test. A "Tap to play" button appears only
+                         if the browser blocks autoplay outright. -->
+                    <div class="audio-bar" id="audioBar-<?= $pNum ?>">
+                        <i class="bi bi-volume-up-fill" style="font-size:1.1rem;color:#10b981;flex-shrink:0;"></i>
                         <audio id="audio-<?= $pNum ?>" src="<?= htmlspecialchars($p['audio_url']) ?>"></audio>
-                        <span class="text-muted small"><?= $p['title'] ?> Recording</span>
+                        <span class="text-muted small"><?= $p['title'] ?> Recording — playing…</span>
                         <span class="ms-auto text-muted small" id="audioTime-<?= $pNum ?>">0:00</span>
                     </div>
 
@@ -553,13 +560,15 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
                         <?php endforeach; ?>
                     <?php endif; ?>
 
-                    <!-- Navigation -->
+                    <!-- Navigation — students advance automatically when each
+                         part's recording finishes; admins keep a manual button
+                         for previewing content. -->
                     <div class="d-flex justify-content-end mt-4">
-                        <?php if ($pNum < 4): ?>
-                        <button class="btn btn-outline-success" onclick="switchPart(<?= $pNum + 1 ?>)">
+                        <?php if ($pNum < 4 && $isAdmin): ?>
+                        <button class="btn btn-outline-success" onclick="switchPart(<?= $pNum + 1 ?>, document.getElementById('ptab-<?= $pNum + 1 ?>'), true)">
                             <?= $parts[$pNum + 1]['title'] ?> <i class="bi bi-arrow-right ms-1"></i>
                         </button>
-                        <?php else: ?>
+                        <?php elseif ($pNum === 4): ?>
                         <button class="btn btn-success px-4" id="submitBtn" onclick="submitTest()">
                             Submit <i class="bi bi-send ms-1"></i>
                         </button>
@@ -581,6 +590,8 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
     const CORRECT      = <?= json_encode($answers) ?>;
     const CORRECT_PAIR = <?= json_encode($answers_pair) ?>; // Q29 & 30
     const TEST_CODE    = <?= json_encode($testCode) ?>;
+    const IS_ADMIN     = <?= $isAdmin ? 'true' : 'false' ?>;
+    const TOTAL_PARTS  = <?= count($parts) ?>;
     const startTime    = Date.now();
     let userAnswers = {}, timeLeft = <?= $timeLimit ?>, submitted = false;
 
@@ -629,29 +640,49 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
         userAnswers[30] = sel[1] || '';
     }
 
-    // ── Part tabs ────────────────────────────────────────
-    function switchPart(n) {
+    // ── Part tabs — locked for students ───────────────────
+    // Students: switchPart is only ever called programmatically (force=true)
+    // when a part's recording ends — direct tab clicks are blocked by the
+    // disabled attribute already, this is a second guard against calling it
+    // any other way. Admins keep free tab-navigation for previewing content.
+    function switchPart(n, btn, force = false) {
+        if (!force && !IS_ADMIN && btn && btn.disabled) return;
         document.querySelectorAll('.part-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.part-tab').forEach(t => t.classList.remove('active'));
         document.getElementById('ppanel-' + n).classList.add('active');
-        document.getElementById('ptab-' + n).classList.add('active');
+        const tab = document.getElementById('ptab-' + n);
+        if (tab) tab.classList.add('active');
+        playPartAudio(n);
     }
 
-    // ── Audio ────────────────────────────────────────────
-    function toggleAudio(pNum) {
+    // ── Audio ──────────────────────────────────────────────
+    // No manual play/pause — each part's recording plays automatically and
+    // continuously, exactly like the real IELTS test. playWithFallback covers
+    // the case where a browser blocks autoplay outright.
+    function playWithFallback(mediaEl, containerEl) {
+        mediaEl.play().catch(() => {
+            let btn = containerEl.querySelector('.tap-to-play-btn');
+            if (btn) return;
+            btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn btn-success btn-sm tap-to-play-btn ms-2';
+            btn.innerHTML = '<i class="bi bi-play-fill me-1"></i>Tap to play';
+            btn.onclick = () => { mediaEl.play(); btn.remove(); };
+            containerEl.appendChild(btn);
+        });
+    }
+    function playPartAudio(pNum) {
         const audio = document.getElementById('audio-' + pNum);
-        const icon  = document.getElementById('playIcon-' + pNum);
-        if (audio.paused) {
-            audio.play().catch(() => {});
-            icon.className = 'bi bi-pause-fill';
-        } else {
-            audio.pause();
-            icon.className = 'bi bi-play-fill';
-        }
+        const container = document.getElementById('audioBar-' + pNum);
         audio.ontimeupdate = () => {
             document.getElementById('audioTime-' + pNum).textContent = fmtTime(Math.floor(audio.currentTime));
         };
-        audio.onended = () => { icon.className = 'bi bi-play-fill'; };
+        audio.onended = () => {
+            if (IS_ADMIN) return; // admins previewing content aren't forced forward
+            if (pNum >= TOTAL_PARTS) return; // last part done — nothing further to load
+            switchPart(pNum + 1, document.getElementById('ptab-' + (pNum + 1)), true);
+        };
+        playWithFallback(audio, container);
     }
 
     // ── Submit ───────────────────────────────────────────
@@ -797,6 +828,10 @@ $answers_pair = ['b', 'd']; // Q29 & Q30 multi-select special case — graded as
         banner.style.display = 'block';
         banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+
+    // Auto-play Part 1's recording as soon as the test loads — students never
+    // have to press play themselves, matching the real IELTS test.
+    playPartAudio(1);
     </script>
 </body>
 </html>

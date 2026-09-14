@@ -153,21 +153,26 @@ $DURATION_SECS = 40 * 60; // 30 min audio + 10 min transfer
                 <source id="audioSrc" src="<?= htmlspecialchars($audioBase . 'listening_part1.mp3') ?>" type="audio/mpeg">
             </audio>
 
-            <!-- Audio player UI -->
+            <!-- Audio player UI — no play/pause control: the recording plays
+                 automatically and continuously, exactly like the real IELTS
+                 test. A "Tap to play" button appears only if the browser
+                 blocks autoplay outright (see playWithFallback in the JS). -->
             <div class="audio-box">
-                <button class="btn-play" onclick="togglePlay()"><i class="bi bi-play-fill" id="playIcon"></i></button>
+                <i class="bi bi-volume-up-fill" style="font-size:1.2rem;color:var(--accent,#0b77ff);flex-shrink:0;"></i>
                 <div class="progress-wrap">
-                    <input type="range" id="audioBar" min="0" max="100" value="0">
+                    <input type="range" id="audioBar" min="0" max="100" value="0" disabled style="pointer-events:none;">
                     <div class="audio-time" id="audioTime">0:00 / 0:00</div>
                 </div>
                 <div class="vol-wrap">
                     <i class="bi bi-volume-up" id="volIcon" onclick="toggleMute()"></i>
                     <input type="range" min="0" max="1" step="0.05" value="1" oninput="setVol(this.value)">
                 </div>
-                <div class="preview-pill hidden" id="previewPill"><i class="bi bi-eye me-1"></i>Preview: <strong id="previewNum">30</strong>s</div>
             </div>
 
-            <!-- Part tab bar + timer -->
+            <!-- Part tab bar + timer. Tabs are click-navigable for admins only —
+                 students follow the real IELTS flow: no pausing, no jumping
+                 ahead or back, each part's recording auto-advances to the
+                 next once it finishes (see JS below). -->
             <div class="part-tabs-bar">
                 <div class="part-tabs-scrollable">
                     <?php foreach ($parts as $pNum => $pqs):
@@ -176,7 +181,8 @@ $DURATION_SECS = 40 * 60; // 30 min audio + 10 min transfer
                     ?>
                     <button class="part-tab-btn <?= $pNum === 1 ? 'active' : '' ?>"
                             id="ptab-<?= $pNum ?>"
-                            onclick="switchPart(<?= $pNum ?>, this)">
+                            onclick="switchPart(<?= $pNum ?>, this)"
+                            <?= (!$isAdmin && $pNum !== 1) ? 'disabled style="cursor:default;"' : '' ?>>
                         <span class="done-dot"></span>
                         <?= $labels[$pNum - 1] ?? "Part {$pNum}" ?>
                         <span class="tab-qrange">Q<?= $f ?>–<?= $l ?></span>
@@ -391,6 +397,8 @@ $DURATION_SECS = 40 * 60; // 30 min audio + 10 min transfer
 const DURATION   = <?= $DURATION_SECS ?>;
 const SESSION_ID = <?= $session_id ?>;
 const totalQs    = <?= count($questions) ?>;
+const IS_ADMIN   = <?= $isAdmin ? 'true' : 'false' ?>;
+const TOTAL_PARTS = <?= count($parts) ?>;
 let elapsed      = 0;
 let timerInterval;
 let submitting   = false;
@@ -418,10 +426,10 @@ function startTimer() {
 }
 
 // ── Audio ─────────────────────────────────────────────────
-function togglePlay() {
-    if (audio.paused) { audio.play(); playIcon.className = 'bi bi-pause-fill'; }
-    else              { audio.pause(); playIcon.className = 'bi bi-play-fill'; }
-}
+// No manual play/pause — the recording plays automatically and
+// continuously, exactly like the real IELTS test. playWithFallback covers
+// the case where a browser blocks autoplay outright (rare once a student
+// has already clicked through "Start Test" earlier in the flow).
 function toggleMute() {
     audio.muted = !audio.muted;
     document.getElementById('volIcon').className = audio.muted ? 'bi bi-volume-mute' : 'bi bi-volume-up';
@@ -433,26 +441,59 @@ audio.addEventListener('timeupdate', () => {
         audioTime.textContent = fmt(Math.floor(audio.currentTime)) + ' / ' + fmt(Math.floor(audio.duration));
     }
 });
-audio.addEventListener('ended', () => { playIcon.className = 'bi bi-play-fill'; });
 
-// ── Part switching ─────────────────────────────────────────
-function switchPart(pNum, btn) {
+function playWithFallback(mediaEl, containerEl) {
+    mediaEl.play().catch(() => {
+        let btn = containerEl.querySelector('.tap-to-play-btn');
+        if (btn) return;
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-primary btn-sm tap-to-play-btn';
+        btn.style.marginLeft = '.75rem';
+        btn.innerHTML = '<i class="bi bi-play-fill me-1"></i>Tap to play';
+        btn.onclick = () => { mediaEl.play(); btn.remove(); };
+        containerEl.appendChild(btn);
+    });
+}
+
+// ── Part switching ───────────────────────────────────────────
+// Students: switchPart is only ever called programmatically (force=true)
+// when a part's audio ends — direct tab clicks are blocked by the disabled
+// attribute already, this is a second guard against calling it any other way.
+// Admins keep free tab-navigation for previewing content.
+function switchPart(pNum, btn, force = false) {
+    if (!force && !IS_ADMIN && btn && btn.disabled) return;
     document.querySelectorAll('.part-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.part-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('panel-' + pNum).classList.add('active');
-    btn.classList.add('active');
+    const tab = document.getElementById('ptab-' + pNum);
+    if (tab) tab.classList.add('active');
 
     const panel = document.getElementById('panel-' + pNum);
     const src   = panel.dataset.audio;
-    if (src && audioSrc.src !== src) {
+    if (src) {
         audio.pause();
-        playIcon.className = 'bi bi-play-fill';
         audioSrc.src = src;
         audio.load();
         audioBar.value = 0;
         audioTime.textContent = '0:00 / 0:00';
+        playWithFallback(audio, document.querySelector('.audio-box'));
     }
 }
+
+// When a part's recording finishes, auto-advance to the next part — students
+// never manually trigger this. The last part just stops (submit bar handles
+// finishing the section).
+audio.addEventListener('ended', () => {
+    if (IS_ADMIN) return;
+    const activePanel = document.querySelector('.part-panel.active');
+    if (!activePanel) return;
+    const currentPart = parseInt(activePanel.id.replace('panel-', ''), 10);
+    const fromTab = document.getElementById('ptab-' + currentPart);
+    if (fromTab) fromTab.classList.add('all-answered');
+    if (currentPart >= TOTAL_PARTS) return;
+    switchPart(currentPart + 1, document.getElementById('ptab-' + (currentPart + 1)), true);
+});
 
 // ── Progress ───────────────────────────────────────────────
 function collectAnswers() {
@@ -527,6 +568,11 @@ window.addEventListener('beforeunload', e => { if (!submitting) { e.preventDefau
 
 startTimer();
 updateProgress();
+// Auto-play Part 1's recording as soon as the test loads — students never
+// have to press play themselves, matching the real IELTS test.
+audioSrc.src = document.getElementById('panel-1').dataset.audio;
+audio.load();
+playWithFallback(audio, document.querySelector('.audio-box'));
 </script>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
