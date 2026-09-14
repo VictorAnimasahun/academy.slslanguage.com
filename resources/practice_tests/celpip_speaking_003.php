@@ -5,6 +5,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
     exit();
 }
+require_once INCLUDES_PATH . '/course_lock.php';
+require_course_enrollment([14], 'this CELPIP Speaking practice test');
 
 $testCode = 'CELPIP_PT_S_003';
 

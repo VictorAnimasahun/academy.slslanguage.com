@@ -5,6 +5,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+resources");
     exit();
 }
+require_once INCLUDES_PATH . '/course_lock.php';
+require_course_enrollment([9, 10, 11], 'this IELTS Writing practice test');
 
 $testCode   = 'IELTS_PT_W1_001';
 $timeLimit  = 20 * 60;  // 20 minutes in seconds

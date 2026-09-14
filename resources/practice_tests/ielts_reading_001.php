@@ -4,6 +4,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
     exit();
 }
+require_once INCLUDES_PATH . '/course_lock.php';
+require_course_enrollment([9, 10, 11], 'this IELTS Reading practice test');
 
 $testCode  = 'IELTS_PT_R_001';
 $timeLimit = 60 * 60;
