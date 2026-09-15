@@ -1,34 +1,30 @@
 <?php
 /**
- * CELPIP Listening — Practice Test 1.
+ * CELPIP Listening — Class content (Course 14, Week 2 Class 3 / slot c3).
  * Source: Downloads/CELPIP Practice Test C - Listening Transcripts (2).docx
+ * Audio: Downloads/Listening Test C Audios/ (real, wired in 2026-09-15).
+ *
+ * Lives inside the course (courses/CELPIP_Gen/lessons/), not under
+ * resources/practice_tests/ — this is course content, not a standalone
+ * catalog practice test. No course-enrollment guard: for now, any
+ * registered student can take any course's content for free to test it
+ * (see project memory) — only a login check gates this page.
  *
  * Ports the real, locked, sequential-then-all-screen interaction engine
  * already proven in resources/mock_tests/celpip_full_mock_listening.php
  * (Parts 1-3: one question at a time, own audio, no going back; Parts 4-6:
- * all questions shown after one shared recording) into a standalone,
- * self-contained practice test, matching the CELPIP Reading practice-test
- * convention of hardcoding question content directly in PHP (e.g.
- * celpip_reading_001.php) rather than reading it from the DB. The DB
- * (migration 084, test_code CELPIP_PT_L_001) only backs scoring via
+ * all questions shown after one shared recording). The DB (migration 084,
+ * test_code CELPIP_PT_L_001) only backs scoring via
  * loadTestAnswers()/save_attempt.php — it is not used for rendering.
- *
- * Audio has not been recorded yet. Every audio element degrades gracefully:
- * if a file 404s, a "Continue" button appears instead of silently getting
- * stuck waiting for an 'ended' event that will never fire — so this page
- * is fully usable end-to-end as a wireframe before real audio exists, and
- * needs no code changes once audio is dropped into the paths below
- * (assets/audio/CELPIP_PT_L_001/part{N}/track{M}.mp3, part{N}/q{M}.mp3).
  */
-require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
+require_once (dirname(dirname(dirname(__DIR__)))) . '/bootstrap.php';
+require_once __DIR__ . '/course_context.php';
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../edu_hub_registration.php?message=Please+login");
+    header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course");
     exit();
 }
 require_once INCLUDES_PATH . '/admin_check.php';
 $isAdmin = is_platform_admin();
-require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment([14], 'this CELPIP Listening practice test');
 
 $testCode  = 'CELPIP_PT_L_001';
 $audioBase = ACADEMY_URL . 'assets/audio/' . $testCode . '/';
@@ -219,9 +215,9 @@ $ANSWER_KEY = [
             <div class="d-flex align-items-center justify-content-between">
                 <nav aria-label="breadcrumb" class="mb-0">
                     <ol class="breadcrumb mb-0" style="font-size:.8rem;">
-                        <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
-                        <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
-                        <li class="breadcrumb-item active">CELPIP Listening – Practice 1</li>
+                        <li class="breadcrumb-item"><a href="../../courses_catalogue.php">Courses</a></li>
+                        <li class="breadcrumb-item"><a href="<?= htmlspecialchars($back['url']) ?>"><?= htmlspecialchars($back['name']) ?></a></li>
+                        <li class="breadcrumb-item active">Complete Listening Test — Part 1 (Correspondence)</li>
                     </ol>
                 </nav>
                 <div class="inline-timer" id="inlineTimer"><i class="bi bi-clock-fill"></i> 00:00</div>
@@ -351,6 +347,8 @@ $ANSWER_KEY = [
 <script>
 const DURATION    = <?= $timeLimit ?>;
 const TEST_CODE   = <?= json_encode($testCode) ?>;
+const SAVE_URL    = <?= json_encode(ACADEMY_URL . 'resources/practice_tests/save_attempt.php') ?>;
+const BACK_URL    = <?= json_encode($back['url']) ?>;
 const totalQs     = <?= $TOTAL_QS ?>;
 const CORRECT     = <?= json_encode($ANSWER_KEY) ?>;
 const IS_ADMIN    = <?= $isAdmin ? 'true' : 'false' ?>;
@@ -402,24 +400,48 @@ function goToNextPart(fromPartNum) {
 // gesture), or the file simply doesn't exist yet (audio not recorded), shows
 // a button that lets the student continue instead of getting stuck forever
 // waiting for an 'ended' event that will never fire.
+// Two genuinely different failure modes, handled differently:
+//   1. The file itself is missing/corrupt (a real 'error' event) — nothing
+//      to play, so skip forward and say so honestly.
+//   2. The browser blocked autoplay because there's been no user gesture on
+//      this page yet (mediaEl.play() rejects, no 'error' fires) — the file
+//      is perfectly fine, it just needs one tap to satisfy the browser's
+//      policy. That tap must actually PLAY the real audio, not skip past it.
 function playWithFallback(mediaEl, containerEl, onSkip) {
     let settled = false;
-    const showContinue = (label) => {
+
+    function showMissing() {
         if (settled) return;
         settled = true;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'celpip-tap-to-play';
-        btn.innerHTML = '<i class="bi bi-play-fill"></i> ' + label;
-        btn.onclick = () => { btn.remove(); if (onSkip) onSkip(); };
-        containerEl.appendChild(btn);
+        btn.innerHTML = '<i class="bi bi-play-fill"></i> Continue';
         const notice = document.createElement('div');
         notice.className = 'celpip-no-audio-notice';
         notice.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Audio not available yet for this recording — click Continue to proceed.';
+        btn.onclick = () => { btn.remove(); notice.remove(); if (onSkip) onSkip(); };
+        containerEl.appendChild(btn);
         containerEl.appendChild(notice);
-    };
-    mediaEl.addEventListener('error', () => showContinue('Continue'), { once: true });
-    mediaEl.play().catch(() => showContinue('Tap to play'));
+    }
+
+    function showTapToPlay() {
+        if (settled) return;
+        settled = true;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'celpip-tap-to-play';
+        btn.innerHTML = '<i class="bi bi-play-fill"></i> Tap to play';
+        btn.onclick = () => {
+            btn.remove();
+            settled = false;
+            mediaEl.play().catch(() => showMissing());
+        };
+        containerEl.appendChild(btn);
+    }
+
+    mediaEl.addEventListener('error', showMissing, { once: true });
+    mediaEl.play().catch(() => showTapToPlay());
 }
 
 const seqState = {};
@@ -592,7 +614,7 @@ function submitListening(auto = false) {
         if ((ans[q] || '').toUpperCase() === CORRECT[q]) score++;
     });
 
-    fetch('save_attempt.php', {
+    fetch(SAVE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ test_code: TEST_CODE, score: score, max_score: totalQs, band_score: 0, time_spent: elapsed, answers: ans })
@@ -601,7 +623,7 @@ function submitListening(auto = false) {
     .then(d => {
         if (d.success) {
             alert(`Test submitted! Score: ${score}/${totalQs}. Check My Results for details.`);
-            window.location.href = 'index.php';
+            window.location.href = BACK_URL;
         } else {
             alert(d.error || 'An error occurred. Please try again.');
             submitting = false; btn.disabled = false; btn.innerHTML = '<i class="bi bi-send me-2"></i>Submit Test';

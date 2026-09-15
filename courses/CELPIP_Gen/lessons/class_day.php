@@ -29,7 +29,7 @@ $MOCK1_REVIEW = 'week8_mock1_review.php';
 $SLOTS = [
 
     'c3' => ['week' => 'Week 2', 'class_num' => 3,
-        'test' => ['skill' => 'Listening', 'sub' => 'Full 6-part test, real time limits', 'link' => null],
+        'test' => ['skill' => 'Listening', 'sub' => 'Full 6-part test, real time limits', 'link' => ACADEMY_URL . 'courses/CELPIP_Gen/lessons/celpip_listening_001.php'],
         'lesson' => ['skill' => 'Reading', 'topic' => 'Part 1 — Correspondence', 'icon' => 'bi-envelope-open',
             'body' => '<p>Reading Part 1 gives you a short exchange of letters, emails, or text messages — usually a request followed by a reply — with several blanks to fill in from a word bank or drop-down list. It tests grammar and register, not just vocabulary.</p>
                 <ul class="custom-list">
