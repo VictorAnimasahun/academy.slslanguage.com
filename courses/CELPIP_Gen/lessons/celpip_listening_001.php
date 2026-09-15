@@ -162,10 +162,19 @@ $ANSWER_KEY = [
            parts (4-6) have no such wrapper, so forcing this same min-height
            on them left a large empty gap below the media box while it
            played, before the questions appeared. */
-        .part-panel.active[data-sequential="1"] { min-height: calc(100vh - 280px); }
-        .celpip-seq { display: flex; flex-direction: column; justify-content: center; min-height: calc(100vh - 280px); }
+        /* Each stage's card sizes to its own content — no max-height/scrollbar,
+           ever. Sequential parts (1-3) get a min-height wrapper that vertically
+           centers whichever (often short) card is showing, so a brief screen
+           like Instructions doesn't leave a slab of dead space above the
+           submit bar. All-screen parts (4-6) skip this: forcing the same
+           min-height on them left an empty gap below their media box before
+           the questions appeared, and their content (several dropdown
+           questions) is naturally tall enough not to need it. Selector uses
+           [data-groups], which only sequential parts' wrapper carries. */
+        .celpip-seq { display: flex; flex-direction: column; }
+        .celpip-seq[data-groups] { min-height: var(--seq-min-height, calc(100vh - 280px)); justify-content: center; }
         .celpip-seq > .celpip-seq-card { margin-bottom: 0; }
-        .celpip-seq-card { background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); overflow-y: auto; margin-bottom: 1.5rem; max-height: calc(100vh - 280px); }
+        .celpip-seq-card { background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); margin-bottom: 1.5rem; }
         /* Plain gray title bar with a NEXT/timer cluster on the right — matches
            the real CELPIP interface's persistent per-screen header exactly,
            rather than the earlier tinted-accent ribbon. */
@@ -245,7 +254,7 @@ $ANSWER_KEY = [
 
     <main class="content p-3">
 
-        <div class="sticky-header">
+        <div class="sticky-header" id="stickyHeader">
             <?php if ($isAdmin): ?>
             <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;font-size:.82rem;font-weight:600;">
                 <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview — free navigation (students get the real linear flow)</span>
@@ -266,21 +275,20 @@ $ANSWER_KEY = [
                  students follow the real, enforced linear flow (see JS below). -->
             <div class="part-tabs-bar">
                 <div class="part-tabs-scrollable">
-                    <?php foreach ($PARTS as $pNum => $p): $qnums = $p['sequential'] ? array_merge(...array_column($p['groups'], 'qnums')) : $p['qnums']; ?>
+                    <?php foreach ($PARTS as $pNum => $p): ?>
                     <button class="part-tab-btn <?= $pNum === 1 ? 'active' : '' ?>"
                             id="ptab-<?= $pNum ?>"
                             onclick="switchPart(<?= $pNum ?>, this)"
                             <?= (!$isAdmin && $pNum !== 1) ? 'disabled style="cursor:default;"' : '' ?>>
                         <span class="done-dot"></span>
                         Part <?= $pNum ?>
-                        <span class="tab-qrange">Q<?= min($qnums) ?>–<?= max($qnums) ?></span>
                     </button>
                     <?php endforeach; ?>
                 </div>
             </div>
         </div>
 
-        <div class="section-content" style="padding-top:<?= $isAdmin ? '110px' : '60px' ?>;">
+        <div class="section-content" id="sectionContent" style="padding-top:<?= $isAdmin ? '110px' : '60px' ?>;">
 
             <form id="listeningForm">
             <?php foreach ($PARTS as $partNum => $p): ?>
@@ -500,6 +508,7 @@ function switchPart(pNum, btn, force = false) {
     document.getElementById('panel-' + pNum).classList.add('active');
     if (btn) btn.classList.add('active');
     maybeStartPart(pNum);
+    syncContentOffset();
 }
 
 function goToNextPart(fromPartNum) {
@@ -871,9 +880,37 @@ function submitListening(auto = false) {
 
 window.addEventListener('beforeunload', e => { if (!submitting) { e.preventDefault(); e.returnValue = ''; } });
 
+// The sticky header's real height varies (admin banner adds a row, the part
+// tabs can wrap on narrow screens) — a hardcoded padding-top guess either
+// leaves a gap or lets the header overlap the content. Measure it for real
+// instead, with a small breathing gap, and keep it in sync on resize. Also
+// size the sequential-part frame to reach exactly down to the fixed submit
+// bar (minus a little breathing room) instead of a hardcoded vh guess, so
+// its vertical-centering is accurate regardless of how tall the header or
+// submit bar end up being.
+function syncContentOffset() {
+    const header = document.getElementById('stickyHeader');
+    const content = document.getElementById('sectionContent');
+    if (header && content) {
+        content.style.paddingTop = (header.getBoundingClientRect().height + 20) + 'px';
+    }
+    // Measure from wherever the active sequential frame actually sits (which
+    // already accounts for the header, any admin banner, part tabs, etc. —
+    // whatever precedes it) down to the fixed submit bar, rather than trying
+    // to reconstruct that from the header's height alone.
+    const submitBar = document.querySelector('.submit-bar');
+    const activeSeq = document.querySelector('.part-panel.active .celpip-seq[data-groups]');
+    if (submitBar && activeSeq) {
+        const available = submitBar.getBoundingClientRect().top - activeSeq.getBoundingClientRect().top - 20;
+        document.documentElement.style.setProperty('--seq-min-height', Math.max(200, available) + 'px');
+    }
+}
+window.addEventListener('resize', syncContentOffset);
+
 startTimer();
 updateProgress();
 maybeStartPart(1);
+syncContentOffset();
 </script>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
