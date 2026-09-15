@@ -226,22 +226,28 @@ function renderCelpipListeningQuestion(array $q, array $options): void
            (media stage <-> question 1 <-> question with a long passage,
            etc.) -- it fills the remaining viewport height and its content
            centers within it, matching the reading pane's stable box. */
-        /* Each stage's card sizes to its own content — no max-height/scrollbar,
-           ever. Sequential parts (1-3) get a min-height wrapper that vertically
-           centers whichever (often short) card is showing, so a brief screen
-           like Instructions doesn't leave a slab of dead space above the
-           submit bar. All-screen parts (4-6) skip this: forcing the same
-           min-height on them left an empty gap below their media box before
-           the questions appeared, and their content (several dropdown
-           questions) is naturally tall enough not to need it. Selector uses
-           [data-groups], which only sequential parts' wrapper carries. */
-        .celpip-seq { display: flex; flex-direction: column; }
-        .celpip-seq[data-groups] { min-height: var(--seq-min-height, calc(100vh - 280px)); justify-content: center; }
-        .celpip-seq > .celpip-seq-card { margin-bottom: 0; }
+        /* Same min-height for every part (sequential or all-screen) — so the
+           white box's height stays consistent as you move between parts,
+           instead of visibly jumping around based on how much each part's
+           content happens to need. The one visible card (the rest are
+           display:none, which drops them out of flex layout entirely) then
+           stretches via flex:1 to actually FILL that box edge to edge,
+           rather than floating centered inside a taller invisible area —
+           since the card's background is the same color as
+           .section-content's, any such gap just read as one big unfilled
+           white area. Its own content is centered vertically within it
+           instead (see .celpip-instructions-stage etc. below). */
+        /* Tighter than exam_theme.css's default .section-content padding
+           (1.5rem/1.75rem) — scoped to just this page's id rather than
+           edited globally, since that shared class backs every other exam
+           page too. */
+        #sectionContent { padding: 10px; }
+        .celpip-seq { display: flex; flex-direction: column; min-height: var(--seq-min-height, calc(100vh - 280px)); }
+        .celpip-seq > .celpip-seq-card { flex: 1; display: flex; flex-direction: column; }
 
         .celpip-seq-card {
             background: var(--exam-surface); border: 1px solid var(--exam-line);
-            border-radius: var(--exam-radius-lg); margin-bottom: 1.5rem;
+            border-radius: var(--exam-radius-lg);
         }
         /* Plain gray title bar with a NEXT/timer cluster on the right — matches
            the real CELPIP interface's persistent per-screen header exactly,
@@ -255,13 +261,13 @@ function renderCelpipListeningQuestion(array $q, array $options): void
         .celpip-seq-timer-wrap { display: flex; align-items: center; gap: .75rem; }
         .celpip-seq-timer { font-variant-numeric: tabular-nums; color: var(--exam-warn); font-weight: 700; }
         .celpip-seq-timer.calm { color: var(--exam-ink-muted); }
-        .celpip-seq-body { padding: 1.25rem 1.5rem; }
+        .celpip-seq-body { padding: 1.25rem 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: center; }
 
         /* Media stage: the main conversation/video, played alone and centered —
            not tucked in a thin top strip — before any question appears. */
         .celpip-media-stage { padding: 2rem 1.5rem; text-align: center; }
         .celpip-media-stage-main { padding: 3rem 1.5rem; }
-        .celpip-media-stage-body { padding: 2rem 1.5rem; text-align: center; }
+        .celpip-media-stage-body { padding: 2rem 1.5rem; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .celpip-media-stage-main .celpip-media-stage-body { padding: 3rem 1.5rem; }
         .celpip-media-caption { font-size: .85rem; color: var(--exam-accent); margin-bottom: 1rem; }
         .celpip-media-caption .bi { margin-right: .3rem; }
@@ -282,7 +288,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
 
         /* Instructions-only screen shown before any audio starts, matching
            the real exam's separate "Instructions:" step. */
-        .celpip-instructions-stage { padding: 3rem 2rem; }
+        .celpip-instructions-stage { padding: 3rem 2rem; flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .celpip-instructions-label { display: flex; align-items: center; gap: .5rem; color: var(--exam-accent); font-weight: 700; margin-bottom: 1.25rem; font-size: .95rem; }
         .celpip-instructions-text { font-size: 1.05rem; font-weight: 600; color: var(--exam-ink); line-height: 1.6; }
 
@@ -1046,7 +1052,7 @@ function syncContentOffset() {
     const header = document.getElementById('stickyHeader');
     const content = document.getElementById('sectionContent');
     if (header && content) {
-        content.style.paddingTop = (header.getBoundingClientRect().height + 20) + 'px';
+        content.style.paddingTop = (header.getBoundingClientRect().height + 10) + 'px';
     }
     // Measure from wherever the active sequential frame actually sits (which
     // already accounts for the header, any admin banner, part tabs, etc. —
@@ -1056,7 +1062,7 @@ function syncContentOffset() {
     const submitBar = document.querySelector('.submit-bar');
     const activeSeq = document.querySelector('.part-panel.active .celpip-seq[data-groups]');
     if (submitBar && activeSeq) {
-        const available = submitBar.getBoundingClientRect().top - activeSeq.getBoundingClientRect().top - 20;
+        const available = submitBar.getBoundingClientRect().top - activeSeq.getBoundingClientRect().top - 10;
         document.documentElement.style.setProperty('--seq-min-height', Math.max(200, available) + 'px');
     }
 }
