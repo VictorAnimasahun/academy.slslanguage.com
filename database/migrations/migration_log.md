@@ -1354,6 +1354,28 @@ DELETE m FROM modules m JOIN courses c ON c.id=m.course_id WHERE c.folder_name='
 
 ---
 
+## 084 — Seed CELPIP Listening Practice Test 1 (CELPIP_PT_L_001)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-15 | Verified: 38 questions, 152 options (4 per question), 38 marked `is_correct=1` (exactly 1 per question). Full Playwright walkthrough of `celpip_listening_001.php` — all 6 parts, 150 automated steps, 0 JS errors, reached 38/38 answered, real submission via `save_attempt.php` returned `{success:true, score:11, max_score:38}`. |
+| Live  | [ ] | | |
+
+**What it does:** seeds `tests`/`questions`/`question_options` for `CELPIP_PT_L_001`, backing the auto-grading pipeline (`loadTestAnswers()` + `save_attempt.php`) for the new standalone practice test `resources/practice_tests/celpip_listening_001.php`. The actual question text/options rendered on the page are hardcoded in that PHP file (matching the established CELPIP Reading practice-test convention, e.g. migration 055) — only `option_label`/`is_correct` matter functionally here, though `question_text`/`stimulus_text` are filled in too for admin visibility. Source: real transcribed CELPIP content covering all 6 official Listening parts (Problem Solving, Daily Life Conversation, Listening for Information, News Item, Discussion, Viewpoints), 38 questions total, globally renumbered 1-38 across parts (the source document restarts at 1 within each part).
+
+Audio has not been recorded yet — `celpip_listening_001.php` degrades gracefully (a "Continue" button appears in place of any audio file that 404s), so it's fully usable as a wireframe today and needs no code changes once real audio lands in `assets/audio/CELPIP_PT_L_001/part{N}/track{M}.mp3` / `part{N}/q{M}.mp3`.
+
+**Bug found and fixed alongside this (not itself a migration):** `save_attempt.php`'s special-case "choose TWO letters" pairing logic for questions 29/30 — built specifically for `IELTS_PT_L_001`'s multi-select format — was applying **unconditionally to every test's Q29/Q30**, regardless of `test_code`. Since all 3 CELPIP Reading practice tests (`CELPIP_PT_R_001/002/003`, seeded by migrations 051-057) already have 38 ordinary single-answer questions, their real Q29/Q30 were being silently misscored by this exception, and `CELPIP_PT_L_001` would have hit the same bug. Fixed by gating the pair-exception on `$test_code === 'IELTS_PT_L_001'`. No local `test_attempts` existed for the affected CELPIP Reading tests to correct; worth a spot-check on live once this fix is deployed there.
+
+**Rollback:**
+```sql
+DELETE FROM question_options WHERE question_id IN (SELECT id FROM questions WHERE test_id = (SELECT id FROM tests WHERE code='CELPIP_PT_L_001'));
+DELETE FROM questions WHERE test_id = (SELECT id FROM tests WHERE code='CELPIP_PT_L_001');
+DELETE FROM tests WHERE code = 'CELPIP_PT_L_001';
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

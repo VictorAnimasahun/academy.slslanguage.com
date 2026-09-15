@@ -117,9 +117,13 @@ try {
         $correct_opts[(int)$co['question_id']][] = $co['label'];
     }
 
-    // Pre-compute Q29-30 pair scores
-    // Correct pair = {b, d}. Award 1 mark per correct unique letter selected across both slots.
-    $pair_q_nums   = [29, 30];
+    // Pre-compute Q29-30 pair scores — this special "choose TWO letters" format is
+    // specific to IELTS_PT_L_001 (Q29/30: "choose the TWO experiences..."). Every
+    // other test's Q29/Q30 are ordinary single-answer questions (confirmed: all 3
+    // CELPIP Reading practice tests have 38 normal questions) — must gate this on
+    // test_code, or any test reaching 30 questions gets its real Q29/Q30 silently
+    // misscored by this exception instead of the normal per-option scoring below.
+    $pair_q_nums   = ($test_code === 'IELTS_PT_L_001') ? [29, 30] : [];
     $pair_correct  = ['b', 'd'];
     $pair_selected = [];
     foreach ($pair_q_nums as $pq) {
@@ -129,7 +133,7 @@ try {
     $pair_scores = [29 => 0.0, 30 => 0.0];
 
     // Only award marks if the pair has no duplicates and each slot selected a correct letter
-    if (count($pair_unique) === count(array_filter(array_values($pair_selected)))) {
+    if ($pair_q_nums && count($pair_unique) === count(array_filter(array_values($pair_selected)))) {
         foreach ($pair_q_nums as $pq) {
             if (in_array($pair_selected[$pq], $pair_correct) && $pair_selected[29] !== $pair_selected[30]) {
                 $pair_scores[$pq] = 1.0;
