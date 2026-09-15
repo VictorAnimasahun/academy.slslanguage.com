@@ -366,6 +366,27 @@ let elapsed       = 0;
 let timerInterval;
 let submitting    = false;
 
+// Every playable clip is a plain `new Audio(...)` object, never inserted
+// into the DOM (see playGroupMedia / showSequentialQuestion /
+// initAllScreenPart below) — so a DOM query like
+// "querySelectorAll('audio').pause()" can never find or stop them. Track
+// the single currently-playing clip here instead, and always stop it
+// before starting a new one (including on admin free-nav part switches),
+// so two recordings are never audible at once.
+let currentAudioEl = null;
+function stopCurrentAudio() {
+    if (currentAudioEl) currentAudioEl.pause();
+    currentAudioEl = null;
+    // A "Tap to play"/"Continue" button left over from a part the admin
+    // navigated away from before tapping it would otherwise sit in the
+    // hidden panel forever, fully clickable — tapping it later plays that
+    // old part's audio directly (its onclick closure calls mediaEl.play()
+    // itself), bypassing this tracker entirely and causing two recordings
+    // to play at once. Removing every such leftover on every part switch
+    // prevents that regardless of which part it belonged to.
+    document.querySelectorAll('.celpip-tap-to-play, .celpip-no-audio-notice').forEach(el => el.remove());
+}
+
 const timerEl = document.getElementById('inlineTimer');
 
 function fmt(sec) { return String(Math.floor(sec/60)).padStart(2,'0') + ':' + String(sec%60).padStart(2,'0'); }
@@ -384,11 +405,11 @@ function startTimer() {
 //    controller / part-continue buttons below) ──────────────────────────
 function switchPart(pNum, btn, force = false) {
     if (!force && !IS_ADMIN && btn && btn.disabled) return;
+    stopCurrentAudio();
     document.querySelectorAll('.part-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.part-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('panel-' + pNum).classList.add('active');
     if (btn) btn.classList.add('active');
-    document.querySelectorAll('.part-panel:not(#panel-' + pNum + ') audio, .part-panel:not(#panel-' + pNum + ') video').forEach(m => m.pause());
     maybeStartPart(pNum);
 }
 
@@ -443,6 +464,8 @@ function playWithFallback(mediaEl, containerEl, onSkip) {
         btn.onclick = () => {
             btn.remove();
             settled = false;
+            stopCurrentAudio();
+            currentAudioEl = mediaEl;
             mediaEl.play().catch(() => showMissing());
         };
         containerEl.appendChild(btn);
@@ -487,7 +510,9 @@ function playGroupMedia(partNum, groupIdx, onDone) {
     stage.querySelector('[data-role="media-label"]').textContent = group.label;
     const fill = stage.querySelector('[data-role="progress-fill"]');
     fill.style.width = '0%';
+    stopCurrentAudio();
     const mediaEl = new Audio(group.src);
+    currentAudioEl = mediaEl;
     const onTime = () => { if (mediaEl.duration) fill.style.width = Math.min(100, (mediaEl.currentTime / mediaEl.duration) * 100) + '%'; };
     const finish = () => {
         mediaEl.removeEventListener('timeupdate', onTime);
@@ -538,7 +563,9 @@ function showSequentialQuestion(partNum) {
     const qAudioSrc = card.dataset.audio;
     const playingLabel = card.querySelector('[data-role="q-playing-label"]');
     const qFill = card.querySelector('[data-role="q-progress-fill"]');
+    stopCurrentAudio();
     const a = new Audio(qAudioSrc);
+    currentAudioEl = a;
     if (playingLabel) playingLabel.textContent = 'Playing…';
     if (qFill) qFill.style.width = '0%';
     a.addEventListener('timeupdate', () => { if (a.duration && qFill) qFill.style.width = Math.min(100, (a.currentTime / a.duration) * 100) + '%'; });
@@ -567,7 +594,9 @@ function initAllScreenPart(panel) {
     const stage = panel.querySelector('[data-role="allscreen-media"]');
     if (!stage) return;
     const fill = stage.querySelector('[data-role="progress-fill"]');
+    stopCurrentAudio();
     const mediaEl = new Audio(stage.dataset.src);
+    currentAudioEl = mediaEl;
     const onTime = () => { if (mediaEl.duration) fill.style.width = Math.min(100, (mediaEl.currentTime / mediaEl.duration) * 100) + '%'; };
     const finish = () => {
         mediaEl.removeEventListener('timeupdate', onTime);
