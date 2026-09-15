@@ -46,7 +46,7 @@ $PARTS = [
     ],
     2 => [
         'title' => 'Part 2: Listening to a Daily Life Conversation',
-        'blurb' => 'You will hear a conversation between two coworkers, a man and a woman. They are preparing for a conference presentation next week.',
+        'blurb' => 'You will hear a conversation between two coworkers, a man and a woman. They are preparing for a conference presentation next week. It is about 2.5 to 3 minutes long.',
         'sequential' => true,
         'groups' => [
             ['label' => 'Recording', 'audio' => 'part2/track1.mp3', 'qnums' => [9, 10, 11, 12, 13]],
@@ -54,7 +54,7 @@ $PARTS = [
     ],
     3 => [
         'title' => 'Part 3: Listening for Information',
-        'blurb' => 'You will hear a conversation between a customer and a worker at a bicycle shop.',
+        'blurb' => 'You will hear a conversation between a customer and a worker at a bicycle shop. It is about 2.5 to 3 minutes long.',
         'sequential' => true,
         'groups' => [
             ['label' => 'Recording', 'audio' => 'part3/track1.mp3', 'qnums' => [14, 15, 16, 17, 18, 19]],
@@ -62,21 +62,21 @@ $PARTS = [
     ],
     4 => [
         'title' => 'Part 4: Listening to a News Item',
-        'blurb' => 'You will hear a news item about a community garden project.',
+        'blurb' => 'You will hear a news item about a community garden project. It is about 1 to 1.5 minutes long.',
         'sequential' => false,
         'audio' => 'part4/track1.mp3',
         'qnums' => [20, 21, 22, 23, 24],
     ],
     5 => [
         'title' => 'Part 5: Listening to a Discussion',
-        'blurb' => 'You will hear a discussion among three coworkers who are planning a fundraiser for a local shelter: one woman, Mia, and two men, Dev and Sam.',
+        'blurb' => 'You will hear a discussion among three coworkers who are planning a fundraiser for a local shelter: one woman, Mia, and two men, Dev and Sam. It is about 3 minutes long.',
         'sequential' => false,
         'audio' => 'part5/track1.mp3',
         'qnums' => [25, 26, 27, 28, 29, 30, 31, 32],
     ],
     6 => [
         'title' => 'Part 6: Listening for Viewpoints',
-        'blurb' => 'You will hear a report about a proposed bylaw to ban single-use plastic bags in the city of Ashford.',
+        'blurb' => 'You will hear a report about a proposed bylaw to ban single-use plastic bags in the city of Ashford. It is about 3 minutes long.',
         'sequential' => false,
         'audio' => 'part6/track1.mp3',
         'qnums' => [33, 34, 35, 36, 37, 38],
@@ -188,6 +188,11 @@ $ANSWER_KEY = [
         .celpip-next-btn { background: var(--exam-accent); color: #fff; border: none; border-radius: var(--exam-radius); padding: .45rem 1.4rem; font-weight: 700; font-size: .85rem; }
         .celpip-next-btn-inline { padding: .3rem 1.1rem; font-size: .8rem; }
         .celpip-tap-to-play { display: block; margin: 1rem auto 0; background: var(--exam-warn); color: #fff; border: none; border-radius: var(--exam-radius); padding: .55rem 1.5rem; font-weight: 700; font-size: .85rem; }
+        /* Admin-only skip control — visually distinct (purple, top-right) from
+           the real student controls so it's never mistaken for part of the
+           actual test experience. */
+        .celpip-admin-skip { position: absolute; top: .75rem; right: .75rem; background: #6366f1; color: #fff; border: none; border-radius: var(--exam-radius); padding: .4rem 1rem; font-weight: 700; font-size: .78rem; margin: 0; }
+        .celpip-media-stage, .celpip-media-stage-main, [data-role="q-audio-stage"] { position: relative; }
         .celpip-tap-to-play .bi { margin-right: .35rem; }
         .celpip-next-btn:disabled { opacity: .5; }
         .celpip-locked { opacity: .55; pointer-events: none; }
@@ -391,6 +396,11 @@ const timerEl = document.getElementById('inlineTimer');
 
 function fmt(sec) { return String(Math.floor(sec/60)).padStart(2,'0') + ':' + String(sec%60).padStart(2,'0'); }
 function startTimer() {
+    if (IS_ADMIN) {
+        // Admins previewing content shouldn't get auto-submitted mid-review.
+        timerEl.querySelector('i').nextSibling.textContent = ' Untimed (admin)';
+        return;
+    }
     timerEl.querySelector('i').nextSibling.textContent = ' ' + fmt(DURATION);
     timerInterval = setInterval(() => {
         elapsed++;
@@ -502,6 +512,20 @@ function advanceSequential(partNum) {
     else showSequentialQuestion(partNum);
 }
 
+// Admins previewing content shouldn't have to sit through every recording
+// to see how a part looks — adds a visible skip control that does exactly
+// what the audio finishing naturally would (same finish/reveal callback),
+// just immediately. Never shown to students.
+function addAdminSkip(containerEl, onSkip) {
+    if (!IS_ADMIN) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'celpip-next-btn celpip-admin-skip';
+    btn.innerHTML = 'NEXT <i class="bi bi-skip-forward-fill ms-1"></i>';
+    btn.onclick = () => { btn.remove(); stopCurrentAudio(); onSkip(); };
+    containerEl.appendChild(btn);
+}
+
 function playGroupMedia(partNum, groupIdx, onDone) {
     const st = seqState[partNum];
     const group = st.groups[groupIdx];
@@ -524,6 +548,7 @@ function playGroupMedia(partNum, groupIdx, onDone) {
     mediaEl.addEventListener('timeupdate', onTime);
     mediaEl.addEventListener('ended', finish);
     playWithFallback(mediaEl, stage, finish);
+    addAdminSkip(stage, finish);
 }
 
 function showSequentialQuestion(partNum) {
@@ -547,9 +572,15 @@ function showSequentialQuestion(partNum) {
 
     function revealAnswerStage() {
         audioStage.style.display = 'none';
-        audioStage.querySelectorAll('.celpip-tap-to-play, .celpip-no-audio-notice').forEach(el => el.remove());
+        audioStage.querySelectorAll('.celpip-tap-to-play, .celpip-no-audio-notice, .celpip-admin-skip').forEach(el => el.remove());
         answerStage.style.display = '';
         nextBtn.disabled = false;
+        if (IS_ADMIN) {
+            // Admins click NEXT whenever they're done looking — no forced
+            // countdown that yanks them to the next question mid-review.
+            timerVal.textContent = '∞';
+            return;
+        }
         let remaining = Q_SECONDS;
         timerVal.textContent = remaining;
         timerWrap.classList.remove('calm');
@@ -571,6 +602,7 @@ function showSequentialQuestion(partNum) {
     a.addEventListener('timeupdate', () => { if (a.duration && qFill) qFill.style.width = Math.min(100, (a.currentTime / a.duration) * 100) + '%'; });
     a.addEventListener('ended', revealAnswerStage);
     playWithFallback(a, audioStage, revealAnswerStage);
+    addAdminSkip(audioStage, revealAnswerStage);
 
     updateProgress();
 }
@@ -610,6 +642,7 @@ function initAllScreenPart(panel) {
     mediaEl.addEventListener('timeupdate', onTime);
     mediaEl.addEventListener('ended', finish);
     playWithFallback(mediaEl, stage, finish);
+    addAdminSkip(stage, finish);
 
     const contBtn = panel.querySelector('[data-role="part-continue-btn"]');
     if (contBtn) contBtn.onclick = () => goToNextPart(partNum);
