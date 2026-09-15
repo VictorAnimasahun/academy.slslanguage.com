@@ -30,6 +30,31 @@ foreach ($rows as $row) {
     $modules[$mi]['lessons'][] = $row;
 }
 
+// Quick Access sidebar shows the student's current/next module — the first
+// module (in order) with at least one lesson not yet marked complete in
+// lesson_progress — instead of a fixed, stale set of links.
+$student_id = (int) $_SESSION['user_id'];
+$lessonIds  = array_column($rows, 'lesson_id');
+$completedLessonIds = [];
+if ($lessonIds) {
+    $placeholders = implode(',', array_fill(0, count($lessonIds), '?'));
+    $stmt = $db->prepare("
+        SELECT lesson_id FROM lesson_progress
+        WHERE student_id = ? AND completed = 1 AND lesson_id IN ($placeholders)
+    ");
+    $stmt->execute([$student_id, ...$lessonIds]);
+    $completedLessonIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+}
+$currentModule = null;
+foreach ($modules as $mi => $mod) {
+    $hasIncomplete = false;
+    foreach ($mod['lessons'] as $l) {
+        if (!in_array((int) $l['lesson_id'], $completedLessonIds, true)) { $hasIncomplete = true; break; }
+    }
+    if ($hasIncomplete) { $currentModule = $mod; break; }
+}
+if (!$currentModule) $currentModule = end($modules); // whole course completed — show the last module
+
 $student_tier_level = get_student_tier_level();
 // Color-code by week type: mock weeks (full 4-skill simulations) stand out
 // from the regular one-test-per-class weeks. Keyed by module_order (1-12),
@@ -183,15 +208,19 @@ foreach (range(1, 12) as $w) {
     <aside class="advert-sidebar">
         <div class="course-card" style="background:linear-gradient(135deg,#16a34a 0%,#0b77ff 100%);color:white;">
             <h6 class="mb-2">Quick Access</h6>
+            <p class="mb-2" style="font-size:.78rem;opacity:.85;"><?= htmlspecialchars($currentModule['title']) ?></p>
             <div class="d-grid gap-1">
-                <a href="<?= ACADEMY_URL ?>courses/CELPIP_Gen/lessons/week1_foundational_assessment.php?from=CELPIP_Gen_3Mo" class="btn btn-light btn-sm">Class 1 — Free Preview</a>
-                <a href="<?= ACADEMY_URL ?>courses/CELPIP_intro/celpip_mini_mock.php?from=CELPIP_Gen_3Mo" class="btn btn-outline-light btn-sm">Mini Diagnostic (Class 2)</a>
-                <?php if ($student_tier_level >= 2): ?>
-                <a href="<?= ACADEMY_URL ?>resources/mock_tests/celpip_full_mock_a.php?from=CELPIP_Gen_3Mo" class="btn btn-outline-light btn-sm">Mock Exam 1</a>
-                <?php endif; ?>
-                <?php if ($student_tier_level < 2): ?>
-                <a href="../../upgrade.php?required=intermediate" class="btn btn-warning btn-sm"><i class="bi bi-lightning-charge me-1"></i>Upgrade to Unlock</a>
-                <?php endif; ?>
+                <?php foreach ($currentModule['lessons'] as $l):
+                    $required = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$l['min_tier']] ?? 1;
+                    $locked   = $student_tier_level < $required;
+                    $sep      = str_contains($l['file_path'], '?') ? '&' : '?';
+                    $href     = $locked ? '../../upgrade.php?required=' . urlencode($l['min_tier']) : ACADEMY_URL . $l['file_path'] . $sep . 'from=CELPIP_Gen_3Mo';
+                ?>
+                <a href="<?= htmlspecialchars($href) ?>" class="btn <?= $locked ? 'btn-warning' : 'btn-outline-light' ?> btn-sm">
+                    <?php if ($locked): ?><i class="bi bi-lightning-charge me-1"></i><?php endif; ?>
+                    <?= htmlspecialchars($l['title']) ?>
+                </a>
+                <?php endforeach; ?>
             </div>
         </div>
         <h6 class="mb-3 text-muted mt-3"><i class="bi bi-megaphone me-2"></i>Sponsored</h6>
