@@ -1293,7 +1293,7 @@ ALTER TABLE attempt_answers DROP COLUMN flagged;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-13 | Verified: `SELECT COUNT(*) FROM lessons WHERE course_id=14` = 24; all 21 unique pages (13 new teaching files + 8 `checkpoint_hub.php` slot variants) return HTTP 200 via Playwright with correct `h1`; course_overview.php for CELPIP_Gen_3Mo renders all 12 "Week N" module headers dynamically from the DB join. |
-| Live  | [ ] | | |
+| Live  | [ ] | | **⚠️ DO NOT run this on live — hardcodes `course_id=14` and module ids 44-55, only correct locally. See migration 083, which reproduces this + 082's combined end state safely via `folder_name` lookups.** |
 
 **What it does:** deletes course 14's old 3 modules / 24 lessons (which pointed at the same shared `month1_*`/`month2_*` files still used by courses 12 and 13) and replaces them with 12 new modules (one per week, ids 44-55) and 24 new lessons, decoupling the 3-Month course from that shared content entirely. The new schedule gives each of Listening/Reading/Writing/Speaking 4 complete practice-test sittings via 4 paired checkpoint classes (Weeks 4, 6, 9, 10 — one class per pair runs a full Listening+Speaking test back-to-back, the other a full Reading+Writing test), plus a Week 1 diagnostic and 2 full mocks (Weeks 8, 11). Real, already-built practice tests are wired in directly for Reading/Writing/Speaking checkpoints 1-3 and both mocks. Checkpoint classes are served by one new reusable page, `courses/CELPIP_Gen/lessons/checkpoint_hub.php?slot=cN`, instead of 8 near-duplicate files — it renders real links where content exists and an honest "not built yet" card where it doesn't (all Listening checkpoints, since no real CELPIP Listening practice test exists yet; and checkpoint 4's Reading/Writing/Speaking, since only 3 real practice tests of each exist). 13 new standalone teaching-content files were also added for the non-checkpoint classes (foundational assessment, core teaching, drilling, strategy, mock reviews, final prep) — all `php -l` linted clean.
 
@@ -1313,7 +1313,7 @@ DELETE FROM modules WHERE id BETWEEN 44 AND 55;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-13 | Verified: `SELECT COUNT(*) FROM lessons WHERE course_id=14` = 24; all 16 `class_day.php` slot variants + the 5 unchanged classes (C1, C16, C22, C23, C24) return HTTP 200 via Playwright with correct `h1` and expected real-link/placeholder counts per skill; course_overview.php accordion renders all 24 classes numbered 1-24 with correct titles and updated module headers. |
-| Live  | [ ] | | |
+| Live  | [ ] | | **⚠️ DO NOT run this on live — hardcodes module ids 45-53, only correct locally. See migration 083.** |
 
 **What it does:** supersedes part of migration 081. The user reviewed the paired-checkpoint design (one class testing Listening+Speaking together, the paired class testing Reading+Writing together) and asked for a different shape: every class day pairs exactly ONE complete practice test (one skill) with ONE narrow teaching micro-lesson on a *different* skill, so no class day has more than one complete test and every class day still teaches something new. Replaces the 8 checkpoint_hub.php-served classes and 8 of the old standalone week2/3/5/7 teaching files (16 classes total: C3-C14, C17-C20) with a single new reusable page, `courses/CELPIP_Gen/lessons/class_day.php?slot=cN`, holding real, specific teaching content per slot (e.g. "Reading Part 1 — Correspondence", "Listening Inference & Signal Words") alongside that day's complete-test link. Updates 8 module titles (ids 45-50, 52-53) from "Checkpoint N"/"Targeted Correction"/"Strategy Refinement" labels (concepts that no longer exist in this design) to a plain "Week N — Skill + Skill Focus" label, since every week 2-10 now has the identical one-test/one-lesson shape.
 
@@ -1331,6 +1331,25 @@ UPDATE modules SET module_title = 'Week 7 — Strategy Refinement (pre-Mock 1)' 
 UPDATE modules SET module_title = 'Week 9 — Checkpoint 3' WHERE id = 52;
 UPDATE modules SET module_title = 'Week 10 — Checkpoint 4' WHERE id = 53;
 -- Then restore the deleted week2/3/5/7 files and checkpoint_hub.php from source control history, and re-run migration 081's lesson INSERT block for these 8 modules.
+```
+
+---
+
+## 083 — CELPIP 3-Month rebuild, live-safe (supersedes 081 + 082 for live)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-15 | Ran against local to verify correctness (local already had 081+082 applied). Snapshotted `SELECT module_order, module_title, lesson_order, title, file_path, min_tier FROM lessons JOIN modules WHERE course_id=14` before and after — byte-identical content (only the underlying auto-increment ids changed, which nothing in the app hardcodes). Re-verified via Playwright: `class_day.php?slot=c7` still 200 with correct `h1`, course_overview.php accordion (all panels expanded) still shows all 24 classes numbered 1-24. |
+| Live  | [ ] | | **Run this instead of 081/082 on live.** Must run after 077 (and 078, 076 per that migration's ordering note). |
+
+**What it does:** reproduces migrations 081 + 082's combined end state (the full 24-class/12-week "one test + one micro-lesson per class day" rebuild) in one migration, but resolves the course and every module via `courses.folder_name = 'CELPIP_Gen_3Mo'` + `modules.module_order` lookups instead of the hardcoded `course_id = 14` and module ids 44-55 that 081/082 use. Those hardcoded values only happen to be correct on local because course 14 and its modules already existed there with exactly those auto-increment values — discovered while diagnosing a live 500 error on every `course_view.php` page (root cause was migration 072 never having successfully applied on live, surfacing a larger backlog of unrun migrations: 069-072, 075-078, 081-082). On live, migration 077 creates `CELPIP_Gen_3Mo` fresh via auto-increment and will almost certainly not land on id 14 — running 081 there as-is would either silently affect 0 rows or write this course's lessons under an unrelated `course_id`, the exact class of bug migration 078 already fixed once for migration 074's hardcoded course 13 / lesson 163/178 ids. Deletes and rebuilds this course's modules/lessons from scratch (idempotent — safe to re-run).
+
+**081 and 082 are left as-is** (historical record of what actually ran locally) — do not run them on live; run this migration instead.
+
+**Rollback:**
+```sql
+DELETE l FROM lessons l JOIN modules m ON m.id=l.module_id JOIN courses c ON c.id=m.course_id WHERE c.folder_name='CELPIP_Gen_3Mo';
+DELETE m FROM modules m JOIN courses c ON c.id=m.course_id WHERE c.folder_name='CELPIP_Gen_3Mo';
 ```
 
 ---
