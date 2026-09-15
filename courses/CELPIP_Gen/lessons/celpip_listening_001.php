@@ -157,7 +157,12 @@ $ANSWER_KEY = [
     <style>
         /* Same CELPIP-authentic sequential flow as celpip_full_mock_listening.php,
            reusing the exam_theme.css palette for visual consistency. */
-        .part-panel.active { min-height: calc(100vh - 280px); }
+        /* Only sequential parts (1-3) need the fixed-height frame — their
+           .celpip-seq wrapper centers a single small card in it. All-screen
+           parts (4-6) have no such wrapper, so forcing this same min-height
+           on them left a large empty gap below the media box while it
+           played, before the questions appeared. */
+        .part-panel.active[data-sequential="1"] { min-height: calc(100vh - 280px); }
         .celpip-seq { display: flex; flex-direction: column; justify-content: center; min-height: calc(100vh - 280px); }
         .celpip-seq > .celpip-seq-card { margin-bottom: 0; }
         .celpip-seq-card { background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); overflow-y: auto; margin-bottom: 1.5rem; max-height: calc(100vh - 280px); }
