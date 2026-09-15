@@ -23,6 +23,18 @@ define('TIER_ACCESS_LOADED', true);
 
 require_once INCLUDES_PATH . '/admin_check.php';
 
+// ── TEMPORARY: free access for all registered students ──────────────────────
+// Set 2026-09-15 per explicit instruction: "Make all the courses free to
+// access for now" — a testing/free-access phase across the whole platform,
+// not specific to any one course. This makes get_student_tier_level() (and
+// therefore can_access(), plus every course_overview.php page's own inline
+// tier comparison) always report the top tier, so no course content is
+// gated for any logged-in student. get_student_tier() itself is untouched,
+// so plan-display text (e.g. "Your Plan: Beginner") stays truthful even
+// while access is unrestricted. To restore real tier gating, set this back
+// to false.
+const FREE_ACCESS_FOR_ALL = true;
+
 // ── Tier map ────────────────────────────────────────────────────────────────
 
 const TIER_LEVELS = [
@@ -91,6 +103,7 @@ function get_student_tier(): string {
  * Returns the numeric level (1–4) for the current student.
  */
 function get_student_tier_level(): int {
+    if (FREE_ACCESS_FOR_ALL && isset($_SESSION['user_id'])) return TIER_LEVELS['fluent'];
     return TIER_LEVELS[get_student_tier()] ?? 1;
 }
 

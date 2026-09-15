@@ -1376,6 +1376,26 @@ DELETE FROM tests WHERE code = 'CELPIP_PT_L_001';
 
 ---
 
+## 085 — Wire the real Listening test into CELPIP 2-Month (course 13)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-15 | Verified via SQL + Playwright: course 13's Month 1 Class 2 now titled "Complete Listening Test (CELPIP Practice Test 1)" pointing at `celpip_listening_001.php`; breadcrumb correctly resolves to "CELPIP General Masterclass — 2 Months" via `?from=CELPIP_Gen_2Mo`. |
+| Live  | [ ] | | |
+
+**What it does:** a quick, scoped swap — course 13 (CELPIP_Gen_2Mo) still runs on its old, untouched `month1_*`/`month2_*` content (see [[project_celpip_3mo_rebuild]], which only touched course 14). The user wants the new real Listening test available here too, without a full course 13 redesign right now. Replaces just the Month 1 "Listening — News Item & Conversation" lesson's `file_path` (previously `month1_listening.php`, teaching-only) with `celpip_listening_001.php` — same file wired into course 14's Week 2. Resolved via `folder_name` + `module_order` + `lesson_order` (not a hardcoded lesson id), matching migrations 078/083's live-safety pattern.
+
+Longer-term direction (not yet built, explicitly deferred): the user's stated plan is "the first 2 months of the 3-month course" become course 13's entire content (i.e. course 14's Weeks 1-8 / Classes 1-16, verbatim) — a full reuse redesign superseding this swap entirely. A draft migration for that was written and then deliberately deleted per the user's "for now, just the listening test" scope-narrowing — revisit from scratch when actually requested rather than resurrecting the deleted draft, since context may have shifted.
+
+**Rollback:**
+```sql
+UPDATE lessons l JOIN modules m ON m.id=l.module_id JOIN courses c ON c.id=m.course_id
+SET l.title = 'Listening — News Item & Conversation', l.file_path = 'courses/CELPIP_Gen/lessons/month1_listening.php'
+WHERE c.folder_name = 'CELPIP_Gen_2Mo' AND m.module_order = 1 AND l.lesson_order = 2;
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
