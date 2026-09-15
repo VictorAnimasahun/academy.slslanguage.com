@@ -562,6 +562,24 @@ let elapsed      = 0;
 let timerInterval;
 let submitting   = false;
 
+// Every clip is a plain `new Audio(...)` object (except Part 5's <video>,
+// a real DOM element), never inserted into the DOM for the audio case — so
+// a DOM query like "querySelectorAll('audio').pause()" can never find or
+// stop those. Track the single currently-playing clip here instead, and
+// always stop it before starting the next one (including on admin
+// free-nav part switches), so two recordings are never audible at once.
+let currentAudioEl = null;
+function stopCurrentAudio() {
+    if (currentAudioEl) currentAudioEl.pause();
+    currentAudioEl = null;
+    // A "Tap to play" button left over from a part the admin navigated
+    // away from before tapping it would otherwise sit in the hidden panel
+    // forever, fully clickable — its onclick closure calls mediaEl.play()
+    // directly, bypassing this tracker and causing two recordings to play
+    // at once if clicked later. Remove every such leftover on every switch.
+    document.querySelectorAll('.celpip-tap-to-play').forEach(el => el.remove());
+}
+
 const timerEl = document.getElementById('inlineTimer');
 
 // ── Overall test timer (always running, total time budget) ──────────
@@ -583,14 +601,11 @@ function startTimer() {
 //    controller / part-continue buttons below) ──────────────────────────
 function switchPart(pNum, btn, force = false) {
     if (!force && !IS_ADMIN && btn && btn.disabled) return;
+    stopCurrentAudio();
     document.querySelectorAll('.part-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.part-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('panel-' + pNum).classList.add('active');
     if (btn) btn.classList.add('active');
-
-    document.querySelectorAll('.part-panel:not(#panel-' + pNum + ') audio, .part-panel:not(#panel-' + pNum + ') video')
-        .forEach(m => m.pause());
-
     maybeStartPart(pNum);
 }
 
@@ -661,7 +676,12 @@ function playWithFallback(mediaEl, containerEl) {
         btn.type = 'button';
         btn.className = 'celpip-tap-to-play';
         btn.innerHTML = '<i class="bi bi-play-fill"></i> Tap to play';
-        btn.onclick = () => { mediaEl.play(); btn.remove(); };
+        btn.onclick = () => {
+            btn.remove();
+            stopCurrentAudio();
+            currentAudioEl = mediaEl;
+            mediaEl.play();
+        };
         containerEl.appendChild(btn);
     });
 }
@@ -676,7 +696,9 @@ function playGroupMedia(partNum, groupIdx, onDone) {
     fill.style.width = '0%';
 
     const videoEl = stage.querySelector('video[data-role="media-el"]');
+    stopCurrentAudio();
     const mediaEl = videoEl || new Audio();
+    currentAudioEl = mediaEl;
     if (videoEl) { videoEl.style.display = 'block'; videoEl.src = group.src; }
     else mediaEl.src = group.src;
 
@@ -738,7 +760,9 @@ function showSequentialQuestion(partNum) {
     const playingLabel = card.querySelector('[data-role="q-playing-label"]');
     const qFill = card.querySelector('[data-role="q-progress-fill"]');
     if (qAudioSrc) {
+        stopCurrentAudio();
         const a = new Audio(qAudioSrc);
+        currentAudioEl = a;
         if (playingLabel) playingLabel.textContent = 'Playing…';
         if (qFill) qFill.style.width = '0%';
         a.addEventListener('timeupdate', () => { if (a.duration && qFill) qFill.style.width = Math.min(100, (a.currentTime / a.duration) * 100) + '%'; });
@@ -773,7 +797,9 @@ function initAllScreenPart(panel) {
     if (!stage) return;
     const fill = stage.querySelector('[data-role="progress-fill"]');
     const videoEl = stage.querySelector('video[data-role="media-el"]');
+    stopCurrentAudio();
     const mediaEl = videoEl || new Audio();
+    currentAudioEl = mediaEl;
     if (videoEl) { videoEl.style.display = 'block'; videoEl.src = stage.dataset.src; }
     else mediaEl.src = stage.dataset.src;
 
