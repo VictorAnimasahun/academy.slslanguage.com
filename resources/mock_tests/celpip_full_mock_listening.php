@@ -366,7 +366,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
 
         <div class="sticky-header" id="stickyHeader">
             <?php if ($isAdmin): ?>
-            <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
+            <div style="background:#1e1b4b;color:#c7d2fe;padding:.3rem 1.25rem;border-radius:8px;margin-bottom:.3rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
                 <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview — free navigation (students get the real linear flow)</span>
                 <a href="celpip_full_mock_listening.php?session_id=<?= $session_id ?>" style="color:#c7d2fe;text-decoration:none;border-bottom:2px solid #6366f1;padding-bottom:2px;">🎧 Listening</a>
                 <a href="celpip_full_mock_reading.php?session_id=<?= $session_id ?>"   style="color:#a5b4fc;text-decoration:none;">📖 Reading</a>

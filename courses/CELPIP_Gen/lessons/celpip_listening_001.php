@@ -257,7 +257,7 @@ $ANSWER_KEY = [
 
         <div class="sticky-header" id="stickyHeader">
             <?php if ($isAdmin): ?>
-            <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;font-size:.82rem;font-weight:600;">
+            <div style="background:#1e1b4b;color:#c7d2fe;padding:.3rem 1.25rem;border-radius:8px;margin-bottom:.3rem;font-size:.82rem;font-weight:600;">
                 <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview — free navigation (students get the real linear flow)</span>
             </div>
             <?php endif; ?>

@@ -56,7 +56,7 @@ body { font-family: 'IBM Plex Sans', sans-serif; }
 .sticky-header {
   position: fixed; top: var(--topbar-h,60px); left: var(--sidebar-w,180px); right: var(--advert-w,220px);
   z-index: 150; background: var(--exam-bg);
-  padding: .6rem 1.5rem .5rem; border-bottom: 1px solid var(--exam-line);
+  padding: .4rem 1.25rem .3rem; border-bottom: 1px solid var(--exam-line);
   box-shadow: none;
 }
 @media (max-width:1399px) { .sticky-header { right: 0; } }
@@ -67,7 +67,7 @@ body.sidebar-collapsed .submit-bar { left: 0; }
 .submit-bar {
   position: fixed; bottom: 0; left: var(--sidebar-w,180px); right: var(--advert-w,220px);
   background: var(--exam-surface); border-top: 1px solid var(--exam-line);
-  padding: .85rem 1.5rem; display: flex; justify-content: space-between; align-items: center;
+  padding: .5rem 1.5rem; display: flex; justify-content: space-between; align-items: center;
   gap: 1rem; z-index: 200; box-shadow: var(--exam-shadow);
 }
 @media (max-width:1399px) { .submit-bar { right: 0; } }
@@ -101,10 +101,10 @@ body.sidebar-collapsed .submit-bar { left: 0; }
 }
 
 /* ── Part tabs (Listening/Reading) ───────────────────────────────────────── */
-.part-tabs-bar { display: flex; align-items: center; border-bottom: 1px solid var(--exam-line); margin-bottom: 1.5rem; }
+.part-tabs-bar { display: flex; align-items: center; border-bottom: 1px solid var(--exam-line); margin-bottom: .6rem; }
 .part-tabs-scrollable { display: flex; flex: 1; overflow-x: auto; }
 .part-tab-btn {
-  display: flex; flex-direction: column; align-items: center; padding: .5rem 1.1rem;
+  display: flex; flex-direction: column; align-items: center; padding: .35rem 1.1rem;
   border: none; border-bottom: 2px solid transparent; background: transparent; cursor: pointer;
   font-size: .82rem; font-weight: 500; color: var(--exam-ink-muted); transition: all .15s;
   gap: 1px; position: relative; white-space: nowrap;
