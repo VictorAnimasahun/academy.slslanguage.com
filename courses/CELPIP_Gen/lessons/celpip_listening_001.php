@@ -283,8 +283,11 @@ $ANSWER_KEY = [
                         </div>
                         <div class="celpip-seq-body" data-role="q-answer-stage" style="display:none;">
                             <div class="celpip-q-of">Question <?= $qi + 1 ?> of <?= count($flatQ) ?></div>
+                            <!-- No question text here on purpose: the audio you just heard already
+                                 spoke this question in full, matching the real CELPIP interface for
+                                 Parts 1-3 — only the answer options are shown, never the stem itself. -->
                             <div class="mc-question">
-                                <div class="mc-q-label"><span class="q-badge"><?= $qnum ?></span><?= htmlspecialchars($q['text']) ?></div>
+                                <div class="mc-q-label"><span class="q-badge"><?= $qnum ?></span></div>
                                 <?php foreach ($q['options'] as $letter => $optText): ?>
                                 <label class="mc-option">
                                     <input type="radio" name="answers[<?= $qnum ?>]" value="<?= $letter ?>" class="answer-field" data-qnum="<?= $qnum ?>">
