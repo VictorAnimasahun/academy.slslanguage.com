@@ -206,7 +206,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
     <style>
-        .speaking-task-card { background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); padding: 2rem; max-width: 760px; margin: 0 auto; }
+        /* Fills a lot more of the available box (was capped at 760px and
+           left with just its natural content height) — same complaint as
+           the Listening redesign: a narrow card floating in a sea of
+           unused white space. Vertically centers whichever single
+           task-screen (or the review/confirmation screen) is currently
+           visible within a tall box instead. */
+        #sectionContent { padding: 10px; }
+        .speaking-task-card { background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); padding: 2rem; max-width: 900px; margin: 0 auto; min-height: calc(100vh - 260px); display: flex; flex-direction: column; justify-content: center; }
         .speaking-progress-dots { display: flex; gap: .4rem; justify-content: center; margin-bottom: 1.5rem; }
         .speaking-progress-dots .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--exam-line); }
         .speaking-progress-dots .dot.done { background: var(--exam-good); }
@@ -237,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-3">
-            <div class="sticky-header">
+            <div class="sticky-header" id="stickyHeader">
                 <?php if ($isAdmin): ?>
                 <div style="background:#1e1b4b;color:#c7d2fe;padding:.6rem 1.25rem;border-radius:8px;margin-bottom:.5rem;display:flex;align-items:center;gap:1.5rem;font-size:.82rem;font-weight:600;">
                     <span style="color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;">Admin Preview</span>
@@ -264,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                 </div>
             </div>
 
-            <div class="section-content" style="padding-top:<?= $isAdmin ? '110px' : '60px' ?>;">
+            <div class="section-content" id="sectionContent" style="padding-top:<?= $isAdmin ? '110px' : '60px' ?>;">
 
             <?php if ($error): ?>
                 <div class="alert alert-danger text-center"><?= htmlspecialchars($error) ?></div>
@@ -519,6 +526,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         if (confirm('Exit the speaking test? Your progress on this section will be lost.')) window.location.href = '<?= ACADEMY_URL ?>learning_dashboard.php';
     }
     window.addEventListener('beforeunload', e => { if (!submitting) { e.preventDefault(); e.returnValue = ''; } });
+
+    // The sticky header's real height varies (admin banner adds a row) — a
+    // hardcoded padding-top guess either leaves a gap or lets the header
+    // overlap the content. Measure it for real instead, with a small
+    // breathing gap, and keep it in sync on resize.
+    function syncContentOffset() {
+        const header = document.getElementById('stickyHeader');
+        const content = document.getElementById('sectionContent');
+        if (!header || !content) return;
+        content.style.paddingTop = (header.getBoundingClientRect().height + 10) + 'px';
+    }
+    window.addEventListener('resize', syncContentOffset);
+    syncContentOffset();
 
     startTaskFlow(1);
     </script>
