@@ -397,7 +397,7 @@ function fmt(sec) { return String(Math.floor(sec/60)).padStart(2,'0') + ':' + St
 function startTimer() {
     if (IS_ADMIN) {
         // Admins previewing content shouldn't get auto-submitted mid-review.
-        timerEl.querySelector('i').nextSibling.textContent = ' Untimed (admin)';
+        timerEl.querySelector('i').nextSibling.textContent = '';
         return;
     }
     timerEl.querySelector('i').nextSibling.textContent = ' ' + fmt(DURATION);
