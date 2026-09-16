@@ -79,7 +79,6 @@ function renderCelpipWorkPanel(array $sections): void {
         }
 
         $options = $sec['options'] ?? null;
-        $optionLabels = $sec['option_labels'] ?? [];
         foreach ($sec['questions'] as $q) {
             echo '<div class="celpip-q-row">';
             echo '<div class="q-num">' . $q['q'] . '.</div>';
@@ -87,8 +86,15 @@ function renderCelpipWorkPanel(array $sections): void {
             echo '<select class="celpip-select" data-q="' . $q['q'] . '"><option value="">– Select –</option>';
             $rowOptions = $options ?? array_keys($q['options']);
             foreach ($rowOptions as $letter) {
-                $text = $options ? ($optionLabels[$letter] ?? ('Paragraph ' . $letter)) : $q['options'][$letter];
-                echo '<option value="' . strtolower($letter) . '">' . htmlspecialchars($letter) . '. ' . htmlspecialchars($text) . '</option>';
+                // Paragraph-matching ($options set, generic A-E legend): the
+                // real CELPIP dropdown lists bare letters only — no
+                // "Paragraph A" / description text — matching the fix
+                // already applied to the Full Mock reading engine.
+                if ($options) {
+                    echo '<option value="' . strtolower($letter) . '">' . htmlspecialchars($letter) . '</option>';
+                    continue;
+                }
+                echo '<option value="' . strtolower($letter) . '">' . htmlspecialchars($letter) . '. ' . htmlspecialchars($q['options'][$letter]) . '</option>';
             }
             echo '</select></div>';
         }

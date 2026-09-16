@@ -65,6 +65,15 @@ if (!$isAdmin && is_null($session['listening_attempt_id'])) {
 $map      = require INCLUDES_PATH . '/mock_test_map.php';
 $testCode = $map[$session['mock_code']]['reading']['test_code'] ?? '';
 
+// Reading Part 2 ("Reading to Apply a Diagram") is a real flyer/table
+// graphic in the actual exam, not prose — rendering its data as a plain
+// text table looked nothing like the real thing, so known parts get an
+// actual uploaded image instead. A mock/part with no entry here falls back
+// to the old text rendering until its image is supplied.
+$readingDiagramImages = [
+    'CELPIP_FULL_MOCK_A' => [2 => 'reading_part2_diagram.png'],
+];
+
 $stmt = $db->prepare("SELECT id, duration_minutes FROM tests WHERE code = ? AND is_active = 1 LIMIT 1");
 $stmt->execute([$testCode]);
 $test = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -140,7 +149,7 @@ function celpipRenderPassageText(string $text): string
 // styled this way, so this builds the whole thing from a hidden input +
 // JS-driven trigger/panel (wired up once for the whole page, see the
 // celpip-dd-* delegated listeners in the page script).
-function renderCelpipDropdown(int $qnum, array $qopts): void
+function renderCelpipDropdown(int $qnum, array $qopts, bool $lettersOnly = false): void
 {
     ?>
     <span class="celpip-dd" data-qnum="<?= $qnum ?>">
@@ -151,8 +160,13 @@ function renderCelpipDropdown(int $qnum, array $qopts): void
         <span class="celpip-dd-panel" data-role="dd-panel" hidden>
             <?php foreach ($qopts as $opt): ?>
             <label class="celpip-dd-option">
+                <?php if ($lettersOnly): ?>
+                <input type="radio" name="celpip_dd_radio_<?= $qnum ?>" value="<?= htmlspecialchars($opt['option_label']) ?>" data-text="<?= htmlspecialchars($opt['option_label']) ?>">
+                <?= htmlspecialchars($opt['option_label']) ?>
+                <?php else: ?>
                 <input type="radio" name="celpip_dd_radio_<?= $qnum ?>" value="<?= htmlspecialchars($opt['option_label']) ?>" data-text="<?= htmlspecialchars($opt['option_label'] . '. ' . $opt['option_text']) ?>">
                 <?= htmlspecialchars($opt['option_label']) ?>.&nbsp;<?= htmlspecialchars($opt['option_text']) ?>
+                <?php endif; ?>
             </label>
             <?php endforeach; ?>
         </span>
@@ -162,10 +176,15 @@ function renderCelpipDropdown(int $qnum, array $qopts): void
 
 // Renders one Reading question: a dropdown for 'matching' rows and
 // blank-style MC rows, otherwise a standard radio-button MC block.
-function renderCelpipReadingQuestion(array $q, array $options): void
+function renderCelpipReadingQuestion(array $q, array $options, ?int $displayNum = null): void
 {
     $qid     = (int)$q['id'];
     $qnum    = (int)$q['question_number'];
+    // The real CELPIP UI restarts question numbering at 1 for every part —
+    // $qnum stays the DB's global 1-38 number for scoring/data-qnum/answers[]
+    // (unchanged), but the visible badge shows the part-local position
+    // instead, passed in by the caller (see $localNum in the render loop).
+    $badgeNum = $displayNum ?? $qnum;
     $qtype   = $q['question_type'];
     $qopts   = $options[$qid] ?? [];
     $isBlank = in_array($qtype, ['multiple_choice_single', 'multiple_choice_multiple'], true)
@@ -177,7 +196,7 @@ function renderCelpipReadingQuestion(array $q, array $options): void
              not shown as literal underscores with a separate control below. -->
         <div class="q-block" id="qblock-<?= $qnum ?>">
             <div class="celpip-inline-q">
-                <span class="q-badge"><?= $qnum ?></span>
+                <span class="q-badge"><?= $badgeNum ?></span>
                 <?php
                 $escaped = htmlspecialchars($q['question_text']);
                 ob_start();
@@ -187,19 +206,27 @@ function renderCelpipReadingQuestion(array $q, array $options): void
                 ?>
             </div>
         </div>
+    <?php elseif ($qtype === 'matching'): ?>
+        <!-- Paragraph matching (Part 3): the dropdown comes FIRST, with the
+             numbered statement reading right after it as one line ("[A ▾] -
+             1. Dragonflies can be used..."), matching the real CELPIP UI —
+             not a badge+sentence block with the dropdown stacked below it.
+             Bare letters only, per renderCelpipDropdown($lettersOnly). -->
+        <div class="q-block celpip-matching-row" id="qblock-<?= $qnum ?>">
+            <?php renderCelpipDropdown($qnum, $qopts, true); ?>
+            <span class="q-text">- <?= $badgeNum ?>. <?= nl2br(htmlspecialchars($q['question_text'] ?? '')) ?></span>
+        </div>
+
     <?php else: ?>
     <div class="q-block" id="qblock-<?= $qnum ?>">
         <div style="margin-bottom:.3rem;">
-            <span class="q-badge"><?= $qnum ?></span>
+            <span class="q-badge"><?= $badgeNum ?></span>
             <?php if (trim($q['question_text'] ?? '')): ?>
             <span class="q-text"><?= nl2br(htmlspecialchars($q['question_text'])) ?></span>
             <?php endif; ?>
         </div>
 
-        <?php if ($qtype === 'matching'): ?>
-            <?php renderCelpipDropdown($qnum, $qopts); ?>
-
-        <?php elseif (in_array($qtype, ['multiple_choice_single', 'multiple_choice_multiple'], true)): ?>
+        <?php if (in_array($qtype, ['multiple_choice_single', 'multiple_choice_multiple'], true)): ?>
             <?php foreach ($qopts as $opt): ?>
             <label class="mc-option">
                 <input type="<?= $qtype === 'multiple_choice_multiple' ? 'checkbox' : 'radio' ?>"
@@ -222,6 +249,101 @@ function renderCelpipReadingQuestion(array $q, array $options): void
     </div>
     <?php endif; ?>
     <?php
+}
+
+// Groups a part's questions the way the real CELPIP UI does: the first
+// stimulus_text is the primary passage (left pane only, unchanged). Any
+// later, different stimulus_text is a "reply letter" / "reader comment"
+// style document (Part 1's Q7 reply, Part 4's Q34 reader comment, per
+// migration 073) that must render ONCE in the right pane, with the question
+// that follows it absorbed in as blanks belonging to that same document
+// (they carry no stimulus_text of their own) instead of being duplicated
+// into the left pane and re-fragmented into disconnected quoted-question
+// blocks on the right — see renderCelpipInlineDocument().
+function celpipGroupReadingPart(array $partQuestions): array {
+    $primaryStim = null;
+    $items = [];
+    $n = count($partQuestions);
+    for ($i = 0; $i < $n; $i++) {
+        $q = $partQuestions[$i];
+        $stim = trim($q['stimulus_text'] ?? '');
+
+        // A stimulus with its own "N.______" markers IS the inline document
+        // (Part 1's reply letter, Part 2's email-with-blanks, Part 4's
+        // reader comment) — always right-pane-only, regardless of whether
+        // it happens to be the first stimulus in the part. Part 2's Q12 has
+        // blanks embedded in its own stimulus_text from the start (no
+        // separate blank-free passage precedes it), which a "first stim vs.
+        // later stim" check alone would have missed.
+        if ($stim !== '' && preg_match('/\d+\.______/', $stim)) {
+            // Absorb only as many trailing empty-stim questions as there are
+            // blank markers in the text (Q itself fills the first one) — NOT
+            // every empty-stim question that follows. Part 2 has three
+            // standalone comprehension questions (Q17-19) after its 5 email
+            // blanks (Q12-16); without this cap they were being swallowed
+            // into the document group too.
+            preg_match_all('/\d+\.______/', $stim, $markers);
+            $blanksTotal = count($markers[0]);
+            $groupQuestions = [$q];
+            $j = $i + 1;
+            while ($j < $n && count($groupQuestions) < $blanksTotal && trim($partQuestions[$j]['stimulus_text'] ?? '') === '') {
+                $groupQuestions[] = $partQuestions[$j];
+                $j++;
+            }
+            $items[] = ['type' => 'doc', 'doc' => ['stim' => $stim, 'questions' => $groupQuestions]];
+            $i = $j - 1;
+            continue;
+        }
+
+        if ($stim !== '' && $primaryStim === null) {
+            $primaryStim = $stim;
+            $items[] = ['type' => 'q', 'q' => $q];
+            continue;
+        }
+
+        $items[] = ['type' => 'q', 'q' => $q];
+    }
+    return ['primaryStim' => $primaryStim, 'items' => $items];
+}
+
+// Renders one reply-letter/reader-comment document exactly once, with each
+// of its own "N.______" blanks swapped for that question's dropdown right
+// where it sits in the sentence — matching the real CELPIP UI, where the
+// response is one continuous piece of correspondence, not restated
+// fragments per question. Blanks are matched to questions by position, left
+// to right, NOT by the number printed in the text — Part 4's reader-comment
+// blanks are locally numbered 6-10 in the seed text while their actual
+// question_number is 34-38, so a number lookup would silently miss them.
+function renderCelpipInlineDocument(array $doc, array $options): void {
+    $queue = $doc['questions']; // already in question_number / appearance order
+
+    // Strip the seed data's short editorial label ("Reply letter — ",
+    // "Reader comment — ") — it's not part of the actual exam text.
+    $stim = preg_replace('/^[^—\n]{0,40}—\s*/u', '', $doc['stim'], 1);
+
+    // Part 2's Q12 stimulus_text has the travel-options table appended as
+    // plain text after the email sign-off (e.g. "...Best,\nPeter\n\nTRAVEL
+    // OPTIONS TABLE (...):\n...") — that data now belongs to the diagram
+    // image shown in the left pane, so cut it from the right-pane document
+    // instead of duplicating it as unstyled text. Detected generically by a
+    // blank line followed by an ALL-CAPS heading-style line.
+    $stim = preg_replace('/\n\s*\n[A-Z][A-Z ]{8,}.*$/us', '', $stim);
+
+    // nl2br() must run BEFORE the dropdown widgets are spliced in — each
+    // widget's own multi-line template markup contains real "\n" characters,
+    // and running nl2br() after substitution was turning every one of those
+    // into a forced <br>, stacking up huge gaps inside each blank.
+    $escaped = nl2br(htmlspecialchars($stim));
+    $html = preg_replace_callback('/\d+\.______/', function (array $m) use (&$queue, $options) {
+        $gq = array_shift($queue);
+        if (!$gq) return $m[0];
+        $qopts = $options[(int)$gq['id']] ?? [];
+        ob_start();
+        renderCelpipDropdown((int)$gq['question_number'], $qopts);
+        return ob_get_clean();
+    }, $escaped);
+
+    echo '<div class="passage-box celpip-inline-q">' . $html . '</div>';
 }
 ?>
 <!DOCTYPE html>
@@ -254,10 +376,21 @@ function renderCelpipReadingQuestion(array $q, array $options): void
             margin-bottom: 1.5rem;
         }
         .celpip-passage-pane .passage-box:last-child { margin-bottom: 0; }
+        .celpip-diagram-image { width: 100%; height: auto; display: block; border: 1px solid var(--exam-line); border-radius: var(--exam-radius); }
         @media (max-width: 900px) {
             .celpip-reading-split { flex-direction: column; height: auto; }
             .celpip-reading-pane { height: 50vh; }
         }
+
+        /* Main content (passage text, question text, instructions) all
+           matched to one consistent size instead of the several slightly
+           different .85-.9rem sizes the shared theme defaults to — this
+           page's own override, doesn't touch exam_theme.css or any other
+           test page. */
+        .passage-box, .passage-box p, .q-text, .mc-option, .celpip-inline-q {
+            font-size: .875rem;
+        }
+        .q-instructions { font-weight: 700; }
 
         /* Custom dropdown widget matching the real CELPIP interface: a small
            trigger that opens a floating panel of radio-style options, then
@@ -266,27 +399,34 @@ function renderCelpipReadingQuestion(array $q, array $options): void
         .celpip-dd { position: relative; display: inline-block; margin: 0 .25rem; }
         .celpip-dd-trigger {
             background: var(--exam-surface); border: 1px solid var(--exam-accent);
-            border-radius: var(--exam-radius); padding: .25rem .7rem; font-size: .85rem;
+            border-radius: var(--exam-radius); padding: .15rem .5rem; font-size: .875rem;
             color: var(--exam-ink-muted); cursor: pointer; display: inline-flex;
-            align-items: center; gap: .4rem; min-width: 90px;
+            align-items: center; gap: .3rem; min-width: 60px;
         }
         .celpip-dd-trigger.answered { color: var(--exam-ink); font-weight: 700; border-color: var(--exam-good); }
-        .celpip-dd-trigger .bi { font-size: .65rem; color: var(--exam-ink-muted); }
+        .celpip-dd-trigger .bi { font-size: .6rem; color: var(--exam-ink-muted); }
         .celpip-dd-panel {
-            position: absolute; z-index: 50; top: calc(100% + 4px); left: 0; min-width: 260px;
+            position: absolute; z-index: 50; top: calc(100% + 4px); left: 0; min-width: 200px;
             background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg);
-            box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: .5rem 0;
+            box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: .35rem 0;
         }
         .celpip-dd-option {
-            display: flex; align-items: flex-start; gap: .5rem; padding: .5rem .9rem;
-            font-size: .85rem; font-weight: 400; cursor: pointer; white-space: normal;
+            display: flex; align-items: flex-start; gap: .4rem; padding: .35rem .7rem;
+            font-size: .875rem; font-weight: 400; cursor: pointer; white-space: normal;
         }
         .celpip-dd-option:hover { background: var(--exam-bg); }
         .celpip-dd-option input { accent-color: var(--exam-accent); margin-top: 3px; flex-shrink: 0; }
-        /* Standalone dropdowns (Part 3 matching, not embedded in a sentence)
-           should block-stack like the old select did. */
+        /* Standalone dropdowns not embedded in a sentence should block-stack
+           like the old select did. */
         .q-block > .celpip-dd { display: block; margin: 0; }
-        .q-block > .celpip-dd .celpip-dd-trigger { min-width: 220px; }
+        .q-block > .celpip-dd .celpip-dd-trigger { min-width: 170px; }
+        /* Part 3 paragraph matching: dropdown first, then the numbered
+           statement reads beside it on the same line ("[A ▾] - 1. ...").
+           Overrides the block-stack rule above for this row specifically. */
+        .celpip-matching-row { display: flex; align-items: flex-start; gap: .6rem; }
+        .celpip-matching-row > .celpip-dd { flex-shrink: 0; margin: 0; }
+        .celpip-matching-row > .celpip-dd .celpip-dd-trigger { min-width: 60px; }
+        .celpip-matching-row > .q-text { flex: 1; padding-top: .3rem; }
     </style>
 </head>
 <body>
@@ -361,30 +501,41 @@ function renderCelpipReadingQuestion(array $q, array $options): void
                 <!-- Real CELPIP Reading layout: passage on the left, questions on the
                      right, each scrolling independently — not a single top-to-bottom
                      column. See "CELPIP General Complete Guide" reference screenshots. -->
+                <?php
+                $layout = celpipGroupReadingPart($partQuestions);
+                $diagramImage = $readingDiagramImages[$session['mock_code']][$partNum] ?? null;
+                // The real CELPIP UI restarts question numbering at 1 for
+                // every part, independent of the DB's global 1-38
+                // question_number (which stays untouched for scoring) —
+                // build a local, part-scoped display number by position.
+                $localNum = [];
+                foreach ($partQuestions as $pos => $pq) { $localNum[(int)$pq['id']] = $pos + 1; }
+                ?>
                 <div class="celpip-reading-split">
                     <div class="celpip-reading-pane celpip-passage-pane">
-                        <?php
-                        $prevStim = null;
-                        foreach ($partQuestions as $q):
-                            if (!empty($q['stimulus_text']) && $q['stimulus_text'] !== $prevStim):
-                                $prevStim = $q['stimulus_text'];
-                                echo '<div class="passage-box">' . celpipRenderPassageText($q['stimulus_text']) . '</div>';
-                            endif;
-                        endforeach;
-                        ?>
+                        <?php if ($diagramImage): ?>
+                        <img class="celpip-diagram-image" src="<?= ACADEMY_URL ?>assets/img/mock_tests/<?= htmlspecialchars($session['mock_code']) ?>/<?= htmlspecialchars($diagramImage) ?>" alt="Reading Part <?= $partNum ?> diagram">
+                        <?php elseif ($layout['primaryStim'] !== null): ?>
+                        <div class="passage-box"><?= celpipRenderPassageText($layout['primaryStim']) ?></div>
+                        <?php endif; ?>
                     </div>
                     <div class="celpip-reading-pane celpip-questions-pane">
                         <?php
                         $prevInstr = null;
-                        foreach ($partQuestions as $q):
+                        foreach ($layout['items'] as $item):
+                            $introQ = $item['type'] === 'doc' ? $item['doc']['questions'][0] : $item['q'];
                             // Instructions bar — set on the first question of a block that
                             // shares it, NULL after. Render once per block, deduped.
-                            if (!empty($q['instructions']) && $q['instructions'] !== $prevInstr):
-                                $prevInstr = $q['instructions'];
-                                echo '<div class="q-instructions">' . htmlspecialchars($q['instructions']) . '</div>';
+                            if (!empty($introQ['instructions']) && $introQ['instructions'] !== $prevInstr):
+                                $prevInstr = $introQ['instructions'];
+                                echo '<div class="q-instructions">' . htmlspecialchars($introQ['instructions']) . '</div>';
                             endif;
 
-                            renderCelpipReadingQuestion($q, $options);
+                            if ($item['type'] === 'doc'):
+                                renderCelpipInlineDocument($item['doc'], $options);
+                            else:
+                                renderCelpipReadingQuestion($item['q'], $options, $localNum[(int)$item['q']['id']] ?? null);
+                            endif;
                         endforeach;
                         ?>
                     </div>
