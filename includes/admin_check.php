@@ -6,9 +6,9 @@
  * files under resources/mock_tests/ — a new @slslanguage.com hire needed a
  * code change in 15 places to get preview access before this existed.
  *
- * Rule (per instructor): any @slslanguage.com email is an admin. A couple of
- * legacy addresses predate that rule (real staff/QA using personal email)
- * and are kept so they don't lose access.
+ * Rule (per instructor): any @slslanguage.com email is an admin, plus one
+ * legacy personal address (the platform owner's) that predates that rule.
+ * ashonibarevik@gmail.com was removed 2026-09-16 per instructor request.
  */
 
 function is_platform_admin(): bool {
@@ -17,6 +17,6 @@ function is_platform_admin(): bool {
 
     if (str_ends_with($email, '@slslanguage.com')) return true;
 
-    $legacyAdminEmails = ['animasahunvictor1@gmail.com', 'ashonibarevik@gmail.com'];
+    $legacyAdminEmails = ['animasahunvictor1@gmail.com'];
     return in_array($email, $legacyAdminEmails, true);
 }
