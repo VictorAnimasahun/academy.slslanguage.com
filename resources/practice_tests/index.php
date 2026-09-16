@@ -25,21 +25,31 @@ $sections = [
         'color'   => '#3b82f6',
         'icon'    => 'bi-flag',
         'tests'   => [
-            ['file' => 'celpip_listening_001.php',   'title' => 'Listening Practice 1',       'section' => 'Listening',       'icon' => 'bi-headphones',    'meta' => '47 min · 8 Parts'],
-            ['file' => 'celpip_listening_002.php',   'title' => 'Listening Practice 2',       'section' => 'Listening',       'icon' => 'bi-headphones',    'meta' => '47 min · 8 Parts'],
-            ['file' => 'celpip_listening_003.php',   'title' => 'Listening Practice 3',       'section' => 'Listening',       'icon' => 'bi-headphones',    'meta' => '47 min · 8 Parts'],
+            // Practice Test 1's Listening file now lives in the course itself
+            // (courses/CELPIP_Gen/lessons/), not here — see project memory —
+            // so this entry points there instead of the old, now-nonexistent
+            // resources/practice_tests/celpip_listening_001.php (was a dead
+            // 404 link before this fix).
+            ['file' => '../../courses/CELPIP_Gen/lessons/celpip_listening_001.php?from=CELPIP_Gen_3Mo', 'title' => 'Listening Practice 1', 'section' => 'Listening', 'icon' => 'bi-headphones', 'meta' => '47 min · 6 Parts'],
+            ['file' => 'celpip_listening_002.php',   'title' => 'Listening Practice 2',       'section' => 'Listening',       'icon' => 'bi-headphones',    'meta' => '47 min · 6 Parts · Coming soon'],
+            ['file' => 'celpip_listening_003.php',   'title' => 'Listening Practice 3',       'section' => 'Listening',       'icon' => 'bi-headphones',    'meta' => '47 min · 6 Parts · Coming soon'],
+            ['file' => 'celpip_listening_004.php',   'title' => 'Listening Practice 4',       'section' => 'Listening',       'icon' => 'bi-headphones',    'meta' => '47 min · 6 Parts · Coming soon'],
             ['file' => 'celpip_reading_001.php',     'title' => 'Reading Practice 1',         'section' => 'Reading',         'icon' => 'bi-book',          'meta' => '55 min · 4 Parts'],
             ['file' => 'celpip_reading_002.php',     'title' => 'Reading Practice 2',         'section' => 'Reading',         'icon' => 'bi-book',          'meta' => '55 min · 4 Parts'],
             ['file' => 'celpip_reading_003.php',     'title' => 'Reading Practice 3',         'section' => 'Reading',         'icon' => 'bi-book',          'meta' => '55 min · 4 Parts'],
+            ['file' => 'celpip_reading_004.php',     'title' => 'Reading Practice 4',         'section' => 'Reading',         'icon' => 'bi-book',          'meta' => '55 min · 4 Parts · Coming soon'],
             ['file' => 'celpip_writing_t1_001.php',  'title' => 'Writing Task 1 – Email',     'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words'],
             ['file' => 'celpip_writing_t1_002.php',  'title' => 'Writing Task 1 – Email 2',   'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words'],
             ['file' => 'celpip_writing_t1_003.php',  'title' => 'Writing Task 1 – Email 3',   'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words'],
+            ['file' => 'celpip_writing_t1_004.php',  'title' => 'Writing Task 1 – Email 4',   'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words · Coming soon'],
             ['file' => 'celpip_writing_t2_001.php',  'title' => 'Writing Task 2 – Survey',    'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response'],
             ['file' => 'celpip_writing_t2_002.php',  'title' => 'Writing Task 2 – Survey 2',  'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response'],
             ['file' => 'celpip_writing_t2_003.php',  'title' => 'Writing Task 2 – Survey 3',  'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response'],
+            ['file' => 'celpip_writing_t2_004.php',  'title' => 'Writing Task 2 – Survey 4',  'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response · Coming soon'],
             ['file' => 'celpip_speaking_001.php',    'title' => 'Speaking Practice 1',        'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~16 min · 8 Tasks'],
             ['file' => 'celpip_speaking_002.php',    'title' => 'Speaking Practice 2',        'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~16 min · 8 Tasks'],
             ['file' => 'celpip_speaking_003.php',    'title' => 'Speaking Practice 3',        'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~16 min · 8 Tasks'],
+            ['file' => 'celpip_speaking_004.php',    'title' => 'Speaking Practice 4',        'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~16 min · 8 Tasks · Coming soon'],
         ],
     ],
 ];

@@ -1,6 +1,6 @@
 <?php
 /**
- * CELPIP Listening — Practice Test 3 (SCAFFOLD, no real content yet).
+ * CELPIP Listening — Practice Test 4 (SCAFFOLD, no real content yet).
  *
  * Same real, interactive engine as celpip_listening_001.php (see that file
  * and courses/CELPIP_Gen/lessons/celpip_listening_001.php — sequential
@@ -13,15 +13,15 @@
  *
  * IMPORTANT: any future change to the shared Listening engine (CSS, JS
  * state machine, markup) must be ported to this file AND to
- * celpip_listening_002.php / celpip_listening_004.php / the real PT1 —
+ * celpip_listening_002.php / celpip_listening_003.php / the real PT1 —
  * per explicit instruction, these scaffolds are meant to stay in lockstep
  * with PT1 so inserting real content later is a pure data change.
  *
- * No real audio exists at assets/audio/CELPIP_PT_L_003/ yet — every widget
+ * No real audio exists at assets/audio/CELPIP_PT_L_004/ yet — every widget
  * gracefully falls back to "Audio not available yet — click Continue"
  * (see playWithFallback() below), so this renders and runs cleanly today.
  * Submitting will fail gracefully too (save_attempt.php returns "Test not
- * found") until a migration seeds CELPIP_PT_L_003 into the tests table.
+ * found") until a migration seeds CELPIP_PT_L_004 into the tests table.
  */
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
@@ -32,7 +32,7 @@ require_once INCLUDES_PATH . '/course_lock.php';
 require_course_enrollment([14], 'this CELPIP Listening practice test');
 $isAdmin = is_platform_admin();
 
-$testCode  = 'CELPIP_PT_L_003';
+$testCode  = 'CELPIP_PT_L_004';
 $audioBase = ACADEMY_URL . 'assets/audio/' . $testCode . '/';
 $timeLimit = 47 * 60;
 $backUrl   = ACADEMY_URL . 'resources/practice_tests/index.php';
@@ -65,7 +65,7 @@ $ANSWER_KEY = [1=>'A', 2=>'A', 3=>'A', 4=>'A', 5=>'A', 6=>'A'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CELPIP Listening — Practice Test 3 | EduHub</title>
+    <title>CELPIP Listening — Practice Test 4 | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
@@ -182,7 +182,7 @@ $ANSWER_KEY = [1=>'A', 2=>'A', 3=>'A', 4=>'A', 5=>'A', 6=>'A'];
                     <ol class="breadcrumb mb-0" style="font-size:.8rem;">
                         <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
                         <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
-                        <li class="breadcrumb-item active">Listening Practice 3</li>
+                        <li class="breadcrumb-item active">Listening Practice 4</li>
                     </ol>
                 </nav>
                 <div class="inline-timer" id="inlineTimer"><i class="bi bi-clock-fill"></i> 00:00</div>
