@@ -215,17 +215,21 @@
 
 	/* ── Exam fullscreen ("focus mode") ───────────────────────────────
 	   Toggled via #examFullscreenToggle in navbar_scripts.php on test-
-	   taking pages only. Hides ONLY the left and right nav — the page's
-	   own top nav (sticky-header/timer/admin banner, wherever the page
-	   has one) is untouched, per explicit instruction: the student should
-	   still see progress/timer/admin-preview context while focused. */
+	   taking pages only. Hides the left/right nav AND this site-wide
+	   topbar ("menu bar" — Dark Mode/bell/avatar) — the TEST's own header
+	   (sticky-header/celpip-header/part-header, wherever the page has
+	   one, showing progress/timer/admin banner) is untouched and stays
+	   visible; see exam_theme.css for the matching !important overrides
+	   needed on pages that also load that file. */
 	body.exam-fullscreen .sidebar,
-	body.exam-fullscreen .advert-sidebar {
+	body.exam-fullscreen .advert-sidebar,
+	body.exam-fullscreen .topbar {
 		display: none;
 	}
 	body.exam-fullscreen .main-wrapper {
 		margin-left: 0;
 		margin-right: 0;
+		margin-top: 0;
 	}
 
 	/* ── Right advert sidebar ─────────────────────────────────────── */
