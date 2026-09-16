@@ -215,21 +215,27 @@
 
 	/* ── Exam fullscreen ("focus mode") ───────────────────────────────
 	   Toggled via #examFullscreenToggle in navbar_scripts.php on test-
-	   taking pages only. Hides the left/right nav AND this site-wide
-	   topbar ("menu bar" — Dark Mode/bell/avatar) — the TEST's own header
+	   taking pages only. Hides the left/right nav entirely. The site-wide
+	   topbar ("menu bar") declutters instead of disappearing — everything
+	   in it except #examFullscreenToggle carries .exam-fs-hide (see
+	   topbar.php), so the bar itself stays (at its normal height, so
+	   nothing needs to shift up to fill it) but only shows the one button
+	   that turns Focus Mode back off. Hiding the whole .topbar would have
+	   hidden that exit button along with it. The TEST's own header
 	   (sticky-header/celpip-header/part-header, wherever the page has
-	   one, showing progress/timer/admin banner) is untouched and stays
-	   visible; see exam_theme.css for the matching !important overrides
-	   needed on pages that also load that file. */
+	   one, showing progress/timer/admin banner) is untouched throughout;
+	   see exam_theme.css for the matching !important overrides needed on
+	   pages that also load that file. */
 	body.exam-fullscreen .sidebar,
-	body.exam-fullscreen .advert-sidebar,
-	body.exam-fullscreen .topbar {
+	body.exam-fullscreen .advert-sidebar {
+		display: none;
+	}
+	body.exam-fullscreen .topbar .exam-fs-hide {
 		display: none;
 	}
 	body.exam-fullscreen .main-wrapper {
 		margin-left: 0;
 		margin-right: 0;
-		margin-top: 0;
 	}
 
 	/* ── Right advert sidebar ─────────────────────────────────────── */

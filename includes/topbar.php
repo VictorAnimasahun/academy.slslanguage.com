@@ -22,7 +22,7 @@
 <header class="topbar">
 
     <!-- Left: toggle + brand -->
-    <div class="d-flex align-items-center gap-2">
+    <div class="d-flex align-items-center gap-2 exam-fs-hide">
         <button id="sidebarToggle" class="btn btn-link p-1"
                 aria-label="Toggle sidebar"
                 style="color:#334155;font-size:1.45rem;line-height:1;text-decoration:none;">
@@ -38,11 +38,14 @@
         </a>
     </div>
 
-    <!-- Right: welcome + controls -->
+    <!-- Right: welcome + controls. Everything here except
+         #examFullscreenToggle carries exam-fs-hide so Focus Mode can hide
+         the rest of the topbar while leaving the button that turns it back
+         off visible — see the .exam-fs-hide rule in navbar_styles.php. -->
     <div class="d-flex align-items-center gap-3">
 
         <?php if (isset($userName)): ?>
-        <span class="d-none d-xl-block text-muted" style="font-size:.85rem;">
+        <span class="d-none d-xl-block text-muted exam-fs-hide" style="font-size:.85rem;">
             <?php if (isset($_GET['status']) && $_GET['status'] === 'registration_success'): ?>
                 Welcome, <?= htmlspecialchars($userName) ?>! 🎉
             <?php else: ?>
@@ -51,17 +54,18 @@
         </span>
         <?php endif; ?>
 
-        <button id="themeToggle" class="btn btn-sm btn-outline-secondary" aria-label="Toggle dark mode">
+        <button id="themeToggle" class="btn btn-sm btn-outline-secondary exam-fs-hide" aria-label="Toggle dark mode">
             🌙 Dark Mode
         </button>
 
         <!-- Only shown on test/mock pages — see navbar_scripts.php, which
-             detects an exam page generically and reveals this. -->
+             detects an exam page generically and reveals this. Deliberately
+             NOT exam-fs-hide — this is the only way back out of Focus Mode. -->
         <button id="examFullscreenToggle" class="btn btn-sm btn-outline-secondary" aria-label="Toggle focus mode" style="display:none;">
             <i class="bi bi-arrows-fullscreen"></i> Focus Mode
         </button>
 
-        <button class="btn btn-link p-0" id="bellBtn" aria-label="Notifications">
+        <button class="btn btn-link p-0 exam-fs-hide" id="bellBtn" aria-label="Notifications">
             <div style="position:relative;">
                 <i class="bi bi-bell" style="font-size:1.2rem;color:#334155;"></i>
                 <span class="bell-unread-dot" style="
@@ -75,7 +79,7 @@
         </button>
 
         <?php if (isset($userName)): ?>
-        <div style="width:34px;height:34px;border-radius:10px;
+        <div class="exam-fs-hide" style="width:34px;height:34px;border-radius:10px;
                     background:linear-gradient(90deg,#7c3aed,#ec4899);
                     display:flex;align-items:center;justify-content:center;
                     color:white;font-weight:700;font-size:.85rem;cursor:default;"

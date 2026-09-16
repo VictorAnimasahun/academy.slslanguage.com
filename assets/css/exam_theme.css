@@ -78,17 +78,16 @@ body.sidebar-collapsed .submit-bar { left: 0; }
    180px/220px for the sidebar/advert-sidebar via !important — that beats
    the plain (non-!important) exam-fullscreen rules in navbar_styles.php,
    so those elements stayed narrow even after the side nav was hidden.
-   Needs matching !important here, plus hiding the site topbar ("menu
-   bar") entirely and pulling the sticky-header up to fill the space it
-   leaves — the sticky-header itself (progress/timer/admin banner) stays,
-   only the site chrome around it goes. */
-body.exam-fullscreen .topbar { display: none !important; }
-body.exam-fullscreen .main-wrapper { margin-left: 0 !important; margin-top: 0 !important; }
+   Needs matching !important here. The topbar's own declutter (hiding
+   everything except the Focus Mode button itself, via .exam-fs-hide) is
+   handled in navbar_styles.php — the topbar bar stays present at its
+   normal height so there's always a visible way back out, so no
+   margin-top/sticky-header-top adjustment is needed here either. */
+body.exam-fullscreen .main-wrapper { margin-left: 0 !important; }
 body.exam-fullscreen .sticky-header,
 body.exam-fullscreen .submit-bar {
   left: 0 !important; right: 0 !important;
 }
-body.exam-fullscreen .sticky-header { top: 0 !important; }
 
 .progress-steps { display: flex; gap: .5rem; align-items: center; }
 .step { display: flex; align-items: center; gap: .35rem; font-size: .8rem; color: var(--exam-ink-muted); }
