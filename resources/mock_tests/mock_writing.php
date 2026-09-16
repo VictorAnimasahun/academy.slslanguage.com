@@ -45,6 +45,13 @@ if (!$isAdmin && !is_null($session['writing_attempt_id'])) {
 // IELTS GT Task 1 needs 150+/Task 2 needs 250+ over 60 minutes -- these differ
 // enough that a shared default is wrong.
 $isCelpip  = str_starts_with((string)$session['mock_test_type'], 'CELPIP');
+// Neither CELPIP nor IELTS General Training Writing Task 1 ever has a
+// chart/diagram (only IELTS Academic Task 1 does) — this file currently only
+// ever routes Academic full mocks + CELPIP through mock_test_map.php, but
+// gate on the real signal rather than "not CELPIP" so a future GT full mock
+// added to that map doesn't silently regain the diagram slot.
+$isGT         = !$isCelpip && stripos((string)$session['mock_test_type'], 'General') !== false;
+$showDiagram  = !$isCelpip && !$isGT;
 $t1WordMin = 150;
 $t2WordMin = $isCelpip ? 150 : 250;
 $timeLimitMinutes = $isCelpip ? 53 : 60;
@@ -155,10 +162,14 @@ if ($writingTest) {
                 <!-- Task 1 -->
                 <?php if (!empty($task1['question'])): ?>
                 <div class="task-panel active" id="task-1">
+                    <?php // CELPIP Writing is never stacked in the real exam — only IELTS
+                    // gets the split/stacked switcher (see $isCelpip above). ?>
+                    <?php if (!$isCelpip): ?>
                     <div class="wt-switcher">
                         <button class="active" id="wt-switch-a" onclick="wtShowView('a')">Split view</button>
                         <button id="wt-switch-b" onclick="wtShowView('b')">Stacked view</button>
                     </div>
+                    <?php endif; ?>
                     <div class="wt-shell">
 
                         <!-- Layout A: split view -->
@@ -167,10 +178,15 @@ if ($writingTest) {
                                 <div class="wt-pane left">
                                     <p class="small fw-semibold text-uppercase text-muted mb-2" style="font-size:.72rem;">Writing Task 1</p>
                                     <div class="prompt-box"><?= htmlspecialchars($task1['question']) ?></div>
+                                    <?php // CELPIP and IELTS GT Writing Task 1 are always plain text — never
+                                    // a chart/diagram, so they get neither an image nor the "will appear
+                                    // here" placeholder (only IELTS Academic does). ?>
+                                    <?php if ($showDiagram): ?>
                                     <?php if ($task1['visual']): ?>
                                         <img src="<?= htmlspecialchars($task1['visual']) ?>" alt="Task 1 visual" class="img-fluid" style="border:1px solid var(--exam-line);border-radius:4px;">
                                     <?php else: ?>
                                         <div class="chart-placeholder"><i class="bi bi-bar-chart-fill fs-2 mb-2"></i><span>Chart / diagram will appear here</span></div>
+                                    <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
                                 <div class="wt-divider" id="wtDivider"></div>
@@ -181,7 +197,8 @@ if ($writingTest) {
                             </div>
                         </div>
 
-                        <!-- Layout B: stacked view -->
+                        <?php if (!$isCelpip): ?>
+                        <!-- Layout B: stacked view (IELTS only — CELPIP is split-only) -->
                         <div class="wt-view" id="wt-view-b">
                             <div class="wt-stack">
                                 <div class="wt-accordion">
@@ -193,7 +210,7 @@ if ($writingTest) {
                                         <div class="prompt-box" style="margin-bottom:0;"><?= htmlspecialchars($task1['question']) ?></div>
                                     </div>
                                 </div>
-                                <?php if ($task1['visual']): ?>
+                                <?php if ($showDiagram && $task1['visual']): ?>
                                 <div class="wt-graph-strip">
                                     <div class="wt-thumb"><img src="<?= htmlspecialchars($task1['visual']) ?>" alt="Task 1 visual"></div>
                                     <div class="wt-meta">Task 1 chart / diagram</div>
@@ -203,6 +220,7 @@ if ($writingTest) {
                                 <div class="wt-write-zone" id="wtEssaySlotB"></div>
                             </div>
                         </div>
+                        <?php endif; ?>
 
                     </div>
 
@@ -232,7 +250,7 @@ if ($writingTest) {
                 </div>
                 <?php endif; ?>
 
-                <?php if ($task1['visual']): ?>
+                <?php if ($showDiagram && $task1['visual']): ?>
                 <div class="wt-modal-backdrop" id="wtModal" onclick="if(event.target===this) wtCloseModal()">
                     <div class="wt-modal">
                         <button class="wt-close" onclick="wtCloseModal()">Close ✕</button>
