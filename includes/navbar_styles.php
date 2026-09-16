@@ -85,20 +85,15 @@
 		justify-content: space-between;
 	}
 
-	/* Shift panels below the fixed topbar on desktop */
-	@media (min-width: 1200px) {
-		body:has(.topbar) .sidebar {
-			top: var(--topbar-h);
-			height: calc(100vh - var(--topbar-h));
-		}
-		body:has(.topbar) .advert-sidebar {
-			top: var(--topbar-h);
-			height: calc(100vh - var(--topbar-h));
-		}
-		body:has(.topbar) .main-wrapper {
-			margin-top: var(--topbar-h);
-		}
-	}
+	/* Shift panels below the fixed topbar on desktop — moved to topbar.php
+	   itself (inline <style>, scoped by that partial's own presence on the
+	   page) instead of `body:has(.topbar)` here. :has() isn't supported in
+	   every browser (older Firefox/Safari); when it silently doesn't match,
+	   the sidebar/advert-sidebar stayed at top:0 and the fixed, full-width
+	   topbar (z-index 1001) visually covered their top ~60px — reported as
+	   "the top nav extending into the space of the right nav, hiding the
+	   top of the quick links box" on some students' laptops. See
+	   topbar.php for the replacement rule. */
 
 	/* ── Mobile header ────────────────────────────────────────────── */
 	.mobile-header {
@@ -216,6 +211,21 @@
 	}
 	body:has(.advert-sidebar) .main-wrapper {
 		margin-right: var(--advert-w);
+	}
+
+	/* ── Exam fullscreen ("focus mode") ───────────────────────────────
+	   Toggled via #examFullscreenToggle in navbar_scripts.php on test-
+	   taking pages only. Hides ONLY the left and right nav — the page's
+	   own top nav (sticky-header/timer/admin banner, wherever the page
+	   has one) is untouched, per explicit instruction: the student should
+	   still see progress/timer/admin-preview context while focused. */
+	body.exam-fullscreen .sidebar,
+	body.exam-fullscreen .advert-sidebar {
+		display: none;
+	}
+	body.exam-fullscreen .main-wrapper {
+		margin-left: 0;
+		margin-right: 0;
 	}
 
 	/* ── Right advert sidebar ─────────────────────────────────────── */

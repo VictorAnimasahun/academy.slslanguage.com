@@ -1,4 +1,24 @@
 <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
+<style>
+/* Shift the sidebar/advert-sidebar/main-wrapper below this fixed topbar on
+   desktop. Scoped by this partial's own presence in the page (not
+   `body:has(.topbar)` in navbar_styles.php) so it works in every browser,
+   including ones without :has() support — see navbar_styles.php for why
+   that mattered. */
+@media (min-width: 1200px) {
+    .sidebar {
+        top: var(--topbar-h);
+        height: calc(100vh - var(--topbar-h));
+    }
+    .advert-sidebar {
+        top: var(--topbar-h);
+        height: calc(100vh - var(--topbar-h));
+    }
+    .main-wrapper {
+        margin-top: var(--topbar-h);
+    }
+}
+</style>
 <header class="topbar">
 
     <!-- Left: toggle + brand -->
@@ -33,6 +53,12 @@
 
         <button id="themeToggle" class="btn btn-sm btn-outline-secondary" aria-label="Toggle dark mode">
             🌙 Dark Mode
+        </button>
+
+        <!-- Only shown on test/mock pages — see navbar_scripts.php, which
+             detects an exam page generically and reveals this. -->
+        <button id="examFullscreenToggle" class="btn btn-sm btn-outline-secondary" aria-label="Toggle focus mode" style="display:none;">
+            <i class="bi bi-arrows-fullscreen"></i> Focus Mode
         </button>
 
         <button class="btn btn-link p-0" id="bellBtn" aria-label="Notifications">

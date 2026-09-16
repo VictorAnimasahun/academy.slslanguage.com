@@ -80,5 +80,36 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 }
             });
         });
+
+        // ── Exam fullscreen ("Focus Mode") toggle — hides the left
+        // (.sidebar) and right (.advert-sidebar) nav on test-taking pages
+        // only, keeping the top nav (progress steps, timer, admin banner)
+        // visible exactly as-is. The button itself lives in topbar.php
+        // (next to Dark Mode), hidden by default; revealed here only when
+        // the page looks like a test, detected generically so it works on
+        // every test engine (mock + practice, old + new page templates)
+        // without editing each test file individually. State is
+        // deliberately NOT persisted across page loads — a fresh page load
+        // (e.g. right after submitting) always starts back in the normal
+        // view, satisfying "revert on submit" for free.
+        (function() {
+            const btn = document.getElementById('examFullscreenToggle');
+            if (!btn) return;
+
+            const isExamPage = document.querySelector(
+                '.sticky-header, .celpip-header, .part-header, #timerEl, #inlineTimer, #timerDisplay, .timer-display, .speaking-task-card, .celpip-shell'
+            );
+            if (!isExamPage) return;
+
+            btn.style.display = 'inline-flex';
+            btn.style.alignItems = 'center';
+            btn.style.gap = '.4rem';
+            btn.addEventListener('click', function() {
+                const active = document.body.classList.toggle('exam-fullscreen');
+                btn.innerHTML = active
+                    ? '<i class="bi bi-fullscreen-exit"></i> Exit Focus Mode'
+                    : '<i class="bi bi-arrows-fullscreen"></i> Focus Mode';
+            });
+        })();
     });
 </script>
