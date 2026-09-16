@@ -323,6 +323,11 @@ function renderCelpipListeningQuestion(array $q, array $options): void
         }
         .celpip-tap-to-play .bi { margin-right: .35rem; }
         .celpip-next-btn:disabled { opacity: .5; }
+        /* Anchors the admin-only skip button (below) over the audio/video
+           stage it belongs to — ported from celpip_listening_001.php, which
+           already has this; the Full Mock engine never did. */
+        .celpip-media-stage, .celpip-media-stage-main, [data-role="q-audio-stage"] { position: relative; }
+        .celpip-admin-skip { position: absolute; top: .75rem; right: .75rem; background: #6366f1; color: #fff; border: none; border-radius: var(--exam-radius); padding: .4rem 1rem; font-weight: 700; font-size: .78rem; margin: 0; }
         .celpip-locked { opacity: .55; pointer-events: none; }
         video.celpip-media, audio.celpip-media { display: none; }
 
@@ -729,7 +734,7 @@ function resetAudioStageForPlay(audioStage) {
     audioStage.querySelectorAll('[data-role="q-media-caption"], [data-role="q-audio-widget"], [data-role="q-playing-label"]').forEach(el => el.style.display = '');
 }
 function showContinueNotice(audioStage) {
-    audioStage.querySelectorAll('.celpip-tap-to-play').forEach(el => el.remove());
+    audioStage.querySelectorAll('.celpip-tap-to-play, .celpip-admin-skip').forEach(el => el.remove());
     audioStage.querySelectorAll('[data-role="q-media-caption"], [data-role="q-audio-widget"], [data-role="q-playing-label"]').forEach(el => el.style.display = 'none');
     if (audioStage.querySelector('[data-role="q-continue-notice"]')) return;
     const notice = document.createElement('div');
@@ -737,6 +742,22 @@ function showContinueNotice(audioStage) {
     notice.setAttribute('data-role', 'q-continue-notice');
     notice.innerHTML = '<i class="bi bi-info-circle-fill"></i> Click "NEXT" to continue.';
     audioStage.appendChild(notice);
+}
+
+// Admins previewing content shouldn't have to sit through every recording
+// (passages included) to see how a part looks — adds a visible skip control
+// that does exactly what the audio finishing naturally would (same
+// finish/reveal callback), just immediately. Never shown to students. Ported
+// from celpip_listening_001.php, which already had this for the practice
+// engine — the Full Mock engine never did, despite otherwise mirroring it.
+function addAdminSkip(containerEl, onSkip) {
+    if (!IS_ADMIN) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'celpip-next-btn celpip-admin-skip';
+    btn.innerHTML = 'NEXT <i class="bi bi-skip-forward-fill ms-1"></i>';
+    btn.onclick = () => { btn.remove(); stopCurrentAudio(); onSkip(); };
+    containerEl.appendChild(btn);
 }
 
 function advanceSequential(partNum) {
@@ -817,6 +838,7 @@ function playGroupMedia(partNum, groupIdx, onDone) {
     mediaEl.addEventListener('timeupdate', onTime);
     mediaEl.addEventListener('ended', onEnded);
     playWithFallback(mediaEl, stage);
+    addAdminSkip(stage, onEnded);
 }
 
 function showSequentialQuestion(partNum) {
@@ -845,6 +867,13 @@ function showSequentialQuestion(partNum) {
         showContinueNotice(audioStage);
         nextBtn.disabled = false;
 
+        if (IS_ADMIN) {
+            // Admins click NEXT whenever they're done looking — no forced
+            // countdown that yanks them to the next question mid-review.
+            timerVal.textContent = '∞';
+            return;
+        }
+
         let remaining = Q_SECONDS;
         timerVal.textContent = remaining;
         timerWrap.classList.remove('calm');
@@ -870,6 +899,7 @@ function showSequentialQuestion(partNum) {
         a.addEventListener('timeupdate', () => { if (a.duration && qFill) qFill.style.width = Math.min(100, (a.currentTime / a.duration) * 100) + '%'; });
         a.addEventListener('ended', revealAnswerStage);
         playWithFallback(a, audioStage);
+        addAdminSkip(audioStage, revealAnswerStage);
     } else {
         revealAnswerStage();
     }
@@ -925,6 +955,7 @@ function initAllScreenPart(panel) {
         mediaEl.addEventListener('timeupdate', onTime);
         mediaEl.addEventListener('ended', onEnded);
         playWithFallback(mediaEl, stage);
+        addAdminSkip(stage, onEnded);
     }
 
     const instrNext = instrStage.querySelector('[data-role="instr-next-btn"]');
