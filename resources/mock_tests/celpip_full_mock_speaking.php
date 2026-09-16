@@ -84,13 +84,29 @@ $tasksByMock = [
             'image'  => 'scene.jpg',
         ],
         5 => [
-            // Same documented simplification as the practice tests: the real
-            // exam's two-stage selection timing is combined into one prep+speak
-            // stage, with the third (competing) option described in text only.
+            // Real CELPIP structure (per official reference): a silent 60s
+            // selection stage (no recording at all — pick a card) followed
+            // by a SEPARATE persuasion stage that's the one actually
+            // recorded, comparing your pick against a newly-suggested third
+            // option. Previously these were wrongly combined into one
+            // prep+speak stage with all three options described in text.
             'title'  => 'Task 5: Comparing and Persuading',
+            'select' => [
+                'intro' => "Your family is relocating to another area, and you are looking for a new home there. You found two suitable options. Using the pictures and information below, choose the option that you prefer. In the next section, you will need to persuade a family member that your choice is the better choice.",
+                'prep'  => 60,
+                'options' => [
+                    ['title' => 'New Downtown Townhouse', 'image' => 'task5a_option1.jpg', 'bullets' => ['$250,000', '3 bedrooms and 1 bathroom', '1,850 square feet', 'Close to public transportation and shopping malls']],
+                    ['title' => 'Detached Home in Quiet Neighbourhood', 'image' => 'task5a_option2.jpg', 'bullets' => ['$300,000', '3 bedrooms and 3 bathrooms', '2,800 square feet', '30 minutes from downtown; 5 minutes from shops']],
+                ],
+            ],
             'prep'   => 60, 'speak' => 60,
-            'prompt' => "Your family is relocating to another area, and you are looking for a new home there. You found two suitable options:\n\nOption A - New Downtown Townhouse: \$250,000, 3 bedrooms and 1 bathroom, 1,850 square feet, close to public transportation and shopping malls.\nOption B - Detached Home in Quiet Neighbourhood: \$300,000, 3 bedrooms and 3 bathrooms, 2,800 square feet, 30 minutes from downtown, 5 minutes from shops.\n\nChoose the option you prefer.\n\nYour family is now suggesting another house - a Charming Detached Home in the Country: \$210,000, 2 bedrooms and 1 bathroom, 1,000 square feet, 45 minutes from city, 25 minutes from shops. Persuade your family member that what you chose is more suitable by comparing the two.",
-            'images' => ['task5a_option1.jpg', 'task5a_option2.jpg'],
+            'prompt' => "Your family is suggesting another house. Persuade your family member that what you chose is more suitable by comparing the two.",
+            'compare' => [
+                'heading' => "Your Family's Choice",
+                'image'   => 'task5b_third.jpg',
+                'title'   => 'Charming Detached Home in the Country',
+                'bullets' => ['$210,000', '2 bedrooms and 1 bathroom', '1,000 square feet', '45 minutes from city; 25 minutes from shops'],
+            ],
         ],
         6 => [
             'title'  => 'Task 6: Dealing with a Difficult Situation',
@@ -134,9 +150,22 @@ $tasksByMock = [
         ],
         5 => [
             'title'  => 'Task 5: Comparing and Persuading',
+            'select' => [
+                'intro' => "Your company is planning to move to a new office soon, and your boss has asked you to help find a new location. You found two suitable options. Using the pictures and information below, choose the option that you prefer. In the next section, you will need to persuade your boss that your choice is the better choice.",
+                'prep'  => 60,
+                'options' => [
+                    ['title' => 'Industrial District', 'image' => 'task5a_option1.jpg', 'bullets' => ['Built in 1910', '10,000 square feet', 'Rent $10,000 per month', 'Free parking for employees']],
+                    ['title' => 'Downtown Business Centre', 'image' => 'task5a_option2.jpg', 'bullets' => ['Built in 2012', '12,000 square feet', 'Rent $15,000 per month', 'Close to bus and train stations']],
+                ],
+            ],
             'prep'   => 60, 'speak' => 60,
-            'prompt' => "Your company is planning to move to a new office soon, and your boss has asked you to help find a new location. You find two suitable options:\n\nOption A - Industrial District: built in 1910, 10,000 square feet, rent \$10,000 per month, free parking for employees.\nOption B - Downtown Business Centre: built in 2012, 12,000 square feet, rent \$15,000 per month, close to bus and train stations.\n\nChoose the option you prefer.\n\nYour boss is now suggesting another office - Outside the City: built in 1930, 6,000 square feet, rent \$8,000 per month, 2 hours drive from the city. Persuade your boss that the office you chose is more suitable by comparing the two.",
-            'images' => ['task5a_option1.jpg', 'task5a_option2.jpg'],
+            'prompt' => "Your boss is suggesting another office. Persuade your boss that what you chose is more suitable by comparing the two.",
+            'compare' => [
+                'heading' => "Your Boss's Suggestion",
+                'image'   => 'task5b_third.jpg',
+                'title'   => 'Office Outside the City',
+                'bullets' => ['Built in 1930', '6,000 square feet', 'Rent $8,000 per month', '2 hours drive from the city'],
+            ],
         ],
         6 => [
             'title'  => 'Task 6: Dealing with a Difficult Situation',
@@ -233,6 +262,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
         .rec-review-row { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; padding: .6rem 0; border-bottom: 1px solid var(--exam-line); }
         .rec-review-row:last-child { border-bottom: none; }
+        /* Task 5's "Comparing and Persuading" cards — two side by side on
+           the silent selection screen, one alone on the persuasion screen. */
+        .celpip-compare-cards { display: flex; gap: 1.25rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.25rem; }
+        .celpip-compare-cards-single { max-width: 340px; margin-left: auto; margin-right: auto; }
+        .celpip-compare-card { border: 1px solid var(--exam-ink); border-radius: 10px; padding: 1rem; width: 100%; max-width: 320px; background: var(--exam-surface); }
+        .celpip-compare-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 6px; margin-bottom: .85rem; }
+        .celpip-compare-card h6 { font-weight: 700; margin-bottom: .6rem; }
+        .celpip-compare-heading { text-align: center; }
+        .celpip-compare-card ul { padding-left: 1.1rem; margin-bottom: 0; font-size: .9rem; color: var(--exam-ink-muted); }
+        .celpip-compare-card li { margin-bottom: .35rem; }
+        .celpip-compare-check { display: flex; align-items: center; gap: .5rem; margin-top: .9rem; padding-top: .8rem; border-top: 1px solid var(--exam-line); font-size: .88rem; cursor: pointer; }
+        .celpip-compare-check input { width: 18px; height: 18px; accent-color: var(--exam-accent); }
     </style>
 </head>
 <body class="light">
@@ -311,7 +352,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
 
                 <div id="taskArea">
                     <?php foreach ($tasks as $tNum => $t): ?>
-                    <div class="task-screen" data-task="<?= $tNum ?>" style="<?= $tNum === 1 ? '' : 'display:none;' ?>">
+                    <?php if (!empty($t['select'])): $sel = $t['select']; ?>
+                    <!-- Selection stage: silent, timed, pick-a-card — no
+                         recording happens here at all (see reference
+                         screenshot: "You do not need to speak for this
+                         part."). Shown before the task's normal prep+speak
+                         screen. -->
+                    <div class="task-select-screen" data-task="<?= $tNum ?>" style="display:none;">
+                        <div class="text-center mb-2">
+                            <span class="speaking-phase-pill is-prep" id="selectPhasePill-<?= $tNum ?>">Preparing</span>
+                        </div>
+                        <h5 class="text-center fw-bold mb-3"><?= htmlspecialchars($t['title']) ?></h5>
+                        <div class="speaking-timer" id="selectTimerDigits-<?= $tNum ?>"><?= $sel['prep'] ?>s</div>
+                        <div class="progress mb-3" style="height:6px;">
+                            <div class="progress-bar" id="selectProgressFill-<?= $tNum ?>" style="width:100%;"></div>
+                        </div>
+                        <div class="speaking-prompt"><?= htmlspecialchars($sel['intro']) ?></div>
+                        <p class="text-center fw-semibold text-muted mb-3">You do not need to speak for this part.</p>
+                        <div class="celpip-compare-cards">
+                            <?php foreach ($sel['options'] as $i => $opt): ?>
+                            <div class="celpip-compare-card">
+                                <img src="<?= $imagesBase . htmlspecialchars($opt['image']) ?>" alt="<?= htmlspecialchars($opt['title']) ?>">
+                                <h6><?= htmlspecialchars($opt['title']) ?></h6>
+                                <ul><?php foreach ($opt['bullets'] as $b): ?><li><?= htmlspecialchars($b) ?></li><?php endforeach; ?></ul>
+                                <label class="celpip-compare-check">
+                                    <input type="checkbox" onchange="selectCompareOption(<?= $tNum ?>, <?= $i ?>, this)">
+                                    Check if this is your choice.
+                                </label>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php if ($isAdmin): ?>
+                        <div class="text-center mt-3 d-flex gap-2 justify-content-center">
+                            <?php if ($tNum > 1): ?>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="adminPrevTask(<?= $tNum ?>)">
+                                <i class="bi bi-skip-backward-fill me-1"></i>Previous (admin)
+                            </button>
+                            <?php endif; ?>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="adminSkipTask(<?= $tNum ?>)">
+                                <i class="bi bi-skip-forward-fill me-1"></i>Next (admin)
+                            </button>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                    <div class="task-screen" data-task="<?= $tNum ?>" style="<?= ($tNum === 1 && empty($t['select'])) ? '' : 'display:none;' ?>">
                         <div class="text-center mb-2">
                             <span class="speaking-phase-pill is-prep" id="phasePill-<?= $tNum ?>">Preparing</span>
                         </div>
@@ -321,7 +406,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                             <div class="progress-bar" id="progressFill-<?= $tNum ?>" style="width:100%;"></div>
                         </div>
                         <div class="speaking-prompt"><?= htmlspecialchars($t['prompt']) ?></div>
-                        <?php
+                        <?php if (!empty($t['compare'])): $cmp = $t['compare']; ?>
+                        <div class="celpip-compare-cards celpip-compare-cards-single">
+                            <div class="celpip-compare-card">
+                                <?php if (!empty($cmp['heading'])): ?><h6 class="celpip-compare-heading"><?= htmlspecialchars($cmp['heading']) ?></h6><?php endif; ?>
+                                <img src="<?= $imagesBase . htmlspecialchars($cmp['image']) ?>" alt="<?= htmlspecialchars($cmp['title']) ?>">
+                                <h6><?= htmlspecialchars($cmp['title']) ?></h6>
+                                <ul><?php foreach ($cmp['bullets'] as $b): ?><li><?= htmlspecialchars($b) ?></li><?php endforeach; ?></ul>
+                            </div>
+                        </div>
+                        <?php else:
                         $images = !empty($t['images']) ? $t['images'] : (!empty($t['image']) ? [$t['image']] : []);
                         if ($images):
                         ?>
@@ -330,10 +424,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                                 <img src="<?= $imagesBase . htmlspecialchars($img) ?>" alt="Task image">
                             <?php endforeach; ?>
                         </div>
-                        <?php endif; ?>
+                        <?php endif; endif; ?>
                         <div class="mic-indicator" id="micIndicator-<?= $tNum ?>">
                             <span class="dot"></span> <span id="micText-<?= $tNum ?>">Microphone will start after preparation time</span>
                         </div>
+                        <?php if ($isAdmin): ?>
+                        <div class="text-center mt-3 d-flex gap-2 justify-content-center">
+                            <?php if ($tNum > 1): ?>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="adminPrevTask(<?= $tNum ?>)">
+                                <i class="bi bi-skip-backward-fill me-1"></i>Previous (admin)
+                            </button>
+                            <?php endif; ?>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="adminSkipTask(<?= $tNum ?>)">
+                                <i class="bi bi-skip-forward-fill me-1"></i>Next (admin)
+                            </button>
+                        </div>
+                        <?php endif; ?>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -364,12 +470,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     const TASK_PREP    = <?= json_encode(array_map(fn($t) => $t['prep'], $tasks)) ?>;
     const TASK_SPEAK   = <?= json_encode(array_map(fn($t) => $t['speak'], $tasks)) ?>;
     const TOTAL_TASKS  = <?= count($tasks) ?>;
+    const IS_ADMIN     = <?= $isAdmin ? 'true' : 'false' ?>;
+    // Only tasks with a silent selection stage (Task 5) get an entry here.
+    const TASK_SELECT_PREP = <?= json_encode(array_map(fn($t) => $t['select']['prep'] ?? null, $tasks)) ?>;
 
     let currentTask = 1;
     let prepInterval = null, recInterval = null;
     let mediaStream = null, mediaRecorder = null, audioChunks = [];
     const recordedBlobs = {};
     const uploadPromises = [];
+    const taskPhase = {}; // tNum -> 'prep' | 'speak' | 'done', for admin Next/Previous
     let submitting = false;
 
     function setPhase(tNum, phase, text) {
@@ -379,16 +489,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         pill.textContent = text;
     }
 
+    // Entry point for a task: Task 5 (and any future task with a silent
+    // selection stage) shows that stage first; everything else goes
+    // straight into the normal prep/speak flow, unchanged.
+    function beginTask(tNum) {
+        if (TASK_SELECT_PREP[tNum]) {
+            startSelectStage(tNum);
+        } else {
+            document.querySelector('.task-screen[data-task="' + tNum + '"]').style.display = '';
+            startTaskFlow(tNum);
+        }
+    }
+
+    function startSelectStage(tNum) {
+        document.querySelector('.task-select-screen[data-task="' + tNum + '"]').style.display = '';
+        taskPhase[tNum] = 'select';
+        const digitsEl = document.getElementById('selectTimerDigits-' + tNum);
+        const fillEl = document.getElementById('selectProgressFill-' + tNum);
+        const prepSecs0 = TASK_SELECT_PREP[tNum];
+        let prepSecs = prepSecs0;
+        fillEl.style.width = '100%';
+
+        if (IS_ADMIN) {
+            digitsEl.textContent = '';
+            return;
+        }
+
+        digitsEl.textContent = prepSecs + 's';
+        prepInterval = setInterval(() => {
+            prepSecs--;
+            digitsEl.textContent = Math.max(prepSecs, 0) + 's';
+            fillEl.style.width = Math.max(0, (prepSecs / prepSecs0) * 100) + '%';
+            if (prepSecs <= 0) {
+                clearInterval(prepInterval);
+                finishSelectStage(tNum);
+            }
+        }, 1000);
+    }
+
+    function finishSelectStage(tNum) {
+        document.querySelector('.task-select-screen[data-task="' + tNum + '"]').style.display = 'none';
+        document.querySelector('.task-screen[data-task="' + tNum + '"]').style.display = '';
+        startTaskFlow(tNum);
+    }
+
+    // Purely informational for the student (which card they'd pick) — the
+    // real comparison/persuasion in the next stage is scripted content, not
+    // dependent on which option was checked here. Checkboxes behave as a
+    // mutually-exclusive pair (only one "choice" makes sense).
+    function selectCompareOption(tNum, idx, el) {
+        document.querySelectorAll('.task-select-screen[data-task="' + tNum + '"] .celpip-compare-check input')
+            .forEach((cb, i) => { if (i !== idx) cb.checked = false; });
+    }
+
     function startTaskFlow(tNum) {
         const prepSecs0 = TASK_PREP[tNum];
         const digitsEl = document.getElementById('timerDigits-' + tNum);
         const fillEl = document.getElementById('progressFill-' + tNum);
         let prepSecs = prepSecs0;
 
+        taskPhase[tNum] = 'prep';
         setPhase(tNum, 'prep', 'Preparing');
-        digitsEl.textContent = prepSecs + 's';
         fillEl.style.width = '100%';
 
+        // Admins are untimed, full stop — no countdown ever runs, not just
+        // a skip button layered on top of one. Real timed testing only
+        // happens on a genuine student account; admin preview is
+        // self-paced via the Next/Previous buttons only.
+        if (IS_ADMIN) {
+            digitsEl.textContent = '';
+            return;
+        }
+
+        digitsEl.textContent = prepSecs + 's';
         prepInterval = setInterval(() => {
             prepSecs--;
             digitsEl.textContent = Math.max(prepSecs, 0) + 's';
@@ -406,26 +579,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         const micText = document.getElementById('micText-' + tNum);
         const micIndicator = document.getElementById('micIndicator-' + tNum);
 
+        taskPhase[tNum] = 'speak';
         setPhase(tNum, 'speak', 'Speaking');
         micIndicator.classList.add('recording');
         micText.textContent = 'Recording your answer...';
 
         const speakSecs0 = TASK_SPEAK[tNum];
         let speakSecs = speakSecs0;
-        digitsEl.textContent = speakSecs + 's';
         fillEl.style.width = '100%';
-
         startAudioCapture(tNum);
+
+        // Same untimed rule as prep — recording still starts (that's the
+        // whole point, verifying the mic), it just never auto-stops on a
+        // clock. Admin stops it manually via the Next button.
+        if (IS_ADMIN) {
+            digitsEl.textContent = '';
+            return;
+        }
+
+        digitsEl.textContent = speakSecs + 's';
         recInterval = setInterval(() => {
             speakSecs--;
             digitsEl.textContent = Math.max(speakSecs, 0) + 's';
             fillEl.style.width = Math.max(0, (speakSecs / speakSecs0) * 100) + '%';
             if (speakSecs <= 0) {
                 clearInterval(recInterval);
-                stopAudioCaptureAndUpload(tNum);
                 setPhase(tNum, 'done', "Time's up");
-                micIndicator.classList.remove('recording');
-                micText.textContent = 'Response recorded';
+                // micText is set honestly inside stopAudioCaptureAndUpload's
+                // onstop callback once we actually know whether audio was
+                // captured — it used to be hardcoded to "Response recorded"
+                // right here regardless of outcome, which lied about failed
+                // mic permissions.
+                stopAudioCaptureAndUpload(tNum);
                 advanceToNext(tNum);
             }
         }, 1000);
@@ -445,7 +630,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     }
 
     function stopAudioCaptureAndUpload(tNum) {
-        if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+        const micIndicator = document.getElementById('micIndicator-' + tNum);
+        const micText = document.getElementById('micText-' + tNum);
+        if (micIndicator) micIndicator.classList.remove('recording');
+
+        if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+            // getUserMedia/MediaRecorder never started (mic blocked/unavailable)
+            // — say so immediately instead of silently doing nothing, so a
+            // broken mic is obvious on task 1 rather than only discovered at
+            // the very end of the section.
+            if (micText) micText.textContent = 'No recording captured — check your microphone permissions';
+            return;
+        }
         const recorder = mediaRecorder;
         const stream = mediaStream;
         recorder.onstop = () => {
@@ -453,11 +649,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
             if (blob.size > 0) {
                 recordedBlobs[tNum] = blob;
                 uploadPromises.push(uploadRecording(tNum, blob));
+                if (micText) micText.textContent = 'Response recorded ✓ — play it back below';
+                showInlinePreview(tNum, blob);
+            } else if (micText) {
+                micText.textContent = 'No audio captured — check your microphone';
             }
             stream.getTracks().forEach(t => t.stop());
         };
         recorder.stop();
         mediaRecorder = null;
+    }
+
+    // Immediate, verifiable proof the recording worked — a playable clip
+    // right under the task, not just a text label. Previously the only
+    // playback existed in the end-of-section review screen, so a broken mic
+    // on task 1 went unnoticed until all 8 tasks were already done.
+    function showInlinePreview(tNum, blob) {
+        const micIndicator = document.getElementById('micIndicator-' + tNum);
+        if (!micIndicator) return;
+        let audioEl = document.getElementById('micPreview-' + tNum);
+        if (!audioEl) {
+            audioEl = document.createElement('audio');
+            audioEl.id = 'micPreview-' + tNum;
+            audioEl.controls = true;
+            audioEl.style.cssText = 'height:30px;margin-top:.6rem;display:block;width:100%;max-width:360px;margin-left:auto;margin-right:auto;';
+            micIndicator.insertAdjacentElement('afterend', audioEl);
+        }
+        audioEl.src = URL.createObjectURL(blob);
+    }
+
+    function adminSkipTask(tNum) {
+        if (!IS_ADMIN) return;
+        if (taskPhase[tNum] === 'select') {
+            clearInterval(prepInterval);
+            finishSelectStage(tNum);
+            return;
+        }
+        if (taskPhase[tNum] === 'prep') {
+            // Skip the WAIT, not the recording itself — jumping straight to
+            // the next task from here would mean the mic never actually
+            // runs, which is why the recorder looked broken: Next was
+            // always clicked during prep, before recording ever started.
+            clearInterval(prepInterval);
+            beginRecording(tNum);
+            return;
+        }
+        clearInterval(recInterval);
+        setPhase(tNum, 'done', 'Skipped (admin)');
+        stopAudioCaptureAndUpload(tNum);
+        advanceToNext(tNum);
+    }
+
+    function adminPrevTask(tNum) {
+        if (!IS_ADMIN || tNum <= 1) return;
+        clearInterval(prepInterval);
+        clearInterval(recInterval);
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            try { mediaRecorder.stop(); } catch (e) {}
+            mediaRecorder = null;
+        }
+        if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+
+        // Hide whichever screen is currently showing for this task — the
+        // select stage (Task 5) or the normal prep/speak screen.
+        const selectScreen = document.querySelector('.task-select-screen[data-task="' + tNum + '"]');
+        if (selectScreen) selectScreen.style.display = 'none';
+        document.querySelector('.task-screen[data-task="' + tNum + '"]').style.display = 'none';
+
+        document.getElementById('dot-' + tNum).classList.remove('current');
+        document.getElementById('dot-' + (tNum - 1)).classList.remove('done');
+        document.getElementById('dot-' + (tNum - 1)).classList.add('current');
+        currentTask = tNum - 1;
+        beginTask(currentTask);
     }
 
     async function uploadRecording(tNum, blob) {
@@ -483,11 +746,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         setTimeout(() => {
             if (tNum < TOTAL_TASKS) {
                 document.querySelector('.task-screen[data-task="' + tNum + '"]').style.display = 'none';
-                document.querySelector('.task-screen[data-task="' + (tNum + 1) + '"]').style.display = '';
                 const nextDot = document.getElementById('dot-' + (tNum + 1));
                 if (nextDot) nextDot.classList.add('current');
                 currentTask = tNum + 1;
-                startTaskFlow(currentTask);
+                // beginTask (not startTaskFlow) — the next task may have its
+                // own silent selection stage (Task 5) that must show first;
+                // beginTask() shows the right screen and starts its timer.
+                beginTask(currentTask);
             } else {
                 finishRecording();
             }
@@ -540,7 +805,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     window.addEventListener('resize', syncContentOffset);
     syncContentOffset();
 
-    startTaskFlow(1);
+    beginTask(1);
     </script>
     <?php endif; ?>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
