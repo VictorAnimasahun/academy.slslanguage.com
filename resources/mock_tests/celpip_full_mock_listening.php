@@ -360,7 +360,7 @@ function renderCelpipListeningQuestion(array $q, array $options, bool $showQuest
            stage it belongs to — ported from celpip_listening_001.php, which
            already has this; the Full Mock engine never did. */
         .celpip-media-stage, .celpip-media-stage-main, [data-role="q-audio-stage"] { position: relative; }
-        .celpip-admin-skip { position: absolute; top: .75rem; right: .75rem; background: #6366f1; color: #fff; border: none; border-radius: var(--exam-radius); padding: .4rem 1rem; font-weight: 700; font-size: .78rem; margin: 0; }
+        .celpip-admin-skip { position: absolute; bottom: .75rem; right: .75rem; background: #6366f1; color: #fff; border: none; border-radius: var(--exam-radius); padding: .4rem 1rem; font-weight: 700; font-size: .78rem; margin: 0; }
         .celpip-locked { opacity: .55; pointer-events: none; }
         video.celpip-media, audio.celpip-media { display: none; }
 
@@ -534,6 +534,9 @@ function renderCelpipListeningQuestion(array $q, array $options, bool $showQuest
                         <div class="celpip-seq-header">
                             <span><?= htmlspecialchars($partTitle) ?></span>
                             <span class="celpip-seq-timer-wrap">
+                                <?php if ($isAdmin): ?>
+                                <button type="button" class="celpip-next-btn celpip-next-btn-inline celpip-admin-prev" data-role="prev-btn"><i class="bi bi-skip-backward-fill me-1"></i>PREVIOUS</button>
+                                <?php endif; ?>
                                 <span class="celpip-seq-timer" data-role="q-timer">Time remaining: <strong data-role="q-timer-val">25</strong><span data-role="q-timer-unit"> seconds</span></span>
                                 <button type="button" class="celpip-next-btn celpip-next-btn-inline" data-role="next-btn">NEXT</button>
                             </span>
@@ -887,6 +890,7 @@ function showSequentialQuestion(partNum) {
     const timerUnit   = card.querySelector('[data-role="q-timer-unit"]');
     const timerWrap   = card.querySelector('[data-role="q-timer"]');
     const nextBtn     = card.querySelector('[data-role="next-btn"]');
+    const prevBtn     = card.querySelector('[data-role="prev-btn"]');
 
     // Options are visible on the right from the moment the question starts —
     // never gated behind the audio finishing — matching the real interface.
@@ -896,6 +900,7 @@ function showSequentialQuestion(partNum) {
     timerWrap.classList.add('calm'); // grey while the question is being read aloud, not counting yet
     nextBtn.disabled = true;
     nextBtn.onclick = () => advanceSequential(partNum);
+    if (prevBtn) { prevBtn.disabled = (st.idx === 0); prevBtn.onclick = () => previousSequential(partNum); }
 
     function revealAnswerStage() {
         showContinueNotice(audioStage);
@@ -938,6 +943,45 @@ function showSequentialQuestion(partNum) {
     } else {
         revealAnswerStage();
     }
+
+    updateProgress();
+}
+
+// Lets an admin step back to the previous question within the same part for a
+// quick re-check, without replaying its audio — jumps straight to its answer
+// stage (mirroring revealAnswerStage's end-state). No-op at the part's first
+// question, and only ever reachable via the admin-only PREVIOUS button.
+function previousSequential(partNum) {
+    const st = seqState[partNum];
+    if (!st || !IS_ADMIN || st.idx <= 0) return;
+    if (st.qTimerInterval) { clearInterval(st.qTimerInterval); st.qTimerInterval = null; }
+    stopCurrentAudio();
+
+    const curCard = st.seqEl.querySelector(`[data-role="q-card"][data-qnum="${st.flat[st.idx].qnum}"]`);
+    if (curCard) { curCard.style.display = 'none'; curCard.classList.add('celpip-locked'); }
+
+    st.idx--;
+    const item = st.flat[st.idx];
+    const card = st.seqEl.querySelector(`[data-role="q-card"][data-qnum="${item.qnum}"]`);
+    card.style.display = '';
+    card.classList.remove('celpip-locked');
+
+    const audioStage  = card.querySelector('[data-role="q-audio-stage"]');
+    const answerStage = card.querySelector('[data-role="q-answer-stage"]');
+    const timerVal    = card.querySelector('[data-role="q-timer-val"]');
+    const timerUnit   = card.querySelector('[data-role="q-timer-unit"]');
+    const timerWrap   = card.querySelector('[data-role="q-timer"]');
+    const nextBtn     = card.querySelector('[data-role="next-btn"]');
+    const prevBtn     = card.querySelector('[data-role="prev-btn"]');
+
+    showContinueNotice(audioStage);
+    answerStage.style.display = '';
+    timerVal.textContent = '∞';
+    timerUnit.textContent = '';
+    timerWrap.classList.add('calm');
+    nextBtn.disabled = false;
+    nextBtn.onclick = () => advanceSequential(partNum);
+    if (prevBtn) { prevBtn.disabled = (st.idx === 0); prevBtn.onclick = () => previousSequential(partNum); }
 
     updateProgress();
 }

@@ -140,7 +140,7 @@ $ANSWER_KEY = [1=>'A', 2=>'A', 3=>'A', 4=>'A', 5=>'A', 6=>'A'];
         /* Admin-only skip control — visually distinct (purple, top-right) from
            the real student controls so it's never mistaken for part of the
            actual test experience. */
-        .celpip-admin-skip { position: absolute; top: .75rem; right: .75rem; background: #6366f1; color: #fff; border: none; border-radius: var(--exam-radius); padding: .4rem 1rem; font-weight: 700; font-size: .78rem; margin: 0; }
+        .celpip-admin-skip { position: absolute; bottom: .75rem; right: .75rem; background: #6366f1; color: #fff; border: none; border-radius: var(--exam-radius); padding: .4rem 1rem; font-weight: 700; font-size: .78rem; margin: 0; }
         .celpip-admin-prev { background: #64748b; }
         .celpip-admin-prev:disabled { opacity: .35; }
         .celpip-tap-to-play .bi { margin-right: .35rem; }
