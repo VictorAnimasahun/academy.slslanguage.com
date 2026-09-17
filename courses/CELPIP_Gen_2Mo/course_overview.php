@@ -31,7 +31,14 @@ foreach ($rows as $row) {
 }
 
 $student_tier_level = get_student_tier_level();
-$month_colors = [1 => '#0b77ff', 2 => '#6366f1'];
+// Color-code by week type: mock weeks (full 4-skill simulations) stand out
+// from the regular one-test-per-class weeks. Keyed by module_order (1-8),
+// matching the 8-week schedule (migration 092).
+$mock_weeks = [5, 8];
+$month_colors = [];
+foreach (range(1, 8) as $w) {
+    $month_colors[$w] = in_array($w, $mock_weeks) ? '#16a34a' : '#0b77ff';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -92,11 +99,11 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1'];
             <div class="content-section">
                 <h2>Course Content</h2>
                 <p class="text-muted small mb-3">
-                    <i class="bi bi-lock-fill me-1 text-warning"></i>Month 1 requires the <strong>Intermediate</strong> plan or above.
-                    Month 2 requires the <strong>Advanced</strong> plan.
-                    <i class="bi bi-unlock-fill ms-3 me-1 text-success"></i>Class 1 is free.
+                    <i class="bi bi-unlock-fill me-1 text-success"></i>Class 1 (Week 1) is free.
+                    <i class="bi bi-lock-fill ms-3 me-1 text-warning"></i>Classes 2-16 require the <strong>Intermediate</strong> plan.
                 </p>
                 <div class="accordion" id="courseAccordion">
+                <?php $global_class_counter = 0; ?>
                 <?php foreach ($modules as $month_num => $module): ?>
                     <?php $color = $month_colors[$month_num] ?? '#0b77ff'; $collapse_id = 'month' . $month_num; $is_open = ($month_num === 1); ?>
                     <div class="accordion-item mb-2" style="border-radius:10px;overflow:hidden;border:none;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
@@ -113,10 +120,10 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1'];
                             <div class="accordion-body p-0">
                                 <ul class="list-unstyled mb-0">
                                 <?php foreach ($module['lessons'] as $idx => $lesson):
-                                    $global_class   = ($month_num - 1) * 8 + (int) $lesson['lesson_order'];
+                                    $global_class   = ++$global_class_counter;
                                     $required_level = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$lesson['min_tier']] ?? 1;
                                     $can_access     = $student_tier_level >= $required_level;
-                                    $is_mock        = in_array($global_class, [8, 16]);
+                                    $is_mock        = in_array($global_class, [9, 16]);
                                     $file_path      = $lesson['file_path'] ?? '';
                                 ?>
                                 <li class="d-flex align-items-center justify-content-between px-3 py-2 <?= $idx < count($module['lessons'])-1 ? 'border-bottom' : '' ?>"
