@@ -128,44 +128,50 @@ if ($writingTest) {
         /* CELPIP Writing — official two-pane layout: scenario left, task
            instructions + response right, one task on screen at a time with
            its own independent timer + NEXT/SUBMIT — matches the real exam
-           screen exactly (see reference screenshots, 2026-09-17). */
-        .celpip-w-shell { border: 1px solid #dcdfe3; border-radius: 10px; overflow: hidden; }
+           screen exactly (see reference screenshots, 2026-09-17). Built
+           entirely from exam_theme.css's shared design tokens (muted
+           blue-gray palette, 4-8px radii, flat/no-shadow, hairline borders)
+           rather than a one-off palette, so it stays visually consistent
+           with every other test screen on the platform. */
+        .celpip-w-shell { border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); overflow: hidden; }
         .celpip-w-task { display: flex; flex-direction: column; }
         .celpip-w-header {
             display: flex; align-items: center; justify-content: space-between;
-            background: #eef0f2; padding: .7rem 1.25rem; border-bottom: 1px solid #dcdfe3;
-            font-size: .95rem; font-weight: 700; color: #2b2f33;
+            background: var(--exam-bg); padding: .7rem 1.25rem; border-bottom: 1px solid var(--exam-line);
+            font-size: .95rem; font-weight: 700; color: var(--exam-ink);
         }
         .celpip-w-timerwrap { display: flex; align-items: center; gap: .9rem; font-weight: 400; }
-        .celpip-w-timer { font-size: .88rem; color: #4b5563; }
-        .celpip-w-timer strong { color: #111827; font-weight: 700; }
+        .celpip-w-timer { font-size: .88rem; color: var(--exam-ink-muted); }
+        .celpip-w-timer strong { color: var(--exam-ink); font-weight: 700; }
         .celpip-w-next {
-            background: #1d4ed8; color: #fff; border: none; border-radius: 6px;
+            background: var(--exam-accent); color: #fff; border: none; border-radius: var(--exam-radius);
             padding: .5rem 1.3rem; font-weight: 700; font-size: .85rem; cursor: pointer;
         }
-        .celpip-w-next:hover { background: #1e40af; }
+        .celpip-w-next:hover { opacity: .88; }
         .celpip-w-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 480px; }
         .celpip-w-pane { padding: 1.5rem 1.75rem; }
-        .celpip-w-pane.left { background: #f7f8f9; border-right: 1px solid #dcdfe3; }
-        .celpip-w-pane.right { background: #eaf6f6; display: flex; flex-direction: column; }
-        .celpip-w-heading { display: flex; align-items: flex-start; gap: .5rem; font-weight: 700; color: #1e3a8a; font-size: .95rem; margin-bottom: 1rem; }
+        .celpip-w-pane.left { background: var(--exam-surface); border-right: 1px solid var(--exam-line); }
+        .celpip-w-pane.right { background: var(--exam-accent-soft); display: flex; flex-direction: column; }
+        .celpip-w-heading { display: flex; align-items: flex-start; gap: .5rem; font-weight: 700; color: var(--exam-accent); font-size: .95rem; margin-bottom: 1rem; }
         .celpip-w-heading .bi { margin-top: .15rem; flex-shrink: 0; }
-        .celpip-w-scenario { color: #374151; font-size: .92rem; line-height: 1.7; white-space: pre-line; }
-        .celpip-w-bullets { color: #374151; font-size: .92rem; line-height: 1.6; padding-left: 1.25rem; margin-bottom: 1rem; }
+        .celpip-w-scenario { color: var(--exam-ink); font-size: .92rem; line-height: 1.7; white-space: pre-line; }
+        .celpip-w-bullets { color: var(--exam-ink); font-size: .92rem; line-height: 1.6; padding-left: 1.25rem; margin-bottom: 1rem; }
         .celpip-w-bullets li { margin-bottom: .4rem; }
         .celpip-w-options { display: flex; flex-direction: column; gap: .9rem; margin-bottom: 1.25rem; }
-        .celpip-w-option { display: flex; align-items: flex-start; gap: .6rem; font-size: .92rem; color: #374151; cursor: pointer; }
+        .celpip-w-option { display: flex; align-items: flex-start; gap: .6rem; font-size: .92rem; color: var(--exam-ink); cursor: pointer; }
         .celpip-w-option input { margin-top: .25rem; flex-shrink: 0; }
+        /* resize: vertical + overflow: auto -- draggable corner handle so the
+           student can pull the box taller than the default 260px. */
         .celpip-w-textarea {
-            flex: 1; min-height: 260px; width: 100%; border: 1px solid #c7d2d2; border-radius: 6px;
-            padding: 1rem; font-size: .95rem; line-height: 1.6; resize: vertical; font-family: inherit;
-            background: #fff;
+            flex: 1; min-height: 260px; width: 100%; border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
+            padding: 1rem; font-size: .95rem; line-height: 1.6; resize: vertical; overflow: auto; font-family: inherit;
+            background: var(--exam-surface);
         }
-        .celpip-w-textarea:focus { outline: none; border-color: #1d4ed8; }
-        .celpip-w-wc { text-align: center; margin-top: .75rem; font-size: .85rem; color: #6b7280; font-weight: 600; }
+        .celpip-w-textarea:focus { outline: none; border-color: var(--exam-accent); }
+        .celpip-w-wc { text-align: center; margin-top: .75rem; font-size: .85rem; color: var(--exam-ink-muted); font-weight: 600; }
         @media (max-width: 900px) {
             .celpip-w-split { grid-template-columns: 1fr; }
-            .celpip-w-pane.left { border-right: none; border-bottom: 1px solid #dcdfe3; }
+            .celpip-w-pane.left { border-right: none; border-bottom: 1px solid var(--exam-line); }
         }
     </style>
     <?php endif; ?>
