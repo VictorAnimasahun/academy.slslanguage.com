@@ -85,6 +85,14 @@ $listeningOptionImages = [
             'D' => 'CELPIP_FULL_MOCK_A/listening_q1/option_d.png',
         ],
     ],
+    'CELPIP_FULL_MOCK_B' => [
+        2 => [
+            'A' => 'CELPIP_FULL_MOCK_B/listening_q2/option_a.png',
+            'B' => 'CELPIP_FULL_MOCK_B/listening_q2/option_b.png',
+            'C' => 'CELPIP_FULL_MOCK_B/listening_q2/option_c.png',
+            'D' => 'CELPIP_FULL_MOCK_B/listening_q2/option_d.png',
+        ],
+    ],
 ];
 
 $stmt = $db->prepare("SELECT id, duration_minutes FROM tests WHERE code = ? AND is_active = 1 LIMIT 1");
