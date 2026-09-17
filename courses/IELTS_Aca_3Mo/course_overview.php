@@ -123,7 +123,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                                     style="<?= $is_mock ? 'background:#fffbeb;' : '' ?>">
                                     <div class="d-flex align-items-center gap-2">
                                         <?php if ($can_access): ?>
-                                            <a href="lesson.php?id=<?= (int) $lesson['id'] ?>" class="text-decoration-none text-dark d-flex align-items-center gap-2">
+                                            <a href="class<?= $global_class ?>.php" class="text-decoration-none text-dark d-flex align-items-center gap-2">
                                                 <i class="bi <?= htmlspecialchars($lesson['icon'] ?? 'bi-play-circle') ?>" style="color:<?= $color ?>;font-size:1.1rem;min-width:20px;"></i>
                                                 <span><strong>Class <?= $global_class ?>:</strong> <?= htmlspecialchars($lesson['title']) ?>
                                                     <?php if ($global_class === 1): ?><span class="badge bg-success ms-1">Free</span><?php endif; ?>
