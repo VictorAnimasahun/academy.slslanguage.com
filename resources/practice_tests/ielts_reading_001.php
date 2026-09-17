@@ -9,7 +9,7 @@ require_once INCLUDES_PATH . '/course_lock.php';
 // courses — this is General Training content standing in temporarily for
 // Class 3 ahead of a real Academic Reading Test 1 existing, per instructor
 // request. Swap for the real Academic version once it's built.
-require_course_enrollment([9, 10, 11, 16], 'this IELTS Reading practice test');
+require_course_enrollment([9, 10, 11, 16, 17], 'this IELTS Reading practice test');
 
 $testCode  = 'IELTS_PT_R_001';
 $timeLimit = 60 * 60;

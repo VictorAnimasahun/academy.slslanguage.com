@@ -7,7 +7,11 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment([9, 10, 11], 'this IELTS Speaking practice test');
+// Course 17 (IELTS_Aca_3Mo) added 2026-09-17 — needed as the 4th Speaking
+// test slot (Class 20) since only 3 other Speaking practice tests
+// (002/003/004) exist. Speaking content is identical between Academic and
+// General Training, so this is a permanent fit, not a stand-in.
+require_course_enrollment([9, 10, 11, 17], 'this IELTS Speaking practice test');
 
 $testCode = 'IELTS_PT_S_001';
 
