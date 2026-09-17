@@ -8,28 +8,35 @@
 -- place rather than inserting new ones, so enrollments/progress tracking
 -- tied to the existing lesson ids are untouched.
 --
--- Content-safety note (found while writing this): four of the referenced
+-- Content-safety note (found while writing this): five of the referenced
 -- practice tests could be linked via file_path:
 --   - ielts_speaking_002/003/004.php — real content, no enrollment gate.
+--   - ielts_listening_001.php — real, content-neutral (Listening doesn't
+--     differ between Academic and GT). Its enrollment gate
+--     (require_course_enrollment) originally only listed the IELTS
+--     General Training course family (ids 9, 10, 11) — course 16
+--     (IELTS_Aca_2Mo, this course's real id, confirmed via
+--     `SELECT id FROM courses WHERE folder_name='IELTS_Aca_2Mo'`) was
+--     added to that array 2026-09-17 in
+--     resources/practice_tests/ielts_listening_001.php. Permanent fit,
+--     not a temporary stand-in.
 --   - ielts_reading_001.php — General Training content (explicitly labeled
 --     "GT" in its own markup), used here as a deliberate, explicit
 --     stand-in per instructor request 2026-09-17 ("free the reading
 --     practice test... we will wire everything to the proper programs
---     later"). Its course_lock enrollment gate was removed the same day
---     (resources/practice_tests/ielts_reading_001.php) so students in
---     this course can actually reach it. Swap for a real Academic Reading
---     Test 1 once one exists.
+--     later"). First attempt removed its course_lock gate entirely; on
+--     realizing the original [9,10,11] gate was already working as
+--     designed for General Training students (course 9 = "the 3-month
+--     course" the instructor tested with), corrected same-day to widen
+--     that array to [9, 10, 11, 16] instead of leaving it open to anyone.
+--     Swap for a real Academic Reading Test 1 once one exists.
 -- Everything else was excluded on purpose:
 --   - ielts_writing_t1/t2_001.php are explicitly labeled "General
 --     Training" in their own markup — wrong content type for an Academic
 --     course, and not yet freed the way Reading was.
---   - ielts_listening_001.php and ielts_speaking_001.php are real and
---     content-neutral (Listening/Speaking don't differ between Academic
---     and GT) but gate on require_course_enrollment([9, 10, 11]) — the
---     IELTS General Training course family's ids, not this course's. An
---     Academic-only student would hit a locked wall. Needs that gate
---     array widened to include this course's real id before linking is
---     safe; deliberately not guessed here.
+--   - ielts_speaking_001.php has the same [9,10,11] gate as Listening
+--     did, but wasn't touched — Speaking already had 3 free, ungated,
+--     real alternatives (002/003/004) to use instead.
 --   - ielts_listening_002.php is orphaned (no auth/login gate at all,
 --     unreachable from any nav) and ielts_reading_002-004.php /
 --     ielts_listening_003-004.php / ielts_writing_t1_002-004.php /
@@ -57,8 +64,8 @@ JOIN modules m ON m.id = l.module_id
 JOIN courses c ON c.id = m.course_id
 SET l.title = 'Listening Test 1 + Writing Task Overview',
     l.duration_minutes = 90,
-    l.file_path = NULL,
-    l.content = '<h5>Listening</h5><ul><li>Complete Listening Test 1 (full-length)</li><li>Answer review</li></ul><h5>Writing</h5><ul><li>Task 1 &amp; Task 2 overview — chart/graph/map/process types, essay types</li><li>Assessment criteria</li><li>Band 5 vs. Band 7+ sample analysis</li></ul><p class="text-muted small mt-2"><em>Listening Test 1 link pending — ielts_listening_001.php exists but is currently gated to the IELTS General Training course family; needs that access widened first.</em></p>'
+    l.file_path = 'resources/practice_tests/ielts_listening_001.php',
+    l.content = '<h5>Listening</h5><ul><li>Complete Listening Test 1 (full-length)</li><li>Answer review</li></ul><h5>Writing</h5><ul><li>Task 1 &amp; Task 2 overview — chart/graph/map/process types, essay types</li><li>Assessment criteria</li><li>Band 5 vs. Band 7+ sample analysis</li></ul>'
 WHERE c.folder_name = 'IELTS_Aca_2Mo' AND m.module_order = 1 AND l.lesson_order = 2;
 
 UPDATE lessons l
