@@ -4,9 +4,11 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
     exit();
 }
-require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment([9, 10, 11], 'this IELTS Reading practice test');
-
+// Freed from its IELTS General Training course lock 2026-09-17, per
+// instructor request — needed live now for the IELTS Academic 2-Month
+// course (Class 3) ahead of a real Academic Reading Test 1 existing. This
+// is General Training content standing in temporarily; swap for the real
+// Academic version once it's built, per project memory.
 $testCode  = 'IELTS_PT_R_001';
 $timeLimit = 60 * 60;
 

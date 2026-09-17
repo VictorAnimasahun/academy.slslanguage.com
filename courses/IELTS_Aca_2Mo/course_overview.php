@@ -15,7 +15,7 @@ if (!$course) { header("Location: ../courses_catalogue.php?message=Course+not+fo
 $course_id = (int) $course['id'];
 $stmt = $db->prepare("
     SELECT m.id AS module_id, m.module_title, m.module_order, m.min_tier AS module_min_tier,
-           l.id AS lesson_id, l.title, l.lesson_order, l.duration_minutes,
+           l.id, l.title, l.lesson_order, l.duration_minutes,
            l.min_tier, l.icon, l.file_path
     FROM modules m JOIN lessons l ON l.module_id = m.id
     WHERE m.course_id = ? ORDER BY m.module_order, l.lesson_order
@@ -117,13 +117,12 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1'];
                                     $required_level = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$lesson['min_tier']] ?? 1;
                                     $can_access     = $student_tier_level >= $required_level;
                                     $is_mock        = in_array($global_class, [8, 16]);
-                                    $file_path      = $lesson['file_path'] ?? '';
                                 ?>
                                 <li class="d-flex align-items-center justify-content-between px-3 py-2 <?= $idx < count($module['lessons'])-1 ? 'border-bottom' : '' ?>"
                                     style="<?= $is_mock ? 'background:#fffbeb;' : '' ?>">
                                     <div class="d-flex align-items-center gap-2">
-                                        <?php if ($can_access && $file_path): ?>
-                                            <a href="<?= ACADEMY_URL . htmlspecialchars($file_path) ?>?from=IELTS_Aca_2Mo" class="text-decoration-none text-dark d-flex align-items-center gap-2">
+                                        <?php if ($can_access): ?>
+                                            <a href="lesson.php?id=<?= (int) $lesson['id'] ?>" class="text-decoration-none text-dark d-flex align-items-center gap-2">
                                                 <i class="bi <?= htmlspecialchars($lesson['icon'] ?? 'bi-play-circle') ?>" style="color:<?= $color ?>;font-size:1.1rem;min-width:20px;"></i>
                                                 <span><strong>Class <?= $global_class ?>:</strong> <?= htmlspecialchars($lesson['title']) ?>
                                                     <?php if ($global_class === 1): ?><span class="badge bg-success ms-1">Free</span><?php endif; ?>
