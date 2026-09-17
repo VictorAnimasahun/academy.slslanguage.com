@@ -67,8 +67,8 @@ $canAccess = can_access($minTier);
                 </div>
             <?php else: ?>
 
-                <div class="lesson-content mb-4"><h5>Reading</h5><ul><li>Complete Reading Test 1 (full-length, 3 passages)</li><li>Answer review</li></ul><h5>Writing</h5><ul><li>Trend vocabulary and sentence structures</li><li>Paraphrasing questions and thesis statements</li><li>Exercises on both</li></ul><p class="text-muted small mt-2"><em>Temporarily using the General Training version of Reading Test 1 — swap for the real Academic version once it exists.</em></p></div>
-                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_reading_001.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                <div class="lesson-content mb-4"><h5>Reading</h5><ul><li>Complete Reading Test 1 (full-length, 3 passages)</li><li>Answer review</li></ul><h5>Writing</h5><ul><li>Trend vocabulary and sentence structures</li><li>Paraphrasing questions and thesis statements</li><li>Exercises on both</li></ul></div>
+                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_reading_academic_001.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Test
                 </a>
 
