@@ -31,11 +31,11 @@ $sections = [
             ['file' => 'celpip_writing_t1_001.php',  'title' => 'Writing Task 1 – Email',     'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words'],
             ['file' => 'celpip_writing_t1_002.php',  'title' => 'Writing Task 1 – Email 2',   'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words'],
             ['file' => 'celpip_writing_t1_003.php',  'title' => 'Writing Task 1 – Email 3',   'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words'],
-            ['file' => 'celpip_writing_t1_004.php',  'title' => 'Writing Task 1 – Email 4',   'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words · Coming soon'],
+            ['file' => 'celpip_writing_t1_004.php',  'title' => 'Writing Task 1 – Email 4',   'section' => 'Writing Task 1',  'icon' => 'bi-envelope',      'meta' => '27 min · 150–200 words'],
             ['file' => 'celpip_writing_t2_001.php',  'title' => 'Writing Task 2 – Survey',    'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response'],
             ['file' => 'celpip_writing_t2_002.php',  'title' => 'Writing Task 2 – Survey 2',  'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response'],
             ['file' => 'celpip_writing_t2_003.php',  'title' => 'Writing Task 2 – Survey 3',  'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response'],
-            ['file' => 'celpip_writing_t2_004.php',  'title' => 'Writing Task 2 – Survey 4',  'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response · Coming soon'],
+            ['file' => 'celpip_writing_t2_004.php',  'title' => 'Writing Task 2 – Survey 4',  'section' => 'Writing Task 2',  'icon' => 'bi-pencil-square', 'meta' => '26 min · Structured response'],
         ],
     ],
 ];

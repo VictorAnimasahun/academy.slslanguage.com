@@ -4,9 +4,11 @@ $writingConfig = [
     'task_type' => 'writing_task1',
     'task_title' => 'CELPIP Writing Task 1 – Practice 1',
     'test_number' => 1,
-    'scenario' => 'You are studying a short course in another country. Your accommodation was arranged by the course provider, but there is a major problem with it.',
-    'lead' => 'Write a letter to the course provider. Your letter should do the following things:',
-    'bullets' => ['Say what the problem is.', 'Describe the accommodation you thought you were getting.', 'Ask the provider to solve the problem.'],
+    // Real official CELPIP question, from the CELPIP Writing Pro: Target 5/9
+    // Study Packs (Prometric, 2022) — used as the Task 1 example in both.
+    'scenario' => 'You are an elementary school teacher. There is a famous writer who lives near your school.',
+    'lead' => 'In about 150-200 words, write to this writer and invite her to speak to the children in your class. Your message must include the following points:',
+    'bullets' => ['An introduction to the school and your class.', "Why the children like this writer's books.", 'An invitation to visit the classroom.', 'What the writer can do with the children.'],
     'placeholder' => "Dear Course Provider,\n\nI am writing to complain about the accommodation arranged for me...",
 ];
 require __DIR__ . '/celpip_writing_runner.php';
