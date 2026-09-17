@@ -336,7 +336,7 @@ $ANSWER_KEY = [
                                 <?php if ($isAdmin): ?>
                                 <button type="button" class="celpip-next-btn celpip-next-btn-inline celpip-admin-prev" data-role="prev-btn"><i class="bi bi-skip-backward-fill me-1"></i>PREVIOUS</button>
                                 <?php endif; ?>
-                                <span class="celpip-seq-timer" data-role="q-timer">Time remaining: <strong data-role="q-timer-val">25</strong> seconds</span>
+                                <span class="celpip-seq-timer" data-role="q-timer">Time remaining: <strong data-role="q-timer-val">25</strong><span data-role="q-timer-unit"> seconds</span></span>
                                 <button type="button" class="celpip-next-btn celpip-next-btn-inline" data-role="next-btn">NEXT</button>
                             </span>
                         </div>
@@ -658,6 +658,7 @@ function previousSequential(partNum) {
     const audioStage  = card.querySelector('[data-role="q-audio-stage"]');
     const answerStage = card.querySelector('[data-role="q-answer-stage"]');
     const timerVal    = card.querySelector('[data-role="q-timer-val"]');
+    const timerUnit   = card.querySelector('[data-role="q-timer-unit"]');
     const timerWrap   = card.querySelector('[data-role="q-timer"]');
     const nextBtn     = card.querySelector('[data-role="next-btn"]');
     const prevBtn     = card.querySelector('[data-role="prev-btn"]');
@@ -721,6 +722,7 @@ function showSequentialQuestion(partNum) {
     const audioStage  = card.querySelector('[data-role="q-audio-stage"]');
     const answerStage = card.querySelector('[data-role="q-answer-stage"]');
     const timerVal    = card.querySelector('[data-role="q-timer-val"]');
+    const timerUnit   = card.querySelector('[data-role="q-timer-unit"]');
     const timerWrap   = card.querySelector('[data-role="q-timer"]');
     const nextBtn     = card.querySelector('[data-role="next-btn"]');
     const prevBtn     = card.querySelector('[data-role="prev-btn"]');

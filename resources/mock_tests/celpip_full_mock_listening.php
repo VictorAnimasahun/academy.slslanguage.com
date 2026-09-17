@@ -71,6 +71,22 @@ if (!$isAdmin && !is_null($session['listening_attempt_id'])) {
 $map      = require INCLUDES_PATH . '/mock_test_map.php';
 $testCode = $map[$session['mock_code']]['listening']['test_code'] ?? '';
 
+// Some Listening questions have official photo answer choices instead of text
+// (e.g. CELPIP_FULL_MOCK_A Part 1 Q1) — mapped here by mock_code > question
+// number > option label, same pattern as $readingDiagramImages in
+// celpip_full_mock_reading.php. Falls back to the DB's text description when
+// no image is mapped.
+$listeningOptionImages = [
+    'CELPIP_FULL_MOCK_A' => [
+        1 => [
+            'A' => 'CELPIP_FULL_MOCK_A/listening_q1/option_a.png',
+            'B' => 'CELPIP_FULL_MOCK_A/listening_q1/option_b.png',
+            'C' => 'CELPIP_FULL_MOCK_A/listening_q1/option_c.png',
+            'D' => 'CELPIP_FULL_MOCK_A/listening_q1/option_d.png',
+        ],
+    ],
+];
+
 $stmt = $db->prepare("SELECT id, duration_minutes FROM tests WHERE code = ? AND is_active = 1 LIMIT 1");
 $stmt->execute([$testCode]);
 $test = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -168,7 +184,7 @@ function renderCelpipDropdown(int $qnum, array $qopts): void
 
 // Renders one Listening question's answer control: an inline-dropdown sentence
 // for blank-style MC questions, otherwise a standard radio-button MC block.
-function renderCelpipListeningQuestion(array $q, array $options): void
+function renderCelpipListeningQuestion(array $q, array $options, bool $showQuestionText = true, array $optionImages = []): void
 {
     $qid     = (int)$q['id'];
     $qnum    = (int)$q['question_number'];
@@ -190,7 +206,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
     <div class="mc-question">
         <div class="mc-q-label">
             <span class="q-badge"><?= $qnum ?></span>
-            <?= htmlspecialchars($q['question_text']) ?>
+            <?= $showQuestionText ? htmlspecialchars($q['question_text']) : 'Choose the best answer.' ?>
         </div>
         <?php foreach ($qopts as $opt): ?>
         <label class="mc-option">
@@ -200,7 +216,11 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                    class="answer-field"
                    data-qnum="<?= $qnum ?>">
             <strong><?= htmlspecialchars($opt['option_label']) ?></strong>&nbsp;
-            <?= htmlspecialchars($opt['option_text']) ?>
+            <?php if (!empty($optionImages[$opt['option_label']])): ?>
+                <img class="celpip-option-image" src="<?= ACADEMY_URL . 'assets/img/mock_tests/' . htmlspecialchars($optionImages[$opt['option_label']]) ?>" alt="<?= htmlspecialchars($opt['option_text']) ?>">
+            <?php else: ?>
+                <?= htmlspecialchars($opt['option_text']) ?>
+            <?php endif; ?>
         </label>
         <?php endforeach; ?>
     </div>
@@ -221,6 +241,8 @@ function renderCelpipListeningQuestion(array $q, array $options): void
         /* CELPIP-authentic sequential question flow (Parts 1-3). Reuses the
            exam_theme.css palette so it stays visually consistent with the
            rest of the platform, not a separate skin. */
+
+        .celpip-option-image { display:block; max-width:220px; width:100%; height:auto; border-radius:8px; margin-top:.4rem; border:1px solid #e5e7eb; }
 
         /* Stable frame: the outer box never resizes as content changes
            (media stage <-> question 1 <-> question with a long passage,
@@ -501,7 +523,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                         <div class="celpip-seq-header">
                             <span><?= htmlspecialchars($partTitle) ?></span>
                             <span class="celpip-seq-timer-wrap">
-                                <span class="celpip-seq-timer" data-role="q-timer">Time remaining: <strong data-role="q-timer-val">25</strong> seconds</span>
+                                <span class="celpip-seq-timer" data-role="q-timer">Time remaining: <strong data-role="q-timer-val">25</strong><span data-role="q-timer-unit"> seconds</span></span>
                                 <button type="button" class="celpip-next-btn celpip-next-btn-inline" data-role="next-btn">NEXT</button>
                             </span>
                         </div>
@@ -517,7 +539,7 @@ function renderCelpipListeningQuestion(array $q, array $options): void
                             <div class="celpip-split-right" data-role="q-answer-stage">
                                 <div class="celpip-q-of">Question <?= $qi + 1 ?> of <?= count($partQuestions) ?></div>
                                 <p class="celpip-q-instr"><i class="bi bi-info-circle-fill"></i> <?= htmlspecialchars($partInstr) ?></p>
-                                <?php renderCelpipListeningQuestion($q, $options); ?>
+                                <?php renderCelpipListeningQuestion($q, $options, false, $listeningOptionImages[$session['mock_code']][$qnum] ?? []); ?>
                             </div>
                         </div>
                     </div>
@@ -851,6 +873,7 @@ function showSequentialQuestion(partNum) {
     const audioStage  = card.querySelector('[data-role="q-audio-stage"]');
     const answerStage = card.querySelector('[data-role="q-answer-stage"]');
     const timerVal    = card.querySelector('[data-role="q-timer-val"]');
+    const timerUnit   = card.querySelector('[data-role="q-timer-unit"]');
     const timerWrap   = card.querySelector('[data-role="q-timer"]');
     const nextBtn     = card.querySelector('[data-role="next-btn"]');
 
@@ -871,6 +894,7 @@ function showSequentialQuestion(partNum) {
             // Admins click NEXT whenever they're done looking — no forced
             // countdown that yanks them to the next question mid-review.
             timerVal.textContent = '∞';
+            timerUnit.textContent = '';
             return;
         }
 
