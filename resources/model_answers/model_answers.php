@@ -86,6 +86,16 @@ $ielts_tests = [
                     </a>
                 <?php endforeach; ?>
 
+                <div class="section-label"><i class="bi bi-mic me-1"></i>IELTS — Speaking</div>
+                <a href="model_answers_speaking.php" class="test-row">
+                    <div class="test-num">1</div>
+                    <div>
+                        <div class="test-title">Test 1</div>
+                        <div class="test-meta">Parts 1–3 &nbsp;&middot;&nbsp; Official sample transcript &nbsp;&middot;&nbsp; Academic &amp; General</div>
+                    </div>
+                    <i class="bi bi-chevron-right test-arrow"></i>
+                </a>
+
                 <div class="section-label mt-3"><i class="bi bi-person-check me-1"></i>CELPIP</div>
                 <div class="placeholder-row">
                     <div class="placeholder-icon"><i class="bi bi-lock"></i></div>

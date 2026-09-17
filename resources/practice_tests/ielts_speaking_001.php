@@ -1,6 +1,8 @@
 <?php
 // IELTS Speaking Practice 001
-// TODO: Replace prompts with real exam content
+// Real content from official IELTS.org sample speaking task (2026-09-17).
+// Speaking is content-neutral between Academic and General Training —
+// this test is the shared standard Speaking Test 1 for both.
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
@@ -21,13 +23,31 @@ $parts = [
         'duration' => '4–5 min',
         'icon'     => 'bi-person-circle',
         'color'    => '#10b981',
-        'intro'    => 'The examiner will ask you general questions about yourself and familiar topics such as home, family, work, studies, and interests.',
-        'topic'    => 'Email',
+        'intro'    => 'The examiner introduces themselves, checks your ID, then asks general questions about yourself and familiar topics.',
+        'topic'    => 'Home Town & Accommodation',
+        'topics'   => [
+            'Your home town or village' => [
+                'What kind of place is it?',
+                "What's the most interesting part of your town/village?",
+                'What kind of jobs do the people in your town/village do?',
+                "Would you say it's a good place to live? (Why?)",
+            ],
+            'Accommodation' => [
+                'Tell me about the kind of accommodation you live in.',
+                'How long have you lived there?',
+                'What do you like about living there?',
+                'What sort of accommodation would you most like to live in?',
+            ],
+        ],
         'prompts'  => [
-            'What kinds of emails do you receive about your work or studies?',
-            'Do you prefer to email, phone or text your friends? [Why?]',
-            'Do you reply to emails and messages as soon as you receive them? [Why/Why not?]',
-            'Are you happy to receive emails that are advertising things? [Why/Why not?]',
+            'What kind of place is it?',
+            "What's the most interesting part of your town/village?",
+            'What kind of jobs do the people in your town/village do?',
+            "Would you say it's a good place to live? (Why?)",
+            'Tell me about the kind of accommodation you live in.',
+            'How long have you lived there?',
+            'What do you like about living there?',
+            'What sort of accommodation would you most like to live in?',
         ],
     ],
     2 => [
@@ -37,7 +57,11 @@ $parts = [
         'color'     => '#3b82f6',
         'intro'     => 'You will be given a topic card. You have 1 minute to prepare, then you should speak for 1–2 minutes.',
         'prompts'   => [
-            "Describe a hotel that you know.\n\nYou should say:\n• where this hotel is\n• what this hotel looks like\n• what facilities this hotel has\n\nand explain whether you think this is a nice hotel to stay in.",
+            "Describe something you own which is very important to you.\n\nYou should say:\n• where you got it from\n• how long you have had it\n• what you use it for\n\nand explain why it is important to you.",
+        ],
+        'rounding_questions' => [
+            'Is it valuable in terms of money?',
+            'Would it be easy to replace?',
         ],
         'prep_time' => 60,
     ],
@@ -48,24 +72,18 @@ $parts = [
         'color'    => '#8b5cf6',
         'intro'    => 'The examiner will ask further questions connected to the topic in Part 2.',
         'topics'   => [
-            'Staying in hotels' => [
-                'What things are important when people are choosing a hotel?',
-                'Why do some people not like staying in hotels?',
-                'Do you think staying in a luxury hotel is a waste of money?',
+            "How people's values have changed" => [
+                'What kind of things give status to people in your country?',
+                "Have things changed since your parents' time?",
             ],
-            'Working in a hotel' => [
-                'Do you think hotel work is a good career for life?',
-                'How does working in a big hotel compare with working in a small hotel?',
-                'What skills are needed to be a successful hotel manager?',
+            'The role of advertising' => [
+                'Do you think advertising influences what people buy?',
             ],
         ],
         'prompts'  => [
-            'What things are important when people are choosing a hotel?',
-            'Why do some people not like staying in hotels?',
-            'Do you think staying in a luxury hotel is a waste of money?',
-            'Do you think hotel work is a good career for life?',
-            'How does working in a big hotel compare with working in a small hotel?',
-            'What skills are needed to be a successful hotel manager?',
+            'What kind of things give status to people in your country?',
+            "Have things changed since your parents' time?",
+            'Do you think advertising influences what people buy?',
         ],
     ],
 ];
@@ -75,7 +93,7 @@ $parts = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Speaking – Practice 1: Hotels | EduHub</title>
+    <title>IELTS Speaking – Practice 1 | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -136,11 +154,19 @@ $parts = [
 
                 <?php if ($pNum === 2): ?>
                     <div class="cue-card mb-3"><?= htmlspecialchars($part['prompts'][0]) ?></div>
-                    <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-3 mb-3">
                         <span class="text-muted small">Preparation time:</span>
                         <span class="prep-timer" id="prepTimer-2">1:00</span>
                         <button class="btn btn-outline-primary btn-sm" onclick="startPrep()">Start Prep</button>
                     </div>
+                    <?php if (!empty($part['rounding_questions'])): ?>
+                    <p class="text-muted small mb-1">The examiner may ask one or two rounding-off questions after your long turn:</p>
+                    <ul class="prompt-list">
+                        <?php foreach ($part['rounding_questions'] as $rq): ?>
+                        <li><?= htmlspecialchars($rq) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif; ?>
                 <?php else: ?>
                     <ul class="prompt-list">
                         <?php foreach ($part['prompts'] as $i => $prompt): ?>
