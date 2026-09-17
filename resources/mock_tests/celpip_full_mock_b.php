@@ -41,7 +41,7 @@ if ($existing) {
     } elseif (is_null($existing['writing_attempt_id'])) {
         header("Location: mock_writing.php?session_id={$sid}");
     } else {
-        header("Location: mock_speaking.php?session_id={$sid}");
+        header("Location: celpip_full_mock_speaking.php?session_id={$sid}");
     }
     exit();
 }
