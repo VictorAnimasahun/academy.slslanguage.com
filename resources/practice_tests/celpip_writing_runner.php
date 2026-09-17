@@ -64,9 +64,16 @@ $submitLabel = $isTask1 ? 'Submit email' : 'Submit response';
 .celpip-w-options { display: flex; flex-direction: column; gap: .9rem; margin-bottom: 1.25rem; }
 .celpip-w-option { display: flex; align-items: flex-start; gap: .6rem; font-size: .92rem; color: var(--exam-ink); cursor: pointer; }
 .celpip-w-option input { margin-top: .25rem; flex-shrink: 0; }
-.celpip-w-textarea { flex: 1; min-height: 260px; width: 100%; border: 1px solid var(--exam-line); border-radius: var(--exam-radius); padding: 1rem; font-size: .95rem; line-height: 1.6; resize: vertical; overflow: auto; font-family: inherit; background: var(--exam-surface); }
+/* resize:vertical only helps mouse users -- "pinch" doesn't resize a
+   textarea on touch, in any browser. flex:1 removed (a flex item's height
+   can't be grown by JS while flex-basis fights it) in favour of an
+   explicit height, so the +/- buttons work identically on touch/desktop,
+   alongside the drag handle for anyone who has a mouse. */
+.celpip-w-textarea { height: 260px; width: 100%; border: 1px solid var(--exam-line); border-radius: var(--exam-radius); padding: 1rem; font-size: .95rem; line-height: 1.6; resize: vertical; overflow: auto; font-family: inherit; background: var(--exam-surface); }
 .celpip-w-textarea:focus { outline: none; border-color: var(--exam-accent); }
-.celpip-w-wc { text-align: center; margin-top: .75rem; font-size: .85rem; color: var(--exam-ink-muted); font-weight: 600; }
+.celpip-w-wc { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: .75rem; font-size: .85rem; color: var(--exam-ink-muted); font-weight: 600; }
+.celpip-w-resize-btn { background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius); width: 26px; height: 26px; line-height: 1; font-size: .95rem; font-weight: 700; color: var(--exam-ink-muted); cursor: pointer; }
+.celpip-w-resize-btn:hover { color: var(--exam-accent); border-color: var(--exam-accent); }
 @media (max-width: 900px) { .celpip-w-split { grid-template-columns: 1fr; } .celpip-w-pane.left { border-right: none; border-bottom: 1px solid var(--exam-line); } }
 /* Fallback single-column layout, used only when a config has no
    scenario/lead yet (a not-yet-transcribed future scaffold). */
@@ -110,7 +117,11 @@ $submitLabel = $isTask1 ? 'Submit email' : 'Submit response';
             </ul>
             <?php endif; ?>
             <textarea id="responseText" class="celpip-w-textarea" placeholder="<?= htmlspecialchars($placeholder, ENT_QUOTES) ?>"></textarea>
-            <div class="celpip-w-wc"><span id="wordCount">0</span> words</div>
+            <div class="celpip-w-wc">
+                <button type="button" class="celpip-w-resize-btn" onclick="celpipResizeTextarea(-60)" aria-label="Make response box smaller">−</button>
+                <span><span id="wordCount">0</span> words</span>
+                <button type="button" class="celpip-w-resize-btn" onclick="celpipResizeTextarea(60)" aria-label="Make response box bigger">+</button>
+            </div>
         </div>
     </div>
 </div>
@@ -121,7 +132,7 @@ $questionForApi = trim(($scenario ?? '') . "\n\n" . ($lead ?? '') . (!empty($bul
 <!-- Fallback: content not transcribed yet (PT4 scaffolds) -->
 <div class="row g-4">
 <div class="col-lg-5"><div class="fallback-panel"><div class="d-flex justify-content-between align-items-center mb-3"><span class="badge" style="background:var(--exam-accent);padding:.45rem 1.4rem;border-radius:50px;font-weight:700;font-size:.85rem;"><?= htmlspecialchars($taskTitle) ?></span><small class="text-muted">CELPIP</small></div><div class="fallback-prompt"><p class="small text-muted mb-2">Practice Test <?= (int) $testNumber ?></p><?= $promptHtml ?></div></div></div>
-<div class="col-lg-7"><div class="fallback-panel d-flex flex-column"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Your response</h5><div style="font-size:1.6rem;font-weight:700;font-family:monospace;color:var(--exam-ink);" id="timerEl"></div></div><textarea id="responseText" class="celpip-w-textarea flex-grow-1" placeholder="<?= htmlspecialchars($placeholder, ENT_QUOTES) ?>"></textarea><div class="d-flex justify-content-between align-items-center mt-3"><div><span id="wordCount">0</span><span class="text-muted ms-1">words</span></div><button id="submitBtn" class="btn btn-primary px-4 py-2" disabled><?= htmlspecialchars($submitLabel) ?> <i class="bi bi-send ms-1"></i></button></div></div></div>
+<div class="col-lg-7"><div class="fallback-panel d-flex flex-column"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Your response</h5><div style="font-size:1.6rem;font-weight:700;font-family:monospace;color:var(--exam-ink);" id="timerEl"></div></div><textarea id="responseText" class="celpip-w-textarea" placeholder="<?= htmlspecialchars($placeholder, ENT_QUOTES) ?>"></textarea><div class="celpip-w-wc"><button type="button" class="celpip-w-resize-btn" onclick="celpipResizeTextarea(-60)" aria-label="Make response box smaller">−</button><span id="wordCount">0</span> words<button type="button" class="celpip-w-resize-btn" onclick="celpipResizeTextarea(60)" aria-label="Make response box bigger">+</button></div><div class="d-flex justify-content-end align-items-center mt-3"><button id="submitBtn" class="btn btn-primary px-4 py-2" disabled><?= htmlspecialchars($submitLabel) ?> <i class="bi bi-send ms-1"></i></button></div></div></div>
 </div>
 <?php $questionForApi = strip_tags($promptHtml ?? ''); ?>
 <?php endif; ?>
@@ -137,6 +148,10 @@ const QUESTION=<?= json_encode($questionForApi) ?>;
 function fmtMinutes(s){const m=Math.floor(s/60),sec=s%60;return sec===0?`${m} minute${m===1?'':'s'}`:`${m} minute${m===1?'':'s'} ${sec} second${sec===1?'':'s'}`}
 function countWords(text){return text.trim()===''?0:text.trim().split(/\s+/).length}
 function updateWordCount(){const count=countWords(textarea.value);wordEl.textContent=count;submitBtn.disabled=count<MIN-10||count>MAX+20}
+// +/- buttons: resize:vertical's drag handle was fighting flex:1 (the flex
+// layout kept re-stretching the box back after a manual drag) -- explicit
+// height + these buttons is a reliable alternative to dragging.
+function celpipResizeTextarea(deltaPx){const current=textarea.offsetHeight;const next=Math.max(160,Math.min(1200,current+deltaPx));textarea.style.height=next+'px'}
 function doSubmit(){if(submitted)return;submitted=true;clearInterval(interval);const params=new URLSearchParams({test_code:testCode,task_type:taskType,type:taskType,title:taskTitle,testType:'CELPIP',question:QUESTION,response:textarea.value,words:countWords(textarea.value),time:<?= $timeLimit ?>-timeLeft});window.location.href='../essay_analyzer.php?'+params.toString()}
 function submitResponse(){Swal.fire({title:'Submit response?',html:`Words written: <strong>${countWords(textarea.value)}</strong>`,icon:'question',showCancelButton:true,confirmButtonText:'Submit',cancelButtonText:'Keep writing',confirmButtonColor:'#2F5D8A'}).then(result=>{if(result.isConfirmed)doSubmit()})}
 timerEl.textContent = fmtMinutes(timeLeft);

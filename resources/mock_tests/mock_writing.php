@@ -160,15 +160,21 @@ if ($writingTest) {
         .celpip-w-options { display: flex; flex-direction: column; gap: .9rem; margin-bottom: 1.25rem; }
         .celpip-w-option { display: flex; align-items: flex-start; gap: .6rem; font-size: .92rem; color: var(--exam-ink); cursor: pointer; }
         .celpip-w-option input { margin-top: .25rem; flex-shrink: 0; }
-        /* resize: vertical + overflow: auto -- draggable corner handle so the
-           student can pull the box taller than the default 260px. */
+        /* resize:vertical gives desktop mouse users a drag handle, but that's
+           a no-op on touch devices -- "pinch" doesn't resize a textarea in
+           any browser. flex:1 removed (a flex item's height can't be grown
+           by JS while flex-basis is fighting it) in favour of an explicit
+           height, so the +/- buttons below work identically on touch and
+           desktop, alongside the drag handle for anyone who has a mouse. */
         .celpip-w-textarea {
-            flex: 1; min-height: 260px; width: 100%; border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
+            height: 260px; width: 100%; border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
             padding: 1rem; font-size: .95rem; line-height: 1.6; resize: vertical; overflow: auto; font-family: inherit;
             background: var(--exam-surface);
         }
         .celpip-w-textarea:focus { outline: none; border-color: var(--exam-accent); }
-        .celpip-w-wc { text-align: center; margin-top: .75rem; font-size: .85rem; color: var(--exam-ink-muted); font-weight: 600; }
+        .celpip-w-wc { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: .75rem; font-size: .85rem; color: var(--exam-ink-muted); font-weight: 600; }
+        .celpip-w-resize-btn { background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius); width: 26px; height: 26px; line-height: 1; font-size: .95rem; font-weight: 700; color: var(--exam-ink-muted); cursor: pointer; }
+        .celpip-w-resize-btn:hover { color: var(--exam-accent); border-color: var(--exam-accent); }
         @media (max-width: 900px) {
             .celpip-w-split { grid-template-columns: 1fr; }
             .celpip-w-pane.left { border-right: none; border-bottom: 1px solid var(--exam-line); }
@@ -237,7 +243,11 @@ if ($writingTest) {
                                 </ul>
                                 <?php endif; ?>
                                 <textarea id="essay1" class="celpip-w-textarea" placeholder="Begin writing your response here…"></textarea>
-                                <div class="celpip-w-wc"><span id="wc1">0</span> words</div>
+                                <div class="celpip-w-wc">
+                                    <button type="button" class="celpip-w-resize-btn" onclick="celpipResizeTextarea('essay1', -60)" aria-label="Make response box smaller">−</button>
+                                    <span><span id="wc1">0</span> words</span>
+                                    <button type="button" class="celpip-w-resize-btn" onclick="celpipResizeTextarea('essay1', 60)" aria-label="Make response box bigger">+</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -274,7 +284,11 @@ if ($writingTest) {
                                 </ul>
                                 <?php endif; ?>
                                 <textarea id="essay2" class="celpip-w-textarea" placeholder="Begin writing your response here…"></textarea>
-                                <div class="celpip-w-wc"><span id="wc2">0</span> words</div>
+                                <div class="celpip-w-wc">
+                                    <button type="button" class="celpip-w-resize-btn" onclick="celpipResizeTextarea('essay2', -60)" aria-label="Make response box smaller">−</button>
+                                    <span><span id="wc2">0</span> words</span>
+                                    <button type="button" class="celpip-w-resize-btn" onclick="celpipResizeTextarea('essay2', 60)" aria-label="Make response box bigger">+</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -476,6 +490,17 @@ if ($writingTest) {
         const el = document.getElementById(elId);
         el.textContent = n;
         el.className = 'word-count ' + (n >= min ? 'ok' : 'below');
+    }
+
+    // CELPIP: +/- buttons for the response box, since resize:vertical's drag
+    // handle only works with a mouse -- "pinch" does nothing on a textarea
+    // on touch devices, in any browser.
+    function celpipResizeTextarea(id, deltaPx) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const current = el.offsetHeight;
+        const next = Math.max(160, Math.min(1200, current + deltaPx));
+        el.style.height = next + 'px';
     }
 
     // --- Task 1: one real <textarea>, moved between the split/stacked views
