@@ -56,6 +56,11 @@ $t1WordMin = 150;
 $t2WordMin = $isCelpip ? 150 : 250;
 $timeLimitMinutes = $isCelpip ? 53 : 60;
 $timeLimit = $timeLimitMinutes * 60;
+// CELPIP only: each task has its own independent countdown (27 + 26 = 53
+// minutes total), not one shared pool — matches the real exam and the
+// practice runner (celpip_writing_runner.php uses the same 27/26 split).
+$celpipT1Seconds = 27 * 60;
+$celpipT2Seconds = 26 * 60;
 
 // Load writing prompts from DB
 $testCode = $map[$mockCode]['writing']['test_code'] ?? '';
@@ -65,6 +70,11 @@ $writingTest = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $task1 = ['question' => '', 'visual' => null];
 $task2 = ['question' => ''];
+// CELPIP only: {"lead":"...","bullets":[...]} for Task 1 (email) or
+// {"lead":"...","options":{"A":"...","B":"..."}} for Task 2 (survey) —
+// see migration 097. Drives the right-hand instructions pane.
+$task1Instr = [];
+$task2Instr = [];
 
 if ($writingTest) {
     $stmt = $db->prepare("
@@ -89,8 +99,14 @@ if ($writingTest) {
             $rawInstructions = $wq['instructions'] ?? null;
             $task1['visual'] = ($rawInstructions && preg_match('/\.(png|jpe?g|gif|webp|svg)$/i', trim($rawInstructions)))
                                 ? $rawInstructions : null;
+            if ($isCelpip && $rawInstructions) {
+                $task1Instr = json_decode($rawInstructions, true) ?: [];
+            }
         } elseif ((int)$wq['question_number'] === 2) {
             $task2['question'] = $wq['question_text'] ?? '';
+            if ($isCelpip && !empty($wq['instructions'])) {
+                $task2Instr = json_decode($wq['instructions'], true) ?: [];
+            }
         }
     }
 }
@@ -107,6 +123,52 @@ if ($writingTest) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
+    <?php if ($isCelpip): ?>
+    <style>
+        /* CELPIP Writing — official two-pane layout: scenario left, task
+           instructions + response right, one task on screen at a time with
+           its own independent timer + NEXT/SUBMIT — matches the real exam
+           screen exactly (see reference screenshots, 2026-09-17). */
+        .celpip-w-shell { border: 1px solid #dcdfe3; border-radius: 10px; overflow: hidden; }
+        .celpip-w-task { display: flex; flex-direction: column; }
+        .celpip-w-header {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #eef0f2; padding: .7rem 1.25rem; border-bottom: 1px solid #dcdfe3;
+            font-size: .95rem; font-weight: 700; color: #2b2f33;
+        }
+        .celpip-w-timerwrap { display: flex; align-items: center; gap: .9rem; font-weight: 400; }
+        .celpip-w-timer { font-size: .88rem; color: #4b5563; }
+        .celpip-w-timer strong { color: #111827; font-weight: 700; }
+        .celpip-w-next {
+            background: #1d4ed8; color: #fff; border: none; border-radius: 6px;
+            padding: .5rem 1.3rem; font-weight: 700; font-size: .85rem; cursor: pointer;
+        }
+        .celpip-w-next:hover { background: #1e40af; }
+        .celpip-w-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 480px; }
+        .celpip-w-pane { padding: 1.5rem 1.75rem; }
+        .celpip-w-pane.left { background: #f7f8f9; border-right: 1px solid #dcdfe3; }
+        .celpip-w-pane.right { background: #eaf6f6; display: flex; flex-direction: column; }
+        .celpip-w-heading { display: flex; align-items: flex-start; gap: .5rem; font-weight: 700; color: #1e3a8a; font-size: .95rem; margin-bottom: 1rem; }
+        .celpip-w-heading .bi { margin-top: .15rem; flex-shrink: 0; }
+        .celpip-w-scenario { color: #374151; font-size: .92rem; line-height: 1.7; white-space: pre-line; }
+        .celpip-w-bullets { color: #374151; font-size: .92rem; line-height: 1.6; padding-left: 1.25rem; margin-bottom: 1rem; }
+        .celpip-w-bullets li { margin-bottom: .4rem; }
+        .celpip-w-options { display: flex; flex-direction: column; gap: .9rem; margin-bottom: 1.25rem; }
+        .celpip-w-option { display: flex; align-items: flex-start; gap: .6rem; font-size: .92rem; color: #374151; cursor: pointer; }
+        .celpip-w-option input { margin-top: .25rem; flex-shrink: 0; }
+        .celpip-w-textarea {
+            flex: 1; min-height: 260px; width: 100%; border: 1px solid #c7d2d2; border-radius: 6px;
+            padding: 1rem; font-size: .95rem; line-height: 1.6; resize: vertical; font-family: inherit;
+            background: #fff;
+        }
+        .celpip-w-textarea:focus { outline: none; border-color: #1d4ed8; }
+        .celpip-w-wc { text-align: center; margin-top: .75rem; font-size: .85rem; color: #6b7280; font-weight: 600; }
+        @media (max-width: 900px) {
+            .celpip-w-split { grid-template-columns: 1fr; }
+            .celpip-w-pane.left { border-right: none; border-bottom: 1px solid #dcdfe3; }
+        }
+    </style>
+    <?php endif; ?>
 </head>
 <body class="light">
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?>
@@ -142,6 +204,77 @@ if ($writingTest) {
             </div>
 
             <div class="panel" style="margin-top:<?= $isAdmin ? '110px' : '60px' ?>;">
+                <?php if ($isCelpip): ?>
+                <!-- CELPIP: official two-pane layout, one task at a time, matching
+                     the real exam screen exactly (scenario left, instructions +
+                     response right, independent per-task timer + NEXT/SUBMIT). -->
+                <div class="celpip-w-shell">
+                    <?php if (!empty($task1['question'])): ?>
+                    <div class="celpip-w-task active" id="celpip-w-task-1">
+                        <div class="celpip-w-header">
+                            <span>Writing Task 1: Writing an Email</span>
+                            <span class="celpip-w-timerwrap">
+                                <span class="celpip-w-timer">Time remaining: <strong id="celpipWTimer1"></strong></span>
+                                <button type="button" class="celpip-w-next" onclick="celpipWAdvance()">NEXT</button>
+                            </span>
+                        </div>
+                        <div class="celpip-w-split">
+                            <div class="celpip-w-pane left">
+                                <p class="celpip-w-heading"><i class="bi bi-info-circle-fill"></i> Read the following information.</p>
+                                <div class="celpip-w-scenario"><?= nl2br(htmlspecialchars($task1['question'])) ?></div>
+                            </div>
+                            <div class="celpip-w-pane right">
+                                <p class="celpip-w-heading"><i class="bi bi-info-circle-fill"></i> <?= htmlspecialchars($task1Instr['lead'] ?? '') ?></p>
+                                <?php if (!empty($task1Instr['bullets'])): ?>
+                                <ul class="celpip-w-bullets">
+                                    <?php foreach ($task1Instr['bullets'] as $b): ?><li><?= htmlspecialchars($b) ?></li><?php endforeach; ?>
+                                </ul>
+                                <?php endif; ?>
+                                <textarea id="essay1" class="celpip-w-textarea" placeholder="Begin writing your response here…"></textarea>
+                                <div class="celpip-w-wc"><span id="wc1">0</span> words</div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($task2['question'])): ?>
+                    <div class="celpip-w-task" id="celpip-w-task-2" style="display:none;">
+                        <div class="celpip-w-header">
+                            <span>Writing Task 2: Responding to Survey Questions</span>
+                            <span class="celpip-w-timerwrap">
+                                <span class="celpip-w-timer">Time remaining: <strong id="celpipWTimer2"></strong></span>
+                                <button type="button" class="celpip-w-next" id="submitBtn" onclick="confirmSubmit()">SUBMIT</button>
+                            </span>
+                        </div>
+                        <div class="celpip-w-split">
+                            <div class="celpip-w-pane left">
+                                <p class="celpip-w-heading"><i class="bi bi-info-circle-fill"></i> Read the following information.</p>
+                                <div class="celpip-w-scenario"><?= nl2br(htmlspecialchars($task2['question'])) ?></div>
+                            </div>
+                            <div class="celpip-w-pane right">
+                                <p class="celpip-w-heading"><i class="bi bi-info-circle-fill"></i> <?= htmlspecialchars($task2Instr['lead'] ?? '') ?></p>
+                                <?php if (!empty($task2Instr['options'])): ?>
+                                <div class="celpip-w-options">
+                                    <?php foreach ($task2Instr['options'] as $label => $text): ?>
+                                    <label class="celpip-w-option">
+                                        <input type="radio" name="celpipSurveyChoice">
+                                        <span><strong>Option <?= htmlspecialchars($label) ?>:</strong> <?= htmlspecialchars($text) ?></span>
+                                    </label>
+                                    <?php endforeach; ?>
+                                </div>
+                                <?php elseif (!empty($task2Instr['bullets'])): ?>
+                                <ul class="celpip-w-bullets">
+                                    <?php foreach ($task2Instr['bullets'] as $b): ?><li><?= htmlspecialchars($b) ?></li><?php endforeach; ?>
+                                </ul>
+                                <?php endif; ?>
+                                <textarea id="essay2" class="celpip-w-textarea" placeholder="Begin writing your response here…"></textarea>
+                                <div class="celpip-w-wc"><span id="wc2">0</span> words</div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <?php else: ?>
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="d-flex align-items-center gap-3">
                         <span class="section-badge"><i class="bi bi-pencil-square me-1"></i>Writing</span>
@@ -162,14 +295,10 @@ if ($writingTest) {
                 <!-- Task 1 -->
                 <?php if (!empty($task1['question'])): ?>
                 <div class="task-panel active" id="task-1">
-                    <?php // CELPIP Writing is never stacked in the real exam — only IELTS
-                    // gets the split/stacked switcher (see $isCelpip above). ?>
-                    <?php if (!$isCelpip): ?>
                     <div class="wt-switcher">
                         <button class="active" id="wt-switch-a" onclick="wtShowView('a')">Split view</button>
                         <button id="wt-switch-b" onclick="wtShowView('b')">Stacked view</button>
                     </div>
-                    <?php endif; ?>
                     <div class="wt-shell">
 
                         <!-- Layout A: split view -->
@@ -178,8 +307,8 @@ if ($writingTest) {
                                 <div class="wt-pane left">
                                     <p class="small fw-semibold text-uppercase text-muted mb-2" style="font-size:.72rem;">Writing Task 1</p>
                                     <div class="prompt-box"><?= htmlspecialchars($task1['question']) ?></div>
-                                    <?php // CELPIP and IELTS GT Writing Task 1 are always plain text — never
-                                    // a chart/diagram, so they get neither an image nor the "will appear
+                                    <?php // IELTS GT Writing Task 1 is always plain text — never a
+                                    // chart/diagram, so it gets neither an image nor the "will appear
                                     // here" placeholder (only IELTS Academic does). ?>
                                     <?php if ($showDiagram): ?>
                                     <?php if ($task1['visual']): ?>
@@ -197,8 +326,7 @@ if ($writingTest) {
                             </div>
                         </div>
 
-                        <?php if (!$isCelpip): ?>
-                        <!-- Layout B: stacked view (IELTS only — CELPIP is split-only) -->
+                        <!-- Layout B: stacked view -->
                         <div class="wt-view" id="wt-view-b">
                             <div class="wt-stack">
                                 <div class="wt-accordion">
@@ -220,7 +348,6 @@ if ($writingTest) {
                                 <div class="wt-write-zone" id="wtEssaySlotB"></div>
                             </div>
                         </div>
-                        <?php endif; ?>
 
                     </div>
 
@@ -249,6 +376,7 @@ if ($writingTest) {
                     </div>
                 </div>
                 <?php endif; ?>
+                <?php endif; ?>
 
                 <?php if ($showDiagram && $task1['visual']): ?>
                 <div class="wt-modal-backdrop" id="wtModal" onclick="if(event.target===this) wtCloseModal()">
@@ -268,6 +396,7 @@ if ($writingTest) {
     <?php include INCLUDES_PATH . '/footer.php'; ?>
     <script>
     const SESSION_ID  = <?= $session_id ?>;
+    const IS_CELPIP   = <?= $isCelpip ? 'true' : 'false' ?>;
     const T1_Q = <?= json_encode($task1['question']) ?>;
     const T2_Q = <?= json_encode($task2['question']) ?>;
     const T1_MIN = <?= $t1WordMin ?>;
@@ -280,12 +409,54 @@ if ($writingTest) {
     function fmtTime(s) { return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
     function countWords(txt) { return txt.trim() === '' ? 0 : txt.trim().split(/\s+/).length; }
 
-    const ticker = setInterval(() => {
+    // IELTS: one shared countdown across both tasks (unchanged behavior).
+    const ticker = IS_CELPIP ? null : setInterval(() => {
         timeLeft--;
         timerEl.textContent = fmtTime(timeLeft);
         if (timeLeft <= 300) timerEl.classList.add('warning');
         if (timeLeft <= 0) { clearInterval(ticker); doSubmit(); }
     }, 1000);
+
+    // CELPIP: each task has its own independent countdown, matching the
+    // real exam (27 min Task 1, 26 min Task 2) — starting Task 2's clock
+    // only once you actually reach it, not counting down in the background.
+    let celpipT1Left = <?= $celpipT1Seconds ?>;
+    let celpipT2Left = <?= $celpipT2Seconds ?>;
+    let celpipTicker = null;
+
+    function celpipFmtMinutes(s) {
+        const m = Math.floor(s / 60), sec = s % 60;
+        return sec === 0 ? `${m} minute${m === 1 ? '' : 's'}` : `${m} minute${m === 1 ? '' : 's'} ${sec} second${sec === 1 ? '' : 's'}`;
+    }
+
+    function celpipStartTaskTimer(n) {
+        if (celpipTicker) clearInterval(celpipTicker);
+        const el = document.getElementById('celpipWTimer' + n);
+        const tick = () => {
+            const left = n === 1 ? celpipT1Left : celpipT2Left;
+            if (el) el.textContent = celpipFmtMinutes(Math.max(0, left));
+        };
+        tick();
+        celpipTicker = setInterval(() => {
+            if (n === 1) celpipT1Left--; else celpipT2Left--;
+            tick();
+            const left = n === 1 ? celpipT1Left : celpipT2Left;
+            if (left <= 0) {
+                clearInterval(celpipTicker);
+                if (n === 1) celpipWAdvance(); else doSubmit();
+            }
+        }, 1000);
+    }
+
+    function celpipWAdvance() {
+        if (celpipTicker) clearInterval(celpipTicker);
+        document.getElementById('celpip-w-task-1').style.display = 'none';
+        const t2 = document.getElementById('celpip-w-task-2');
+        if (t2) { t2.style.display = ''; celpipStartTaskTimer(2); }
+        else { doSubmit(); }
+    }
+
+    if (IS_CELPIP) celpipStartTaskTimer(1);
 
     function switchTask(n) {
         document.querySelectorAll('.task-tab').forEach(t => t.classList.remove('active'));
@@ -315,6 +486,9 @@ if ($writingTest) {
         wtEssaySlotA.appendChild(essay1);
     }
     document.getElementById('essay2')?.addEventListener('input', () => updateWC('essay2', 'wc2', T2_MIN));
+    // CELPIP: essay1 is a static textarea (no split/stacked switcher, so no
+    // dynamic-creation step above ever runs) — attach its listener directly.
+    if (IS_CELPIP) document.getElementById('essay1')?.addEventListener('input', () => updateWC('essay1', 'wc1', T1_MIN));
 
     function wtShowView(which) {
         document.querySelectorAll('.wt-switcher button').forEach(b => b.classList.remove('active'));

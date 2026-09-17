@@ -12,12 +12,18 @@ $testCode = $writingConfig['test_code'];
 $taskType = $writingConfig['task_type'];
 $taskTitle = $writingConfig['task_title'];
 $testNumber = $writingConfig['test_number'];
-$promptHtml = $writingConfig['prompt_html'];
+$scenario = $writingConfig['scenario'] ?? null;
+$lead = $writingConfig['lead'] ?? null;
+$bullets = $writingConfig['bullets'] ?? [];
+$options = $writingConfig['options'] ?? [];
+$promptHtml = $writingConfig['prompt_html'] ?? null; // fallback for not-yet-transcribed scaffolds
 $placeholder = $writingConfig['placeholder'];
 $timeLimit = $taskType === 'writing_task1' ? 27 * 60 : 26 * 60;
 $wordMin = 150;
 $wordMax = 200;
-$submitLabel = $taskType === 'writing_task1' ? 'Submit email' : 'Submit response';
+$isTask1 = $taskType === 'writing_task1';
+$headerTitle = $isTask1 ? 'Writing Task 1: Writing an Email' : 'Writing Task 2: Responding to Survey Questions';
+$submitLabel = $isTask1 ? 'Submit email' : 'Submit response';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,30 +34,108 @@ $submitLabel = $taskType === 'writing_task1' ? 'Submit email' : 'Submit response
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
 <style>
-.main-wrapper{padding:1.5rem;background:#f8f9fa;min-height:100vh}.test-container{max-width:1200px;margin:0 auto}.panel{background:#fff;border-radius:16px;padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.07);height:100%}.section-badge{background:#9c1f2e;color:#fff;padding:.45rem 1.4rem;border-radius:50px;font-weight:700;font-size:.85rem}.timer-display{font-size:2.2rem;font-weight:700;font-family:monospace;color:#7a1824}.timer-display.warning{color:#ef4444}.prompt-box{background:#fbeeef;border-left:4px solid #9c1f2e;border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.25rem}.prompt-box p:last-child{margin-bottom:0}.essay-textarea{width:100%;min-height:340px;padding:1.25rem;border:2px solid #e5e7eb;border-radius:10px;font-size:1rem;line-height:1.8;resize:vertical;font-family:system-ui,sans-serif}.essay-textarea:focus{border-color:#9c1f2e;outline:none}.word-count{font-size:1.6rem;font-weight:700}.word-count.below{color:#ef4444}.word-count.ok{color:#10b981}.word-count.over{color:#f59e0b}.bottom-bar{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:1rem;border-top:1px solid #e5e7eb}
+.main-wrapper{padding:1.5rem;background:#f8f9fa;min-height:100vh}.test-container{max-width:1100px;margin:0 auto}
+/* CELPIP Writing — official two-pane layout: scenario left, task
+   instructions + response right — matches the real exam screen exactly
+   (see mock_writing.php's identical CELPIP layout / reference screenshots
+   2026-09-17). Kept in lockstep with that file's .celpip-w-* rules. */
+.celpip-w-shell { border: 1px solid #dcdfe3; border-radius: 10px; overflow: hidden; background:#fff; }
+.celpip-w-header { display: flex; align-items: center; justify-content: space-between; background: #eef0f2; padding: .7rem 1.25rem; border-bottom: 1px solid #dcdfe3; font-size: .95rem; font-weight: 700; color: #2b2f33; }
+.celpip-w-timerwrap { display: flex; align-items: center; gap: .9rem; font-weight: 400; }
+.celpip-w-timer { font-size: .88rem; color: #4b5563; }
+.celpip-w-timer strong { color: #111827; font-weight: 700; }
+.celpip-w-next { background: #1d4ed8; color: #fff; border: none; border-radius: 6px; padding: .5rem 1.3rem; font-weight: 700; font-size: .85rem; cursor: pointer; }
+.celpip-w-next:hover { background: #1e40af; }
+.celpip-w-next:disabled { opacity:.6; cursor:not-allowed; }
+.celpip-w-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 480px; }
+.celpip-w-pane { padding: 1.5rem 1.75rem; }
+.celpip-w-pane.left { background: #f7f8f9; border-right: 1px solid #dcdfe3; }
+.celpip-w-pane.right { background: #eaf6f6; display: flex; flex-direction: column; }
+.celpip-w-heading { display: flex; align-items: flex-start; gap: .5rem; font-weight: 700; color: #1e3a8a; font-size: .95rem; margin-bottom: 1rem; }
+.celpip-w-heading .bi { margin-top: .15rem; flex-shrink: 0; }
+.celpip-w-scenario { color: #374151; font-size: .92rem; line-height: 1.7; white-space: pre-line; }
+.celpip-w-bullets { color: #374151; font-size: .92rem; line-height: 1.6; padding-left: 1.25rem; margin-bottom: 1rem; }
+.celpip-w-bullets li { margin-bottom: .4rem; }
+.celpip-w-options { display: flex; flex-direction: column; gap: .9rem; margin-bottom: 1.25rem; }
+.celpip-w-option { display: flex; align-items: flex-start; gap: .6rem; font-size: .92rem; color: #374151; cursor: pointer; }
+.celpip-w-option input { margin-top: .25rem; flex-shrink: 0; }
+.celpip-w-textarea { flex: 1; min-height: 260px; width: 100%; border: 1px solid #c7d2d2; border-radius: 6px; padding: 1rem; font-size: .95rem; line-height: 1.6; resize: vertical; font-family: inherit; background: #fff; }
+.celpip-w-textarea:focus { outline: none; border-color: #1d4ed8; }
+.celpip-w-wc { text-align: center; margin-top: .75rem; font-size: .85rem; color: #6b7280; font-weight: 600; }
+@media (max-width: 900px) { .celpip-w-split { grid-template-columns: 1fr; } .celpip-w-pane.left { border-right: none; border-bottom: 1px solid #dcdfe3; } }
+/* Fallback single-column layout, used only when a config has no
+   scenario/lead yet (the not-yet-transcribed PT4 scaffolds). */
+.fallback-panel{background:#fff;border-radius:16px;padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.07)}
+.fallback-prompt{background:#fbeeef;border-left:4px solid #9c1f2e;border-radius:8px;padding:1.25rem 1.5rem}
 </style>
 </head>
 <body class="light">
 <?php include INCLUDES_PATH . '/mobile_header.php'; ?><div class="mobile-overlay" id="mobileOverlay"></div><?php include INCLUDES_PATH . '/navbar.php'; ?>
 <div class="main-wrapper flex-grow-1" style="flex:1;"><?php include INCLUDES_PATH . '/topbar.php'; ?><main class="content p-2"><div class="test-container">
 <nav aria-label="breadcrumb" class="mb-3"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li><li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li><li class="breadcrumb-item active"><?= htmlspecialchars($taskTitle) ?></li></ol></nav>
+
+<?php if ($scenario): ?>
+<div class="celpip-w-shell">
+    <div class="celpip-w-header">
+        <span><?= htmlspecialchars($headerTitle) ?></span>
+        <span class="celpip-w-timerwrap">
+            <span class="celpip-w-timer">Time remaining: <strong id="timerEl"></strong></span>
+            <button type="button" class="celpip-w-next" id="submitBtn" disabled><?= htmlspecialchars($submitLabel) ?></button>
+        </span>
+    </div>
+    <div class="celpip-w-split">
+        <div class="celpip-w-pane left">
+            <p class="celpip-w-heading"><i class="bi bi-info-circle-fill"></i> Read the following information.</p>
+            <div class="celpip-w-scenario"><?= nl2br(htmlspecialchars($scenario)) ?></div>
+        </div>
+        <div class="celpip-w-pane right">
+            <p class="celpip-w-heading"><i class="bi bi-info-circle-fill"></i> <?= htmlspecialchars($lead ?? '') ?></p>
+            <?php if (!empty($options)): ?>
+            <div class="celpip-w-options">
+                <?php foreach ($options as $label => $text): ?>
+                <label class="celpip-w-option">
+                    <input type="radio" name="celpipSurveyChoice">
+                    <span><strong>Option <?= htmlspecialchars($label) ?>:</strong> <?= htmlspecialchars($text) ?></span>
+                </label>
+                <?php endforeach; ?>
+            </div>
+            <?php elseif (!empty($bullets)): ?>
+            <ul class="celpip-w-bullets">
+                <?php foreach ($bullets as $b): ?><li><?= htmlspecialchars($b) ?></li><?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+            <textarea id="responseText" class="celpip-w-textarea" placeholder="<?= htmlspecialchars($placeholder, ENT_QUOTES) ?>"></textarea>
+            <div class="celpip-w-wc"><span id="wordCount">0</span> words</div>
+        </div>
+    </div>
+</div>
+<?php
+$questionForApi = trim(($scenario ?? '') . "\n\n" . ($lead ?? '') . (!empty($bullets) ? "\n" . implode("\n", $bullets) : '') . (!empty($options) ? "\nOption A: {$options['A']}\nOption B: {$options['B']}" : ''));
+?>
+<?php else: ?>
+<!-- Fallback: content not transcribed yet (PT4 scaffolds) -->
 <div class="row g-4">
-<div class="col-lg-5"><div class="panel"><div class="d-flex justify-content-between align-items-center mb-3"><span class="section-badge"><?= htmlspecialchars($taskTitle) ?></span><small class="text-muted">CELPIP</small></div><div class="prompt-box"><p class="small text-muted mb-2">Practice Test <?= (int) $testNumber ?> · Source: CELPIP Writing task bundle</p><?= $promptHtml ?></div><div class="alert alert-light border small mb-0"><i class="bi bi-info-circle me-1 text-primary"></i>Write <strong><?= $wordMin ?>–<?= $wordMax ?> words</strong>. You have <strong><?= $taskType === 'writing_task1' ? 27 : 26 ?> minutes</strong>.</div></div></div>
-<div class="col-lg-7"><div class="panel d-flex flex-column"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Your response</h5><div class="timer-display" id="timerEl"><?= $taskType === 'writing_task1' ? '27:00' : '26:00' ?></div></div><textarea id="responseText" class="essay-textarea flex-grow-1" placeholder="<?= htmlspecialchars($placeholder, ENT_QUOTES) ?>"></textarea><div class="bottom-bar"><div><span id="wordCount" class="word-count below">0</span><span class="text-muted ms-1">words (<?= $wordMin ?>–<?= $wordMax ?>)</span></div><button id="submitBtn" class="btn btn-primary px-4 py-2" disabled><?= htmlspecialchars($submitLabel) ?> <i class="bi bi-send ms-1"></i></button></div></div></div>
-</div></div></main></div>
+<div class="col-lg-5"><div class="fallback-panel"><div class="d-flex justify-content-between align-items-center mb-3"><span class="badge" style="background:#9c1f2e;padding:.45rem 1.4rem;border-radius:50px;font-weight:700;font-size:.85rem;"><?= htmlspecialchars($taskTitle) ?></span><small class="text-muted">CELPIP</small></div><div class="fallback-prompt"><p class="small text-muted mb-2">Practice Test <?= (int) $testNumber ?></p><?= $promptHtml ?></div></div></div>
+<div class="col-lg-7"><div class="fallback-panel d-flex flex-column"><div class="d-flex justify-content-between align-items-center mb-3"><h5 class="mb-0">Your response</h5><div style="font-size:1.6rem;font-weight:700;font-family:monospace;" id="timerEl"></div></div><textarea id="responseText" class="celpip-w-textarea flex-grow-1" placeholder="<?= htmlspecialchars($placeholder, ENT_QUOTES) ?>"></textarea><div class="d-flex justify-content-between align-items-center mt-3"><div><span id="wordCount">0</span><span class="text-muted ms-1">words</span></div><button id="submitBtn" class="btn btn-primary px-4 py-2" disabled><?= htmlspecialchars($submitLabel) ?> <i class="bi bi-send ms-1"></i></button></div></div></div>
+</div>
+<?php $questionForApi = strip_tags($promptHtml ?? ''); ?>
+<?php endif; ?>
+
+</div></main></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script><?php include INCLUDES_PATH . '/navbar_scripts.php'; ?><?php include INCLUDES_PATH . '/footer.php'; ?>
 <script>
 const MIN=<?= $wordMin ?>,MAX=<?= $wordMax ?>,testCode=<?= json_encode($testCode) ?>,taskType=<?= json_encode($taskType) ?>,taskTitle=<?= json_encode($taskTitle) ?>;
 let timeLeft=<?= $timeLimit ?>;
 let submitted=false;
 const timerEl=document.getElementById('timerEl'),textarea=document.getElementById('responseText'),wordEl=document.getElementById('wordCount'),submitBtn=document.getElementById('submitBtn');
-const QUESTION=<?= json_encode(strip_tags(str_replace(['</p>','</li>'], ["\n", "\n"], $promptHtml))) ?>;
-function fmtTime(seconds){return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
+const QUESTION=<?= json_encode($questionForApi) ?>;
+function fmtMinutes(s){const m=Math.floor(s/60),sec=s%60;return sec===0?`${m} minute${m===1?'':'s'}`:`${m} minute${m===1?'':'s'} ${sec} second${sec===1?'':'s'}`}
 function countWords(text){return text.trim()===''?0:text.trim().split(/\s+/).length}
-function updateWordCount(){const count=countWords(textarea.value);wordEl.textContent=count;wordEl.className='word-count '+(count<MIN?'below':count<=MAX?'ok':'over');submitBtn.disabled=count<MIN-10||count>MAX+20}
+function updateWordCount(){const count=countWords(textarea.value);wordEl.textContent=count;submitBtn.disabled=count<MIN-10||count>MAX+20}
 function doSubmit(){if(submitted)return;submitted=true;clearInterval(interval);const params=new URLSearchParams({test_code:testCode,task_type:taskType,type:taskType,title:taskTitle,testType:'CELPIP',question:QUESTION,response:textarea.value,words:countWords(textarea.value),time:<?= $timeLimit ?>-timeLeft});window.location.href='../essay_analyzer.php?'+params.toString()}
 function submitResponse(){Swal.fire({title:'Submit response?',html:`Words written: <strong>${countWords(textarea.value)}</strong>`,icon:'question',showCancelButton:true,confirmButtonText:'Submit',cancelButtonText:'Keep writing',confirmButtonColor:'#9c1f2e'}).then(result=>{if(result.isConfirmed)doSubmit()})}
-const interval=setInterval(()=>{timeLeft--;timerEl.textContent=fmtTime(timeLeft);if(timeLeft<=300)timerEl.classList.add('warning');if(timeLeft<=0){clearInterval(interval);Swal.fire({title:"Time's up!",text:'Your response has been automatically submitted.',icon:'warning',timer:2500,timerProgressBar:true,showConfirmButton:false}).then(()=>doSubmit())}},1000);
+timerEl.textContent = fmtMinutes(timeLeft);
+const interval=setInterval(()=>{timeLeft--;timerEl.textContent=fmtMinutes(timeLeft);if(timeLeft<=0){clearInterval(interval);Swal.fire({title:"Time's up!",text:'Your response has been automatically submitted.',icon:'warning',timer:2500,timerProgressBar:true,showConfirmButton:false}).then(()=>doSubmit())}},1000);
 textarea.addEventListener('input',updateWordCount);submitBtn.addEventListener('click',submitResponse);updateWordCount();
 </script>
 </body></html>
