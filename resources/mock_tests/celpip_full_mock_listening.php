@@ -86,7 +86,10 @@ $listeningOptionImages = [
         ],
     ],
     'CELPIP_FULL_MOCK_B' => [
-        2 => [
+        // Q1/Q2 content was swapped by migration 096 to match the real audio
+        // (the source transcription had put the photo-option question on Q2
+        // when the actual audio asks it as Q1) — image map follows.
+        1 => [
             'A' => 'CELPIP_FULL_MOCK_B/listening_q2/option_a.png',
             'B' => 'CELPIP_FULL_MOCK_B/listening_q2/option_b.png',
             'C' => 'CELPIP_FULL_MOCK_B/listening_q2/option_c.png',
