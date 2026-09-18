@@ -320,6 +320,7 @@ let mediaStream = null, mediaRecorder = null, audioChunks = [];
 const recordedBlobs = {}; // tNum -> Blob, for the end-of-test playback/download panel
 const uploadPromises = []; // settled before final submission so transcripts are ready
 const taskPhase = {}; // tNum -> 'prep' | 'speak' | 'done', for admin Previous/skip
+const recordingStartedAt = {}; // tNum -> Date.now() when beginRecording() ran, for the grace-window guard in celpipSpeakingNext
 
 const TASK_PREP  = <?= json_encode(array_map(fn($t) => $t['prep'], $tasks)) ?>;
 const TASK_SPEAK = <?= json_encode(array_map(fn($t) => $t['speak'], $tasks)) ?>;
@@ -371,6 +372,8 @@ function beginRecording(tNum) {
     const digitsEl = document.getElementById('timerDigits-' + tNum);
     const fillEl = document.getElementById('progressFill-' + tNum);
 
+    taskPhase[tNum] = 'speak';
+    recordingStartedAt[tNum] = Date.now();
     setPhase(tNum, 'speak');
     labelEl.textContent = 'Speaking';
     progLabelEl.textContent = 'Recording your answer';
@@ -388,6 +391,7 @@ function beginRecording(tNum) {
         if (speakSecs <= 0) {
             clearInterval(recInterval);
             stopAudioCaptureAndUpload(tNum);
+            taskPhase[tNum] = 'done';
             setPhase(tNum, 'done');
             labelEl.textContent = "Time's up";
             progLabelEl.textContent = 'Response complete';
@@ -462,7 +466,37 @@ function showTask(n) {
     startTaskFlow(n);
 }
 
+function adminPrevTask(tNum) {
+    if (!IS_ADMIN || tNum <= 1) return;
+    clearInterval(prepInterval);
+    clearInterval(recInterval);
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        try { mediaRecorder.stop(); } catch (e) {}
+        mediaRecorder = null;
+    }
+    if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+    showTask(tNum - 1);
+}
+
 function celpipSpeakingNext() {
+    const phase = taskPhase[currentTask];
+    if (phase === 'prep') {
+        // Recording hasn't started yet for this task -- start it instead of
+        // silently advancing with nothing captured. Clicking Next during
+        // prep used to fall straight through to stopAudioCaptureAndUpload,
+        // which no-ops when there's no active recorder, so the task got
+        // skipped with zero audio ever saved ("Response not recorded").
+        clearInterval(prepInterval);
+        beginRecording(currentTask);
+        return;
+    }
+    if (phase === 'speak' && Date.now() - (recordingStartedAt[currentTask] || 0) < 1200) {
+        // Ignore a click landing within ~1s of recording starting (e.g. a
+        // habitual double-click on Next) -- otherwise this stopped the
+        // recording almost immediately, uploading a real but useless
+        // ~1-second clip instead of the actual response.
+        return;
+    }
     clearInterval(prepInterval);
     clearInterval(recInterval);
     stopAudioCaptureAndUpload(currentTask); // no-op if this task's recording already finished naturally

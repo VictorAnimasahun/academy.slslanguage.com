@@ -501,6 +501,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     const recordedBlobs = {};
     const uploadPromises = [];
     const taskPhase = {}; // tNum -> 'prep' | 'speak' | 'done', for admin Next/Previous
+    const recordingStartedAt = {}; // tNum -> Date.now() when beginRecording() ran, for the grace-window guard below
     let submitting = false;
 
     function setPhase(tNum, phase, text) {
@@ -601,6 +602,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         const micIndicator = document.getElementById('micIndicator-' + tNum);
 
         taskPhase[tNum] = 'speak';
+        recordingStartedAt[tNum] = Date.now();
         setPhase(tNum, 'speak', 'Speaking');
         micIndicator.classList.add('recording');
         micText.textContent = 'Recording your answer...';
@@ -713,6 +715,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
             // always clicked during prep, before recording ever started.
             clearInterval(prepInterval);
             beginRecording(tNum);
+            return;
+        }
+        if (Date.now() - (recordingStartedAt[tNum] || 0) < 1200) {
+            // Ignore a second click landing within ~1s of recording
+            // starting -- e.g. clicking Next again out of habit, thinking
+            // the first click (which only started the recording) didn't
+            // register. Without this guard that second click stopped the
+            // recording almost immediately, uploading a real but useless
+            // ~1-second clip instead of the actual response.
             return;
         }
         clearInterval(recInterval);
