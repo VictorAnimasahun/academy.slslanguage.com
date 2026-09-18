@@ -7,6 +7,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 require_once INCLUDES_PATH . '/course_lock.php';
 require_course_enrollment([14], 'this CELPIP Speaking practice test');
+$isAdmin = is_platform_admin();
 
 $testCode = 'CELPIP_PT_S_001';
 
@@ -166,6 +167,12 @@ $tasks = [
         .transcript-box { display: none; flex-shrink: 0; }
         .transcript-box textarea { resize: none; }
         .celpip-progress .dot.done { background: #9c1f2e; }
+
+        .mic-indicator { display: flex; align-items: center; gap: .5rem; justify-content: center; color: #6b7280; font-size: .85rem; margin-top: .75rem; }
+        .mic-indicator.recording { color: #b91c1c; font-weight: 600; }
+        .mic-indicator .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+        .mic-indicator.recording .dot { animation: micPulse 1s infinite; }
+        @keyframes micPulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
     </style>
 </head>
 <body class="light">
@@ -191,7 +198,21 @@ $tasks = [
         <span class="text-muted small">8 Tasks · ~16 minutes</span>
     </div>
 
-    <div class="celpip-shell" id="celpipShell">
+    <!-- Mic permission gate: the browser's own permission prompt is easy to
+         miss (a small address-bar popup, not a page element) if it only
+         appears mid-task the first time getUserMedia() runs during Task 1's
+         recording phase. Requesting it upfront, with a clear button and
+         explicit retry/troubleshooting on denial, fixes that -- same gate
+         as the Full Mock Speaking engine. -->
+    <div id="micGate" style="text-align:center;padding:2.5rem 1.5rem;">
+        <i class="bi bi-mic-fill" style="font-size:2.5rem;color:#0b77ff;"></i>
+        <h4 class="fw-bold mt-3 mb-2">Microphone Access Required</h4>
+        <p class="text-muted mb-4" style="max-width:480px;margin:0 auto 1.5rem;">This test records your spoken responses for all 8 tasks. Click below and select <strong>"Allow"</strong> when your browser asks for microphone access.</p>
+        <button type="button" class="btn btn-primary btn-lg" id="micGateBtn" onclick="requestMicAccess()"><i class="bi bi-mic-fill me-2"></i>Enable Microphone &amp; Start Test</button>
+        <div id="micGateError" class="alert alert-danger mt-3" style="display:none;max-width:480px;margin:1rem auto 0;text-align:left;"></div>
+    </div>
+
+    <div class="celpip-shell" id="celpipShell" style="display:none;">
         <?php foreach ($tasks as $tNum => $task): ?>
         <div class="celpip-screen" data-task="<?= $tNum ?>" style="<?= $tNum === 1 ? '' : 'display:none;' ?>">
             <div class="celpip-header">
@@ -199,6 +220,9 @@ $tasks = [
                 <div class="meta">
                     <span>Preparation: <?= $task['prep'] ?> seconds</span>
                     <span>Recording: <?= $task['speak'] ?> seconds</span>
+                    <?php if ($isAdmin && $tNum > 1): ?>
+                    <button type="button" class="celpip-next-btn" style="background:#6b7280;" onclick="adminPrevTask(<?= $tNum ?>)">Previous (admin)</button>
+                    <?php endif; ?>
                     <button type="button" class="celpip-next-btn" id="nextBtn-<?= $tNum ?>" onclick="celpipSpeakingNext()"><?= $tNum < count($tasks) ? 'Next' : 'Finish Test' ?></button>
                 </div>
             </div>
@@ -225,6 +249,10 @@ $tasks = [
                         <div class="progress-track"><div class="progress-fill" id="progressFill-<?= $tNum ?>"></div></div>
                     </div>
                     <div class="timer-digits" id="timerDigits-<?= $tNum ?>"><?= $task['prep'] ?>s</div>
+                </div>
+
+                <div class="mic-indicator" id="micIndicator-<?= $tNum ?>">
+                    <span class="dot"></span> <span id="micText-<?= $tNum ?>">Microphone will start after preparation time</span>
                 </div>
 
                 <div class="speaking-transcript-wrap">
@@ -284,12 +312,14 @@ $tasks = [
 const TASK_PROMPTS = <?= json_encode(array_map(fn($t) => ['title' => $t['title'], 'prompt' => $t['prompt']], $tasks)) ?>;
 const TOTAL_TASKS  = <?= count($tasks) ?>;
 const TEST_CODE    = <?= json_encode($testCode) ?>;
+const IS_ADMIN     = <?= $isAdmin ? 'true' : 'false' ?>;
 
 let currentTask = 1;
 let prepInterval = null, recInterval = null;
 let mediaStream = null, mediaRecorder = null, audioChunks = [];
 const recordedBlobs = {}; // tNum -> Blob, for the end-of-test playback/download panel
 const uploadPromises = []; // settled before final submission so transcripts are ready
+const taskPhase = {}; // tNum -> 'prep' | 'speak' | 'done', for admin Previous/skip
 
 const TASK_PREP  = <?= json_encode(array_map(fn($t) => $t['prep'], $tasks)) ?>;
 const TASK_SPEAK = <?= json_encode(array_map(fn($t) => $t['speak'], $tasks)) ?>;
@@ -310,12 +340,20 @@ function startTaskFlow(tNum) {
     const fillEl = document.getElementById('progressFill-' + tNum);
     let prepSecs = prepSecs0;
 
+    taskPhase[tNum] = 'prep';
     setPhase(tNum, 'prep');
     labelEl.textContent = 'Preparing';
     progLabelEl.textContent = 'Preparation time';
-    digitsEl.textContent = prepSecs + 's';
     fillEl.style.width = '100%';
 
+    // Admins are untimed, full stop — no countdown ever runs. Real timed
+    // testing only happens on a genuine student account.
+    if (IS_ADMIN) {
+        digitsEl.textContent = '';
+        return;
+    }
+
+    digitsEl.textContent = prepSecs + 's';
     prepInterval = setInterval(() => {
         prepSecs--;
         digitsEl.textContent = Math.max(prepSecs, 0) + 's';
@@ -512,7 +550,32 @@ async function submitAllTasks() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => startTaskFlow(1));
+async function requestMicAccess() {
+    const btn = document.getElementById('micGateBtn');
+    const errEl = document.getElementById('micGateError');
+    if (!btn) return;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Requesting access…';
+    errEl.style.display = 'none';
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(t => t.stop()); // just checking permission here
+        document.getElementById('micGate').style.display = 'none';
+        document.getElementById('celpipShell').style.display = '';
+        startTaskFlow(1);
+    } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-mic-fill me-2"></i>Try Again';
+        let msg = 'Could not access your microphone: ' + (err.message || err.name || 'unknown error') + '.';
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            msg = 'Microphone access was denied. Click the padlock or info icon in your browser\'s address bar, allow microphone access for this site, then click "Try Again" below.';
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+            msg = 'No microphone was found on this device. Please connect a microphone and click "Try Again".';
+        }
+        errEl.textContent = msg;
+        errEl.style.display = '';
+    }
+}
 </script>
 </body>
 </html>
