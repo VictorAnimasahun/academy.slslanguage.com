@@ -344,6 +344,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
             <!-- Recording flow -->
             <div class="speaking-task-card">
 
+                <!-- Mic permission gate: the browser's own permission prompt is
+                     easy to miss (a small address-bar popup, not a page
+                     element) if it only appears mid-task the first time
+                     getUserMedia() is called during Task 1's recording phase.
+                     A student who missed or dismissed it had no way back in
+                     -- the test just silently recorded nothing for every task.
+                     Requesting it upfront, with a clear button and explicit
+                     retry/troubleshooting on denial, fixes that. -->
+                <div id="micGate" style="text-align:center;padding:2.5rem 1.5rem;">
+                    <i class="bi bi-mic-fill" style="font-size:2.5rem;color:#0b77ff;"></i>
+                    <h4 class="fw-bold mt-3 mb-2">Microphone Access Required</h4>
+                    <p class="text-muted mb-4" style="max-width:480px;margin:0 auto 1.5rem;">This test records your spoken responses for all 8 tasks. Click below and select <strong>"Allow"</strong> when your browser asks for microphone access.</p>
+                    <button type="button" class="btn btn-primary btn-lg" id="micGateBtn" onclick="requestMicAccess()"><i class="bi bi-mic-fill me-2"></i>Enable Microphone &amp; Start Test</button>
+                    <div id="micGateError" class="alert alert-danger mt-3" style="display:none;max-width:480px;margin:1rem auto 0;text-align:left;"></div>
+                    <?php if ($isAdmin): ?>
+                    <div class="mt-3"><a href="#" onclick="skipMicGate(); return false;" class="text-muted small">Skip (admin) — continue without microphone</a></div>
+                    <?php endif; ?>
+                </div>
+
+                <div id="speakingMain" style="display:none;">
                 <div class="speaking-progress-dots" id="progressDots">
                     <?php foreach ($tasks as $tNum => $t): ?>
                         <div class="dot <?= $tNum === 1 ? 'current' : '' ?>" id="dot-<?= $tNum ?>"></div>
@@ -454,6 +474,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                         </button>
                     </form>
                 </div>
+                </div><!-- /#speakingMain -->
 
             </div>
             <?php endif; ?>
@@ -805,7 +826,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     window.addEventListener('resize', syncContentOffset);
     syncContentOffset();
 
-    beginTask(1);
+    // Ask for microphone access upfront, with a real page element the
+    // student can't miss the way they could miss the browser's own
+    // permission popup — and a clear retry path if they deny it by mistake.
+    async function requestMicAccess() {
+        const btn = document.getElementById('micGateBtn');
+        const errEl = document.getElementById('micGateError');
+        if (!btn) return;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Requesting access…';
+        errEl.style.display = 'none';
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            // Only checking permission here -- stop it immediately, the real
+            // recording starts fresh per-task later.
+            stream.getTracks().forEach(t => t.stop());
+            document.getElementById('micGate').style.display = 'none';
+            document.getElementById('speakingMain').style.display = '';
+            syncContentOffset();
+            beginTask(1);
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-mic-fill me-2"></i>Try Again';
+            let msg = 'Could not access your microphone: ' + (err.message || err.name || 'unknown error') + '.';
+            if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                msg = 'Microphone access was denied. Click the padlock or info icon in your browser\'s address bar, allow microphone access for this site, then click "Try Again" below.';
+            } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                msg = 'No microphone was found on this device. Please connect a microphone and click "Try Again".';
+            }
+            errEl.textContent = msg;
+            errEl.style.display = '';
+        }
+    }
+
+    function skipMicGate() {
+        document.getElementById('micGate').style.display = 'none';
+        document.getElementById('speakingMain').style.display = '';
+        syncContentOffset();
+        beginTask(1);
+    }
     </script>
     <?php endif; ?>
     <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
