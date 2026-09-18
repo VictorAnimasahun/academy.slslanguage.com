@@ -22,6 +22,16 @@ if (file_exists(CONFIG_PATH . '/api_keys.php')) {
 
 // Start session only if not already started
 if (session_status() === PHP_SESSION_NONE) {
+    // Security: same session-cookie hardening as config/auth.php (sls-admin)
+    // -- academy had none of this, relying entirely on PHP's raw defaults.
+    // SameSite=Lax rather than sls-admin's Strict: academy is a public
+    // student-facing site with legitimate cross-site entry points (email
+    // verification links, external referral links) that Strict would
+    // silently break by withholding the cookie on that first navigation;
+    // Lax still blocks the cookie on cross-site POSTs, the main CSRF vector.
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_strict_mode', 1);
+    ini_set('session.cookie_samesite', 'Lax');
     session_start();
 }
 
