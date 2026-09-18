@@ -70,8 +70,12 @@ function callClaude($prompt) {
  * Call Gemini API
  */
 function callGemini($prompt) {
-    // Use gemini-2.5-flash (latest model)
-    $url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" . GEMINI_API_KEY;
+    // Must match the model name mock_save_section.php's callGeminiGrader()
+    // uses -- these two Gemini callers drifted apart (this one was still on
+    // a retired gemini-2.5-flash while that one had already moved to
+    // gemini-3.6-flash), which is why every request through this function
+    // was silently failing with a 404 "model not found" from Google.
+    $url = "https://generativelanguage.googleapis.com/v1/models/gemini-3.6-flash:generateContent?key=" . GEMINI_API_KEY;
 
     $ch = curl_init($url);
 
@@ -101,6 +105,7 @@ function callGemini($prompt) {
     curl_close($ch);
 
     if ($curlError) {
+        error_log("Gemini API curl error: " . $curlError);
         return [
             'success' => false,
             'error' => 'Network error: ' . $curlError
