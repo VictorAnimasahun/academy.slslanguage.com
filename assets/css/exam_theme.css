@@ -702,3 +702,17 @@ body.exam-fullscreen .submit-bar {
   .celpip-w-shell .celpip-w-resize-btn { width: 40px; height: 40px; font-size: 1.1rem; }
   .celpip-w-shell .celpip-w-textarea { font-size: 16px; } /* <16px makes iOS Safari zoom on focus */
 }
+
+/* ── Phone ergonomics shared by every exam page ────────────────────────────
+   - 16px form controls: iOS Safari zooms the whole page on focus below that.
+   - ~44px tap targets for the buttons a student hits under time pressure.
+   - The fixed header (steps + title + Exit) used to eat ~a third of the
+     screen; only the current step keeps its label on narrow screens. */
+@media (max-width: 767px) {
+  input:not([type=checkbox]):not([type=radio]):not([type=range]), select, textarea { font-size: 16px; }
+  .submit-bar .btn, .submit-bar button, .btn-exit, .celpip-next-btn, .celpip-back-btn { min-height: 44px; }
+  .progress-steps .step:not(.current) { font-size: 0; gap: 0; }
+  .progress-steps .step:not(.current) .step-dot { font-size: 1rem; }
+  .progress-steps > .bi { display: none; }
+  .sticky-header > div[style*="#1e1b4b"] { overflow-x: auto; white-space: nowrap; }
+}
