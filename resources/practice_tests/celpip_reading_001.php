@@ -1,5 +1,8 @@
 <?php
-// CELPIP Reading Practice 1 — transcribed from Downloads/CELPIP TASKS/Celpip Reading/Test 1
+// CELPIP Reading Practice 1 — "Reading Practice Test C" (labelled C since the
+// two Full Mocks are A and B), replaces the original Test 1 content per
+// instructor request 2026-09-18. Source: Downloads/files (3)/
+// Reading_Practice_Test_C.docx + its Answer Key docx.
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
@@ -19,38 +22,45 @@ $parts = [
         'sections' => [
             [
                 'type'          => 'mcq',
-                'passage_title' => 'Message from Mrs. Birch',
-                'passage'       => "<p>Dear Ms. Green,</p>
-<p>I am sorry to bother you, as I know you are very busy, but I would like to change my vacation time request. I asked to take the first 2 weeks of July off, but now, if it is okay, I would like the first 2 weeks of August instead.</p>
-<p>The rule is that no changes may be made once requests have been submitted in writing, but I think that requiring requests to be made in January is a little unreasonable. It is difficult for some people to know, 6 months in advance, what their summer plans will be. I understand that time is needed to hire temporary replacements to take care of things while people are away. I am also aware that everyone needs to coordinate their vacation plans in a way that ensures no single department is understaffed. However, I believe 2 or 3 months' notice should be sufficient. According to my friends, that's the amount of notice required by other places of employment here in Canada.</p>
-<p>The reason I am changing my request is that I had originally planned to take a trip to Japan during the first 2 weeks of July. However, I have now decided to go to Africa instead, and that tour is scheduled for the first 2 weeks of August. My husband and his retired parents have already made a non-refundable deposit for the trip to Africa for the four of us, and they are really looking forward to it. In fact, my husband, who will be taking a solo business trip to Mexico afterwards, bought six suitcases yesterday and has already started planning everything. I do not want to disappoint my family with news that I cannot get the time off. As I am still giving 5 months' notice, I hope it will be sufficient.</p>
-<p>Please let me know at your earliest convenience whether I can change my vacation time to the first 2 weeks of August, as I will need to either finalize the booking with Global Travel Agency or try to get our non-refundable deposit back!</p>",
+                'passage_title' => 'Message from Sofia',
+                'passage'       => "<p>Hi Priya,</p>
+<p>I'm sorry it's taken two weeks to write back—between unpacking and the new job, the days have blurred together. Halifax has been a whirlwind, but a good one.</p>
+<p>The move itself started rough. The moving company lost track of our truck for almost a full day, so Tomas and I slept on the apartment floor with nothing but two suitcases and Max's food bowl. Everything showed up the next afternoon. Max spent three days flattened under the bed like a throw rug, barely touching his food. This morning I found him shredding the corner of a moving box like it owed him money, so I think we've turned a corner.</p>
+<p>Work has been the real bright spot. I started at Larkspur Analytics on Monday, and it's already clear I made the right choice. My new manager, Devon, spent the first two days walking me through the client accounts personally instead of leaving me with a manual. The team is small—only nine people—and everyone genuinely seems to like working together, which wasn't always true at my last job. Our office is two floors above a bagel shop, which the whole team apparently treats as a running joke about the smell getting into the carpets.</p>
+<p>Tomas is still job hunting. He's had two promising interviews, but nothing's come through, and I've caught myself doing the math on our savings some nights before bed, which I never used to do. He tells anyone who asks that it's \"just a matter of time.\" If I'm honest, most days my head is less on the apartment and more on whether we can keep affording two of everything on one income for a while.</p>
+<p>I know your firm took on that massive new logistics account back in August, and last I heard, the onboarding was expected to keep you slammed through most of September. I could really use a friendly face around here whenever you surface. The drive along the coast is supposed to be stunning about now, if the timing works out on your end.</p>
+<p>We still haven't found bath towels or a shower curtain, so the place feels a little bare in spots, but none of that matters much next to everything else going right. We also haven't figured out yet whether my new office health plan covers dental for Tomas while he's between jobs; I'm supposed to call HR about it next week.</p>
+<p>Love,<br>Sofia</p>",
                 'instructions' => 'Choose the best option according to the information given in the message.',
                 'questions'    => [
-                    ['q'=>1, 'text'=>'It was unnecessary for the writer to mention the', 'options'=>['A'=>'date of her initial request','B'=>'expected period of absence','C'=>'name of the travel agency','D'=>'type of deposit she made']],
-                    ['q'=>2, 'text'=>'Mrs. Birch accepts that', 'options'=>['A'=>'advance notice of vacation is required','B'=>'most departments are understaffed','C'=>'replacement workers are unavailable','D'=>"6 month's notice is the minimum"]],
-                    ['q'=>3, 'text'=>'Mrs. Birch disagrees with the', 'options'=>['A'=>'"changes not allowed" rule','B'=>'"no other employment" rule','C'=>'"requests must be in writing" rule','D'=>'"6 months\' notice" rule']],
-                    ['q'=>4, 'text'=>'The trip to Africa', 'options'=>['A'=>'is offered only in the summer','B'=>'occurs when July is over','C'=>'takes 4 weeks in total','D'=>'will depart from Japan']],
-                    ['q'=>5, 'text'=>"Mrs. Birch's travel plans include", 'options'=>['A'=>'family members','B'=>'her close friends','C'=>'only her husband','D'=>'her co-workers']],
-                    ['q'=>6, 'text'=>'In general, Mrs. Birch seems', 'options'=>['A'=>'confused','B'=>'happy','C'=>'pressured','D'=>'sorry']],
+                    ['q'=>1, 'text'=>"Max, Sofia's cat, is now…", 'options'=>['A'=>'refusing to eat.','B'=>'showing signs of settling in.','C'=>'confined to a crate at the vet.','D'=>'staying with a neighbour while they finish unpacking.']],
+                    ['q'=>2, 'text'=>'Based on the letter, Sofia most likely wants Priya to visit…', 'options'=>['A'=>'sometime after September.','B'=>'before Labour Day.','C'=>"during Priya's busiest week at work.",'D'=>'once Tomas starts a new job.']],
+                    ['q'=>3, 'text'=>'Overall, Sofia seems to feel…', 'options'=>['A'=>'regretful about the move.','B'=>'anxious about Tomas above all else.','C'=>'quietly optimistic despite some rough patches.','D'=>'frustrated with the moving company.']],
+                    ['q'=>4, 'text'=>'Devon is described as someone who…', 'options'=>['A'=>'hired Sofia over other candidates.','B'=>'works remotely most days.','C'=>'left Sofia to learn independently.','D'=>"personally trained Sofia during her first days."]],
+                    ['q'=>5, 'text'=>"Based on the letter, Sofia's most urgent concern is…", 'options'=>['A'=>'whether their savings will hold up while Tomas is between jobs.','B'=>'whether Max will fully settle into the new apartment.','C'=>'whether Tomas regrets leaving his previous job.','D'=>"whether her new health plan covers Tomas's dental care."]],
+                    ['q'=>6, 'text'=>"The overall tone of Sofia's letter is best described as…", 'options'=>['A'=>'formal and reserved.','B'=>'excited and carefree.','C'=>'apologetic and regretful.','D'=>'warm and candid.']],
                 ],
             ],
             [
                 'type'          => 'mcq',
                 'inline_blanks' => true,
-                'passage_title' => "Ms. Green's Reply",
-                'passage'       => "<p>Dear Else,</p>
-<p>Thank you for your recent email asking me to <strong>(7)</strong>___. I would like to assure you that I very much appreciate your comments about our policy. You are certainly not the first employee here at the Fabulous Furniture Company to <strong>(8)</strong>___ the requirements. I am aware, as your email suggests, that other companies are <strong>(9)</strong>___ policies.</p>
-<p>Given the information you have provided, I'm pleased to say that I have decided to make an exception and <strong>(10)</strong>___.</p>
-<p>I do hope you enjoy your adventure—I myself have wanted to visit <strong>(11)</strong>___ for some time now.</p>
-<p>Regards,<br>Ms. Green</p>",
+                'passage_title' => "Priya's Reply",
+                'passage'       => "<p>Hi Sofia,</p>
+<p>Don't apologize—I know how much chaos a big move brings. I'm glad to hear Max is coming around; cats really do take moving personally.</p>
+<p>It sounds like I should <strong>(7)</strong>___, since it's clearly been a big few weeks on more than one front. I'll check flights once things ease up on my end—my own crunch time should be winding down soon enough.</p>
+<p>I have to say, it's such a relief that work is going well, especially after everything you dealt with at your last job. It sounds like Devon is exactly the kind of manager you needed—someone who actually <strong>(8)</strong>___ instead of just handing you a binder and walking away.</p>
+<p>As for Tomas, tell him not to lose heart. Two interviews in this market is a good sign, even if it doesn't feel that way some nights. Waiting is always the hardest part.</p>
+<p>One more thing—should I bring anything for the apartment? If there's anything specific you're still missing, from <strong>(9)</strong>___ to kitchen basics, let me know and I'll try to track it down before I fly out.</p>
+<p><strong>(10)</strong>___ about the HR question—most plans I've seen cover a spouse's dental even during a job search, but it's worth double-checking before you assume either way.</p>
+<p>Either way, I can't wait to <strong>(11)</strong>___!</p>
+<p>Talk soon,<br>Priya</p>",
                 'instructions' => 'Complete the response by filling in the blanks. Select the best choice for each blank.',
                 'questions'    => [
-                    ['q'=>7,  'text'=>'Blank (7)',  'options'=>['A'=>"change the dates you'll be away",'B'=>'confirm your travel insurance','C'=>'give you extra time off work','D'=>'revise our vacation policy']],
-                    ['q'=>8,  'text'=>'Blank (8)',  'options'=>['A'=>'have difficulty meeting','B'=>'insist on changes to','C'=>'need an explanation of','D'=>'refuse to follow']],
-                    ['q'=>9,  'text'=>'Blank (9)',  'options'=>['A'=>'different in terms of their','B'=>'ignoring such vacation','C'=>'now changing such strict','D'=>'popular because of their']],
-                    ['q'=>10, 'text'=>'Blank (10)', 'options'=>['A'=>"approve 2 months' vacation",'B'=>'forward your message upwards','C'=>'grant your revised request','D'=>'hire your temporary replacement']],
-                    ['q'=>11, 'text'=>'Blank (11)', 'options'=>['A'=>'Africa','B'=>'Canada','C'=>'Japan','D'=>'Mexico']],
+                    ['q'=>7,  'text'=>'Blank (7)',  'options'=>['A'=>'send flowers for the new apartment.','B'=>'ask Devon for career advice.','C'=>'check in properly, not just by email.','D'=>'recommend a better moving company.']],
+                    ['q'=>8,  'text'=>'Blank (8)',  'options'=>['A'=>'reviews your work daily.','B'=>'takes the time to show you the ropes.','C'=>'assigns you a mentor.','D'=>'checks in by email.']],
+                    ['q'=>9,  'text'=>'Blank (9)',  'options'=>['A'=>'shower supplies.','B'=>'shower fixtures.','C'=>'cat food.','D'=>'moving boxes.']],
+                    ['q'=>10, 'text'=>'Blank (10)', 'options'=>['A'=>'Congratulations','B'=>"I'm sorry",'C'=>"Don't stress",'D'=>'Good luck']],
+                    ['q'=>11, 'text'=>'Blank (11)', 'options'=>["A"=>"hear how Tomas's interviews go.",'B'=>'help you look for a new apartment.','C'=>'meet your new coworkers.','D'=>'see the new place for myself.']],
                 ],
             ],
         ],
@@ -61,36 +71,32 @@ $parts = [
         'q_range' => [12, 19],
         'sections' => [
             [
-                'type'          => 'diagram',
-                'passage_title' => 'Lemongrass Gardening Centre',
-                'image'         => 'lemongrass_gardening_centre.png',
-                'image_dir'     => 'CELPIP_PT_R_001',
-                'passage'       => '<p class="text-muted small">Grow your own organic garden with our selection of fruit and vegetable seeds! Gardening workshops held every Tuesday from 6:00–7:00 p.m. Or, simply drop by our store and speak to any of our knowledgeable staff. We are here to make your garden a success!</p>',
-                'diagram_rows'  => [
-                    ['plant'=>'Tomatoes',  'difficulty'=>'Moderate','season'=>'Spring', 'notes'=>['need plenty of direct sunlight','plant seeds deeply in the soil','require moderate watering per week','grow well next to carrots']],
-                    ['plant'=>'Carrots',   'difficulty'=>'Easy',    'season'=>'Spring', 'notes'=>['grow well in full sun or partial shade','must be planted shallowly','keep seeds moist but do not drench','can be harvested at any size']],
-                    ['plant'=>'Watermelon','difficulty'=>'Difficult','season'=>'Summer','notes'=>['likes lots of direct sun','place seeds at least half a metre apart','water roots of plant frequently','requires a lot of food, heavily compost the soil']],
-                    ['plant'=>'Spinach',   'difficulty'=>'Easy',    'season'=>'Spring', 'notes'=>['grows best in shady conditions','plant seeds 1/2 inch deep in soil','water daily to keep the soil cool','pick when the leaves are 7-10 cm in length']],
-                    ['plant'=>'Peas',      'difficulty'=>'Easy',    'season'=>'Winter or Spring','notes'=>['prefer full sun but can grow in partial shade','plant seeds 1 inch deep','avoid over-watering the seeds','grow very tall','plant near a fence or trellis']],
-                    ['plant'=>'Pumpkins',  'difficulty'=>'Difficult','season'=>'Summer','notes'=>['require lots of direct sun','keep soil well-watered','require lots of room to grow','plant seeds in equal parts compost and soil']],
+                'type'          => 'diagram_cards',
+                'passage_title' => 'Retreat Venue Options',
+                'cards' => [
+                    ['title' => 'Lakeside Lodge', 'bullets' => ['Private beach access', 'Canoe rentals included', 'Catered dinner each night', 'No Wi-Fi'], 'stats' => ['Price' => '$340/person', 'Duration' => '2 hr drive', 'Group capacity' => 'Up to 40']],
+                    ['title' => 'Mountain View Ranch', 'bullets' => ['Guided hiking trails', 'Campfire storytelling', 'Horseback riding available', 'Limited cell service'], 'stats' => ['Price' => '$290/person', 'Duration' => '3 hr drive', 'Group capacity' => 'Up to 30']],
+                    ['title' => 'City Loft', 'bullets' => ['Rooftop lounge', 'Catered lunch only', 'Full Wi-Fi/AV setup', 'Day-use only, no overnight rooms'], 'stats' => ['Price' => '$180/person', 'Duration' => '15 min drive', 'Group capacity' => 'Up to 60']],
+                    ['title' => 'Riverside Camp', 'bullets' => ['Team-building ropes course', 'Shared cabins (4 people/cabin)', 'Campfire meals', 'No Wi-Fi'], 'stats' => ['Price' => '$250/person', 'Duration' => '3 hr 30 min drive', 'Group capacity' => 'Up to 25']],
                 ],
             ],
             [
                 'type'          => 'mcq',
                 'inline_blanks' => true,
-                'passage_title' => "Alan's Email to Lucy",
-                'passage'       => "<p><em>Subject: Gardening</em></p>
-<p>Hey Lucy,<br>Any interest in planting a vegetable garden? It'd be a great way to get cheap, nutritious food. I know you're not a fan of dirt, but it could be fun! Check out the brochure!</p>
-<p>Since we're first time gardeners, I'd suggest starting with something simple. Obviously, we'd want to avoid growing <strong>(12)</strong>___. Also, our yard is very sunny, so it could be difficult to grow <strong>(13)</strong>___. Of course, we'd definitely need to plant pumpkin, since, as you know, I love pumpkin pies. We could work something out even though they require <strong>(14)</strong>___. For fresh pie, we accept the challenge!</p>
-<p>Let's check out the gardening center after dinner. It sounds like the <strong>(15)</strong>___ place in town. Also, I'll stop by the library for a gardening guide since the brochure doesn't provide complete information for each plant. The brochure mentions harvest time for only <strong>(16)</strong>___. That's something we'd definitely need to know!</p>
-<p>Best,<br>Alan</p>",
+                'passage_title' => "Aisha's Email to Marcus",
+                'passage'       => "<p><em>Subject: Retreat venue decision</em><br>To: Marcus Webb &lt;mwebb@brightpath.ca&gt;<br>From: Aisha Rahman &lt;arahman@brightpath.ca&gt;</p>
+<p>Hi Marcus,</p>
+<p>I've finally gone through the four retreat venues from the coordinator's file. Quick thoughts before we decide—and heads up, we're expecting around 28 people this year if all the new hires confirm.</p>
+<p>City Loft is the only one within walking distance of the office, but everything else about it works against the point of a retreat — it's <strong>(1)</strong>___, so we'd basically just be at work with better snacks. Mountain View Ranch looks incredible, but I worry a full day on the trails might be too much for anyone who isn't especially active, and unlike the other outdoor option, there's <strong>(2)</strong>___ if someone needs to call for a ride partway through. I noticed Lakeside Lodge and Riverside Camp both skip Wi-Fi, which might make you assume they're similar in every other way too, but <strong>(3)</strong>___. Between those two, I actually still lean toward Lakeside now — beyond the price gap, both venues <strong>(4)</strong>___, so catering at least isn't something we'd need to arrange separately, but Lakeside's the only one of the two that could actually fit everyone. My one hesitation is that it's the <strong>(5)</strong>___ of the four, so I want to be sure the extra cost is worth it before I commit us to it.</p>
+<p>Let's decide before Friday — I need to confirm numbers with the coordinator by then.</p>
+<p>Best,<br>Aisha</p>",
                 'instructions' => 'Complete the email by filling in the blanks. Select the best choice for each blank.',
                 'questions'    => [
-                    ['q'=>12, 'text'=>'Blank (12)', 'options'=>['A'=>'watermelon','B'=>'peas','C'=>'tomatoes','D'=>'carrots']],
-                    ['q'=>13, 'text'=>'Blank (13)', 'options'=>['A'=>'spinach','B'=>'peas','C'=>'watermelon','D'=>'carrots']],
-                    ['q'=>14, 'text'=>'Blank (14)', 'options'=>['A'=>'plenty of space','B'=>'warm and dry soil','C'=>'lots of shade','D'=>'specialized seed compost']],
-                    ['q'=>15, 'text'=>'Blank (15)', 'options'=>['A'=>'most helpful','B'=>'busiest','C'=>'largest','D'=>'most popular']],
-                    ['q'=>16, 'text'=>'Blank (16)', 'options'=>['A'=>'carrots and spinach','B'=>'watermelon and peas','C'=>'spinach and tomatoes','D'=>'pumpkin and carrots']],
+                    ['q'=>12, 'text'=>'Blank (1)', 'options'=>['A'=>'the most expensive option','B'=>'missing a kitchen','C'=>'not an overnight stay','D'=>'fully booked already']],
+                    ['q'=>13, 'text'=>'Blank (2)', 'options'=>['A'=>'no shuttle back to the lodge','B'=>'no reliable phone signal','C'=>'no space in the group vehicle','D'=>'no refund for missed activities']],
+                    ['q'=>14, 'text'=>'Blank (3)', 'options'=>['A'=>"they're both the cheapest options available",'B'=>'neither one publishes pricing upfront','C'=>'Riverside might actually be too small for our group this year','D'=>'Lakeside actually costs far more per person']],
+                    ['q'=>15, 'text'=>'Blank (4)', 'options'=>['A'=>'provide a private beach for guests','B'=>'offer horseback riding','C'=>'include unlimited meeting-room time','D'=>'include meals as part of the stay']],
+                    ['q'=>16, 'text'=>'Blank (5)', 'options'=>['A'=>'least affordable','B'=>'newest','C'=>'least popular','D'=>'hardest to book']],
                 ],
             ],
             [
@@ -99,9 +105,9 @@ $parts = [
                 'passage'       => null,
                 'instructions'  => 'Choose the best option according to the information given in the message.',
                 'questions'    => [
-                    ['q'=>17, 'text'=>'What does Lucy want Alan to do?', 'options'=>['A'=>'call the garden center for information','B'=>'research the harvest time of each plant','C'=>'make a pumpkin pie for dinner','D'=>'plant a vegetable garden with him']],
-                    ['q'=>18, 'text'=>'Why does Alan think a garden is a good idea?', 'options'=>['A'=>'He knows Lucy would enjoy it.','B'=>'It is an affordable way to eat healthy food.','C'=>'It will fill empty space in their yard.','D'=>"He feels they don't eat enough healthy food."]],
-                    ['q'=>19, 'text'=>'Why did Alan attach the brochure to his email?', 'options'=>['A'=>'to show her the new gardening in town','B'=>'to provide examples of things they can grow','C'=>'to encourage Lucy to plant a garden again','D'=>"to explain what he'll be doing this summer"]],
+                    ['q'=>17, 'text'=>'Aisha and Marcus most likely…', 'options'=>['A'=>'have never met.','B'=>'are romantic partners.','C'=>'are friends outside of work.','D'=>'are colleagues.']],
+                    ['q'=>18, 'text'=>"The main purpose of Aisha's email is…", 'options'=>['A'=>'to walk through her reasoning and arrive at a recommendation before a deadline.','B'=>'to cancel the retreat entirely.','C'=>'to argue that City Loft is secretly the best choice.','D'=>'to request a bigger budget for the retreat.']],
+                    ['q'=>19, 'text'=>"Aisha's tone in the email is best described as…", 'options'=>['A'=>'undecided and anxious.','B'=>'methodical, working through options before landing on one.','C'=>'dismissive of the other options.','D'=>'frustrated with the coordinator.']],
                 ],
             ],
         ],
@@ -113,26 +119,26 @@ $parts = [
         'sections' => [
             [
                 'type'          => 'paragraph_match',
-                'passage_title' => 'Camping in Canada',
+                'passage_title' => 'Octopuses',
                 'paragraphs'    => [
-                    'A' => "With most Canadians living in the southern part of the country, much of Canada's 9.9 million square kilometers is uninhabited. Consequently, outdoor wilderness activities—such as hunting, fishing, camping, hiking, and canoeing—are suitable pastimes. Of these, camping has the widest appeal. More than one third of Canadian households contain camping equipment, and about one quarter of the population camps each and every year. More than 37 national parks plus innumerable provincial parks and private campgrounds regularly attract camping enthusiasts and issue thousands of permits each year.",
-                    'B' => "The most common camping choices in Canada range from posh, fully-equipped motorhomes to rustic wilderness camping with whatever the hiker can carry in a backpack. The most lavish option, the 6- to 13-meter-long motorhome, consumes tremendous amounts of fuel and requires large parking spaces in campgrounds. These campers should reserve their campsites well in advance. Retired couples sometimes take a year or more to travel around North America this way, perhaps in a cavalcade of up to a hundred vehicles. Another option is the RV trailer, which is shorter but requires a towing vehicle. RV trailers are far cheaper than motorhomes but still provide the conveniences of home.",
-                    'C' => "In Canada, motorhomes and RVs are costly to buy or rent and to use. For those requiring a cheaper alternative and willing to forgo homey conveniences, the lightweight tent trailer is a possibility. Typically costing less than $10,000, it's easy to pull and maneuver. Essentially, it's a collapsible tent-like structure mounted on a rectangular four-sided box attached to two wheels. The interior varies with the model, the more expensive ones including a rustic kitchen, beds, running water, and an electrical hookup. More stable than a tent, which sits on the ground, its construction may still lead to camper discomfort during extreme weather.",
-                    'D' => "Less restrictive and more economical than other mobile accommodations, tents can be used along designated hiking trails or in established campgrounds; though, regulations prevent tenters from pitching a tent anywhere they choose. Driving or biking from campsite to campsite stretch of the Trans-Canada highway, for example, has campgrounds that cater to motorhomes, tent trailers, and tenters. Some campgrounds have running water and showers, whereas others have only outhouses and outdoor cold-water taps. Reservations are accepted for any type of camping. Websites and books are available with detailed information about campsites in each province, facilitating vacation planning for adventurous campers.",
+                    'A' => "Octopuses belong to a group of marine animals called cephalopods, a word that comes from the Greek for \"head-foot,\" referring to the way their arms attach directly to their heads. There are more than 300 known species of octopus, ranging from the inch-long star-sucker pygmy octopus to the giant Pacific octopus, which can span more than four metres across. Octopuses live in oceans worldwide, from shallow coral reefs to depths of several thousand metres, and every species is exclusively marine—none can survive in fresh water.",
+                    'B' => "Unlike most animals with a backbone, an octopus has no internal or external skeleton at all, which allows it to squeeze through any opening larger than its beak, the only hard part of its body. Its skin is covered in thousands of pigment-filled cells called chromatophores, which the octopus can expand or contract within a fraction of a second to change colour, and specialized muscles beneath the skin let it alter its texture to mimic rock or coral. An octopus also has three hearts: two pump blood to the gills, while the third circulates it to the rest of the body.",
+                    'C' => "Octopuses are solitary hunters that rely on both stealth and intelligence rather than speed. They typically hunt at night, using their sensitive arms—each lined with hundreds of suckers capable of both touch and taste—to probe crevices for crabs, clams, and small fish. Once prey is located, an octopus may inject it with a paralyzing venom before eating it. Researchers have also documented octopuses using coconut shells and empty bottles as portable shelters, carrying the objects beneath their bodies until they need to hide.",
+                    'D' => "Scientists continue to be surprised by octopus behaviour. In laboratory settings, octopuses have learned to open jars, navigate mazes, and in a few documented cases, recognize individual human caretakers by sight. Some researchers believe this intelligence evolved separately from that of vertebrates, making the octopus one of the best examples of convergent evolution in the animal kingdom. Because most species live only one to two years, researchers are especially puzzled by how such complex learning develops in such a short lifespan.",
                 ],
                 'instructions' => 'Decide which paragraph, A to D, has the information given in each statement below. Select E if the information is not given in any of the paragraphs.',
                 'options'      => ['A','B','C','D','E'],
                 'option_labels'=> ['E' => 'Not given'],
                 'questions'    => [
-                    ['q'=>20, 'text'=>"Camping's popularity in Canada is evidenced by the percentage of frequent campers."],
-                    ['q'=>21, 'text'=>'Certain types of camping cannot be done spontaneously.'],
-                    ['q'=>22, 'text'=>'Some people who prefer one style of camping enjoy travelling in groups.'],
-                    ['q'=>23, 'text'=>'Camping is a growing trend among wilderness enthusiasts.'],
-                    ['q'=>24, 'text'=>'Campers should check where they are permitted to set up camp.'],
-                    ['q'=>25, 'text'=>'Campsites are evenly spaced across the country.'],
-                    ['q'=>26, 'text'=>'People who use motorhomes bring a second vehicle with them.'],
-                    ['q'=>27, 'text'=>'Some campers choose a middle ground between luxury and rustic camping.'],
-                    ['q'=>28, 'text'=>'Some camping equipment is less able to withstand unpleasant conditions.'],
+                    ['q'=>20, 'text'=>'Octopuses can change both the colour and texture of their skin.'],
+                    ['q'=>21, 'text'=>'The star-sucker pygmy octopus can grow to more than four metres across.'],
+                    ['q'=>22, 'text'=>"An octopus's only rigid body part is its beak."],
+                    ['q'=>23, 'text'=>'Octopuses sometimes carry found objects to use as makeshift hiding spots.'],
+                    ['q'=>24, 'text'=>'An octopus can squeeze through narrow gaps because of its flexible, muscular arms.'],
+                    ['q'=>25, 'text'=>'Octopus intelligence may have developed independently from the intelligence found in animals with backbones.'],
+                    ['q'=>26, 'text'=>'Octopuses use their arms to sense both texture and taste.'],
+                    ['q'=>27, 'text'=>'Every species of octopus lives exclusively in salt water.'],
+                    ['q'=>28, 'text'=>"An octopus's short lifespan makes some aspects of its behaviour puzzling to researchers."],
                 ],
             ],
         ],
@@ -144,32 +150,35 @@ $parts = [
         'sections' => [
             [
                 'type'          => 'mcq',
-                'passage_title' => 'Language Decline',
-                'passage'       => "<p>The numbers are in, and they're grim: Three thousand of the world's seven thousand languages are in decline and expected to perish by around 2100. While the most prevalent languages are taking a firmer hold across the globe, the extinction rate for languages is 25 per year. Charting language demise, UNESCO ranks dwindling languages on a scale ranging from \"vulnerable\" to \"critically endangered.\" The question is how, or whether, UNESCO or sovereign governments should intervene?</p>
-<p>Concerned language preservation organizations include the Canadian Association for Language Diversity (CALD), a charity whose goal is to prevent language extinctions. CALD spokesperson Norman Reideger says all endangered languages should be saved. \"For individuals, language fosters a sense of personal identity. Language extinction means loss of priceless, irreplaceable cultural knowledge—the grammar, music, narratives, and even medical knowledge embedded in a language. A linguistically diverse planet is a healthy planet.\"</p>
-<p>Concordia University linguistics professor Marianne Houseman deplores such use of biodiversity rhetoric in linguistics discourse. \"Life is life, and language is language,\" she clarifies. Houseman is skeptical about whether speakers of endangered languages benefit from linguistic preservation, noting that those who abandon their language may be acting in their own best interests by adapting to a naturally evolving socio-economic climate. \"Whose needs are served by government-funded social—or socio-linguistic—engineering schemes?\" asks Houseman, \"Their proponents are typically nationalist regimes advancing their own territorial, political and economic agendas.\"</p>
-<p>Annalisa Ducharme, a Memorial University doctoral candidate, points out that a confounding factor is variation within a language. \"One language can have multiple dialects—regional varieties,\" says Ducharme, \"If an endangered language is to be artificially propped up with government funded schools and preschools, as they do with some First Nation languages in Canada, then which—whose—version of the language should be deemed 'essential' and therefore worth saving?\" As well as First Nation languages, Ducharme points to French, which \"has many dialects worth sustaining. Globally, France, Louisiana, and Africa have their own versions. In New Brunswick, French dialects include Quebecois, Acadian, and Chiac, a sub-dialect that blends Acadian French, English, and [aboriginal] Mi'kmaq.\"</p>",
+                'passage_title' => 'The Four-Day Work Week',
+                'passage'       => "<p>Across Canada, a small but growing number of companies have begun experimenting with a four-day work week, compressing a standard forty-hour schedule into four longer days while keeping employee pay unchanged. Advocates say the model boosts productivity and staff retention. Critics argue it simply isn't realistic for most workplaces.</p>
+<p>Jordan Kessler, owner of a twelve-person marketing firm in Kitchener, made the four-day schedule permanent company policy eighteen months ago: no employee may be scheduled past Thursday without a director's sign-off. \"I was honestly skeptical it would work,\" Kessler admitted. \"But our client deadlines are still being met, and turnover dropped from three resignations the year before the change to zero since we made it. People aren't wasting the last hour of Friday pretending to be busy anymore—they're just gone, and somehow everything still gets done.\" Kessler's office still keeps a framed photo of the old five-day schedule taped to the breakroom wall, a memento from the switch.</p>
+<p>Not everyone is convinced the model can scale the way Kessler's has. Renata Price, an operations consultant who has advised dozens of small businesses, remains doubtful. \"What works for a twelve-person marketing agency won't necessarily work for a manufacturing plant running on shift schedules, or a hospital that needs coverage seven days a week,\" Price explained. \"I worry that businesses adopt this because it sounds progressive, without doing the harder work of figuring out whether their operations can actually absorb a twenty percent reduction in scheduled hours.\"</p>
+<p>Dr. Amina Osei, a labour economist at a Canadian university, has studied several of the pilot programs currently underway. \"The data so far is more encouraging than skeptics might expect,\" Osei said. \"Across the pilots we've tracked, self-reported stress levels dropped substantially, and in most cases, output per employee actually increased—not because people were paid more or given new equipment, but because employees appear to work with more focus when they know their time is limited. That said, our sample sizes are still small, and we don't yet have enough long-term data to know whether these gains hold up after the novelty wears off.\"</p>
+<p>Whatever the eventual verdict, more organizations appear willing to test the idea rather than dismiss it outright. Kessler, for one, doesn't find that surprising: \"Five years ago, nobody would have taken this seriously. Now I get calls almost every month from other owners asking how we did it.\"</p>",
                 'instructions' => 'Choose the best option according to the information given on the website.',
                 'questions'    => [
-                    ['q'=>29, 'text'=>'Annalisa Ducharme most likely objects to', 'options'=>['A'=>'inflated claims about language preservation outcomes','B'=>'public programs to revitalize dying languages for political reasons','C'=>'denials about the rate of language extinction','D'=>'a simplistic categorization or definition of a language']],
-                    ['q'=>30, 'text'=>'Marianne Houseman thinks language preservation programs should be', 'options'=>['A'=>'modified','B'=>'continued','C'=>'consolidated','D'=>'abandoned']],
-                    ['q'=>31, 'text'=>'Who holds directly opposing viewpoints?', 'options'=>['A'=>'Ducharme and UNESCO','B'=>'Houseman and Reideger','C'=>'Reideger and Ducharme','D'=>'Ducharme and Houseman']],
-                    ['q'=>32, 'text'=>'Marianne Houseman would most likely agree that', 'options'=>['A'=>'investments in language immersion schools are defensible','B'=>'language preservation policies deserve public attention','C'=>'people stand to gain from a lingua franca','D'=>'dying languages are a priceless cultural resource']],
-                    ['q'=>33, 'text'=>'Overall, the article suggests that efforts to preserve dying languages are', 'options'=>['A'=>'hampered by the link between language and identity','B'=>'fraught with an array of sociopolitical complications','C'=>'warranted on the basis of disturbing global statistics','D'=>'essential for the sake of preserving indigenous cultures']],
+                    ['q'=>29, 'text'=>'The article is mainly about…', 'options'=>['A'=>'whether the four-day work week is a realistic option for more businesses.','B'=>'why manufacturing companies should avoid schedule changes.','C'=>"a labour economist's year-long research project.",'D'=>"how Jordan Kessler's results prove Dr. Osei's stress findings apply to every industry."]],
+                    ['q'=>30, 'text'=>'Paragraph one provides…', 'options'=>['A'=>'a detailed case study.','B'=>'a historical account of workplace scheduling.','C'=>'a brief framing of the ongoing debate.','D'=>"a summary of Dr. Osei's findings."]],
+                    ['q'=>31, 'text'=>"Renata Price's concerns would most likely be shared by…", 'options'=>['A'=>'a marketing firm owner with a small, flexible team.','B'=>'a hospital administrator responsible for round-the-clock staffing.','C'=>'an economist studying self-reported stress levels.','D'=>'an employee hoping for more scheduled time off.']],
+                    ['q'=>32, 'text'=>'According to Dr. Osei, the rise in output per employee she observed is best explained by…', 'options'=>['A'=>'employees receiving higher pay for the same hours.','B'=>'employees being given new equipment and tools.','C'=>'staff becoming more efficient once their working hours are constrained.','D'=>'employees being monitored more closely by managers.']],
+                    ['q'=>33, 'text'=>"The author's tone throughout the article is best described as…", 'options'=>['A'=>'firmly in favour of the four-day work week.','B'=>'dismissive of businesses that have tried it.','C'=>"mocking Renata Price's professional judgment.",'D'=>'cautiously balanced, presenting both promise and uncertainty.']],
                 ],
             ],
             [
                 'type'          => 'mcq',
                 'inline_blanks' => true,
                 'passage_title' => 'Visitor Comment',
-                'passage'       => "<p>I'm Metis, of French and Cree descent. Having just 1,000 remaining speakers, Michif, the language of my people, is being sustained through Canadian federal government funded programs like those described in the article. The goal is to save it through transmission to <strong>(34)</strong>___. I have two points. First, I remind the <strong>(35)</strong>___ that historically, the demise of Michif was anything but an organic process; Michif endured systematic government efforts to erase it. Michif therefore merits government efforts to help it <strong>(36)</strong>___. I strongly disagree with the notion that language-targeted government redress and reconciliation programs are <strong>(37)</strong>___. Second, Michif has several dialects; we chose to revitalize two. While Ms. Ducharme may think targeting languages for revival is <strong>(38)</strong>___, we think Michif is worth reviving.</p>",
+                'passage'       => "<p>I run a fourteen-person accounting firm, and I think Ms. Price's shift-coverage concern is real for hospitals and factories, but she <strong>(6)</strong>___ when she extends that same logic to every kind of business.</p>
+<p>My clients don't call at 2 a.m. the way a hospital patient might. I looked into how firms like mine have handled this elsewhere: several UK accounting practices moved to four-day weeks starting back in 2022, and by most accounts they <strong>(7)</strong>___ despite carrying compliance deadlines just as tight as ours. If firms juggling audit season can make it work, I don't think <strong>(8)</strong>___ is really the obstacle Ms. Price suggests it is.</p>
+<p><strong>(9)</strong>___, Dr. Osei's caution about long-term data is worth taking seriously — eighteen months, like Mr. Kessler's case, still isn't very long. <strong>(10)</strong>___ before I'd recommend this to every accounting firm I know, I'd want to see how it holds up through a few more busy seasons first.</p>",
                 'instructions' => 'Complete the comment by choosing the best option to fill in each blank.',
                 'questions'    => [
-                    ['q'=>34, 'text'=>'Blank (34)', 'options'=>['A'=>'the next generation','B'=>'linguistic researchers','C'=>'a range of First Nation groups','D'=>'Michif speakers']],
-                    ['q'=>35, 'text'=>'Blank (35)', 'options'=>['A'=>'professor','B'=>'graduate students','C'=>'CALD representative','D'=>'United Nations']],
-                    ['q'=>36, 'text'=>'Blank (36)', 'options'=>['A'=>'continue evolving','B'=>'grow more diverse','C'=>'make a comeback','D'=>'become official']],
-                    ['q'=>37, 'text'=>'Blank (37)', 'options'=>['A'=>'language standardization efforts','B'=>'aggressive nationalist agendas','C'=>'likely to proliferate','D'=>'indulgent charity campaigns']],
-                    ['q'=>38, 'text'=>'Blank (38)', 'options'=>['A'=>'unnecessary','B'=>'linguistic','C'=>'essential','D'=>'arbitrary']],
+                    ['q'=>34, 'text'=>'Blank (6)', 'options'=>['A'=>'overreaches','B'=>'is right','C'=>'hesitates','D'=>'apologizes']],
+                    ['q'=>35, 'text'=>'Blank (7)', 'options'=>['A'=>'struggled to keep up','B'=>'reduced their client base','C'=>'kept pace with their workload','D'=>'hired additional staff']],
+                    ['q'=>36, 'text'=>'Blank (8)', 'options'=>['A'=>'staff shortages','B'=>'client complaints','C'=>'government regulation','D'=>'deadline pressure']],
+                    ['q'=>37, 'text'=>'Blank (9)', 'options'=>['A'=>'Similarly,','B'=>'Because of this,','C'=>'That said,','D'=>'In other words,']],
+                    ['q'=>38, 'text'=>'Blank (10)', 'options'=>['A'=>'Still,','B'=>'Therefore,','C'=>'Meanwhile,','D'=>'In other words,']],
                 ],
             ],
         ],

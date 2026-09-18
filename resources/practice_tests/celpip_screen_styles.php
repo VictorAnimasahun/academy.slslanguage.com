@@ -128,6 +128,11 @@
     .brochure-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.6rem; margin-top:.5rem; }
     .brochure-card { background:#e2e8f0; border-radius:6px; padding:.7rem; font-size:.78rem; line-height:1.55; }
     .brochure-card strong { color: var(--celpip-red); display:block; margin-bottom:.25rem; }
+    .diagram-cards-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:.6rem; margin-top:.5rem; }
+    .diagram-card { background:#e2e8f0; border-radius:6px; padding:.7rem; font-size:.78rem; line-height:1.5; }
+    .diagram-card h5 { color: var(--celpip-red); font-size:.82rem; font-weight:700; margin-bottom:.4rem; }
+    .diagram-card ul { font-size:.76rem; }
+    .diagram-card-stats { border-top:1px solid #cbd5e1; margin-top:.4rem; padding-top:.4rem; font-size:.76rem; }
 
     .celpip-progress { display:flex; gap:.3rem; padding:.5rem 1.1rem; background:#f5f6f7; border-top:1px solid #d7dce0; }
     .celpip-progress .dot { flex:1; height:4px; border-radius:2px; background:#d7dce0; }

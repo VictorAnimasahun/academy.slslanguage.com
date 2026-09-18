@@ -61,6 +61,33 @@ function renderCelpipInfoPanel(array $sections): void {
                 }
                 echo '</div>';
                 break;
+            // Generic "compare N options" diagram: each card is a title +
+            // bullet list of features + a few labeled stat rows (e.g. price,
+            // duration, capacity) -- a different shape from the fixed
+            // plant/difficulty/season/notes table above, so it gets its own
+            // case rather than overloading 'diagram' with conditional columns.
+            case 'diagram_cards':
+                if (!empty($sec['passage_title'])) echo '<h4>' . htmlspecialchars($sec['passage_title']) . '</h4>';
+                if (!empty($sec['passage'])) echo $sec['passage'];
+                echo '<div class="diagram-cards-grid">';
+                foreach ($sec['cards'] as $card) {
+                    echo '<div class="diagram-card"><h5>' . htmlspecialchars($card['title']) . '</h5>';
+                    if (!empty($card['bullets'])) {
+                        echo '<ul class="mb-2 ps-3">';
+                        foreach ($card['bullets'] as $b) echo '<li>' . htmlspecialchars($b) . '</li>';
+                        echo '</ul>';
+                    }
+                    if (!empty($card['stats'])) {
+                        echo '<div class="diagram-card-stats">';
+                        foreach ($card['stats'] as $label => $value) {
+                            echo '<div><strong>' . htmlspecialchars($label) . ':</strong> ' . htmlspecialchars($value) . '</div>';
+                        }
+                        echo '</div>';
+                    }
+                    echo '</div>';
+                }
+                echo '</div>';
+                break;
         }
     }
 }
