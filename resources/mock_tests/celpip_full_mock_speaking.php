@@ -265,7 +265,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         /* Task 5's "Comparing and Persuading" cards — two side by side on
            the silent selection screen, one alone on the persuasion screen. */
         .celpip-compare-cards { display: flex; gap: 1.25rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.25rem; }
-        .celpip-compare-cards-single { max-width: 340px; margin-left: auto; margin-right: auto; }
         .celpip-compare-card { border: 1px solid var(--exam-ink); border-radius: 10px; padding: 1rem; width: 100%; max-width: 320px; background: var(--exam-surface); }
         .celpip-compare-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 6px; margin-bottom: .85rem; }
         .celpip-compare-card h6 { font-weight: 700; margin-bottom: .6rem; }
@@ -427,7 +426,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                         </div>
                         <div class="speaking-prompt"><?= htmlspecialchars($t['prompt']) ?></div>
                         <?php if (!empty($t['compare'])): $cmp = $t['compare']; ?>
-                        <div class="celpip-compare-cards celpip-compare-cards-single">
+                        <!-- The student's own pick from the silent selection stage is
+                             filled in here by JS (renderYourChoiceCard) once we know
+                             which checkbox they ticked -- shown side by side with the
+                             newly-suggested option, since the task asks them to compare
+                             the two out loud and they can't do that from memory alone. -->
+                        <div class="celpip-compare-cards">
+                            <div class="celpip-compare-card" id="yourChoiceCard-<?= $tNum ?>" style="display:none;"></div>
                             <div class="celpip-compare-card">
                                 <?php if (!empty($cmp['heading'])): ?><h6 class="celpip-compare-heading"><?= htmlspecialchars($cmp['heading']) ?></h6><?php endif; ?>
                                 <img src="<?= $imagesBase . htmlspecialchars($cmp['image']) ?>" alt="<?= htmlspecialchars($cmp['title']) ?>">
@@ -494,6 +499,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     const IS_ADMIN     = <?= $isAdmin ? 'true' : 'false' ?>;
     // Only tasks with a silent selection stage (Task 5) get an entry here.
     const TASK_SELECT_PREP = <?= json_encode(array_map(fn($t) => $t['select']['prep'] ?? null, $tasks)) ?>;
+    const TASK_SELECT_OPTIONS = <?= json_encode(array_map(fn($t) => $t['select']['options'] ?? null, $tasks)) ?>;
+    const IMAGES_BASE = <?= json_encode($imagesBase) ?>;
 
     let currentTask = 1;
     let prepInterval = null, recInterval = null;
@@ -502,6 +509,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     const uploadPromises = [];
     const taskPhase = {}; // tNum -> 'prep' | 'speak' | 'done', for admin Next/Previous
     const recordingStartedAt = {}; // tNum -> Date.now() when beginRecording() ran, for the grace-window guard below
+    const selectedChoice = {}; // tNum -> index into TASK_SELECT_OPTIONS[tNum], whichever card the student checked in the silent selection stage
     let transitioning = false; // true while a "stop + advance" is in flight, so a stray click on the still-visible button during advanceToNext's delay can't re-trigger it for the same task
     let submitting = false;
 
@@ -554,16 +562,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     function finishSelectStage(tNum) {
         document.querySelector('.task-select-screen[data-task="' + tNum + '"]').style.display = 'none';
         document.querySelector('.task-screen[data-task="' + tNum + '"]').style.display = '';
+        renderYourChoiceCard(tNum);
         startTaskFlow(tNum);
     }
 
-    // Purely informational for the student (which card they'd pick) — the
-    // real comparison/persuasion in the next stage is scripted content, not
-    // dependent on which option was checked here. Checkboxes behave as a
-    // mutually-exclusive pair (only one "choice" makes sense).
+    // The student's pick now DOES need to carry over — the persuasion stage
+    // asks them to compare their choice against the new suggestion, so it
+    // has to stay visible alongside it instead of relying on their memory.
+    // Checkboxes behave as a mutually-exclusive pair (only one "choice"
+    // makes sense).
     function selectCompareOption(tNum, idx, el) {
         document.querySelectorAll('.task-select-screen[data-task="' + tNum + '"] .celpip-compare-check input')
             .forEach((cb, i) => { if (i !== idx) cb.checked = false; });
+        selectedChoice[tNum] = el.checked ? idx : undefined;
+    }
+
+    // Fills the "your choice" card on the persuasion screen with whichever
+    // option the student actually checked during the silent selection
+    // stage, so both options are visible side by side while they speak.
+    function renderYourChoiceCard(tNum) {
+        const card = document.getElementById('yourChoiceCard-' + tNum);
+        const options = TASK_SELECT_OPTIONS[tNum];
+        if (!card || !options) return;
+        const idx = selectedChoice[tNum];
+        const opt = (idx !== undefined && idx !== null) ? options[idx] : null;
+        if (!opt) {
+            // Student never checked either box during the silent stage --
+            // nothing to show here, leave it hidden rather than guessing.
+            card.style.display = 'none';
+            return;
+        }
+        card.innerHTML = '<h6 class="celpip-compare-heading">Your Choice</h6>' +
+            '<img src="' + IMAGES_BASE + opt.image + '" alt="' + opt.title + '">' +
+            '<h6>' + opt.title + '</h6>' +
+            '<ul>' + opt.bullets.map(b => '<li>' + b + '</li>').join('') + '</ul>';
+        card.style.display = '';
     }
 
     function startTaskFlow(tNum) {
