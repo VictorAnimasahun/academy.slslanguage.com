@@ -357,7 +357,12 @@
 			display: block;
 		}
 
-		.main-wrapper {
+		/* body:has(.advert-sidebar) below matches even though the advert
+		   column is display:none here, and out-specifies a bare
+		   .main-wrapper -- without it every page kept a phantom 220px right
+		   margin on phones and its content got squeezed into a sliver. */
+		.main-wrapper,
+		body:has(.advert-sidebar) .main-wrapper {
 			margin-left: 0;
 			margin-right: 0;
 			padding-top: 90px;
