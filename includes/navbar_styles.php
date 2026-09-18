@@ -370,6 +370,11 @@
 	}
 
 	@media (max-width: 768px) {
+		/* Wide data tables (gap-fill sheets, schedules, comparison charts)
+		   scroll sideways inside themselves instead of stretching the whole
+		   page wider than the phone. */
+		.main-wrapper table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+		.main-wrapper img, .main-wrapper video, .main-wrapper canvas { max-width: 100%; height: auto; }
 		.main-wrapper {
 			padding: 1rem;
 			padding-top: 90px;

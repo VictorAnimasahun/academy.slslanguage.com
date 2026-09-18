@@ -142,6 +142,10 @@
     .result-badge { display: inline-block; color: #fff; border-radius: 8px; padding: .4rem 1rem; font-size: .95rem; font-weight: 700; margin: .25rem; }
 
     @media (max-width: 767px) {
+        .celpip-select, .celpip-select-inline { font-size: 16px; } /* <16px makes iOS Safari zoom on focus */
+        .celpip-next-btn, .celpip-back-btn { min-height: 44px; }
+        .celpip-header { padding: .6rem .8rem; }
+        .celpip-header .meta { width: 100%; justify-content: space-between; flex-wrap: wrap; }
         .celpip-body { flex-direction: column; }
         .celpip-panel { max-height: none; }
         .celpip-panel.info { border-right: none; border-bottom: 1px solid #d7dce0; }
