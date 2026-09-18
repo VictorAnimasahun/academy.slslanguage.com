@@ -316,7 +316,7 @@ const IS_ADMIN     = <?= $isAdmin ? 'true' : 'false' ?>;
 
 let currentTask = 1;
 let prepInterval = null, recInterval = null;
-let mediaStream = null, mediaRecorder = null, audioChunks = [];
+let mediaStream = null, mediaRecorder = null;
 const recordedBlobs = {}; // tNum -> Blob, for the end-of-test playback/download panel
 const uploadPromises = []; // settled before final submission so transcripts are ready
 const taskPhase = {}; // tNum -> 'prep' | 'speak' | 'done', for admin Previous/skip
@@ -400,12 +400,26 @@ function beginRecording(tNum) {
 }
 
 async function startAudioCapture(tNum) {
-    audioChunks = [];
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        // A recording is already active (e.g. a duplicate beginRecording
+        // call raced in) -- never start a second one on top of it. Starting
+        // a new one used to reset the shared audioChunks array out from
+        // under the first recorder before its own onstop had a chance to
+        // read it, silently swapping a full response for a near-empty one.
+        console.warn('startAudioCapture(' + tNum + ') ignored -- a recording is already in progress.');
+        return;
+    }
+    // Each recording gets its OWN chunks array, stashed on the recorder
+    // instance itself (not a shared outer variable) -- so even if two
+    // recordings ever do overlap, one can never clobber the other's data.
+    const chunks = [];
     try {
         mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(mediaStream);
-        mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
-        mediaRecorder.start();
+        const recorder = new MediaRecorder(mediaStream);
+        recorder._chunks = chunks;
+        recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+        recorder.start();
+        mediaRecorder = recorder;
     } catch (err) {
         console.error('Microphone access failed for task ' + tNum + ':', err);
         mediaRecorder = null;
@@ -419,8 +433,9 @@ function stopAudioCaptureAndUpload(tNum) {
     if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
     const recorder = mediaRecorder;
     const stream = mediaStream;
+    const chunks = recorder._chunks || [];
     recorder.onstop = () => {
-        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        const blob = new Blob(chunks, { type: 'audio/webm' });
         if (blob.size > 0) {
             recordedBlobs[tNum] = blob;
             uploadPromises.push(uploadRecording(tNum, blob));

@@ -497,11 +497,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
 
     let currentTask = 1;
     let prepInterval = null, recInterval = null;
-    let mediaStream = null, mediaRecorder = null, audioChunks = [];
+    let mediaStream = null, mediaRecorder = null;
     const recordedBlobs = {};
     const uploadPromises = [];
     const taskPhase = {}; // tNum -> 'prep' | 'speak' | 'done', for admin Next/Previous
     const recordingStartedAt = {}; // tNum -> Date.now() when beginRecording() ran, for the grace-window guard below
+    let transitioning = false; // true while a "stop + advance" is in flight, so a stray click on the still-visible button during advanceToNext's delay can't re-trigger it for the same task
     let submitting = false;
 
     function setPhase(tNum, phase, text) {
@@ -515,6 +516,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     // selection stage) shows that stage first; everything else goes
     // straight into the normal prep/speak flow, unchanged.
     function beginTask(tNum) {
+        transitioning = false; // this task's own flow is starting -- admin Next/Previous clicks for it are safe again
         if (TASK_SELECT_PREP[tNum]) {
             startSelectStage(tNum);
         } else {
@@ -640,12 +642,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     }
 
     async function startAudioCapture(tNum) {
-        audioChunks = [];
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            // A recording is already active (e.g. a duplicate beginRecording
+            // call raced in) -- never start a second one on top of it, that
+            // was the root cause of a task's real recording being silently
+            // swapped for a near-empty one: the shared audioChunks array got
+            // reset out from under the first recorder before its own onstop
+            // had a chance to read it.
+            console.warn('startAudioCapture(' + tNum + ') ignored -- a recording is already in progress.');
+            return;
+        }
+        // Each recording gets its OWN chunks array, stashed on the recorder
+        // instance itself (not a shared outer variable) -- so even if two
+        // recordings ever do overlap, one can never clobber the other's data.
+        const chunks = [];
         try {
             mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(mediaStream);
-            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
-            mediaRecorder.start();
+            const recorder = new MediaRecorder(mediaStream);
+            recorder._chunks = chunks;
+            recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+            recorder.start();
+            mediaRecorder = recorder;
         } catch (err) {
             console.error('Microphone access failed for task ' + tNum + ':', err);
             mediaRecorder = null;
@@ -667,8 +684,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
         }
         const recorder = mediaRecorder;
         const stream = mediaStream;
+        const chunks = recorder._chunks || [];
         recorder.onstop = () => {
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
+            const blob = new Blob(chunks, { type: 'audio/webm' });
             if (blob.size > 0) {
                 recordedBlobs[tNum] = blob;
                 uploadPromises.push(uploadRecording(tNum, blob));
@@ -702,7 +720,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
     }
 
     function adminSkipTask(tNum) {
-        if (!IS_ADMIN) return;
+        if (!IS_ADMIN || transitioning) return;
         if (taskPhase[tNum] === 'select') {
             clearInterval(prepInterval);
             finishSelectStage(tNum);
@@ -726,6 +744,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
             // ~1-second clip instead of the actual response.
             return;
         }
+        // advanceToNext() below leaves this task's screen (and this same
+        // button) visible for ~1.2s before switching to the next task, so a
+        // stray/impatient second click in that window used to re-enter this
+        // function for the SAME tNum -- taskPhase[tNum] was never flipped to
+        // 'done', so it looked identical to a fresh "stop" request. Blocking
+        // re-entry here until the next task's flow actually starts closes
+        // that window.
+        transitioning = true;
+        taskPhase[tNum] = 'done';
         clearInterval(recInterval);
         setPhase(tNum, 'done', 'Skipped (admin)');
         stopAudioCaptureAndUpload(tNum);
