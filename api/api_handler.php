@@ -8,6 +8,24 @@ require_once INCLUDES_PATH . '/ai_client.php';
 // Set JSON response header
 header('Content-Type: application/json');
 
+// Belt-and-suspenders against a truly empty response body (a PHP fatal
+// error, e.g. an uncaught TypeError deep in a curl/json call, otherwise
+// exits silently mid-request with zero output -- the frontend then sees
+// "Unexpected end of JSON input" instead of any usable error message).
+// Only fires for genuinely fatal error types; a script that completed
+// normally (even with an earlier warning logged) never reaches this,
+// since a real fatal error halts execution before any later echo.
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json');
+        }
+        echo json_encode(['error' => 'Server error. Please try again.']);
+    }
+});
+
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
@@ -32,46 +50,52 @@ if (!$input || !isset($input['action'])) {
 $action = $input['action'];
 
 // Handle different actions
-switch ($action) {
-    case 'analyze_essay':
-        handleEssayAnalysis($input, $userId, $rateLimiter);
-        break;
-    
-    case 'transcribe_audio':
-        handleAudioTranscription($input, $userId, $rateLimiter);
-        break;
-    
-    case 'analyze_speaking':
-        handleSpeakingAnalysis($input, $userId, $rateLimiter);
-        break;
-    
-    // NEW: Batch speaking analysis (e.g., CELPIP 8 tasks, IELTS Part 1 multiple questions)
-    case 'analyze_speaking_batch':
-        handleSpeakingBatchAnalysis($input, $userId, $rateLimiter);
-        break;
-    
-    // NEW: Check if user can start a multi-part test
-    case 'check_test_availability':
-        handleTestAvailabilityCheck($input, $userId, $rateLimiter);
-        break;
-    
-    // NEW: Get detailed usage statistics
-    case 'get_usage_stats':
-        handleUsageStats($userId, $rateLimiter);
-        break;
-    
-    case 'check_rate_limit':
-        handleRateLimitCheck($userId, $rateLimiter);
-        break;
+try {
+    switch ($action) {
+        case 'analyze_essay':
+            handleEssayAnalysis($input, $userId, $rateLimiter);
+            break;
 
-	case 'evaluate_thin_to_thick':
-		handleThinToThickEvaluation($input, $userId, $rateLimiter);
-		break;
-    
-    default:
-        http_response_code(400);
-        echo json_encode(['error' => 'Unknown action: ' . $action]);
-        break;
+        case 'transcribe_audio':
+            handleAudioTranscription($input, $userId, $rateLimiter);
+            break;
+
+        case 'analyze_speaking':
+            handleSpeakingAnalysis($input, $userId, $rateLimiter);
+            break;
+
+        // NEW: Batch speaking analysis (e.g., CELPIP 8 tasks, IELTS Part 1 multiple questions)
+        case 'analyze_speaking_batch':
+            handleSpeakingBatchAnalysis($input, $userId, $rateLimiter);
+            break;
+
+        // NEW: Check if user can start a multi-part test
+        case 'check_test_availability':
+            handleTestAvailabilityCheck($input, $userId, $rateLimiter);
+            break;
+
+        // NEW: Get detailed usage statistics
+        case 'get_usage_stats':
+            handleUsageStats($userId, $rateLimiter);
+            break;
+
+        case 'check_rate_limit':
+            handleRateLimitCheck($userId, $rateLimiter);
+            break;
+
+        case 'evaluate_thin_to_thick':
+            handleThinToThickEvaluation($input, $userId, $rateLimiter);
+            break;
+
+        default:
+            http_response_code(400);
+            echo json_encode(['error' => 'Unknown action: ' . $action]);
+            break;
+    }
+} catch (\Throwable $e) {
+    error_log('api_handler.php: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['error' => 'Server error. Please try again.']);
 }
 
 /**
@@ -114,11 +138,15 @@ function handleEssayAnalysis($input, $userId, $rateLimiter) {
         // Log the request
         $rateLimiter->logRequest($userId, 'essay_analysis', 'analyze');
         
+        // JSON_INVALID_UTF8_SUBSTITUTE: an AI response occasionally contains
+        // a malformed byte sequence; without this flag json_encode() silently
+        // returns false for the whole payload (echoing nothing at all)
+        // instead of failing loudly.
         echo json_encode([
             'success' => true,
             'feedback' => $response['content'],
             'remaining' => $limitCheck['remaining']
-        ]);
+        ], JSON_INVALID_UTF8_SUBSTITUTE);
     } else {
         http_response_code(500);
         echo json_encode(['error' => $response['error']]);
@@ -177,7 +205,7 @@ function handleAudioTranscription($input, $userId, $rateLimiter) {
             'success' => true,
             'transcription' => $transcription['text'],
             'remaining' => $limitCheck['remaining']
-        ]);
+        ], JSON_INVALID_UTF8_SUBSTITUTE);
     } else {
         http_response_code(500);
         echo json_encode(['error' => $transcription['error']]);
@@ -218,11 +246,15 @@ function handleSpeakingAnalysis($input, $userId, $rateLimiter) {
     if ($response['success']) {
         $rateLimiter->logRequest($userId, 'speaking_analysis', 'analyze');
         
+        // JSON_INVALID_UTF8_SUBSTITUTE: an AI response occasionally contains
+        // a malformed byte sequence; without this flag json_encode() silently
+        // returns false for the whole payload (echoing nothing at all)
+        // instead of failing loudly.
         echo json_encode([
             'success' => true,
             'feedback' => $response['content'],
             'remaining' => $limitCheck['remaining']
-        ]);
+        ], JSON_INVALID_UTF8_SUBSTITUTE);
     } else {
         http_response_code(500);
         echo json_encode(['error' => $response['error']]);
@@ -329,7 +361,7 @@ function handleSpeakingBatchAnalysis($input, $userId, $rateLimiter) {
         ],
         'remaining_quota' => $batchCheck['remaining'],
         'quota_used' => $successCount
-    ]);
+    ], JSON_INVALID_UTF8_SUBSTITUTE);
 }
 
 /**
@@ -441,7 +473,7 @@ A passing score is 70+. Be encouraging but honest.";
             'passed' => $evaluation['passed'],
             'feedback' => $evaluation['feedback'],
             'remaining' => $limitCheck['remaining']
-        ]);
+        ], JSON_INVALID_UTF8_SUBSTITUTE);
     } else {
         http_response_code(500);
         echo json_encode(['error' => $response['error']]);
