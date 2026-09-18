@@ -709,7 +709,7 @@ body.exam-fullscreen .submit-bar {
    - The fixed header (steps + title + Exit) used to eat ~a third of the
      screen; only the current step keeps its label on narrow screens. */
 @media (max-width: 767px) {
-  input:not([type=checkbox]):not([type=radio]):not([type=range]), select, textarea { font-size: 16px; }
+  input:not([type=checkbox]):not([type=radio]):not([type=range]), select, textarea { font-size: 16px !important; }
   .submit-bar .btn, .submit-bar button, .btn-exit, .celpip-next-btn, .celpip-back-btn { min-height: 44px; }
   .progress-steps .step:not(.current) { font-size: 0; gap: 0; }
   .progress-steps .step:not(.current) .step-dot { font-size: 1rem; }
