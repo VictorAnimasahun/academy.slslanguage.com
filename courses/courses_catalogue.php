@@ -256,8 +256,14 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 										</a>
 
                                     <?php else: ?>
-                                        <a href="courses_detail.php?id=<?php echo $course['id']; ?>" 
-                                           class="btn btn-primary w-100">
+                                        <?php if (!empty($course['buy_url'])): ?>
+                                            <a href="<?php echo htmlspecialchars($course['buy_url']); ?>"
+                                               class="btn btn-success w-100 mb-2" target="_blank" rel="noopener">
+                                                <i class="bi bi-cart me-1"></i>Buy on Selar
+                                            </a>
+                                        <?php endif; ?>
+                                        <a href="courses_detail.php?id=<?php echo $course['id']; ?>"
+                                           class="btn <?php echo !empty($course['buy_url']) ? 'btn-outline-primary' : 'btn-primary'; ?> w-100">
                                             <i class="bi bi-info-circle me-1"></i>View Details
                                         </a>
                                     <?php endif; ?>

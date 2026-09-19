@@ -1396,12 +1396,28 @@ WHERE c.folder_name = 'CELPIP_Gen_2Mo' AND m.module_order = 1 AND l.lesson_order
 
 ---
 
+## 099 — Create `mobile_session_codes` table (sls_mobile WebView session bridge)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-19 | Verified end to end via curl with a throwaway student (deleted after): no token → 401; token → one-time URL; first use → 302 + session cookie, and `learning_dashboard.php` then returns 200 with it (302 to login without); replay → 400; expired code → 400; `next` restricted to paths inside academy. |
+| Live  | [ ] | | Needs `api/mobile_session.php` pulled too. Requires migration 046 (`api_tokens`) already live. |
+
+**What it does:** new table holding SHA-256 hashes of 60-second, single-use codes. `api/mobile_session.php` issues one when the app presents a valid `X-Api-Token`, and exchanges it for a normal PHP session (same keys as the web login) so a WebView opens academy pages already logged in.
+
+**Rollback:**
+```sql
+DROP TABLE IF EXISTS mobile_session_codes;
+```
+
+---
+
 ## 100 — Week Brief tables (`week_briefs`, `week_resources`, `week_vocab_words`)
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-19 | Verified: composer + renderer against real week (module 56) with sample summary/vocab/resources (removed after); empty week renders "rest easy" / "nothing added yet". |
-| Live  | [ ] | | Needs `includes/week_brief.php`, `courses/CELPIP_Gen_3Mo/course_overview.php` (academy repo) and `sls-admin/week_briefs.php` + `academy_root.php` + `sidebar.php` (slslanguage.com repo) pulled too. No foreign keys: live rejected them (errno 150 -- its `modules` id type/engine differs from local), so plain indexed columns are used; orphan rows are harmless. |
+| Live  | [x] | 2026-09-19 | Confirmed run by user. Needs `includes/week_brief.php`, `courses/CELPIP_Gen_3Mo/course_overview.php` (academy repo) and `sls-admin/week_briefs.php` + `academy_root.php` + `sidebar.php` (slslanguage.com repo) pulled too. No foreign keys: live rejected them (errno 150 -- its `modules` id type/engine differs from local), so plain indexed columns are used; orphan rows are harmless. |
 
 **What it does:** infrastructure for a per-week "Week Brief": an optional summary (`week_briefs`), resources of any type -- exercise/reading/video/practice_test/mock_test/quiz/note, each `planned` (shows "Coming soon") or `ready` (`week_resources`), and a vocab list picked from `vocabulary_words` (`week_vocab_words`). Everything is optional; tests already attached via `course_pacing_items` are merged in at read time.
 
@@ -1410,6 +1426,22 @@ WHERE c.folder_name = 'CELPIP_Gen_2Mo' AND m.module_order = 1 AND l.lesson_order
 DROP TABLE IF EXISTS week_vocab_words;
 DROP TABLE IF EXISTS week_resources;
 DROP TABLE IF EXISTS week_briefs;
+```
+
+---
+
+## 101 — `courses.buy_url` + Selar links for IELTS/CELPIP 1/2/3-month courses
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run yet — MAMP MySQL was stopped when written (2026-09-19). |
+| Live  | [ ] | | Run after local. Needs `courses/courses_catalogue.php` + `courses/courses_detail.php` pulled too. |
+
+**What it does:** adds nullable `courses.buy_url` and sets it by `folder_name`: 1Mo -> `gUZlnYh5rXytRYrtc`, 2Mo -> `zxZWGzHd6aFUkAUbu`, 3Mo -> `xCafq2JBGJw7duixc` (share.google/... Selar product links) for CELPIP_Gen_*, IELTS_Aca_*, IELTS_Gen_1Mo/2Mo/Mst. Catalogue cards + detail page show "Buy on Selar" when set.
+
+**Rollback:**
+```sql
+ALTER TABLE courses DROP COLUMN buy_url;
 ```
 
 ---

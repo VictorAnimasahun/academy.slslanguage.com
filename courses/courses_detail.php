@@ -331,6 +331,12 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                     <div class="text-muted" style="font-size:.82rem;">One-time payment</div>
                                 <?php endif; ?>
                             </div>
+                            <?php if (!empty($course['buy_url'])): ?>
+                                <a href="<?= htmlspecialchars($course['buy_url']) ?>" target="_blank" rel="noopener"
+                                   class="btn btn-success w-100 btn-lg mb-3">
+                                    <i class="bi bi-cart me-1"></i>Buy on Selar
+                                </a>
+                            <?php endif; ?>
                             <form method="POST" class="mb-3">
                                 <?php if ($course['is_free']): ?>
                                     <button type="submit" name="enroll" class="btn btn-success w-100 btn-lg">
