@@ -735,6 +735,12 @@ Solutions:
 
 ---
 
+## Week Briefs
+
+Per-week course summary (classes' focus, vocab list, exercises, tests with a "rest easy / buckle up" line). Tables from migration 100, logic in `includes/week_brief.php`, authored in sls-admin -> Week Briefs. Full description and how to enable it on another course: `courses/DOCUMENTATION.md` § Week Briefs. Currently shown on CELPIP 3-Month only; the day-before scheduled message is not built yet.
+
+---
+
 ## Common Issues & Solutions
 
 ### Issue 1: "Headers Already Sent" Error

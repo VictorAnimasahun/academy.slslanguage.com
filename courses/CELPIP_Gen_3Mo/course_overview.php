@@ -13,6 +13,7 @@ $course = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$course) { header("Location: ../courses_catalogue.php?message=Course+not+found"); exit(); }
 
 $course_id = (int) $course['id'];
+require_once INCLUDES_PATH . '/week_brief.php';
 $stmt = $db->prepare("
     SELECT m.id AS module_id, m.module_title, m.module_order, m.min_tier AS module_min_tier,
            l.id AS lesson_id, l.title, l.lesson_order, l.duration_minutes,
@@ -26,7 +27,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $modules = [];
 foreach ($rows as $row) {
     $mi = $row['module_order'];
-    if (!isset($modules[$mi])) $modules[$mi] = ['title' => $row['module_title'], 'min_tier' => $row['module_min_tier'], 'lessons' => []];
+    if (!isset($modules[$mi])) $modules[$mi] = ['id' => (int)$row['module_id'], 'title' => $row['module_title'], 'min_tier' => $row['module_min_tier'], 'lessons' => []];
     $modules[$mi]['lessons'][] = $row;
 }
 
@@ -143,6 +144,7 @@ foreach (range(1, 12) as $w) {
                         </h2>
                         <div id="<?= $collapse_id ?>" class="accordion-collapse collapse <?= $is_open ? 'show' : '' ?>" data-bs-parent="#courseAccordion">
                             <div class="accordion-body p-0">
+                                <?php $weekBrief = weekBriefLoad($db, $module['id']); if ($weekBrief) echo weekBriefRender($weekBrief, $color); ?>
                                 <ul class="list-unstyled mb-0">
                                 <?php foreach ($module['lessons'] as $idx => $lesson):
                                     $global_class   = ++$global_class_counter;

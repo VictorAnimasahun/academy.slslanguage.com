@@ -16,6 +16,7 @@ Shared PHP fragments included by nearly every page in the platform. Not a "page"
 | `mock_test_map.php` | **Config, not a UI fragment** — the routing table mapping each full mock's code to its section files and DB test codes. See `resources/mock_tests/DOCUMENTATION.md` for how this is used. Editing this file is required whenever a new full mock is added. |
 | `tier_access.php` | Subscription tier gating (`beginner`/`intermediate`/`advanced`/`fluent`, with a grace-period allowance). Every lesson file calls into this. |
 | `rate_limiter.php` | Per-user daily/hourly rate limiting for the AI-backed features (essay analysis, speaking feedback) — works with `MAX_REQUESTS_PER_USER_PER_DAY`/`_HOUR` constants from `config/api_keys.php` |
+| `week_brief.php` | **Week Brief composer/renderer** (pure PDO + HTML, no constants). `weekBriefLoad($db,$moduleId)` returns a week's classes, summary, vocab, resources and tests (tests from `week_resources` **plus** `course_pacing_items` for that week's lessons); `weekBriefRender()` outputs the course-page card; `weekBriefText()` the plain-text body for the planned day-before message. See `courses/DOCUMENTATION.md` § Week Briefs. |
 
 ## Include order convention
 

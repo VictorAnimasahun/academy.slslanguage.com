@@ -1396,6 +1396,24 @@ WHERE c.folder_name = 'CELPIP_Gen_2Mo' AND m.module_order = 1 AND l.lesson_order
 
 ---
 
+## 100 — Week Brief tables (`week_briefs`, `week_resources`, `week_vocab_words`)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-19 | Verified: composer + renderer against real week (module 56) with sample summary/vocab/resources (removed after); empty week renders "rest easy" / "nothing added yet". |
+| Live  | [ ] | | Needs `includes/week_brief.php`, `courses/CELPIP_Gen_3Mo/course_overview.php` (academy repo) and `sls-admin/week_briefs.php` + `academy_root.php` + `sidebar.php` (slslanguage.com repo) pulled too. FKs reference `modules(id)` and `vocabulary_words(id)` (both int unsigned) -- no string joins, so no live collation risk. |
+
+**What it does:** infrastructure for a per-week "Week Brief": an optional summary (`week_briefs`), resources of any type -- exercise/reading/video/practice_test/mock_test/quiz/note, each `planned` (shows "Coming soon") or `ready` (`week_resources`), and a vocab list picked from `vocabulary_words` (`week_vocab_words`). Everything is optional; tests already attached via `course_pacing_items` are merged in at read time.
+
+**Rollback:**
+```sql
+DROP TABLE IF EXISTS week_vocab_words;
+DROP TABLE IF EXISTS week_resources;
+DROP TABLE IF EXISTS week_briefs;
+```
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
