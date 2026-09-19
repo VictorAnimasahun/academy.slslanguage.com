@@ -13,6 +13,7 @@ $course = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$course) { header("Location: ../courses_catalogue.php?message=Course+not+found"); exit(); }
 
 $course_id = (int) $course['id'];
+require_once INCLUDES_PATH . '/week_brief.php';
 $stmt = $db->prepare("
     SELECT m.id AS module_id, m.module_title, m.module_order, m.min_tier AS module_min_tier,
            l.id AS lesson_id, l.title, l.lesson_order, l.duration_minutes,
@@ -113,6 +114,7 @@ $week_colors = [1=>'#0b77ff', 2=>'#3b82f6', 3=>'#059669', 4=>'#8b5cf6', 5=>'#ec4
                         </h2>
                         <div id="<?= $collapse_id ?>" class="accordion-collapse collapse <?= $week_num === 1 ? 'show' : '' ?>" data-bs-parent="#courseAccordion">
                             <div class="accordion-body p-0">
+                                <?= weekBriefButton($db, $course_id, (int) $week_num, $color ?? '#0b77ff') ?>
                                 <ul class="list-unstyled mb-0">
                                 <?php foreach ($module['lessons'] as $idx => $lesson):
                                     $can_access = can_access($lesson['min_tier']);

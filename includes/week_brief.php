@@ -43,7 +43,7 @@ function weekBriefLoad(PDO $db, int $moduleId): ?array {
     $summary = trim((string)$stmt->fetchColumn());
 
     $stmt = $db->prepare("
-        SELECT w.id, w.headword, w.phonetic, w.word_class, w.definition
+        SELECT w.id, w.headword, w.phonetic, w.word_class, w.definition, w.collocations, w.synonyms
         FROM week_vocab_words wv JOIN vocabulary_words w ON w.id = wv.word_id
         WHERE wv.module_id = ? ORDER BY wv.display_order, w.headword
     ");
@@ -170,4 +170,140 @@ function weekBriefText(array $b): string {
         foreach ($b['resources'] as $r) $t .= ' - ' . $r['title'] . ($r['status'] === 'planned' ? ' (coming soon)' : '') . "\n";
     }
     return $t;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Site-wide week navigation (shared by every course overview + week.php)
+ * ───────────────────────────────────────────────────────────────────────── */
+
+/** All weeks (modules) of a course, in order, with lesson counts. Cached per request. */
+function weekModules(PDO $db, int $courseId): array {
+    static $cache = [];
+    if (!isset($cache[$courseId])) {
+        $stmt = $db->prepare("
+            SELECT m.id, m.module_title, m.module_order,
+                   (SELECT COUNT(*) FROM lessons l WHERE l.module_id = m.id) AS lesson_count
+            FROM modules m WHERE m.course_id = ? ORDER BY m.module_order, m.id
+        ");
+        $stmt->execute([$courseId]);
+        $cache[$courseId] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    return $cache[$courseId];
+}
+
+function weekIntroUrl(int $moduleId, string $anchor = ''): string {
+    return ACADEMY_URL . 'courses/week.php?module=' . $moduleId . ($anchor !== '' ? '#' . $anchor : '');
+}
+
+/** module_order -> module id for a course (the overview pages key their loops by module_order). */
+function weekModuleIdByOrder(PDO $db, int $courseId, int $order): ?int {
+    foreach (weekModules($db, $courseId) as $m) if ((int)$m['module_order'] === $order) return (int)$m['id'];
+    return null;
+}
+
+/** The week a student is "in": first module with a lesson not yet completed; the last one when all done. */
+function weekCurrentModuleId(PDO $db, int $courseId, int $studentId): ?int {
+    $mods = weekModules($db, $courseId);
+    if (!$mods) return null;
+    $stmt = $db->prepare("
+        SELECT l.module_id, l.id FROM lessons l WHERE l.course_id = ? ORDER BY l.module_id, l.lesson_order
+    ");
+    $stmt->execute([$courseId]);
+    $byModule = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $byModule[(int)$r['module_id']][] = (int)$r['id'];
+    $done = [];
+    $stmt = $db->prepare("SELECT lesson_id FROM lesson_progress WHERE student_id = ? AND completed = 1");
+    $stmt->execute([$studentId]);
+    foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $id) $done[(int)$id] = true;
+    foreach ($mods as $m) {
+        foreach ($byModule[(int)$m['id']] ?? [] as $lid) {
+            if (empty($done[$lid])) return (int)$m['id'];
+        }
+    }
+    return (int)end($mods)['id'];
+}
+
+/**
+ * Hook for the planned "weeks unlock once the previous week is complete" rule.
+ * Not enforced yet -- every week is open. When it is, implement it HERE (week.php
+ * already calls it) and the panel/accordion can grey out locked weeks.
+ */
+function weekIsUnlocked(PDO $db, int $courseId, int $studentId, int $moduleId): bool {
+    return true;
+}
+
+function weekBriefButton(PDO $db, int $courseId, int $moduleOrder, string $color = '#0b77ff'): string {
+    $id = weekModuleIdByOrder($db, $courseId, $moduleOrder);
+    if (!$id) return '';
+    return '<div class="px-3 py-2 border-bottom" style="background:#f8fafc;">'
+         . '<a href="' . htmlspecialchars(weekIntroUrl($id)) . '" class="btn btn-sm" style="background:' . htmlspecialchars($color) . ';color:#fff;">'
+         . '<i class="bi bi-journal-text me-1"></i>Week introduction &rarr;</a>'
+         . ' <span class="small text-muted ms-2">summary, vocabulary, resources &amp; tests for this week</span></div>';
+}
+
+/**
+ * Right-pane panel: the week the student is in (or $moduleId when given), abridged,
+ * with a link under each line pointing at the matching section of the full week page.
+ * Replaces the old static per-course "Quick Access" box -- it still lists the week's
+ * class links, so nothing was lost.
+ */
+function renderWeekPanel(PDO $db, int $courseId, int $studentId, ?int $moduleId = null, string $courseFolder = ''): string {
+    $h = fn($x) => htmlspecialchars((string)$x, ENT_QUOTES, 'UTF-8');
+    $moduleId = $moduleId ?: weekCurrentModuleId($db, $courseId, $studentId);
+    if (!$moduleId) return '';
+    $b = weekBriefLoad($db, $moduleId);
+    if (!$b) return '';
+
+    $mods = weekModules($db, $courseId);
+    $pos = 1; foreach ($mods as $i => $m) if ((int)$m['id'] === $moduleId) { $pos = $i + 1; break; }
+
+    $stmt = $db->prepare("SELECT lesson_id FROM lesson_progress WHERE student_id = ? AND completed = 1");
+    $stmt->execute([$studentId]);
+    $done = array_flip(array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
+    $tier = function_exists('get_student_tier_level') ? get_student_tier_level() : 4;
+
+    $stmt = $db->prepare("SELECT id, title, file_path, min_tier FROM lessons WHERE module_id = ? ORDER BY lesson_order");
+    $stmt->execute([$moduleId]);
+    $lessons = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $lnk = 'style="color:#fff;opacity:.9;font-size:.74rem;text-decoration:underline;"';
+    $o  = '<div class="course-card" style="background:linear-gradient(135deg,#16a34a 0%,#0b77ff 100%);color:white;">';
+    $o .= '<div style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;opacity:.85;">This week &middot; ' . $pos . ' of ' . count($mods) . '</div>';
+    $o .= '<h6 class="mb-2 mt-1">' . $h($b['module']['module_title']) . '</h6>';
+
+    // Classes
+    $o .= '<div class="d-grid gap-1 mb-2">';
+    if (!$lessons) $o .= '<div class="small" style="opacity:.85;">Classes for this week are still being prepared.</div>';
+    foreach ($lessons as $l) {
+        $need = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$l['min_tier']] ?? 1;
+        $locked = $tier < $need;
+        $fp = (string)$l['file_path'];
+        if ($locked) $href = ACADEMY_URL . 'upgrade.php?required=' . urlencode($l['min_tier']);
+        elseif ($fp === '') $href = weekIntroUrl($moduleId, 'classes');
+        else $href = ACADEMY_URL . $fp . (str_contains($fp, '?') ? '&' : '?') . 'from=' . urlencode($courseFolder);
+        $tick = isset($done[(int)$l['id']]) ? '<i class="bi bi-check-circle-fill me-1"></i>' : ($locked ? '<i class="bi bi-lightning-charge me-1"></i>' : '');
+        $o .= '<a href="' . $h($href) . '" class="btn ' . ($locked ? 'btn-warning' : 'btn-outline-light') . ' btn-sm text-start">' . $tick . $h($l['title']) . '</a>';
+    }
+    $o .= '</div>';
+
+    $o .= '<div class="small" style="border-top:1px solid rgba(255,255,255,.3);padding-top:.5rem;">';
+    if ($b['summary'] !== '') {
+        $short = mb_strlen($b['summary']) > 130 ? mb_substr($b['summary'], 0, 127) . '…' : $b['summary'];
+        $o .= '<div class="mb-2">' . $h($short) . '<br><a href="' . $h(weekIntroUrl($moduleId, 'summary')) . '" ' . $lnk . '>Read the week summary</a></div>';
+    }
+    $o .= '<div class="mb-2"><i class="bi bi-clipboard-check me-1"></i>' . $h($b['tests_message']) . '<br><a href="' . $h(weekIntroUrl($moduleId, 'tests')) . '" ' . $lnk . '>See tests &amp; quizzes</a></div>';
+    if ($b['vocab']) {
+        $words = array_slice(array_column($b['vocab'], 'headword'), 0, 5);
+        $o .= '<div class="mb-2"><i class="bi bi-translate me-1"></i>' . count($b['vocab']) . ' vocabulary words: ' . $h(implode(', ', $words)) . (count($b['vocab']) > 5 ? '…' : '')
+            . '<br><a href="' . $h(weekIntroUrl($moduleId, 'vocab')) . '" ' . $lnk . '>Open the vocabulary sheet</a></div>';
+    }
+    if ($b['resources']) {
+        $o .= '<div class="mb-2"><i class="bi bi-collection me-1"></i>' . count($b['resources']) . ' resource' . (count($b['resources']) === 1 ? '' : 's') . ' &amp; exercises'
+            . '<br><a href="' . $h(weekIntroUrl($moduleId, 'resources')) . '" ' . $lnk . '>See resources</a></div>';
+    }
+    $o .= '</div>';
+    $o .= '<a href="' . $h(weekIntroUrl($moduleId)) . '" class="btn btn-light btn-sm w-100 mt-1"><i class="bi bi-journal-text me-1"></i>Full week introduction &rarr;</a>';
+    $o .= '</div>';
+    return $o;
 }

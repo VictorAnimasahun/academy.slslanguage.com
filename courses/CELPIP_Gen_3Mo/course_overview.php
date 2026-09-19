@@ -144,7 +144,7 @@ foreach (range(1, 12) as $w) {
                         </h2>
                         <div id="<?= $collapse_id ?>" class="accordion-collapse collapse <?= $is_open ? 'show' : '' ?>" data-bs-parent="#courseAccordion">
                             <div class="accordion-body p-0">
-                                <?php $weekBrief = weekBriefLoad($db, $module['id']); if ($weekBrief) echo weekBriefRender($weekBrief, $color); ?>
+                                <?= weekBriefButton($db, $course_id, (int) $month_num, $color ?? '#0b77ff') ?>
                                 <ul class="list-unstyled mb-0">
                                 <?php foreach ($module['lessons'] as $idx => $lesson):
                                     $global_class   = ++$global_class_counter;
@@ -208,23 +208,7 @@ foreach (range(1, 12) as $w) {
     </main>
 
     <aside class="advert-sidebar">
-        <div class="course-card" style="background:linear-gradient(135deg,#16a34a 0%,#0b77ff 100%);color:white;">
-            <h6 class="mb-2">Quick Access</h6>
-            <p class="mb-2" style="font-size:.78rem;opacity:.85;"><?= htmlspecialchars($currentModule['title']) ?></p>
-            <div class="d-grid gap-1">
-                <?php foreach ($currentModule['lessons'] as $l):
-                    $required = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$l['min_tier']] ?? 1;
-                    $locked   = $student_tier_level < $required;
-                    $sep      = str_contains($l['file_path'], '?') ? '&' : '?';
-                    $href     = $locked ? '../../upgrade.php?required=' . urlencode($l['min_tier']) : ACADEMY_URL . $l['file_path'] . $sep . 'from=CELPIP_Gen_3Mo';
-                ?>
-                <a href="<?= htmlspecialchars($href) ?>" class="btn <?= $locked ? 'btn-warning' : 'btn-outline-light' ?> btn-sm">
-                    <?php if ($locked): ?><i class="bi bi-lightning-charge me-1"></i><?php endif; ?>
-                    <?= htmlspecialchars($l['title']) ?>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
+        <?= renderWeekPanel($db, $course_id, (int) $_SESSION['user_id'], null, $course['folder_name']) ?>
         <h6 class="mb-3 text-muted mt-3"><i class="bi bi-megaphone me-2"></i>Sponsored</h6>
         <div class="ad-container"><div class="ad-placeholder"><i class="bi bi-badge-ad" style="font-size:1.5rem;opacity:0.3;"></i><p class="mt-2 mb-0">Advertisement Space</p><small>300x250</small></div></div>
         <div class="ad-container"><div class="ad-placeholder"><i class="bi bi-badge-ad" style="font-size:1.5rem;opacity:0.3;"></i><p class="mt-2 mb-0">Advertisement Space</p><small>300x250</small></div></div>

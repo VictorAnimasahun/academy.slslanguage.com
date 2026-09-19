@@ -20,6 +20,7 @@ if (!$course) {
 }
 
 $course_id = (int) $course['id'];
+require_once INCLUDES_PATH . '/week_brief.php';
 
 // Load modules + lessons
 $stmt = $db->prepare("
@@ -154,6 +155,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                              class="accordion-collapse collapse <?= $is_open ? 'show' : '' ?>"
                              data-bs-parent="#courseAccordion">
                             <div class="accordion-body p-0">
+                                <?= weekBriefButton($db, $course_id, (int) $month_num, $color ?? '#0b77ff') ?>
                                 <ul class="list-unstyled mb-0">
                                 <?php foreach ($module['lessons'] as $idx => $lesson):
                                     $global_class = ($month_num - 1) * 8 + (int) $lesson['lesson_order'];
@@ -260,22 +262,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
     </main>
 
     <aside class="advert-sidebar">
-        <div class="course-card" style="background: linear-gradient(135deg, #0b77ff 0%, #6366f1 100%); color: white;">
-            <h6 class="mb-2">Quick Access</h6>
-            <div class="d-grid gap-1">
-                <a href="<?= ACADEMY_URL ?>courses/IELTS_Gen/lessons/intro.php?from=IELTS_Gen_Mst" class="btn btn-light btn-sm">Class 1 — Free Preview</a>
-                <?php if ($student_tier_level >= 4): ?>
-                <a href="<?= ACADEMY_URL ?>courses/IELTS_Gen/lessons/class02.php?from=IELTS_Gen_Mst" class="btn btn-outline-light btn-sm">Class 2</a>
-                <a href="<?= ACADEMY_URL ?>courses/IELTS_Gen/lessons/class08.php?from=IELTS_Gen_Mst" class="btn btn-outline-light btn-sm">Mock Test 1</a>
-                <a href="<?= ACADEMY_URL ?>courses/IELTS_Gen/lessons/class16.php?from=IELTS_Gen_Mst" class="btn btn-outline-light btn-sm">Mock Test 2</a>
-                <a href="<?= ACADEMY_URL ?>courses/IELTS_Gen/lessons/class24.php?from=IELTS_Gen_Mst" class="btn btn-outline-light btn-sm">Mock Test 3</a>
-                <?php else: ?>
-                <a href="../../upgrade.php?required=fluent" class="btn btn-warning btn-sm">
-                    <i class="bi bi-lightning-charge me-1"></i>Upgrade to Unlock
-                </a>
-                <?php endif; ?>
-            </div>
-        </div>
+        <?= renderWeekPanel($db, $course_id, (int) $_SESSION['user_id'], null, $course['folder_name']) ?>
 
         <h6 class="mb-3 text-muted mt-3">
             <i class="bi bi-megaphone me-2"></i>Sponsored

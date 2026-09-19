@@ -737,7 +737,7 @@ Solutions:
 
 ## Week Briefs
 
-Per-week course summary (classes' focus, vocab list, exercises, tests with a "rest easy / buckle up" line). Tables from migration 100, logic in `includes/week_brief.php`, authored in sls-admin -> Week Briefs. Full description and how to enable it on another course: `courses/DOCUMENTATION.md` § Week Briefs. Currently shown on CELPIP 3-Month only; the day-before scheduled message is not built yet.
+Per-week course summary (classes' focus, vocab list, exercises, tests with a "rest easy / buckle up" line). Tables from migration 100, logic in `includes/week_brief.php`, authored in sls-admin -> Week Briefs. Full description and how to enable it on another course: `courses/DOCUMENTATION.md` § Week Briefs. Site-wide: a generic `courses/week.php?module=ID` introduction page per week, plus a right-pane "This week" panel on every course overview. The day-before scheduled message is not built yet.
 
 ---
 
