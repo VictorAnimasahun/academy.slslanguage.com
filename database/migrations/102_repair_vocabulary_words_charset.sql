@@ -2,10 +2,9 @@
 -- Migration 102 -- Repair non-ASCII characters mangled to '?' in vocabulary_words
 --
 -- Symptom: Word of the Day showed "/ri???t.?.re?t/" instead of "/riːˈɪt.ə.reɪt/".
--- Cause: seed migrations 041/059/060/061 were imported through a client
--- connection that was not utf8mb4, so IPA symbols (and typographic
--- characters such as the middle dot in word_family) were stored as literal '?'.
--- The seed files themselves are correct UTF-8.
+-- Cause: the table itself was latin1 (migration 038 set no charset), so IPA
+-- symbols and typographic characters such as the middle dot in word_family
+-- were stored as literal '?'. The seed files are correct UTF-8.
 --
 -- This re-applies the correct text from those seeds, but ONLY into columns
 -- that currently contain '?' -- a phonetic or definition edited later through
@@ -18,6 +17,16 @@
 -- ============================================================
 
 SET NAMES utf8mb4;
+
+-- Step 1: the real root cause. Migration 038 created vocabulary_words with no
+-- explicit charset, so it inherited this database's default (latin1), which
+-- cannot store IPA symbols -- MySQL silently saved them as '?'. Convert the
+-- table (the '?' already saved stay '?' until Step 2 rewrites them). Without
+-- this, Step 2 fails with #1267 "Illegal mix of collations" (latin1 column vs
+-- utf8mb4 literal). Safe to re-run; the only joins to this table are on ints.
+ALTER TABLE vocabulary_words CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Step 2: re-apply the correct text from the seeds.
 
 UPDATE vocabulary_words SET phonetic = IF(phonetic LIKE '%?%', '/ˌæb.səntˈmaɪn.dɪd.li/', phonetic), word_family = IF(word_family LIKE '%?%', 'absentminded (adj.) · absentmindedness (n.)', word_family) WHERE headword = 'absentmindedly';
 UPDATE vocabulary_words SET phonetic = IF(phonetic LIKE '%?%', '/ɑːˈtɪk.jə.lət/', phonetic), word_family = IF(word_family LIKE '%?%', 'articulate (v.) · articulation (n.) · articulate (adj.)', word_family) WHERE headword = 'articulate';

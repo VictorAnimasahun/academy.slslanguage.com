@@ -1453,9 +1453,9 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Local | [ ] | | Not run yet — MAMP MySQL was stopped when written (2026-09-19). |
 | Live  | [ ] | | Back up first. Import MUST be utf8mb4 (`mysql --default-character-set=utf8mb4`, or phpMyAdmin Import → file charset utf8mb4) or it re-corrupts. |
 
-**What it does:** Word of the Day showed `/ri???t.?.re?t/` for "reiterate". Seeds 041/059/060/061 are correct UTF-8; they were imported over a non-utf8mb4 connection so IPA symbols and `·` became literal `?`. 36 `UPDATE`s re-apply phonetic/word_family/etc. from the seeds, only into columns that currently contain `?` (later sls-admin edits are never overwritten). Idempotent.
+**What it does:** Word of the Day showed `/ri???t.?.re?t/` for "reiterate". Seeds 041/059/060/061 are correct UTF-8, but the table was created latin1 (038 set no charset; #1267 collation error proved it), so IPA symbols and `·` became literal `?`. Step 1 converts the table to utf8mb4. 36 `UPDATE`s re-apply phonetic/word_family/etc. from the seeds, only into columns that currently contain `?` (later sls-admin edits are never overwritten). Idempotent.
 
-**Not covered:** other seed tables imported the same way (e.g. 042 word-test usages, 044 quiz questions) may have the same damage — check for `?` where non-ASCII should be.
+**Not covered:** other tables created without an explicit charset (same inherited-latin1 cause) (e.g. 042 word-test usages, 044 quiz questions) may have the same damage — check for `?` where non-ASCII should be.
 
 **Rollback:** none needed (data repair); restore from backup if the import was not utf8mb4.
 
