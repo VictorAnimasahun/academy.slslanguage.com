@@ -6,13 +6,17 @@
 -- renders cleanly ("nothing added yet"), so the system can ship before the
 -- content exists. Tests already attached via course_pacing_items are merged
 -- in automatically by includes/week_brief.php; no duplicate entry needed.
+--
+-- No FOREIGN KEY constraints on purpose: live's `modules`/`vocabulary_words`
+-- have a different id type/engine than local, and MySQL rejected the FKs there
+-- (errno 150). Plain indexed columns work everywhere; orphan rows are harmless
+-- (the composer only ever reads rows for a module that exists).
 
 CREATE TABLE IF NOT EXISTS week_briefs (
     module_id  INT UNSIGNED NOT NULL,
     summary    TEXT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (module_id),
-    CONSTRAINT fk_week_briefs_module FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE CASCADE
+    PRIMARY KEY (module_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS week_resources (
@@ -26,8 +30,7 @@ CREATE TABLE IF NOT EXISTS week_resources (
     display_order INT NOT NULL DEFAULT 0,
     created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    KEY idx_week_resources_module (module_id, display_order),
-    CONSTRAINT fk_week_resources_module FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE CASCADE
+    KEY idx_week_resources_module (module_id, display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS week_vocab_words (
@@ -35,9 +38,7 @@ CREATE TABLE IF NOT EXISTS week_vocab_words (
     word_id       INT UNSIGNED NOT NULL,
     display_order INT NOT NULL DEFAULT 0,
     PRIMARY KEY (module_id, word_id),
-    KEY idx_week_vocab_word (word_id),
-    CONSTRAINT fk_week_vocab_module FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE CASCADE,
-    CONSTRAINT fk_week_vocab_word FOREIGN KEY (word_id) REFERENCES vocabulary_words(id) ON DELETE CASCADE
+    KEY idx_week_vocab_word (word_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Verify: SHOW TABLES LIKE 'week_%';  (expect 3 rows)
