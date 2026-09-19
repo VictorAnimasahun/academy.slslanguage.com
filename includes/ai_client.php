@@ -70,33 +70,45 @@ function callClaude($prompt) {
  * Call Gemini API
  */
 function callGemini($prompt) {
-    // Must match the model name mock_save_section.php's callGeminiGrader()
-    // uses -- these two Gemini callers drifted apart (this one was still on
-    // a retired gemini-2.5-flash while that one had already moved to
-    // gemini-3.6-flash), which is why every request through this function
-    // was silently failing with a 404 "model not found" from Google.
-    $url = "https://generativelanguage.googleapis.com/v1/models/gemini-3.6-flash:generateContent?key=" . GEMINI_API_KEY;
+    // Google's Gemini endpoints regularly answer 503 "high demand" / 429 for a
+    // few seconds at a time. One try used to be final, so Analyze just failed.
+    // Retry transient errors with a short backoff, then fall back to a second
+    // model, before giving up. The primary must match mock_save_section.php's
+    // callGeminiGrader() model name (they drifted apart once already).
+    @set_time_limit(120);
+    $models = ['gemini-3.6-flash', 'gemini-2.5-flash'];
+    $lastError = 'Gemini API error';
+
+    foreach ($models as $model) {
+        for ($attempt = 1; $attempt <= 3; $attempt++) {
+            $r = callGeminiOnce($prompt, $model);
+            if ($r['success']) return $r;
+            $lastError = $r['error'];
+            if (empty($r['transient'])) break;          // not worth retrying this model
+            if ($attempt < 3) sleep($attempt * 2);       // 2s, then 4s
+        }
+    }
+
+    return [
+        'success' => false,
+        'error' => $lastError . ' (Gemini is busy or unavailable right now -- wait a minute and click again.)'
+    ];
+}
+
+/**
+ * One Gemini request. 'transient' => true on rate-limit/overload/network errors.
+ */
+function callGeminiOnce($prompt, $model) {
+    $url = "https://generativelanguage.googleapis.com/v1/models/{$model}:generateContent?key=" . GEMINI_API_KEY;
 
     $ch = curl_init($url);
-
-    $data = [
-        'contents' => [
-            [
-                'role' => 'user',
-                'parts' => [
-                    ['text' => $prompt]
-                ]
-            ]
-        ]
-    ];
-
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode($data),
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json'
-        ]
+        CURLOPT_TIMEOUT => 45,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_POSTFIELDS => json_encode(['contents' => [['role' => 'user', 'parts' => [['text' => $prompt]]]]]),
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json']
     ]);
 
     $response = curl_exec($ch);
@@ -105,43 +117,24 @@ function callGemini($prompt) {
     curl_close($ch);
 
     if ($curlError) {
-        error_log("Gemini API curl error: " . $curlError);
-        return [
-            'success' => false,
-            'error' => 'Network error: ' . $curlError
-        ];
+        error_log("Gemini ($model) curl error: " . $curlError);
+        return ['success' => false, 'error' => 'Network error: ' . $curlError, 'transient' => true];
     }
 
     if ($httpCode !== 200) {
         $error = json_decode($response, true);
-        $errorMsg = 'Gemini API error';
-
-        if (isset($error['error']['message'])) {
-            $errorMsg = $error['error']['message'];
-        }
-
-        error_log("Gemini API Error (HTTP $httpCode): " . print_r($error, true));
-
-        return [
-            'success' => false,
-            'error' => $errorMsg
-        ];
+        $errorMsg = $error['error']['message'] ?? 'Gemini API error';
+        error_log("Gemini ($model) API Error (HTTP $httpCode): " . print_r($error, true));
+        return ['success' => false, 'error' => $errorMsg, 'transient' => in_array($httpCode, [429, 500, 502, 503, 504], true)];
     }
 
     $result = json_decode($response, true);
-
     if (!isset($result['candidates'][0]['content']['parts'][0]['text'])) {
-        error_log("Gemini unexpected response: " . print_r($result, true));
-        return [
-            'success' => false,
-            'error' => 'Unexpected response format from Gemini API'
-        ];
+        error_log("Gemini ($model) unexpected response: " . print_r($result, true));
+        return ['success' => false, 'error' => 'Unexpected response format from Gemini API', 'transient' => true];
     }
 
-    return [
-        'success' => true,
-        'content' => $result['candidates'][0]['content']['parts'][0]['text']
-    ];
+    return ['success' => true, 'content' => $result['candidates'][0]['content']['parts'][0]['text']];
 }
 
 /**
