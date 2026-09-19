@@ -61,16 +61,31 @@ $color = '#0b77ff';
     <link href="../assets/css/courses.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .wk-section { scroll-margin-top: 90px; margin-bottom: 2rem; }
-        .wk-section h2 { font-size: 1.15rem; border-bottom: 2px solid #e2e8f0; padding-bottom: .4rem; margin-bottom: .9rem; }
-        .wk-class { display:flex; justify-content:space-between; align-items:center; gap:.75rem; padding:.7rem .9rem; border:1px solid #e2e8f0; border-radius:10px; margin-bottom:.5rem; text-decoration:none; color:inherit; background:#fff; }
-        .wk-class:hover { border-color:<?= $color ?>; }
+        /* Flat and quiet: white page, one dark accent for section bars, thin rules, plain text. No cards, gradients, shadows or tinted boxes. */
+        :root { --wk-accent:#1e3a5f; --wk-line:#d7dce0; --wk-ink:#1f2937; --wk-muted:#5b6673; }
+        .wk { color:var(--wk-ink); }
+        .wk h1 { font-size:1.6rem; font-weight:600; margin:.15rem 0 1rem; }
+        .wk-kicker { font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--wk-muted); }
+        .wk-weeks { font-size:.88rem; margin-bottom:1.5rem; }
+        .wk-weeks a { margin-right:.9rem; color:var(--wk-muted); text-decoration:none; white-space:nowrap; }
+        .wk-weeks a:hover { text-decoration:underline; }
+        .wk-weeks a.current { color:var(--wk-ink); font-weight:700; border-bottom:2px solid var(--wk-accent); }
+        .wk-section { scroll-margin-top:90px; margin-bottom:1.75rem; }
+        .wk-section h2 { background:var(--wk-accent); color:#fff; font-size:.95rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:.5rem .8rem; margin:0 0 .8rem; border:0; }
+        .wk-list { list-style:none; padding:0; margin:0; }
+        .wk-list li { padding:.55rem 0; border-bottom:1px solid var(--wk-line); display:flex; justify-content:space-between; gap:1rem; }
+        .wk-list li:last-child { border-bottom:0; }
+        .wk-list a { color:var(--wk-ink); text-decoration:none; }
+        .wk-list a:hover { text-decoration:underline; }
+        .wk-tone { font-weight:600; margin-bottom:.5rem; }
         .wk-vocab { width:100%; border-collapse:collapse; font-size:.92rem; }
-        .wk-vocab th, .wk-vocab td { padding:.55rem .6rem; border-bottom:1px solid #eef2f7; text-align:left; vertical-align:top; }
-        .wk-vocab th { font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:#64748b; }
-        .wk-tone { background:#f0f9ff; border-left:4px solid <?= $color ?>; padding:.75rem 1rem; border-radius:6px; font-weight:600; }
-        .wk-weeks a { display:inline-block; margin:0 .3rem .4rem 0; padding:.25rem .7rem; border-radius:999px; border:1px solid #cbd5e1; font-size:.8rem; text-decoration:none; color:#334155; }
-        .wk-weeks a.current { background:<?= $color ?>; color:#fff; border-color:<?= $color ?>; }
+        .wk-vocab th, .wk-vocab td { padding:.5rem .5rem .5rem 0; border-bottom:1px solid var(--wk-line); text-align:left; vertical-align:top; }
+        .wk-vocab th { font-size:.74rem; text-transform:uppercase; letter-spacing:.05em; color:var(--wk-muted); font-weight:600; }
+        .wk-muted { color:var(--wk-muted); }
+        .wk-nav { display:flex; justify-content:space-between; gap:1rem; border-top:1px solid var(--wk-line); padding-top:.9rem; font-size:.92rem; }
+        .wk-nav a { color:var(--wk-accent); text-decoration:none; } .wk-nav a:hover { text-decoration:underline; }
+        /* the theme's .course-card box would add shading/rounding around the whole page */
+        .course-card.wk-page { box-shadow:none; border:0; border-radius:0; background:#fff; padding:1.5rem 1.75rem; }
     </style>
 </head>
 <body>
@@ -79,7 +94,7 @@ $color = '#0b77ff';
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
 
     <main class="main-wrapper">
-        <div class="course-card">
+        <div class="course-card wk-page wk">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="courses_catalogue.php" class="text-decoration-none">Courses</a></li>
@@ -88,29 +103,30 @@ $color = '#0b77ff';
                 </ol>
             </nav>
 
-            <div class="text-muted small text-uppercase" style="letter-spacing:.06em;">Week introduction &middot; <?= $pos + 1 ?> of <?= count($mods) ?></div>
-            <h1 class="mb-3"><?= $h($brief['module']['module_title']) ?></h1>
+            <div class="wk-kicker">Week introduction &middot; <?= $pos + 1 ?> of <?= count($mods) ?></div>
+            <h1><?= $h($brief['module']['module_title']) ?></h1>
 
-            <div class="wk-weeks mb-4">
+            <div class="wk-weeks">
                 <?php foreach ($mods as $i => $m): ?>
                     <a href="week.php?module=<?= (int)$m['id'] ?>" class="<?= (int)$m['id'] === $moduleId ? 'current' : '' ?>">Week <?= $i + 1 ?></a>
                 <?php endforeach; ?>
             </div>
 
             <section class="wk-section" id="summary">
-                <h2><i class="bi bi-compass me-2"></i>What this week is about</h2>
+                <h2>What this week is about</h2>
                 <?php if ($brief['summary'] !== ''): ?>
                     <p style="white-space:pre-line;"><?= $h($brief['summary']) ?></p>
                 <?php else: ?>
-                    <p class="text-muted mb-0">Your instructor hasn't written the overview for this week yet — the classes below show what's planned.</p>
+                    <p class="wk-muted mb-0">Your instructor hasn't written the overview for this week yet — the classes below show what's planned.</p>
                 <?php endif; ?>
             </section>
 
             <section class="wk-section" id="classes">
-                <h2><i class="bi bi-play-circle me-2"></i>Your classes this week</h2>
+                <h2>Your classes this week</h2>
                 <?php if (!$lessons): ?>
-                    <p class="text-muted mb-0">Classes for this week are still being prepared.</p>
+                    <p class="wk-muted mb-0">Classes for this week are still being prepared.</p>
                 <?php endif; ?>
+                <ul class="wk-list">
                 <?php foreach ($lessons as $n => $l):
                     $need = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$l['min_tier']] ?? 1;
                     $locked = $tier < $need;
@@ -118,75 +134,72 @@ $color = '#0b77ff';
                     $href = $locked ? '../upgrade.php?required=' . urlencode($l['min_tier'])
                           : ($fp === '' ? '#classes' : ACADEMY_URL . $fp . (str_contains($fp, '?') ? '&' : '?') . 'from=' . urlencode($folder));
                     $isDone = isset($done[(int)$l['id']]);
+                    $note = $locked ? 'Upgrade to unlock' : ($isDone ? 'Completed' : ((int)$l['duration_minutes'] ? (int)$l['duration_minutes'] . ' min' : ''));
                 ?>
-                <a class="wk-class" href="<?= $h($href) ?>">
-                    <span>
-                        <?php if ($isDone): ?><i class="bi bi-check-circle-fill text-success me-2"></i>
-                        <?php elseif ($locked): ?><i class="bi bi-lock-fill text-warning me-2"></i>
-                        <?php else: ?><i class="bi <?= $h($l['icon'] ?: 'bi-play-circle') ?> me-2" style="color:<?= $color ?>;"></i><?php endif; ?>
-                        <strong>Class <?= $n + 1 ?>:</strong> <?= $h($l['title']) ?>
-                    </span>
-                    <span class="text-muted small text-nowrap"><?= $locked ? 'Upgrade to unlock' : ((int)$l['duration_minutes'] ? (int)$l['duration_minutes'] . ' min' : '') ?></span>
-                </a>
+                <li>
+                    <a href="<?= $h($href) ?>"><strong>Class <?= $n + 1 ?>:</strong> <?= $h($l['title']) ?></a>
+                    <span class="wk-muted small text-nowrap"><?= $h($note) ?></span>
+                </li>
                 <?php endforeach; ?>
+                </ul>
             </section>
 
             <section class="wk-section" id="tests">
-                <h2><i class="bi bi-clipboard-check me-2"></i>Tests &amp; quizzes</h2>
-                <div class="wk-tone mb-3"><?= $h($brief['tests_message']) ?></div>
+                <h2>Tests &amp; quizzes</h2>
+                <div class="wk-tone"><?= $h($brief['tests_message']) ?></div>
                 <?php if ($brief['tests']): ?>
                     <ul class="mb-0">
                     <?php foreach ($brief['tests'] as $t): ?>
-                        <li><?= $h($t['title']) ?> <span class="text-muted small">(<?= $h($typeLabels[$t['item_type']] ?? 'Test') ?>)</span></li>
+                        <li><?= $h($t['title']) ?> <span class="wk-muted small">(<?= $h($typeLabels[$t['item_type']] ?? 'Test') ?>)</span></li>
                     <?php endforeach; ?>
                     </ul>
                 <?php endif; ?>
             </section>
 
             <section class="wk-section" id="vocab">
-                <h2><i class="bi bi-translate me-2"></i>Vocabulary sheet</h2>
+                <h2>Vocabulary sheet</h2>
                 <?php if ($brief['vocab']): ?>
-                    <p class="text-muted small">Try to use several of these words in this week's assignments and tests — that's how they move from your notes into your own English.</p>
+                    <p class="wk-muted small">Try to use several of these words in this week's assignments and tests — that's how they move from your notes into your own English.</p>
                     <div class="table-responsive">
                     <table class="wk-vocab">
                         <thead><tr><th>Word</th><th>Meaning</th><th>Use it like</th></tr></thead>
                         <tbody>
                         <?php foreach ($brief['vocab'] as $w): ?>
                             <tr>
-                                <td><strong><?= $h($w['headword']) ?></strong><br><span class="text-muted small"><?= $h($w['word_class']) ?><?= $w['phonetic'] ? ' · ' . $h($w['phonetic']) : '' ?></span></td>
+                                <td><strong><?= $h($w['headword']) ?></strong><br><span class="wk-muted small"><?= $h($w['word_class']) ?><?= $w['phonetic'] ? ' · ' . $h($w['phonetic']) : '' ?></span></td>
                                 <td><?= $h($w['definition']) ?></td>
-                                <td class="small text-muted"><?= $h($w['collocations'] ?: ($w['synonyms'] ? 'Similar: ' . $w['synonyms'] : '')) ?></td>
+                                <td class="small wk-muted"><?= $h($w['collocations'] ?: ($w['synonyms'] ? 'Similar: ' . $w['synonyms'] : '')) ?></td>
                             </tr>
                         <?php endforeach; ?>
                         </tbody>
                     </table>
                     </div>
                 <?php else: ?>
-                    <p class="text-muted mb-0">No vocabulary list for this week yet.</p>
+                    <p class="wk-muted mb-0">No vocabulary list for this week yet.</p>
                 <?php endif; ?>
             </section>
 
             <section class="wk-section" id="resources">
-                <h2><i class="bi bi-collection me-2"></i>Resources &amp; exercises</h2>
+                <h2>Resources &amp; exercises</h2>
                 <?php if ($brief['resources']): ?>
                     <ul class="mb-0">
                     <?php foreach ($brief['resources'] as $r): ?>
                         <li class="mb-1">
                             <?php if ($r['status'] === 'ready' && $r['url']): ?><a href="<?= $h($r['url']) ?>"><?= $h($r['title']) ?></a><?php else: ?><?= $h($r['title']) ?><?php endif; ?>
-                            <span class="text-muted small">(<?= $h($typeLabels[$r['item_type']] ?? '') ?>)</span>
-                            <?php if ($r['status'] === 'planned'): ?><span class="badge text-bg-secondary">Coming soon</span><?php endif; ?>
+                            <span class="wk-muted small">(<?= $h($typeLabels[$r['item_type']] ?? '') ?>)</span>
+                            <?php if ($r['status'] === 'planned'): ?><span class="wk-muted small">— coming soon</span><?php endif; ?>
                         </li>
                     <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
-                    <p class="text-muted mb-0">Nothing added for this week yet.</p>
+                    <p class="wk-muted mb-0">Nothing added for this week yet.</p>
                 <?php endif; ?>
             </section>
 
-            <div class="d-flex justify-content-between flex-wrap gap-2 mt-4">
-                <?php if ($prev): ?><a class="btn btn-outline-secondary" href="week.php?module=<?= (int)$prev['id'] ?>"><i class="bi bi-arrow-left me-1"></i>Previous week</a><?php else: ?><span></span><?php endif; ?>
-                <a class="btn btn-outline-secondary" href="<?= $h($overview) ?>">Course overview</a>
-                <?php if ($next): ?><a class="btn btn-primary" href="week.php?module=<?= (int)$next['id'] ?>">Next week<i class="bi bi-arrow-right ms-1"></i></a><?php else: ?><span></span><?php endif; ?>
+            <div class="wk-nav">
+                <?php if ($prev): ?><a href="week.php?module=<?= (int)$prev['id'] ?>">&larr; Previous week</a><?php else: ?><span></span><?php endif; ?>
+                <a href="<?= $h($overview) ?>">Course overview</a>
+                <?php if ($next): ?><a href="week.php?module=<?= (int)$next['id'] ?>">Next week &rarr;</a><?php else: ?><span></span><?php endif; ?>
             </div>
         </div>
     </main>

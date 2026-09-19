@@ -233,13 +233,11 @@ function weekIsUnlocked(PDO $db, int $courseId, int $studentId, int $moduleId): 
     return true;
 }
 
-function weekBriefButton(PDO $db, int $courseId, int $moduleOrder, string $color = '#0b77ff'): string {
+function weekBriefButton(PDO $db, int $courseId, int $moduleOrder, string $color = ''): string {
     $id = weekModuleIdByOrder($db, $courseId, $moduleOrder);
     if (!$id) return '';
-    return '<div class="px-3 py-2 border-bottom" style="background:#f8fafc;">'
-         . '<a href="' . htmlspecialchars(weekIntroUrl($id)) . '" class="btn btn-sm" style="background:' . htmlspecialchars($color) . ';color:#fff;">'
-         . '<i class="bi bi-journal-text me-1"></i>Week introduction &rarr;</a>'
-         . ' <span class="small text-muted ms-2">summary, vocabulary, resources &amp; tests for this week</span></div>';
+    return '<div class="px-3 py-2 border-bottom small"><a href="' . htmlspecialchars(weekIntroUrl($id)) . '">Week introduction &rarr;</a>'
+         . ' <span class="text-muted">— summary, vocabulary, resources &amp; tests</span></div>';
 }
 
 /**
@@ -267,14 +265,15 @@ function renderWeekPanel(PDO $db, int $courseId, int $studentId, ?int $moduleId 
     $stmt->execute([$moduleId]);
     $lessons = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $lnk = 'style="color:#fff;opacity:.9;font-size:.74rem;text-decoration:underline;"';
-    $o  = '<div class="course-card" style="background:linear-gradient(135deg,#16a34a 0%,#0b77ff 100%);color:white;">';
-    $o .= '<div style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;opacity:.85;">This week &middot; ' . $pos . ' of ' . count($mods) . '</div>';
-    $o .= '<h6 class="mb-2 mt-1">' . $h($b['module']['module_title']) . '</h6>';
+    // Flat, quiet: white box, hairline border, plain text with a link under each line.
+    $sec = 'font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:#5b6673;margin:.8rem 0 .2rem;';
+    $a   = 'font-size:.78rem;';
+    $o  = '<div class="week-panel" style="background:#fff;border:1px solid #d7dce0;border-top:3px solid #1e3a5f;padding:.8rem .9rem;color:#1f2937;font-size:.84rem;line-height:1.4;">';
+    $o .= '<div style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:#5b6673;">This week &middot; ' . $pos . ' of ' . count($mods) . '</div>';
+    $o .= '<div style="font-weight:700;font-size:.95rem;margin:.15rem 0 .4rem;">' . $h($b['module']['module_title']) . '</div>';
 
     // Classes
-    $o .= '<div class="d-grid gap-1 mb-2">';
-    if (!$lessons) $o .= '<div class="small" style="opacity:.85;">Classes for this week are still being prepared.</div>';
+    if (!$lessons) $o .= '<div style="color:#5b6673;">Classes for this week are still being prepared.</div>';
     foreach ($lessons as $l) {
         $need = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$l['min_tier']] ?? 1;
         $locked = $tier < $need;
@@ -282,28 +281,25 @@ function renderWeekPanel(PDO $db, int $courseId, int $studentId, ?int $moduleId 
         if ($locked) $href = ACADEMY_URL . 'upgrade.php?required=' . urlencode($l['min_tier']);
         elseif ($fp === '') $href = weekIntroUrl($moduleId, 'classes');
         else $href = ACADEMY_URL . $fp . (str_contains($fp, '?') ? '&' : '?') . 'from=' . urlencode($courseFolder);
-        $tick = isset($done[(int)$l['id']]) ? '<i class="bi bi-check-circle-fill me-1"></i>' : ($locked ? '<i class="bi bi-lightning-charge me-1"></i>' : '');
-        $o .= '<a href="' . $h($href) . '" class="btn ' . ($locked ? 'btn-warning' : 'btn-outline-light') . ' btn-sm text-start">' . $tick . $h($l['title']) . '</a>';
+        $mark = isset($done[(int)$l['id']]) ? '&#10003; ' : ($locked ? '&#128274; ' : '');
+        $o .= '<div style="padding:.25rem 0;border-bottom:1px solid #eef1f4;"><a href="' . $h($href) . '" style="text-decoration:none;">' . $mark . $h($l['title']) . '</a></div>';
     }
-    $o .= '</div>';
 
-    $o .= '<div class="small" style="border-top:1px solid rgba(255,255,255,.3);padding-top:.5rem;">';
     if ($b['summary'] !== '') {
-        $short = mb_strlen($b['summary']) > 130 ? mb_substr($b['summary'], 0, 127) . '…' : $b['summary'];
-        $o .= '<div class="mb-2">' . $h($short) . '<br><a href="' . $h(weekIntroUrl($moduleId, 'summary')) . '" ' . $lnk . '>Read the week summary</a></div>';
+        $short = mb_strlen($b['summary']) > 100 ? mb_substr($b['summary'], 0, 97) . '…' : $b['summary'];
+        $o .= '<div style="' . $sec . '">Summary</div><div>' . $h($short) . '</div><a href="' . $h(weekIntroUrl($moduleId, 'summary')) . '" style="' . $a . '">Read the summary</a>';
     }
-    $o .= '<div class="mb-2"><i class="bi bi-clipboard-check me-1"></i>' . $h($b['tests_message']) . '<br><a href="' . $h(weekIntroUrl($moduleId, 'tests')) . '" ' . $lnk . '>See tests &amp; quizzes</a></div>';
+    $o .= '<div style="' . $sec . '">Tests</div><div>' . $h($b['tests_message']) . '</div><a href="' . $h(weekIntroUrl($moduleId, 'tests')) . '" style="' . $a . '">See tests &amp; quizzes</a>';
     if ($b['vocab']) {
         $words = array_slice(array_column($b['vocab'], 'headword'), 0, 5);
-        $o .= '<div class="mb-2"><i class="bi bi-translate me-1"></i>' . count($b['vocab']) . ' vocabulary words: ' . $h(implode(', ', $words)) . (count($b['vocab']) > 5 ? '…' : '')
-            . '<br><a href="' . $h(weekIntroUrl($moduleId, 'vocab')) . '" ' . $lnk . '>Open the vocabulary sheet</a></div>';
+        $o .= '<div style="' . $sec . '">Vocabulary</div><div>' . count($b['vocab']) . ' words: ' . $h(implode(', ', $words)) . (count($b['vocab']) > 5 ? '…' : '') . '</div>'
+            . '<a href="' . $h(weekIntroUrl($moduleId, 'vocab')) . '" style="' . $a . '">Open the vocabulary sheet</a>';
     }
     if ($b['resources']) {
-        $o .= '<div class="mb-2"><i class="bi bi-collection me-1"></i>' . count($b['resources']) . ' resource' . (count($b['resources']) === 1 ? '' : 's') . ' &amp; exercises'
-            . '<br><a href="' . $h(weekIntroUrl($moduleId, 'resources')) . '" ' . $lnk . '>See resources</a></div>';
+        $o .= '<div style="' . $sec . '">Resources</div><div>' . count($b['resources']) . ' item' . (count($b['resources']) === 1 ? '' : 's') . '</div>'
+            . '<a href="' . $h(weekIntroUrl($moduleId, 'resources')) . '" style="' . $a . '">See resources</a>';
     }
-    $o .= '</div>';
-    $o .= '<a href="' . $h(weekIntroUrl($moduleId)) . '" class="btn btn-light btn-sm w-100 mt-1"><i class="bi bi-journal-text me-1"></i>Full week introduction &rarr;</a>';
+    $o .= '<div style="margin-top:.9rem;padding-top:.6rem;border-top:1px solid #d7dce0;"><a href="' . $h(weekIntroUrl($moduleId)) . '" style="font-weight:600;">Full week introduction &rarr;</a></div>';
     $o .= '</div>';
     return $o;
 }
