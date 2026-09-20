@@ -51,7 +51,7 @@ $canAccess = can_access($minTier);
                 </ol>
             </nav>
 
-            <p class="text-muted small mb-1">Month 1 — IELTS Academic Foundations &nbsp;·&nbsp; Class 4 of 24</p>
+            <p class="text-muted small mb-1">Week 2 — Reading & Speaking Foundations &nbsp;·&nbsp; Class 4 of 24</p>
             <h1 class="mb-3">
                 <i class="bi bi-mic me-2" style="color:#0b77ff;"></i>
                 Speaking Test 1 + Comparative Structures & TEE

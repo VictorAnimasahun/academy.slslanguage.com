@@ -51,7 +51,7 @@ $canAccess = can_access($minTier);
                 </ol>
             </nav>
 
-            <p class="text-muted small mb-1">Month 3 — Masterclass Precision &nbsp;·&nbsp; Class 24 of 24</p>
+            <p class="text-muted small mb-1">Week 12 — Final Mock & Test-Day Coaching &nbsp;·&nbsp; Class 24 of 24</p>
             <h1 class="mb-3">
                 <i class="bi bi-flag me-2" style="color:#0b77ff;"></i>
                 Final Review + Test-Day Coaching

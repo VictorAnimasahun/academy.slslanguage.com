@@ -1552,6 +1552,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 110 — IELTS Academic Writing Test 1 (tests rows + Class 5 wiring)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run on the real local DB. Pages checked in a stubbed browser render (images load, links resolve); not tested end-to-end while logged in. |
+| Live  | [ ] | | Pull academy first (new pages + `assets/images/ielts_academic/` + class pages), then run. Requires nothing else; independent of 105-109. |
+
+**What it does:** seeds `IELTS_PT_W1_ACA_001` / `IELTS_PT_W2_ACA_001`, sets Class 5 of IELTS_Aca_2Mo/3Mo to the new hub, removes the "no Academic Writing Test" note. Content = official IELTS.org sample tasks 1A/2A + Band 5/6 candidate scripts (Model Answers page).
+
+**Rollback:** see the comment at the bottom of the migration file.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

@@ -60,3 +60,7 @@ The completed media task does not by itself make PT2–PT4 runnable: their pages
 ## Adding a new practice test
 
 Follow `academy/documentation/ai_test_page_template.md` exactly — it's a self-contained brief (test code convention, PHP `$parts` array structure per question type, the `$answers` format, the migration SQL skeleton, and the full `question_type` ENUM reference) designed to be handed wholesale to an AI or a developer to generate both files. Always reuse `save_attempt.php` — never write a new save endpoint per test.
+
+
+## IELTS Academic Writing Test 1 (2026-09-20)
+`ielts_writing_academic_001.php` (hub) -> `ielts_writing_academic_t1_001.php` (Task 1A, bar chart, 20 min, code `IELTS_PT_W1_ACA_001`) and `ielts_writing_academic_t2_001.php` (Task 2A, essay, 40 min, code `IELTS_PT_W2_ACA_001`). Gated to courses 16/17 (IELTS_Aca_2Mo/3Mo) via `require_course_enrollment()`, so deliberately NOT in the Practice Tests catalog (`index.php`). Both are AI-marked by `essay_analyzer.php`; the Task 1 page sends the chart data as text in `question` so the marker can judge accuracy. Chart + scripts live in `assets/images/ielts_academic/`. Model answers: `resources/model_answers/model_answers_academic_writing_1.php`. Source: official IELTS.org Academic Writing samples 1A/2A. The Task 1B script screenshot in the source zip (radio/TV audiences) belongs to a different task and is unused.

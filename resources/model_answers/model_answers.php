@@ -86,6 +86,16 @@ $ielts_tests = [
                     </a>
                 <?php endforeach; ?>
 
+                <div class="section-label"><i class="bi bi-graph-up me-1"></i>IELTS — Academic Writing</div>
+                <a href="model_answers_academic_writing_1.php" class="test-row">
+                    <div class="test-num">1</div>
+                    <div>
+                        <div class="test-title">Test 1</div>
+                        <div class="test-meta">Task 1A: chart &nbsp;&middot;&nbsp; Task 2A: essay &nbsp;&middot;&nbsp; Band 5 &amp; 6 scripts with examiner comments</div>
+                    </div>
+                    <i class="bi bi-chevron-right test-arrow"></i>
+                </a>
+
                 <div class="section-label"><i class="bi bi-mic me-1"></i>IELTS — Speaking</div>
                 <a href="model_answers_speaking.php" class="test-row">
                     <div class="test-num">1</div>

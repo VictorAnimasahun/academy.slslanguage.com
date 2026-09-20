@@ -51,7 +51,7 @@ $canAccess = can_access($minTier);
                 </ol>
             </nav>
 
-            <p class="text-muted small mb-1">Month 1 — IELTS Academic Foundations &nbsp;·&nbsp; Class 5 of 16</p>
+            <p class="text-muted small mb-1">Week 3 — Writing Test 1 & Listening Test 2 &nbsp;·&nbsp; Class 5 of 16</p>
             <h1 class="mb-3">
                 <i class="bi bi-pencil-square me-2" style="color:#0b77ff;"></i>
                 Writing Test 1 (Timed) + Listening Formats
@@ -67,10 +67,10 @@ $canAccess = can_access($minTier);
                 </div>
             <?php else: ?>
 
-                <div class="highlight-box">
-                    <h4 style="color:var(--accent);"><i class="bi bi-hourglass-split me-2"></i>Coming Soon</h4>
-                    <p class="mb-0">This class's lesson content is still being finalized. Please register for the course (or check back soon) to get full access as it's added.</p>
-                </div>
+                <div class="lesson-content mb-4"><h5>Writing</h5><ul><li>Complete Writing Test 1: Task 1 (20 minutes, timed) and Task 2 (40 minutes, timed)</li><li>Self-assessment against the band descriptors</li></ul><h5>Listening</h5><ul><li>Section formats and question types (Sections 1-4)</li><li>Common distractor patterns</li><li>Sample question set</li></ul></div>
+                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_writing_academic_001.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                    <i class="bi bi-box-arrow-up-right me-2"></i>Open Writing Test 1
+                </a>
 
             <?php endif; ?>
 
