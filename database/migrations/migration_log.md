@@ -1539,6 +1539,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 109 — Month-based courses regrouped into WEEKS (IELTS_Aca_1Mo/2Mo/3Mo, CELPIP_Gen_1Mo)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run on the real local DB. Tested on an isolated MySQL 5.7 with a latin1 `folder_name` trap: 4/8/12/4 weeks x 2 classes, lesson ids/titles/tiers unchanged, safe to re-run, weekly courses untouched. |
+| Live  | [ ] | | Back up first. Pull academy first (overview pages must use running class numbers), then run. Uses folder_name lookups only (no hardcoded ids). |
+
+**What it does:** replaces the "Month N" modules (8 classes each) with two-classes-per-week "Week N — ..." modules; same class order and numbering, lesson ids unchanged, week keeps its month's min_tier. Course overviews now use running class numbers instead of the old `(month-1)*8 + lesson_order` formula, and the tier text says Weeks instead of Months. CELPIP_Gen_2Mo/3Mo were already weekly.
+
+**Rollback:** restore the backup (old Month modules are deleted). Week Briefs written against old modules are orphaned; re-author per week.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

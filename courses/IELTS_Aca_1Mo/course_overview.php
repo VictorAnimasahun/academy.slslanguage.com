@@ -106,7 +106,6 @@ $month_colors = [1 => '#0b77ff'];
                     'folder'       => 'IELTS_Aca_1Mo',
                     'tier_level'   => $student_tier_level,
                     'mock_classes' => [8],
-                    'class_number' => fn($week, $lesson, $i) => (int) $lesson['lesson_order'],
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
                 ]) ?>
@@ -119,7 +118,7 @@ $month_colors = [1 => '#0b77ff'];
                     <div class="info-card"><h4><i class="bi bi-question-circle me-2"></i>Class Quizzes</h4><p class="mb-0">A consolidation quiz after every class to reinforce Academic strategies and band descriptor criteria.</p></div>
                     <div class="info-card"><h4><i class="bi bi-house-heart me-2"></i>Take-Home Tasks</h4><p class="mb-0">One practical task per class — Academic Reading summaries, Task 1 graph descriptions, or Task 2 essay drafts.</p></div>
                     <div class="info-card"><h4><i class="bi bi-clipboard-check me-2"></i>1 Practice Test Set</h4><p class="mb-0">A full IELTS Academic practice test across all four skills, spread throughout the teaching classes.</p></div>
-                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>1 Full Mock Exam</h4><p class="mb-0">End-of-month full timed mock exam with written feedback and an estimated band score report.</p></div>
+                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>1 Full Mock Exam</h4><p class="mb-0">Full timed mock exam with written feedback and an estimated band score report.</p></div>
                     <div class="info-card"><h4><i class="bi bi-arrow-up-circle me-2"></i>Upgrade Anytime</h4><p class="mb-0">Upgrade to the 2-Month or 3-Month IELTS Academic plan at any time — your progress carries over.</p></div>
                 </div>
             </div>

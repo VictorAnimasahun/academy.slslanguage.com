@@ -97,16 +97,15 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
             <div class="content-section">
                 <h2>Course Content</h2>
                 <p class="text-muted small mb-3">
-                    <i class="bi bi-lock-fill me-1 text-warning"></i>Month 1: <strong>Intermediate</strong> plan.
-                    Month 2: <strong>Advanced</strong> plan.
-                    Month 3: <strong>Fluent</strong> plan.
+                    <i class="bi bi-lock-fill me-1 text-warning"></i>Weeks 1-4: <strong>Intermediate</strong> plan.
+                    Weeks 5-8: <strong>Advanced</strong> plan.
+                    Weeks 9-12: <strong>Fluent</strong> plan.
                     <i class="bi bi-unlock-fill ms-3 me-1 text-success"></i>Class 1 is free.
                 </p>
                 <?= renderProgressPath($modules, $completedLessonIds, [
                     'folder'       => 'IELTS_Aca_3Mo',
                     'tier_level'   => $student_tier_level,
                     'mock_classes' => [8, 16, 24],
-                    'class_number' => fn($week, $lesson, $i) => ($week - 1) * 8 + (int) $lesson['lesson_order'],
                     'class_url'    => fn($num, $lesson) => 'class' . $num . '.php',
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
@@ -120,7 +119,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                     <div class="info-card"><h4><i class="bi bi-question-circle me-2"></i>Class Quizzes</h4><p class="mb-0">Consolidation quizzes after every class to lock in Academic strategies and band descriptor criteria.</p></div>
                     <div class="info-card"><h4><i class="bi bi-house-heart me-2"></i>Take-Home Tasks</h4><p class="mb-0">One practical task per class — Academic Reading summaries, Task 1 graphs, or Task 2 essay drafts.</p></div>
                     <div class="info-card"><h4><i class="bi bi-clipboard-check me-2"></i>5 Practice Test Sets</h4><p class="mb-0">Full IELTS Academic practice test sets across all four skills, spread across the 21 teaching classes.</p></div>
-                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>3 Full Mock Exams</h4><p class="mb-0">End-of-month full timed mock exams with detailed written feedback and band score reports.</p></div>
+                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>3 Full Mock Exams</h4><p class="mb-0">Full timed mock exams with detailed written feedback and band score reports.</p></div>
                     <div class="info-card"><h4><i class="bi bi-patch-check me-2"></i>Completion Certificate</h4><p class="mb-0">An SLS certificate of completion awarded upon finishing the full IELTS Academic Masterclass program.</p></div>
                 </div>
             </div>
