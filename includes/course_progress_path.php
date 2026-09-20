@@ -13,6 +13,7 @@
  *       'tier_level'    => $student_tier_level,
  *       'mock_weeks'    => [8, 11],            // module_order values
  *       'mock_classes'  => [15, 21],           // 1-based class numbers across the course
+ *       'parts'         => progressPathLoadParts($db, $course_id, $student_id), // optional
  *       'week_brief'    => fn($weekNum, $color) => weekBriefButton(...),  // optional
  *   ]);
  *
@@ -32,6 +33,48 @@ const PP_PALETTE = [
     ['accent' => '#6a4c9c', 'tint' => '#ebe5f4'], // purple
 ];
 
+/**
+ * What sits inside each class: the class lesson itself is added by the
+ * renderer; this loads the tests/quizzes attached to each lesson through
+ * course_pacing_items, with this student's completion for each.
+ * Returns lesson_id => [ ['title'=>, 'kind'=>'Quiz'|'Practice test', 'done'=>bool], ... ].
+ * Looks tests up by code in separate queries (no string-column join), the
+ * same pattern course_pacing.php uses -- avoids collation mismatches.
+ */
+function progressPathLoadParts(PDO $db, int $courseId, int $studentId): array {
+    $stmt = $db->prepare("SELECT lesson_id, title, item_type, test_code FROM course_pacing_items WHERE course_id = ? AND lesson_id IS NOT NULL ORDER BY display_order");
+    $stmt->execute([$courseId]);
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (!$items) return [];
+
+    $codes = array_values(array_unique(array_column($items, 'test_code')));
+    $ph = implode(',', array_fill(0, count($codes), '?'));
+    $stmt = $db->prepare("SELECT id, code FROM tests WHERE code IN ($ph)");
+    $stmt->execute($codes);
+    $testIds = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $t) $testIds[$t['code']] = (int) $t['id'];
+
+    $done = [];
+    if ($testIds) {
+        $ph = implode(',', array_fill(0, count($testIds), '?'));
+        $stmt = $db->prepare("SELECT DISTINCT test_id FROM test_attempts WHERE student_id = ? AND status = 'completed' AND test_id IN ($ph)");
+        $stmt->execute([$studentId, ...array_values($testIds)]);
+        $done = array_flip(array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
+    }
+
+    $parts = [];
+    foreach ($items as $it) {
+        $tid = $testIds[$it['test_code']] ?? null;
+        if ($tid === null) continue; // content not seeded yet -- nothing to show or complete
+        $parts[(int) $it['lesson_id']][] = [
+            'title' => $it['title'],
+            'kind'  => $it['item_type'] === 'quiz' ? 'Quiz' : 'Practice test',
+            'done'  => isset($done[$tid]),
+        ];
+    }
+    return $parts;
+}
+
 function renderProgressPath(array $modules, array $completedLessonIds, array $opts = []): string {
     $h = fn($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
     $folder      = $opts['folder'] ?? '';
@@ -39,6 +82,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
     $mockWeeks   = $opts['mock_weeks'] ?? [];
     $mockClasses = $opts['mock_classes'] ?? [];
     $briefFn     = $opts['week_brief'] ?? null;
+    $partsByLesson = $opts['parts'] ?? [];
     $levels      = ['beginner' => 1, 'intermediate' => 2, 'advanced' => 3, 'fluent' => 4];
     $doneSet     = array_flip(array_map('intval', $completedLessonIds));
 
@@ -97,26 +141,45 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
         $out .= '<div id="' . $cid . '" class="collapse' . ($isOpen ? ' show' : '') . '" data-bs-parent="#progressPath"><div class="pp-body">';
         if (is_callable($briefFn)) $out .= '<div class="pp-brief">' . $briefFn((int) $weekNum, $palette['accent']) . '</div>';
 
+        $bodyId = 'pp-classes-' . (int) $weekNum;
+        $out .= '<div id="' . $bodyId . '">';
         foreach ($w['classes'] as $c) {
             $lesson   = $c['lesson'];
+            $lid      = (int) $lesson['lesson_id'];
             $required = $levels[$lesson['min_tier']] ?? 1;
             $file     = $lesson['file_path'] ?? '';
             $can      = $tierLevel >= $required && $file;
             $isMockCl = in_array($c['num'], $mockClasses, true);
-            $icon     = $c['done'] ? 'bi-check-circle-fill' : ($can ? ($lesson['icon'] ?: 'bi-play-circle') : 'bi-lock-fill');
-            $icoCls   = 'pp-class-ico' . ($c['done'] ? ' is-done' : ($can ? ' is-open' : ''));
-            $title    = '<span class="pp-class-title"><span class="pp-class-num">Class ' . $c['num'] . ':</span> ' . $h($lesson['title']) . '</span>';
-            $inner    = '<i class="bi ' . $h($icon) . ' ' . $icoCls . '"></i>' . $title;
+            $isCurCl  = $next && $next['num'] === $c['num'];
+
+            // Parts: the class lesson first, then the tests/quizzes attached to it.
+            $parts = [['title' => $lesson['title'], 'kind' => 'Class lesson', 'meta' => (int) $lesson['duration_minutes'] . ' min', 'done' => $c['done'], 'lesson' => true]];
+            foreach ($partsByLesson[$lid] ?? [] as $pt) $parts[] = $pt + ['meta' => '', 'lesson' => false];
+            $partsDone = count(array_filter($parts, fn($p) => $p['done']));
+            $cid2 = 'pp-class-' . $lid;
 
             $out .= '<div class="pp-class' . ($can ? '' : ' is-locked') . ($isMockCl ? ' is-mock' : '') . '">';
-            $out .= $can
-                ? '<a class="pp-class-main" href="' . $h(ACADEMY_URL . $file) . '?from=' . $h($folder) . '">' . $inner . '</a>'
-                : '<span class="pp-class-main">' . $inner . '</span>';
-            $out .= '<div class="pp-class-meta">';
+            $out .= '<button class="pp-class-toggle' . ($isCurCl ? '' : ' collapsed') . '" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cid2 . '" aria-expanded="' . ($isCurCl ? 'true' : 'false') . '" aria-controls="' . $cid2 . '">';
+            $out .= '<span class="pp-class-title"><span class="pp-class-num">Class ' . $c['num'] . ':</span> ' . $h($lesson['title']) . '</span>';
+            $out .= '<span class="pp-class-meta">';
             if ($isMockCl) $out .= '<span class="pp-pill mock">Mock exam</span>';
             elseif ($required === 1) $out .= '<span class="pp-pill free">Free</span>';
-            $out .= '<span><i class="bi bi-clock"></i> ' . (int) $lesson['duration_minutes'] . ' min</span></div></div>';
+            if (!$can) $out .= '<i class="bi bi-lock-fill"></i>';
+            $out .= '<span>' . $partsDone . ' of ' . count($parts) . ' done</span><i class="bi bi-chevron-down pp-chev"></i></span></button>';
+
+            $out .= '<div id="' . $cid2 . '" class="collapse' . ($isCurCl ? ' show' : '') . '" data-bs-parent="#' . $bodyId . '"><ul class="pp-parts">';
+            foreach ($parts as $pt) {
+                $ico  = $pt['done'] ? '<i class="bi bi-check-circle-fill pp-part-ico is-done"></i>' : '<span class="pp-part-ico is-todo"></span>';
+                $text = '<span class="pp-part-text"><span class="pp-part-title' . ($pt['done'] ? ' is-done' : '') . '">' . $h($pt['title']) . '</span>'
+                      . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '')) . '</span></span>';
+                $inner = $ico . $text;
+                $out  .= '<li>' . (($pt['lesson'] && $can)
+                    ? '<a class="pp-part" href="' . $h(ACADEMY_URL . $file) . '?from=' . $h($folder) . '">' . $inner . '</a>'
+                    : '<span class="pp-part">' . $inner . '</span>') . '</li>';
+            }
+            $out .= '</ul></div></div>';
         }
+        $out .= '</div>';
         $out .= '</div></div></div>';
     }
     return $out . '</div>';

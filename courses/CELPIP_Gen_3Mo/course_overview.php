@@ -130,6 +130,7 @@ $mock_weeks = [8, 11];
                     'tier_level'   => $student_tier_level,
                     'mock_weeks'   => $mock_weeks,
                     'mock_classes' => [15, 21],
+                    'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
                 ]) ?>
             </div>
