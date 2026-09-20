@@ -14,6 +14,9 @@
  *       'mock_weeks'    => [8, 11],            // module_order values
  *       'mock_classes'  => [15, 21],           // 1-based class numbers across the course
  *       'parts'         => progressPathLoadParts($db, $course_id, $student_id), // optional
+ *       'class_number'  => fn($week, $lesson, $i) => ...,  // optional, default = running 1..N
+ *       'is_mock'       => fn($week, $lesson, $num, $i) => bool, // optional, overrides mock_classes
+ *       'class_url'     => fn($num, $lesson) => 'class' . $num . '.php', // optional, default = lesson file_path
  *       'week_brief'    => fn($weekNum, $color) => weekBriefButton(...),  // optional
  *   ]);
  *
@@ -75,6 +78,19 @@ function progressPathLoadParts(PDO $db, int $courseId, int $studentId): array {
     return $parts;
 }
 
+/** lesson ids this student has completed in a course (for pages that don't load them already). */
+function progressPathLoadCompleted(PDO $db, int $courseId, int $studentId): array {
+    try {
+        $st = $db->prepare("SELECT lp.lesson_id FROM lesson_progress lp JOIN lessons l ON l.id = lp.lesson_id
+                            JOIN modules m ON m.id = l.module_id WHERE lp.student_id = ? AND lp.completed = 1 AND m.course_id = ?");
+        $st->execute([$studentId, $courseId]);
+        return array_map('intval', $st->fetchAll(PDO::FETCH_COLUMN));
+    } catch (PDOException $e) {
+        error_log('progressPathLoadCompleted: ' . $e->getMessage());
+        return [];
+    }
+}
+
 function renderProgressPath(array $modules, array $completedLessonIds, array $opts = []): string {
     $h = fn($v) => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
     $folder      = $opts['folder'] ?? '';
@@ -83,6 +99,9 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
     $mockClasses = $opts['mock_classes'] ?? [];
     $briefFn     = $opts['week_brief'] ?? null;
     $partsByLesson = $opts['parts'] ?? [];
+    $numFn       = $opts['class_number'] ?? null; // fn($weekNum, $lesson, $runningIndex): int
+    $mockFn      = $opts['is_mock'] ?? null;      // fn($weekNum, $lesson, $classNum, $indexInWeek): bool (overrides mock_classes)
+    $urlFn       = $opts['class_url'] ?? null;    // fn($classNum, $lesson): ?string  (default: lesson file_path)
     $levels      = ['beginner' => 1, 'intermediate' => 2, 'advanced' => 3, 'fluent' => 4];
     $doneSet     = array_flip(array_map('intval', $completedLessonIds));
 
@@ -93,10 +112,16 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
         $classes = []; $done = 0;
         foreach ($mod['lessons'] as $lesson) {
             $n++;
-            $isDone = isset($doneSet[(int) $lesson['lesson_id']]);
+            $lid = (int) ($lesson['lesson_id'] ?? $lesson['id'] ?? 0);
+            $num = $numFn ? (int) $numFn($weekNum, $lesson, $n) : $n;
+            if ($urlFn)                              $url = $urlFn($num, $lesson);
+            elseif (!empty($lesson['file_path']))    $url = ACADEMY_URL . $lesson['file_path'] . '?from=' . $folder;
+            else                                     $url = null;
+            $url    = ($url && ($levels[$lesson['min_tier']] ?? 1) <= $tierLevel) ? $url : null; // null = locked
+            $isDone = isset($doneSet[$lid]);
             if ($isDone) $done++;
-            $classes[] = ['num' => $n, 'lesson' => $lesson, 'done' => $isDone];
-            if (!$isDone && $next === null) $next = ['num' => $n, 'lesson' => $lesson, 'week' => $weekNum];
+            $classes[] = ['num' => $num, 'lesson' => $lesson, 'lid' => $lid, 'url' => $url, 'done' => $isDone];
+            if (!$isDone && $next === null) $next = ['num' => $num, 'lesson' => $lesson, 'week' => $weekNum, 'url' => $url];
         }
         $weeks[$weekNum] = ['mod' => $mod, 'classes' => $classes, 'done' => $done, 'count' => count($classes)];
         $totalClasses += count($classes); $totalDone += $done;
@@ -104,15 +129,14 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
     }
     if ($currentWeek === null) $currentWeek = array_key_last($modules); // course finished: show the last week open
 
+    $unit = stripos((string) (reset($modules)['title'] ?? ''), 'month') === 0 ? 'month' : 'week';
     $pct = $totalClasses ? round($totalDone / $totalClasses * 100) : 0;
     $out  = '<div class="pp-summary"><div class="pp-summary-title">' . $totalDone . ' of ' . $totalClasses . ' classes complete</div>';
     $out .= '<div class="pp-bar" role="progressbar" aria-valuenow="' . $pct . '" aria-valuemin="0" aria-valuemax="100"><span style="width:' . $pct . '%"></span></div>';
     if ($next) {
-        $nextFile = $next['lesson']['file_path'] ?? '';
-        $nextOk   = ($levels[$next['lesson']['min_tier']] ?? 1) <= $tierLevel && $nextFile;
-        $label    = 'Class ' . $next['num'] . ': ' . $h($next['lesson']['title']);
-        if ($nextOk) $label = '<a href="' . $h(ACADEMY_URL . $nextFile) . '?from=' . $h($folder) . '">' . $label . '</a>';
-        $out .= '<div class="pp-next">Up next: ' . $label . ' in week ' . (int) $next['week'] . '</div>';
+        $label = 'Class ' . $next['num'] . ': ' . $h($next['lesson']['title']);
+        if ($next['url']) $label = '<a href="' . $h($next['url']) . '">' . $label . '</a>';
+        $out .= '<div class="pp-next">Up next: ' . $label . ' in ' . $unit . ' ' . (int) $next['week'] . '</div>';
     } else {
         $out .= '<div class="pp-next">All classes complete. Well done!</div>';
     }
@@ -134,7 +158,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
         $out .= '<div class="pp-ring' . ($complete ? ' is-done' : '') . '" style="--p:' . $ringPct . ';--c:' . ($complete ? '#3d7a5a' : $palette['accent']) . ';"><span>'
               . ($complete ? '<i class="bi bi-check-lg"></i>' : (int) $weekNum) . '</span></div>';
         $out .= '<div class="pp-head"><div class="pp-head-title">' . $h($w['mod']['title'])
-              . ($isMock ? '<span class="pp-mock-tag">Mock exam week</span>' : '') . '</div>';
+              . ($isMock ? '<span class="pp-mock-tag">Mock exam ' . $unit . '</span>' : '') . '</div>';
         $out .= '<div class="pp-head-sub">' . $w['done'] . ' of ' . $w['count'] . ' classes done</div></div>';
         $out .= '<i class="bi bi-chevron-down pp-chev"></i></button>';
 
@@ -143,13 +167,12 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
 
         $bodyId = 'pp-classes-' . (int) $weekNum;
         $out .= '<div id="' . $bodyId . '">';
-        foreach ($w['classes'] as $c) {
+        foreach ($w['classes'] as $ci => $c) {
             $lesson   = $c['lesson'];
-            $lid      = (int) $lesson['lesson_id'];
+            $lid      = $c['lid'];
             $required = $levels[$lesson['min_tier']] ?? 1;
-            $file     = $lesson['file_path'] ?? '';
-            $can      = $tierLevel >= $required && $file;
-            $isMockCl = in_array($c['num'], $mockClasses, true);
+            $can      = $c['url'] !== null;
+            $isMockCl = $mockFn ? (bool) $mockFn($weekNum, $lesson, $c['num'], $ci) : in_array($c['num'], $mockClasses, true);
             $isCurCl  = $next && $next['num'] === $c['num'];
 
             // Parts: the class lesson first, then the tests/quizzes attached to it.
@@ -174,7 +197,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
                       . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '')) . '</span></span>';
                 $inner = $ico . $text;
                 $out  .= '<li>' . (($pt['lesson'] && $can)
-                    ? '<a class="pp-part" href="' . $h(ACADEMY_URL . $file) . '?from=' . $h($folder) . '">' . $inner . '</a>'
+                    ? '<a class="pp-part" href="' . $h($c['url']) . '">' . $inner . '</a>'
                     : '<span class="pp-part">' . $inner . '</span>') . '</li>';
             }
             $out .= '</ul></div></div>';

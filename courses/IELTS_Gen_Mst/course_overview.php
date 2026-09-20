@@ -21,6 +21,7 @@ if (!$course) {
 
 $course_id = (int) $course['id'];
 require_once INCLUDES_PATH . '/week_brief.php';
+require_once INCLUDES_PATH . '/course_progress_path.php';
 
 // Load modules + lessons
 $stmt = $db->prepare("
@@ -51,6 +52,8 @@ foreach ($rows as $row) {
 
 // Student tier for lock display
 $student_tier_level = get_student_tier_level();
+$student_id = (int) $_SESSION['user_id'];
+$completedLessonIds = progressPathLoadCompleted($db, $course_id, $student_id);
 
 $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
 ?>
@@ -63,6 +66,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../../assets/css/courses.css" rel="stylesheet">
+    <link href="../../assets/css/progress_path.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
 </head>
 <body>
@@ -129,93 +133,16 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                     <i class="bi bi-unlock-fill ms-3 me-1 text-success"></i>Class 1 is free to preview.
                 </p>
 
-                <div class="accordion" id="courseAccordion">
-                <?php foreach ($modules as $month_num => $module): ?>
-                    <?php
-                    $color       = $month_colors[$month_num] ?? '#0b77ff';
-                    $collapse_id = 'month' . $month_num;
-                    $is_open     = ($month_num === 1);
-                    ?>
-                    <div class="accordion-item mb-2" style="border-radius: 10px; overflow: hidden; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button <?= $is_open ? '' : 'collapsed' ?>"
-                                    type="button"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#<?= $collapse_id ?>"
-                                    style="background: <?= $color ?>18; font-weight: 700; color: <?= $color ?>;">
-                                <i class="bi bi-calendar3 me-2"></i>
-                                <?= htmlspecialchars($module['title']) ?>
-                                <span class="badge ms-auto me-2"
-                                      style="background: <?= $color ?>; color: white;">
-                                    <?= count($module['lessons']) ?> classes
-                                </span>
-                            </button>
-                        </h2>
-                        <div id="<?= $collapse_id ?>"
-                             class="accordion-collapse collapse <?= $is_open ? 'show' : '' ?>"
-                             data-bs-parent="#courseAccordion">
-                            <div class="accordion-body p-0">
-                                <?= weekBriefButton($db, $course_id, (int) $month_num, $color ?? '#0b77ff') ?>
-                                <ul class="list-unstyled mb-0">
-                                <?php foreach ($module['lessons'] as $idx => $lesson):
-                                    $global_class = ($month_num - 1) * 8 + (int) $lesson['lesson_order'];
-                                    $required_level = [
-                                        'beginner'     => 1,
-                                        'intermediate' => 2,
-                                        'advanced'     => 3,
-                                        'fluent'       => 4,
-                                    ][$lesson['min_tier']] ?? 1;
-                                    $can_access = $student_tier_level >= $required_level;
-                                    $is_mock    = in_array($global_class, [8, 16, 24]);
-                                    $file_path  = $lesson['file_path'] ?? 'intro.php';
-                                ?>
-                                <li class="d-flex align-items-center justify-content-between px-3 py-2
-                                           <?= $idx < count($module['lessons']) - 1 ? 'border-bottom' : '' ?>"
-                                    style="<?= $is_mock ? 'background:#fffbeb;' : '' ?>">
-
-                                    <div class="d-flex align-items-center gap-2">
-                                        <?php if ($can_access && $file_path): ?>
-                                            <a href="<?= ACADEMY_URL . htmlspecialchars($file_path) ?>?from=IELTS_Gen_Mst"
-                                               class="text-decoration-none text-dark d-flex align-items-center gap-2">
-                                                <i class="bi <?= htmlspecialchars($lesson['icon'] ?? 'bi-play-circle') ?>"
-                                                   style="color: <?= $color ?>; font-size: 1.1rem; min-width: 20px;"></i>
-                                                <span>
-                                                    <strong>Class <?= $global_class ?>:</strong>
-                                                    <?= htmlspecialchars($lesson['title']) ?>
-                                                    <?php if ($global_class === 1): ?>
-                                                        <span class="badge bg-success ms-1">Free</span>
-                                                    <?php endif; ?>
-                                                </span>
-                                            </a>
-                                        <?php else: ?>
-                                            <span class="text-muted d-flex align-items-center gap-2">
-                                                <i class="bi bi-lock-fill" style="color: #94a3b8; font-size: 1rem; min-width: 20px;"></i>
-                                                <span>
-                                                    <strong>Class <?= $global_class ?>:</strong>
-                                                    <?= htmlspecialchars($lesson['title']) ?>
-                                                </span>
-                                            </span>
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <div class="d-flex align-items-center gap-2 text-muted small ms-2" style="white-space: nowrap;">
-                                        <?php if ($is_mock): ?>
-                                            <span class="badge bg-warning text-dark">Mock Exam</span>
-                                        <?php endif; ?>
-                                        <i class="bi bi-clock"></i>
-                                        <?= (int) $lesson['duration_minutes'] ?> min
-                                    </div>
-                                </li>
-                                <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-                </div>
+                <?= renderProgressPath($modules, $completedLessonIds, [
+                    'folder'       => 'IELTS_Gen_Mst',
+                    'tier_level'   => $student_tier_level,
+                    'mock_classes' => [8, 16, 24],
+                    'class_number' => fn($week, $lesson, $i) => ($week - 1) * 8 + (int) $lesson['lesson_order'],
+                    'parts'        => progressPathLoadParts($db, $course_id, $student_id),
+                    'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
+                ]) ?>
             </div>
 
-            <!-- What's Included -->
             <div class="content-section">
                 <h2>What's Included</h2>
                 <div class="info-grid">
