@@ -103,7 +103,7 @@ function get_student_tier(): string {
  * Returns the numeric level (1–4) for the current student.
  */
 function get_student_tier_level(): int {
-    if (FREE_ACCESS_FOR_ALL && isset($_SESSION['user_id'])) return TIER_LEVELS['fluent'];
+    if (isset($_SESSION['user_id']) && (FREE_ACCESS_FOR_ALL || is_platform_admin())) return TIER_LEVELS['fluent'];
     return TIER_LEVELS[get_student_tier()] ?? 1;
 }
 

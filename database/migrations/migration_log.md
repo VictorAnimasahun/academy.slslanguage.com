@@ -1461,6 +1461,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 103 — `students.is_tester` (named testers bypass all access rules)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run yet. |
+| Live  | [ ] | | Needs academy `includes/admin_check.php` + `includes/tier_access.php` and slslanguage.com `sls-admin/student_view.php` pulled. Code fails closed if the column is missing, so pull-before-migrate is safe. |
+
+**What it does:** adds `students.is_tester TINYINT(1) DEFAULT 0`. `is_platform_admin()` (the single bypass every gate uses) now also returns true for testers; `get_student_tier_level()` gives admins/testers top tier even when `FREE_ACCESS_FOR_ALL` is off. Toggle: sls-admin → Students → profile → "Tester access".
+
+**Rollback:** `ALTER TABLE students DROP COLUMN is_tester;`
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
