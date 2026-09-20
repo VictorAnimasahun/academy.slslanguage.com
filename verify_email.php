@@ -51,6 +51,17 @@ try {
         $update_stmt->execute([$user['id']]);
         error_log("VERIFY DEBUG: User ID {$user['id']} marked verified.");
 
+        // Attach any Selar purchase made with this (now VERIFIED) email. Never blocks verification.
+        try {
+            $selarFile = __DIR__ . '/../config/selar_purchases.php';
+            if (is_file($selarFile)) {
+                require_once $selarFile;
+                selar_claim_for_student($db, (int) $user['id']);
+            }
+        } catch (Throwable $e) {
+            error_log('VERIFY: selar claim failed: ' . $e->getMessage());
+        }
+
         // Start session and auto-login
         session_start();
         $_SESSION['user_id'] = $user['id'];

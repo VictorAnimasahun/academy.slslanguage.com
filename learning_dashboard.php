@@ -12,6 +12,32 @@ if (!$user_id) {
     exit();
 }
 
+// ── Selar: "Choose your course" ─────────────────────────────────────────────
+// A paid Selar purchase (config/selar_purchases.php) is claimed for this student
+// once their email is verified, then redeemed here: choosing a course creates the
+// subscription and the enrolment together. Everything is wrapped so a problem here
+// can never break the dashboard.
+$selarPurchases = [];
+$selarFlash = $_SESSION['selar_flash'] ?? null;
+unset($_SESSION['selar_flash']);
+if (is_file(CONFIG_PATH . '/selar_purchases.php')) {
+    require_once CONFIG_PATH . '/selar_purchases.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'selar_redeem') {
+        if (!selar_csrf_ok($_POST['csrf'] ?? '')) {
+            $_SESSION['selar_flash'] = ['ok' => false, 'msg' => 'Security check failed. Please reload the page and try again.'];
+        } else {
+            $r = selar_redeem_purchase($db, (int) ($_POST['purchase_id'] ?? 0), (int) $user_id, (int) ($_POST['course_id'] ?? 0));
+            $_SESSION['selar_flash'] = $r['ok']
+                ? ['ok' => true, 'msg' => 'You are enrolled! Your plan starts today. Find the course under My Courses below.']
+                : ['ok' => false, 'msg' => $r['error']];
+        }
+        header('Location: learning_dashboard.php');
+        exit();
+    }
+    selar_claim_for_student($db, (int) $user_id);
+    $selarPurchases = selar_claimed_purchases($db, (int) $user_id);
+}
+
 // Enrollment metrics
 $metricsStmt = executeQuery($db, "SELECT
     COUNT(CASE WHEN progress_percentage = 100 THEN 1 END) as completed,
@@ -124,6 +150,37 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
     <main class="content container-fluid">
+        <?php if ($selarFlash): ?>
+            <div class="alert alert-<?= $selarFlash['ok'] ? 'success' : 'danger' ?> mt-3"><?= htmlspecialchars($selarFlash['msg']) ?></div>
+        <?php endif; ?>
+        <?php foreach ($selarPurchases as $sp): ?>
+            <div class="card border-0 shadow-sm mt-3" style="border-left:4px solid #0b77ff !important;">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-1"><i class="bi bi-bag-check me-2 text-primary"></i>Choose your course</h5>
+                    <p class="text-muted mb-3" style="font-size:.9rem;">
+                        Your <strong><?= (int) $sp['duration_months'] ?>-month</strong> plan is paid for. Pick the course you want to study.
+                        Your plan starts the moment you choose, so take your time deciding.
+                    </p>
+                    <?php if (empty($sp['courses'])): ?>
+                        <p class="mb-0 text-muted">No courses are available for this plan yet. Please contact support.</p>
+                    <?php else: ?>
+                    <form method="POST" class="d-flex gap-2 flex-wrap align-items-center"
+                          onsubmit="return confirm('Start your <?= (int) $sp['duration_months'] ?>-month plan with this course? You can not change it afterwards.');">
+                        <input type="hidden" name="action" value="selar_redeem">
+                        <input type="hidden" name="csrf" value="<?= htmlspecialchars(selar_csrf_token()) ?>">
+                        <input type="hidden" name="purchase_id" value="<?= (int) $sp['id'] ?>">
+                        <select name="course_id" class="form-select" style="max-width:420px;" required>
+                            <option value="">Select a course…</option>
+                            <?php foreach ($sp['courses'] as $c): ?>
+                                <option value="<?= (int) $c['id'] ?>"><?= htmlspecialchars($c['title']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Start this course</button>
+                    </form>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
         <div class="row align-items-start">
 
             <!-- Left column -->

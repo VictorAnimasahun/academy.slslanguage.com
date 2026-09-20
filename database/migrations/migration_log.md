@@ -1500,6 +1500,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 106 — `pending_purchases` (Selar payments waiting to be used)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run on the real local DB. The SQL and all Selar logic were tested against an isolated MySQL 5.7.44 (39 rule checks + a 4-way simultaneous redeem race). |
+| Live  | [ ] | | Needs migrations **101 and 105** applied first (uses `courses.selar_months`). Also upload `config/selar_purchases.php` to live `/config/` (that folder has no git repo, so it is NOT deployed by pulling), then pull academy + slslanguage.com. Check `SHOW INDEX FROM enrollments;` has a unique key on (student_id, course_id). |
+
+**What it does:** creates `pending_purchases` (status pending/claimed/redeemed/refunded, unique `selar_order_ref`). Code: `config/selar_purchases.php` (shared logic), sls-admin → Selar Purchases, dashboard "Choose your course", `verify_email.php` claim hook, and the `courses_detail.php` gate (inactive while `FREE_ACCESS_FOR_ALL` is true).
+
+**Rollback:** `DROP TABLE pending_purchases;` (code fails safe: dashboard panel simply doesn't show).
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

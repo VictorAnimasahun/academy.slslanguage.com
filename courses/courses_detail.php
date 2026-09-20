@@ -30,9 +30,22 @@ if (!$course) {
     exit();
 }
 
+// Selar-sold courses (courses.selar_months) are enrolled only through "Choose your
+// course" on the dashboard after paying. Enforced here on the server, not just by
+// hiding the button. Does nothing while FREE_ACCESS_FOR_ALL is true; never blocks
+// staff/admins/testers. See config/selar_purchases.php.
+require_once INCLUDES_PATH . '/tier_access.php';
+$selarBlocked = false;
+if (is_file(CONFIG_PATH . '/selar_purchases.php')) {
+    require_once CONFIG_PATH . '/selar_purchases.php';
+    $selarBlocked = selar_enrolment_blocked($course);
+}
+
 // Handle enrolment
 $error_message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled']) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled'] && $selarBlocked) {
+    $error_message = "This course is bought on Selar. After you pay, choose it from your dashboard.";
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled']) {
     try {
         $db->prepare("INSERT INTO enrollments (student_id, course_id, enrolled_at, progress_percentage)
                       VALUES (?, ?, NOW(), 0)")->execute([$user_id, $course_id]);
@@ -337,6 +350,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                     <i class="bi bi-cart me-1"></i>Buy on Selar
                                 </a>
                             <?php endif; ?>
+                            <?php if ($selarBlocked): ?>
+                                <p class="text-muted text-center mb-3" style="font-size:.85rem;">Buy this course on Selar, then choose it from your dashboard.</p>
+                            <?php else: ?>
                             <form method="POST" class="mb-3">
                                 <?php if ($course['is_free']): ?>
                                     <button type="submit" name="enroll" class="btn btn-success w-100 btn-lg">
@@ -351,6 +367,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                     </div>
                                 <?php endif; ?>
                             </form>
+                            <?php endif; ?>
                             <ul class="list-unstyled mb-0" style="font-size:.85rem;">
                                 <li class="d-flex gap-2 mb-2"><i class="bi bi-check-circle-fill text-success mt-1"></i><?= (int)($course['total_lessons'] ?? 12) ?> lessons</li>
                                 <li class="d-flex gap-2 mb-2"><i class="bi bi-check-circle-fill text-success mt-1"></i><?= (int)($course['total_hours'] ?? 8) ?> hours of content</li>
