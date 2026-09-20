@@ -1513,6 +1513,32 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 107 — Real Selar prices (Naira) + `compare_price`
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run yet. |
+| Live  | [ ] | | Run after 105. Pull academy + slslanguage.com. |
+
+**What it does:** adds `courses.compare_price` and sets prices from selar_months: 1mo N90,000 (was N105,000), 2mo N180,000 (was N195,000), 3mo N240,000 (read from the live Selar pages 2026-09-20). Requires 105.
+
+**Rollback:** `ALTER TABLE courses DROP COLUMN compare_price;`
+
+---
+
+## 108 — `currency_rates` (Naira -> GBP/USD for price display)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run yet. |
+| Live  | [ ] | | Run after 105. Pull academy + slslanguage.com. |
+
+**What it does:** creates `currency_rates` seeded with the 2026-09-20 rates. Code: `includes/currency.php` (auto-detects visitor currency: Nigeria N, UK £, else $; switcher; daily self-refresh), sls-admin -> Currency Rates.
+
+**Rollback:** `DROP TABLE currency_rates;`
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

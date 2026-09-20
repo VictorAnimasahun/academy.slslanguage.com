@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/bootstrap.php';
+require_once INCLUDES_PATH . '/currency.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -181,7 +182,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             <?php if ($course['is_free']): ?>
                 <span class="hero-badge hero-badge-free"><i class="bi bi-gift"></i> FREE</span>
             <?php else: ?>
-                <span class="hero-badge hero-badge-paid"><i class="bi bi-tag"></i> $<?= number_format($course['price'], 2) ?></span>
+                <span class="hero-badge hero-badge-paid"><i class="bi bi-tag"></i> <?= course_price_html($course) ?></span>
             <?php endif; ?>
             <?php if ($course['is_enrolled']): ?>
                 <span class="hero-badge hero-badge-enrolled"><i class="bi bi-check-circle-fill"></i> Enrolled</span>
@@ -340,7 +341,8 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                     <div class="fw-bold text-success" style="font-size:1.5rem;">FREE</div>
                                     <div class="text-muted" style="font-size:.82rem;">No payment required</div>
                                 <?php else: ?>
-                                    <div class="price">$<?= number_format($course['price'], 2) ?></div>
+                                    <div class="price"><?= course_price_html($course) ?></div>
+                                    <div class="mt-2"><?= currency_switcher_html() ?></div>
                                     <div class="text-muted" style="font-size:.82rem;">One-time payment</div>
                                 <?php endif; ?>
                             </div>

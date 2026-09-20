@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/bootstrap.php';
+require_once INCLUDES_PATH . '/currency.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -133,7 +134,10 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 
         <!-- Results Count -->
         <div class="mb-4">
-            <h5 class="mb-0"><?php echo count($courses); ?> Courses Found</h5>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h5 class="mb-0"><?php echo count($courses); ?> Courses Found</h5>
+                <?= currency_switcher_html() ?>
+            </div>
             <?php if (!empty($search) || !empty($price_filter)): ?>
                 <p class="text-muted mb-0">
                     Filtered by: 
@@ -183,7 +187,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                     <?php if ($course['is_free']): ?>
                                         <span class="badge-free">FREE</span>
                                     <?php else: ?>
-                                        <span class="badge-paid">$<?php echo number_format($course['price'], 2); ?></span>
+                                        <span class="badge-paid"><?= course_price_html($course) ?></span>
                                     <?php endif; ?>
                                 </div>
                             </div>
