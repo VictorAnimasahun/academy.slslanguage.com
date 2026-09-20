@@ -1,0 +1,60 @@
+/* Progress path -- course overview accordion (design "C"), with mock weeks
+   tinted like the "banded weeks" design ("B"). Rendered by
+   includes/course_progress_path.php. Flat design: borders only, no shadows. */
+
+.pp-summary { background:#fff; border:1px solid #dbe0e7; border-radius:18px; padding:1.25rem 1.5rem; margin-bottom:1rem; }
+.pp-summary-title { font-weight:800; font-size:1.15rem; color:#16202f; margin-bottom:.7rem; }
+.pp-bar { height:12px; border-radius:999px; background:#dbe0e7; overflow:hidden; }
+.pp-bar > span { display:block; height:100%; border-radius:999px; background:#33717c; }
+.pp-next { margin-top:.7rem; font-size:.9rem; color:#5b6678; }
+.pp-next a { color:inherit; text-decoration:none; font-weight:600; }
+.pp-next a:hover { text-decoration:underline; }
+
+.pp-week { --card-bg:#fff; background:var(--card-bg); border:1px solid #dbe0e7; border-radius:18px; margin-bottom:.75rem; overflow:hidden; }
+.pp-week.is-open { border:2px solid #33717c; }
+.pp-week.is-mock { --card-bg:var(--tint); border-color:var(--tint); }
+.pp-week.is-mock.is-open { border-color:var(--accent); }
+
+.pp-toggle { width:100%; display:flex; align-items:center; gap:1rem; background:none; border:0; text-align:left; padding:1rem 1.25rem; cursor:pointer; color:#16202f; }
+.pp-toggle:focus-visible { outline:2px solid #33717c; outline-offset:-4px; border-radius:16px; }
+
+.pp-ring { --p:0; --c:#33717c; width:52px; height:52px; flex:none; border-radius:50%; background:conic-gradient(var(--c) calc(var(--p) * 1%), #dbe0e7 0); display:grid; place-items:center; }
+.pp-ring > span { width:calc(100% - 8px); height:calc(100% - 8px); border-radius:50%; background:var(--card-bg); display:grid; place-items:center; font-weight:800; font-size:1.05rem; color:var(--c); }
+.pp-ring.is-done { --c:#3d7a5a; }
+.pp-ring.is-done > span { font-size:1.35rem; }
+
+.pp-head { flex:1; min-width:0; }
+.pp-head-title { font-weight:800; font-size:1.05rem; line-height:1.25; }
+.pp-head-sub { font-size:.86rem; color:#5b6678; margin-top:.1rem; }
+.pp-mock-tag { display:inline-block; margin-left:.4rem; padding:.1rem .55rem; border-radius:999px; font-size:.68rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; background:var(--accent); color:#fff; vertical-align:middle; }
+.pp-chev { flex:none; font-size:1.05rem; color:#475467; transition:transform .2s ease; }
+.pp-toggle:not(.collapsed) .pp-chev { transform:rotate(180deg); }
+
+.pp-body { border-top:1px solid #dbe0e7; margin:0 1.25rem; padding-bottom:.35rem; }
+.pp-week.is-mock .pp-body { border-top-color:rgba(0,0,0,.08); }
+.pp-brief { padding:.6rem 0 .2rem; }
+
+.pp-class { display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.7rem 0; border-bottom:1px solid #eef1f5; }
+.pp-class:last-child { border-bottom:0; }
+.pp-week.is-mock .pp-class { border-bottom-color:rgba(0,0,0,.06); }
+.pp-class-main { display:flex; align-items:center; gap:.65rem; min-width:0; color:#16202f; text-decoration:none; }
+a.pp-class-main:hover .pp-class-title { text-decoration:underline; }
+.pp-class-ico { flex:none; width:22px; text-align:center; font-size:1.1rem; color:#94a3b8; }
+.pp-class-ico.is-done { color:#3d7a5a; }
+.pp-class-ico.is-open { color:var(--accent-week, #33717c); }
+.pp-class-title { font-weight:600; font-size:.95rem; }
+.pp-class-num { font-weight:800; }
+.pp-class.is-locked .pp-class-main { color:#7b8697; }
+.pp-class-meta { flex:none; display:flex; align-items:center; gap:.5rem; font-size:.8rem; color:#5b6678; white-space:nowrap; }
+.pp-class.is-mock { background:var(--tint); margin:0 -1.25rem; padding-left:1.25rem; padding-right:1.25rem; border-bottom-color:transparent; }
+.pp-pill { padding:.1rem .55rem; border-radius:999px; font-size:.68rem; font-weight:800; }
+.pp-pill.free { background:#e3f0e6; color:#2f6b4c; }
+.pp-pill.mock { background:var(--accent); color:#fff; }
+
+@media (max-width:576px) {
+    .pp-toggle { padding:.9rem 1rem; gap:.75rem; }
+    .pp-ring { width:44px; height:44px; }
+    .pp-body { margin:0 1rem; }
+    .pp-class { align-items:flex-start; }
+    .pp-class-meta { flex-direction:column; align-items:flex-end; gap:.15rem; }
+}
