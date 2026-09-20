@@ -1487,6 +1487,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 105 — `courses.selar_months` (which paid duration unlocks a course)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run yet. |
+| Live  | [ ] | | Requires migration 101 (`buy_url`) first (uses `AFTER buy_url`). |
+
+**What it does:** adds nullable `courses.selar_months` (1/2/3) with the same folder_name mapping as 101, so Selar code never has to parse `buy_url`.
+
+**Rollback:** `ALTER TABLE courses DROP COLUMN selar_months;`
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
