@@ -1,28 +1,44 @@
 <?php
 /**
- * Single source of truth for "is this logged-in user an admin/instructor,
- * for the purpose of previewing student-facing content." Replaces the
- * hardcoded $adminEmails list that used to be duplicated verbatim across 15
- * files under resources/mock_tests/ — a new @slslanguage.com hire needed a
- * code change in 15 places to get preview access before this existed.
+ * Single source of truth for "is this logged-in user an admin/instructor/staff
+ * member (or named tester), for the purpose of previewing student-facing
+ * content and bypassing access gates." Every gate calls this one function.
  *
- * Rule (per instructor): any @slslanguage.com email is an admin, plus one
- * legacy personal address (the platform owner's) that predates that rule.
- * ashonibarevik@gmail.com was removed 2026-09-16 per instructor request.
- *
- * Also true for named testers (students.is_tester) -- see is_access_tester().
+ * Decided by the DATABASE, never by the email text: staff/admin = a row in
+ * staff_accounts (migration 104) for the logged-in student AND a verified
+ * email. An address that merely ends in @slslanguage.com proves nothing, so
+ * it no longer grants anything on its own. Testers = students.is_tester.
+ * Grant/revoke from sls-admin (staff_accounts rows are created by an admin
+ * only). Everything fails CLOSED: missing table/column or DB error = no bypass.
  */
 
 function is_platform_admin(): bool {
-    $email = strtolower(trim($_SESSION['user_email'] ?? ''));
-    if ($email === '') return false;
+    return is_staff_account() || is_access_tester();
+}
 
-    if (str_ends_with($email, '@slslanguage.com')) return true;
+/** Staff/admin: a staff_accounts row for this student, and a verified email. */
+function is_staff_account(): bool {
+    static $cache = [];
+    $uid = (int) ($_SESSION['user_id'] ?? 0);
+    if ($uid <= 0) return false;
+    if (array_key_exists($uid, $cache)) return $cache[$uid];
 
-    $legacyAdminEmails = ['animasahunvictor1@gmail.com'];
-    if (in_array($email, $legacyAdminEmails, true)) return true;
-
-    return is_access_tester();
+    global $db;
+    $cache[$uid] = false;
+    if (!isset($db) || !($db instanceof PDO)) return false;
+    try {
+        $stmt = $db->prepare("
+            SELECT 1 FROM staff_accounts sa
+            JOIN students s ON s.id = sa.student_id
+            WHERE sa.student_id = ? AND s.is_verified = 1
+            LIMIT 1
+        ");
+        $stmt->execute([$uid]);
+        $cache[$uid] = (bool) $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        // staff_accounts missing (migration 104 not run) or DB error: stay closed.
+    }
+    return $cache[$uid];
 }
 
 /**

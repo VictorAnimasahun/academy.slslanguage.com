@@ -1474,6 +1474,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 104 — `staff_accounts` (staff/admin decided by the database, not the email ending)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run yet. |
+| Live  | [ ] | | Run BEFORE pulling `includes/admin_check.php`. Afterwards check every staff row has `students.is_verified = 1` (the check requires it). |
+
+**What it does:** creates `staff_accounts` (student_id unique, role admin/staff) and backfills every account the old rule treated as admin (`@slslanguage.com` or the owner's legacy address). `is_platform_admin()` now = staff row + verified email, or `students.is_tester`. The email ending alone grants nothing, so a made-up `fake@slslanguage.com` account gets no bypass.
+
+**Rollback:** `DROP TABLE staff_accounts;`
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
