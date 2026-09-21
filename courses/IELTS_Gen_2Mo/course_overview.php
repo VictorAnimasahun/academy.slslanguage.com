@@ -119,9 +119,9 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1'];
             <div class="content-section">
                 <h2>Course Content</h2>
                 <p class="text-muted small mb-3">
-                    <i class="bi bi-lock-fill me-1 text-warning"></i>Month 1 classes require the
+                    <i class="bi bi-lock-fill me-1 text-warning"></i>Weeks 1-4 require the
                     <strong>Intermediate</strong> plan or above.
-                    Month 2 classes require the <strong>Advanced</strong> plan.
+                    Weeks 5-8 require the <strong>Advanced</strong> plan.
                     <i class="bi bi-unlock-fill ms-3 me-1 text-success"></i>Class 1 is free.
                 </p>
 
@@ -129,7 +129,6 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1'];
                     'folder'       => 'IELTS_Gen_2Mo',
                     'tier_level'   => $student_tier_level,
                     'mock_classes' => [8, 16],
-                    'class_number' => fn($week, $lesson, $i) => ($week - 1) * 8 + (int) $lesson['lesson_order'],
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
                 ]) ?>
@@ -156,7 +155,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1'];
                     </div>
                     <div class="info-card">
                         <h4><i class="bi bi-journal-richtext me-2"></i>2 Full Mock Exams</h4>
-                        <p class="mb-0">End-of-month full timed mock exams with written feedback and band score estimates.</p>
+                        <p class="mb-0">Full timed mock exams with written feedback and band score estimates.</p>
                     </div>
                     <div class="info-card">
                         <h4><i class="bi bi-arrow-up-circle me-2"></i>Upgrade Anytime</h4>

@@ -8,7 +8,8 @@
 if (!function_exists('lesson_title_lines')) {
     /** @return string[] one entry per piece of content */
     function lesson_title_lines(string $title): array {
-        $lines = array_values(array_filter(array_map('trim', preg_split('/\s+\+\s+/u', $title))));
+        $title = preg_replace('/^Class\s+\d+\s*:\s*/u', '', $title);              // the "Class N" label is shown separately
+        $lines = array_values(array_filter(array_map('trim', preg_split('/\s+[+·]\s+/u', $title))));
         return $lines ?: [trim($title)];
     }
     /** HTML: each piece on its own line. $h is the caller's escaper. */

@@ -97,16 +97,15 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
             <div class="content-section">
                 <h2>Course Content</h2>
                 <p class="text-muted small mb-3">
-                    <i class="bi bi-lock-fill me-1 text-warning"></i>Month 1: <strong>Intermediate</strong> plan.
-                    Month 2: <strong>Advanced</strong> plan.
-                    Month 3: <strong>Fluent</strong> plan.
+                    <i class="bi bi-lock-fill me-1 text-warning"></i>Weeks 1-4: <strong>Intermediate</strong> plan.
+                    Weeks 5-8: <strong>Advanced</strong> plan.
+                    Weeks 9-12: <strong>Fluent</strong> plan.
                     <i class="bi bi-info-circle ms-3 me-1 text-primary"></i>Lesson content launching soon.
                 </p>
                 <?= renderProgressPath($modules, $completedLessonIds, [
                     'folder'       => 'PTE_Gen_3Mo',
                     'tier_level'   => $student_tier_level,
                     'mock_classes' => [8, 16, 24],
-                    'class_number' => fn($week, $lesson, $i) => ($week - 1) * 8 + (int) $lesson['lesson_order'],
                     'class_url'    => fn($num, $lesson) => null, // content not built yet
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
@@ -120,7 +119,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                     <div class="info-card"><h4><i class="bi bi-robot me-2"></i>AI-Scored Practice</h4><p class="mb-0">Master the PTE AI scoring algorithm — oral fluency, pronunciation, and enabling skills all covered.</p></div>
                     <div class="info-card"><h4><i class="bi bi-house-heart me-2"></i>Take-Home Tasks</h4><p class="mb-0">One practical task per class — Describe Image recordings, Summarize Written Text, or Repeat Sentence drills.</p></div>
                     <div class="info-card"><h4><i class="bi bi-clipboard-check me-2"></i>5 Practice Test Sets</h4><p class="mb-0">Full PTE Academic practice test sets across all four skills, spread across the 21 teaching classes.</p></div>
-                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>3 Full Mock Exams</h4><p class="mb-0">End-of-month full timed mock exams with detailed scored feedback and target score reports.</p></div>
+                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>3 Full Mock Exams</h4><p class="mb-0">Full timed mock exams with detailed scored feedback and target score reports.</p></div>
                     <div class="info-card"><h4><i class="bi bi-patch-check me-2"></i>Completion Certificate</h4><p class="mb-0">An SLS certificate of completion awarded upon finishing the full PTE Academic Masterclass program.</p></div>
                 </div>
             </div>

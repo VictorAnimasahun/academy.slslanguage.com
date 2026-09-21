@@ -1607,6 +1607,17 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 114 — Weekly structure for IELTS General (1/2/3-month) and PTE (1/2/3-month)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Run on local DB 2026-09-21 (verified: every 1/2/3-month course now has exactly 2 classes per week; class numbers 1..N unchanged). Not ticked until live is confirmed too. |
+| Live  | [ ] | | Back up first. Pull academy first (the six `course_overview.php` files dropped their month-based `class_number` formula — without the pull, class numbers would read 33, 34…). Lesson ids unchanged, so progress is kept. Same mechanism as 109; idempotent (skips a course that already has Week modules). |
+
+**Universal rule (instructor, 2026-09-21):** no 2- or 3-month course has more than 2 classes in a week. After 114 all twelve 1/2/3-month courses comply. NOT touched: `IELTS_Aca_Mst` (old "Masterclass", 26 classes, up to 7 a week) and `IELTS_Aca_Crash` (crash course) — flagged for a decision.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

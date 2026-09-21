@@ -137,7 +137,6 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                     'folder'       => 'IELTS_Gen_Mst',
                     'tier_level'   => $student_tier_level,
                     'mock_classes' => [8, 16, 24],
-                    'class_number' => fn($week, $lesson, $i) => ($week - 1) * 8 + (int) $lesson['lesson_order'],
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
                 ]) ?>
@@ -164,7 +163,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                     </div>
                     <div class="info-card">
                         <h4><i class="bi bi-journal-richtext me-2"></i>3 Full Mock Exams</h4>
-                        <p class="mb-0">End-of-month full timed mock exams with written feedback and band score estimates.</p>
+                        <p class="mb-0">Full timed mock exams with written feedback and band score estimates.</p>
                     </div>
                     <div class="info-card">
                         <h4><i class="bi bi-award me-2"></i>Certificate</h4>
