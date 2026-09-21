@@ -117,28 +117,25 @@ try {
         $correct_opts[(int)$co['question_id']][] = $co['label'];
     }
 
-    // Pre-compute Q29-30 pair scores — this special "choose TWO letters" format is
-    // specific to IELTS_PT_L_001 (Q29/30: "choose the TWO experiences..."). Every
-    // other test's Q29/Q30 are ordinary single-answer questions (confirmed: all 3
-    // CELPIP Reading practice tests have 38 normal questions) — must gate this on
-    // test_code, or any test reaching 30 questions gets its real Q29/Q30 silently
-    // misscored by this exception instead of the normal per-option scoring below.
-    $pair_q_nums   = ($test_code === 'IELTS_PT_L_001') ? [29, 30] : [];
-    $pair_correct  = ['b', 'd'];
-    $pair_selected = [];
-    foreach ($pair_q_nums as $pq) {
-        $pair_selected[$pq] = strtolower(trim($answers[$pq] ?? ''));
-    }
-    $pair_unique = array_unique(array_filter(array_values($pair_selected)));
-    $pair_scores = [29 => 0.0, 30 => 0.0];
-
-    // Only award marks if the pair has no duplicates and each slot selected a correct letter
-    if ($pair_q_nums && count($pair_unique) === count(array_filter(array_values($pair_selected)))) {
-        foreach ($pair_q_nums as $pq) {
-            if (in_array($pair_selected[$pq], $pair_correct) && $pair_selected[29] !== $pair_selected[30]) {
-                $pair_scores[$pq] = 1.0;
-            }
+    // "Choose TWO letters" pairs are scored as a set (either order, one mark per
+    // distinct correct letter). Pairs are declared PER TEST CODE: every other
+    // test's numbered questions are ordinary single-answer questions and must
+    // never be caught by this exception (a past bug — see project memory).
+    $pair_defs_by_test = [
+        'IELTS_PT_L_001' => [[[29, 30], ['b', 'd']]],
+        'IELTS_PT_L_002' => [[[21, 22], ['b', 'd']], [[23, 24], ['b', 'c']]],
+    ];
+    $pair_scores = [];   // question_number => 0.0|1.0
+    foreach ($pair_defs_by_test[$test_code] ?? [] as [$pair_qs, $pair_correct]) {
+        $chosen = [];
+        foreach ($pair_qs as $pq) {
+            $sel = strtolower(trim($answers[$pq] ?? ''));
+            if ($sel !== '') $chosen[$sel] = true;
         }
+        // Give each correct letter the chosen set contains to one of the two slots
+        $awards = 0;
+        foreach ($pair_correct as $c) if (isset($chosen[$c])) $awards++;
+        foreach ($pair_qs as $i => $pq) $pair_scores[$pq] = ($i < $awards) ? 1.0 : 0.0;
     }
 
     // Insert per-question attempt_answers
@@ -153,8 +150,8 @@ try {
         $opt_id      = null;
         $score_awd   = 0.0;
 
-        if (in_array($q_num, $pair_q_nums)) {
-            // Q29-30 pair
+        if (isset($pair_scores[$q_num])) {
+            // "Choose TWO" pair member
             $score_awd = $pair_scores[$q_num];
         } elseif (isset($options_map[$q_id])) {
             // Any question with defined answer options (multiple_choice_single/multiple,

@@ -1565,6 +1565,28 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 020 (listening PT2) — Seed IELTS Listening Practice Test 2 (`IELTS_PT_L_002`)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Never logged before; status unknown. Idempotent (wipes + re-inserts its own 40 questions), safe to run. |
+| Live  | [ ] | | Run BEFORE 111. Idempotent. |
+
+**Note:** file is `020_seed_ielts_listening_pt2.sql` (a different file from `020_seed_fm1_mock_exam_entry.sql`). Content confirmed against the printed paper 2026-09-21 (all 4 parts). Page `ielts_listening_002.php` rebuilt the same day on the Test 1 engine: audio from SLS `IELTS Listening Test 2 - Part N.mp4` -> `assets/audio/IELTS_PT_L_002/partN.mp4`, map `assets/images/ielts_listening_002_map.png`, two "choose TWO" pairs (Q21-22, Q23-24) scored per-test in `save_attempt.php`.
+
+---
+
+## 111 — Wire Listening Test 2 into Class 6 (IELTS Academic 2Mo + 3Mo)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Not run. Page logic tested in a stubbed jsdom render (40/40, pair order-independence, empty = 0); not tested against the real DB while logged in. |
+| Live  | [ ] | | Needs 020 (listening PT2) first. Also pull academy for the page, audio (~55 MB of mp4), map image, save_attempt.php, class6.php x2. |
+
+**What it does:** sets `file_path` on the "Listening Test 2 + Map Description & Passive Voice" lesson of both courses and removes the "No Listening Test 2 built yet" note.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

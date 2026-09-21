@@ -67,10 +67,10 @@ $canAccess = can_access($minTier);
                 </div>
             <?php else: ?>
 
-                <div class="highlight-box">
-                    <h4 style="color:var(--accent);"><i class="bi bi-hourglass-split me-2"></i>Coming Soon</h4>
-                    <p class="mb-0">This class's lesson content is still being finalized. Please register for the course (or check back soon) to get full access as it's added.</p>
-                </div>
+                <div class="lesson-content mb-4"><h5>Listening</h5><ul><li>Complete Listening Test 2</li><li>Answer review focused on weak section types</li></ul><h5>Writing</h5><ul><li>Map description phrases and passive voice</li><li>Strengthening weak arguments</li><li>Exercises on both</li></ul></div>
+                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_listening_002.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                    <i class="bi bi-box-arrow-up-right me-2"></i>Open Listening Test 2
+                </a>
 
             <?php endif; ?>
 
