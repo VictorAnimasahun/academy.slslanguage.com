@@ -35,6 +35,13 @@ $canAccess = can_access($minTier);
         .lesson-item:last-child { border-bottom: 0; }
         .lesson-item h5 { margin-top: 0; }
         .lesson-item .btn { margin-top: .5rem; }
+        .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
+        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
+        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
+        .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
+        .class-title-line { display: block; }
+        .class-title-line + .class-title-line { margin-top: .2rem; }
         .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
         .lesson-nav .btn { max-width: 47%; }
     </style>
@@ -55,11 +62,13 @@ $canAccess = can_access($minTier);
                 </ol>
             </nav>
 
-            <p class="text-muted small mb-1">Week 4 — Reading Test 2 & Speaking Test 2 &nbsp;·&nbsp; Class 8 of 16</p>
-            <h1 class="mb-3">
-                <i class="bi bi-mic me-2" style="color:#0b77ff;"></i>
-                Speaking Test 2<br>Task 1 Report Structuring
-            </h1>
+            <div class="class-head">
+                <div class="class-head-icon"><i class="bi bi-mic"></i></div>
+                <div>
+                    <div class="class-chips"><span class="class-chip">Week 4</span><span class="class-chip">Class 8 of 16</span></div>
+                    <h1 class="class-title"><span class="class-title-line">Speaking Test 2</span><span class="class-title-line">Task 1 Report Structuring</span></h1>
+                </div>
+            </div>
 
             <?php if (!$canAccess): ?>
                 <div class="highlight-box">

@@ -31,6 +31,13 @@ $canAccess = can_access($minTier);
         .lesson-content li { margin-bottom: .4rem; }
         .lesson-content h5 { margin-top: 1.25rem; font-weight: 700; color: #0b77ff; }
         .lesson-content h5:first-child { margin-top: 0; }
+        .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
+        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
+        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
+        .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
+        .class-title-line { display: block; }
+        .class-title-line + .class-title-line { margin-top: .2rem; }
         .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
         .lesson-nav .btn { max-width: 47%; }
     </style>
@@ -51,11 +58,13 @@ $canAccess = can_access($minTier);
                 </ol>
             </nav>
 
-            <p class="text-muted small mb-1">Week 9 — Mock 2 Review & Listening Test 4 &nbsp;·&nbsp; Class 18 of 24</p>
-            <h1 class="mb-3">
-                <i class="bi bi-headphones me-2" style="color:#0b77ff;"></i>
-                Listening Test 4<br>Advanced Listening
-            </h1>
+            <div class="class-head">
+                <div class="class-head-icon"><i class="bi bi-headphones"></i></div>
+                <div>
+                    <div class="class-chips"><span class="class-chip">Week 9</span><span class="class-chip">Class 18 of 24</span></div>
+                    <h1 class="class-title"><span class="class-title-line">Listening Test 4</span><span class="class-title-line">Advanced Listening</span></h1>
+                </div>
+            </div>
 
             <?php if (!$canAccess): ?>
                 <div class="highlight-box">

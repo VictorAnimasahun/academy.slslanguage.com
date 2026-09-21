@@ -19,7 +19,7 @@ $canAccess = can_access($minTier);
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Complete Reading Test 3 + Listening: Fast Audio Drills — <?= htmlspecialchars($course['title']) ?></title>
+    <title>Complete Reading Test 3 · Listening: Fast Audio Drills — <?= htmlspecialchars($course['title']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -29,6 +29,18 @@ $canAccess = can_access($minTier);
         .lesson-content { font-size: .95rem; line-height: 1.8; color: #1f2937; }
         .lesson-content ul { padding-left: 1.25rem; }
         .lesson-content li { margin-bottom: .4rem; }
+        .lesson-item { padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
+        .lesson-item:last-child { border-bottom: 0; }
+        .lesson-item h5 { margin-top: 0; }
+        .lesson-item p { margin-bottom: .5rem; }
+        .lesson-item .btn { margin-top: .5rem; }
+        .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
+        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
+        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
+        .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
+        .class-title-line { display: block; }
+        .class-title-line + .class-title-line { margin-top: .2rem; }
         .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
         .lesson-nav .btn { max-width: 47%; }
     </style>
@@ -45,15 +57,17 @@ $canAccess = can_access($minTier);
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../courses_catalogue.php" class="text-decoration-none">Courses</a></li>
                     <li class="breadcrumb-item"><a href="course_overview.php" class="text-decoration-none"><?= htmlspecialchars($course['title']) ?></a></li>
-                    <li class="breadcrumb-item active">Complete Reading Test 3 + Listening: Fast Audio Drills</li>
+                    <li class="breadcrumb-item active">Complete Reading Test 3 · Listening: Fast Audio Drills</li>
                 </ol>
             </nav>
 
-            <p class="text-muted small mb-1">Week 7 — Reading + Speaking Focus &nbsp;·&nbsp; Class 13 of 16</p>
-            <h1 class="mb-3">
-                <i class="bi bi-book me-2" style="color:#0b77ff;"></i>
-                Complete Reading Test 3 + Listening: Fast Audio Drills
-            </h1>
+            <div class="class-head">
+                <div class="class-head-icon"><i class="bi bi-book"></i></div>
+                <div>
+                    <div class="class-chips"><span class="class-chip">Week 7</span><span class="class-chip">Class 13 of 16</span></div>
+                    <h1 class="class-title"><span class="class-title-line">Complete Reading Test 3</span><span class="class-title-line">Listening: Fast Audio Drills</span></h1>
+                </div>
+            </div>
 
             <?php if (!$canAccess): ?>
                 <div class="highlight-box">
@@ -65,9 +79,17 @@ $canAccess = can_access($minTier);
                 </div>
             <?php else: ?>
 
-                <div class="lesson-content mb-4"><ul><li>Reading: Complete Reading Test 3, full answer review.</li><li>Listening: fast audio drills.</li></ul></div>
-                <a href="<?= ACADEMY_URL ?>resources/practice_tests/celpip_reading_003.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-2"></i>Open Test</a>
-
+                <div class="lesson-content mb-4">
+                    <div class="lesson-item">
+                        <h5>Complete Reading Test 3</h5>
+                        <p>Full answer review.</p>
+                        <a href="<?= ACADEMY_URL ?>resources/practice_tests/celpip_reading_003.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-2"></i>Open Test</a>
+                    </div>
+                    <div class="lesson-item">
+                        <h5>Listening: Fast Audio Drills</h5>
+                        <p>fast audio drills.</p>
+                    </div>
+                </div>
             <?php endif; ?>
 
             <div class="lesson-nav">

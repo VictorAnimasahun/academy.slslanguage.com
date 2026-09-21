@@ -42,6 +42,7 @@ $stmt->execute([$student_id]);
 $done = array_flip(array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
 $tier = get_student_tier_level();
 
+require_once INCLUDES_PATH . '/lesson_title.php';
 $stmt = $db->prepare("SELECT id, title, file_path, min_tier, duration_minutes, icon FROM lessons WHERE module_id = ? ORDER BY lesson_order");
 $stmt->execute([$moduleId]);
 $lessons = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -137,7 +138,7 @@ $color = '#0b77ff';
                     $note = $locked ? 'Upgrade to unlock' : ($isDone ? 'Completed' : ((int)$l['duration_minutes'] ? (int)$l['duration_minutes'] . ' min' : ''));
                 ?>
                 <li>
-                    <a href="<?= $h($href) ?>"><strong>Class <?= $n + 1 ?>:</strong> <?= $h($l['title']) ?></a>
+                    <a href="<?= $h($href) ?>"><strong>Class <?= $n + 1 ?></strong><?= lesson_title_html($l['title'], $h) ?></a>
                     <span class="wk-muted small text-nowrap"><?= $h($note) ?></span>
                 </li>
                 <?php endforeach; ?>

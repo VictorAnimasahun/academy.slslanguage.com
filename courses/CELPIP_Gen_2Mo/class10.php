@@ -29,6 +29,18 @@ $canAccess = can_access($minTier);
         .lesson-content { font-size: .95rem; line-height: 1.8; color: #1f2937; }
         .lesson-content ul { padding-left: 1.25rem; }
         .lesson-content li { margin-bottom: .4rem; }
+        .lesson-item { padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
+        .lesson-item:last-child { border-bottom: 0; }
+        .lesson-item h5 { margin-top: 0; }
+        .lesson-item p { margin-bottom: .5rem; }
+        .lesson-item .btn { margin-top: .5rem; }
+        .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
+        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
+        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
+        .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
+        .class-title-line { display: block; }
+        .class-title-line + .class-title-line { margin-top: .2rem; }
         .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
         .lesson-nav .btn { max-width: 47%; }
     </style>
@@ -49,11 +61,13 @@ $canAccess = can_access($minTier);
                 </ol>
             </nav>
 
-            <p class="text-muted small mb-1">Week 5 — Mock Exam + Review &nbsp;·&nbsp; Class 10 of 16</p>
-            <h1 class="mb-3">
-                <i class="bi bi-clipboard-data me-2" style="color:#0b77ff;"></i>
-                Mock 1 Review & Band Estimate
-            </h1>
+            <div class="class-head">
+                <div class="class-head-icon"><i class="bi bi-clipboard-data"></i></div>
+                <div>
+                    <div class="class-chips"><span class="class-chip">Week 5</span><span class="class-chip">Class 10 of 16</span></div>
+                    <h1 class="class-title"><span class="class-title-line">Mock 1 Review & Band Estimate</span></h1>
+                </div>
+            </div>
 
             <?php if (!$canAccess): ?>
                 <div class="highlight-box">
@@ -65,9 +79,17 @@ $canAccess = can_access($minTier);
                 </div>
             <?php else: ?>
 
-                <div class="lesson-content mb-4"><ul><li>Review: Mock 1 band estimate, Writing corrections, Speaking oral feedback.</li><li>Reading: time-saving techniques.</li></ul></div>
-                <a href="<?= ACADEMY_URL ?>courses/CELPIP_Gen/lessons/week8_mock1_review.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-2"></i>Open Test</a>
-
+                <div class="lesson-content mb-4">
+                    <div class="lesson-item">
+                        <h5>Review</h5>
+                        <p>Mock 1 band estimate, Writing corrections, Speaking oral feedback.</p>
+                        <a href="<?= ACADEMY_URL ?>courses/CELPIP_Gen/lessons/week8_mock1_review.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-2"></i>Open Test</a>
+                    </div>
+                    <div class="lesson-item">
+                        <h5>Reading</h5>
+                        <p>time-saving techniques.</p>
+                    </div>
+                </div>
             <?php endif; ?>
 
             <div class="lesson-nav">

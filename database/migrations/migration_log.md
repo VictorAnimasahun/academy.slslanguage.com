@@ -1587,6 +1587,15 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 112 — Week titles: no "+" (CELPIP_Gen_2Mo / CELPIP_Gen_3Mo)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Run on local DB 2026-09-21 (0 week titles left with " + "). Not ticked until live is confirmed too. |
+| Live  | [ ] | | Cosmetic, idempotent, folder_name lookups only. Pull academy too: class-page regrouping + `includes/lesson_title.php` (all class titles now display one piece per line). |
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
