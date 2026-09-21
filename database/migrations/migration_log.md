@@ -1618,6 +1618,15 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 115 — IELTS Academic Masterclass: Weeks 5-6 regrouped to 2 classes a week
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Run on local DB 2026-09-21 (verified: 26 -> 16 classes, exactly 2 per week; re-run is a no-op). Not ticked until live is confirmed too. |
+| Live  | [ ] | | Back up first, pull academy first (`courses/IELTS_Aca_Mst/lesson.php` now shows one lesson per line). Deletes the 10 extra lesson rows after merging them into 4 classes; students who finished every lesson of a group are marked complete on the merged class. `IELTS_Aca_Crash` deliberately left alone (instructor decision). |
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
