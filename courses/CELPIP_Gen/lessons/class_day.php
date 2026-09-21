@@ -234,7 +234,13 @@ if (!isset($SLOTS[$slot])) {
     die("Unknown class slot.");
 }
 $cfg = $SLOTS[$slot];
-$page_title = 'Complete ' . $cfg['test']['skill'] . ' Test + ' . $cfg['lesson']['topic'];
+// Two pieces of content per class day, each shown on its own line (never joined with "+").
+$title_test   = 'Complete ' . $cfg['test']['skill'] . ' Test';
+$title_lesson = $cfg['lesson']['skill'] . ': ' . $cfg['lesson']['topic'];
+$page_title   = $title_test . ' · ' . $title_lesson; // single-line contexts only (tab title, breadcrumb)
+// Course this class is being taken in (set by course_context.php from ?from=). Class numbers are
+// shared; only the length of the course differs.
+$class_total = ($_SESSION['celpip_gen_from'] ?? 'CELPIP_Gen_3Mo') === 'CELPIP_Gen_2Mo' ? 16 : 24;
 
 if (!can_access('intermediate')) {
     ?>
@@ -279,6 +285,13 @@ if (!can_access('intermediate')) {
         .test-block { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:1.5rem; margin-bottom:1.5rem; }
         .test-not-built { background:#fef3c7; border:1px dashed #fcd34d; border-radius:10px; padding:1rem 1.25rem; color:#92400e; font-size:.9rem; }
         .test-dual-links { display:flex; flex-direction:column; gap:.6rem; }
+        .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
+        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
+        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
+        .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
+        .class-title-line { display: block; }
+        .class-title-line + .class-title-line { margin-top: .2rem; }
     </style>
 </head>
 <body>
@@ -297,12 +310,16 @@ if (!can_access('intermediate')) {
                 </ol>
             </nav>
 
-            <h1 class="mb-3"><i class="bi bi-calendar2-week me-2" style="color:#0b77ff;"></i><?= htmlspecialchars($page_title) ?></h1>
-            <div class="highlight-box">
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                    <div><h4 class="mb-2" style="color:var(--accent);">Class Overview</h4>
-                        <p class="mb-0"><strong>Week:</strong> <?= htmlspecialchars($cfg['week']) ?> &nbsp;|&nbsp; <strong>Class:</strong> <?= (int) $cfg['class_num'] ?> of 24</p></div>
-                    <div class="d-flex flex-wrap gap-2"><span class="badge-custom"><?= htmlspecialchars($cfg['test']['skill']) ?> Test</span><span class="badge-custom"><?= htmlspecialchars($cfg['lesson']['skill']) ?> Lesson</span></div>
+            <div class="class-head">
+                <div class="class-head-icon"><i class="bi bi-calendar2-week"></i></div>
+                <div>
+                    <div class="class-chips">
+                        <span class="class-chip"><?= htmlspecialchars($cfg['week']) ?></span>
+                        <span class="class-chip">Class <?= (int) $cfg['class_num'] ?> of <?= (int) $class_total ?></span>
+                        <span class="class-chip"><?= htmlspecialchars($cfg['test']['skill']) ?> test</span>
+                        <span class="class-chip"><?= htmlspecialchars($cfg['lesson']['skill']) ?> lesson</span>
+                    </div>
+                    <h1 class="class-title"><span class="class-title-line"><?= htmlspecialchars($title_test) ?></span><span class="class-title-line"><?= htmlspecialchars($title_lesson) ?></span></h1>
                 </div>
             </div>
 

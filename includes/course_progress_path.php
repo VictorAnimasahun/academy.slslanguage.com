@@ -117,7 +117,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             $lid = (int) ($lesson['lesson_id'] ?? $lesson['id'] ?? 0);
             $num = $numFn ? (int) $numFn($weekNum, $lesson, $n) : $n;
             if ($urlFn)                              $url = $urlFn($num, $lesson);
-            elseif (!empty($lesson['file_path']))    $url = ACADEMY_URL . $lesson['file_path'] . '?from=' . $folder;
+            elseif (!empty($lesson['file_path']))    $url = ACADEMY_URL . $lesson['file_path'] . (str_contains($lesson['file_path'], '?') ? '&' : '?') . 'from=' . $folder;
             else                                     $url = null;
             $url    = ($url && ($levels[$lesson['min_tier']] ?? 1) <= $tierLevel) ? $url : null; // null = locked
             $isDone = isset($doneSet[$lid]);

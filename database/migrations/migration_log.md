@@ -1596,6 +1596,17 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 113 — CELPIP 2-Month = first 16 classes of the CELPIP 3-Month
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [ ] | | Run on local DB 2026-09-21 (verified: 16 classes identical to 3-Month Classes 1-16; Mock A pacing row now Class 15). Not ticked until live is confirmed too. |
+| Live  | [ ] | | Pull academy first (class_day.php + progress-path fix + 2-month overview; `courses/CELPIP_Gen_2Mo/class*.php` deleted), then run. Existing student progress rows keep working (lesson ids unchanged). Mock 2 (old Class 16) is gone from the 2-month by design. |
+
+**Also fixed in the same push:** `includes/course_progress_path.php` built class links as `class_day.php?slot=c3?from=...` (second `?`), so the 3-Month class links landed on "Unknown class slot". Now joins with `&`.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
