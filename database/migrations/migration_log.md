@@ -1556,8 +1556,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (verified: 2 tests rows + Class 5 file_path set; hub + task pages render as an enrolled student). Not ticked until live is confirmed too. |
-| Live  | [ ] | | Pull academy first (new pages + `assets/images/ielts_academic/` + class pages), then run. Requires nothing else; independent of 105-109. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (verified: 2 tests rows + Class 5 file_path set; hub + task pages render as an enrolled student). |
+| Live  | [x] | 2026-09-21 | Pull academy first (new pages + `assets/images/ielts_academic/` + class pages), then run. Requires nothing else; independent of 105-109. Confirmed run by the instructor. |
 
 **What it does:** seeds `IELTS_PT_W1_ACA_001` / `IELTS_PT_W2_ACA_001`, sets Class 5 of IELTS_Aca_2Mo/3Mo to the new hub, removes the "no Academic Writing Test" note. Content = official IELTS.org sample tasks 1A/2A + Band 5/6 candidate scripts (Model Answers page).
 
@@ -1569,8 +1569,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (verified: 40 questions, 32 text answers; real save_attempt scored a perfect run 40/40 and a wrong-pair run 38/40). Not ticked until live is confirmed too. |
-| Live  | [ ] | | Run BEFORE 111. Idempotent. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (verified: 40 questions, 32 text answers; real save_attempt scored a perfect run 40/40 and a wrong-pair run 38/40). |
+| Live  | [x] | 2026-09-21 | Run BEFORE 111. Idempotent. Confirmed run by the instructor. |
 
 **Note:** file is `020_seed_ielts_listening_pt2.sql` (a different file from `020_seed_fm1_mock_exam_entry.sql`). Content confirmed against the printed paper 2026-09-21 (all 4 parts). Page `ielts_listening_002.php` rebuilt the same day on the Test 1 engine: audio from SLS `IELTS Listening Test 2 - Part N.mp4` -> `assets/audio/IELTS_PT_L_002/partN.mp4`, map `assets/images/ielts_listening_002_map.png`, two "choose TWO" pairs (Q21-22, Q23-24) scored per-test in `save_attempt.php`.
 
@@ -1580,8 +1580,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (verified: both courses' Class 6 file_path set; Class 5 + 6 pages render with their buttons). Not ticked until live is confirmed too. |
-| Live  | [ ] | | Needs 020 (listening PT2) first. Also pull academy for the page, audio (~55 MB of mp4), map image, save_attempt.php, class6.php x2. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (verified: both courses' Class 6 file_path set; Class 5 + 6 pages render with their buttons). |
+| Live  | [x] | 2026-09-21 | Needs 020 (listening PT2) first. Also pull academy for the page, audio (~55 MB of mp4), map image, save_attempt.php, class6.php x2. Confirmed run by the instructor. |
 
 **What it does:** sets `file_path` on the "Listening Test 2 + Map Description & Passive Voice" lesson of both courses and removes the "No Listening Test 2 built yet" note.
 
