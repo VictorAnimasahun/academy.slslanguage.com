@@ -42,7 +42,7 @@
 .pp-class-toggle { width:100%; display:flex; align-items:center; justify-content:space-between; gap:.75rem; background:none; border:0; text-align:left; padding:.85rem 0; cursor:pointer; color:#16202f; }
 .pp-class-toggle:focus-visible { outline:2px solid #33717c; outline-offset:2px; border-radius:6px; }
 .pp-class-title { font-weight:700; font-size:.98rem; }
-.pp-class-num { display:block; font-weight:800; font-size:.72rem; letter-spacing:.05em; text-transform:uppercase; color:#5b6678; margin-bottom:.1rem; }
+.pp-class-num { font-weight:800; }
 .pp-class-title .lesson-line { font-weight:700; line-height:1.35; }
 .pp-next .lesson-line { font-weight:600; }
 .pp-class.is-locked .pp-class-title { color:#7b8697; }

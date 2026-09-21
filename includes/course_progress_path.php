@@ -178,24 +178,29 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             $isCurCl  = $next && $next['num'] === $c['num'];
 
             // Parts: the class lesson first, then the tests/quizzes attached to it.
-            $parts = [['title' => $lesson['title'], 'kind' => 'Class lesson', 'meta' => (int) $lesson['duration_minutes'] . ' min', 'done' => $c['done'], 'lesson' => true]];
+            // Every piece of the class (the stored title joins them with " + ") gets its own line.
+            $parts = [];
+            foreach (lesson_title_lines($lesson['title']) as $piece) {
+                $parts[] = ['title' => $piece, 'kind' => 'Class lesson', 'meta' => '', 'done' => $c['done'], 'lesson' => true];
+            }
             foreach ($partsByLesson[$lid] ?? [] as $pt) $parts[] = $pt + ['meta' => '', 'lesson' => false];
             $partsDone = count(array_filter($parts, fn($p) => $p['done']));
             $cid2 = 'pp-class-' . $lid;
 
             $out .= '<div class="pp-class' . ($can ? '' : ' is-locked') . ($isMockCl ? ' is-mock' : '') . '">';
             $out .= '<button class="pp-class-toggle' . ($isCurCl ? '' : ' collapsed') . '" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cid2 . '" aria-expanded="' . ($isCurCl ? 'true' : 'false') . '" aria-controls="' . $cid2 . '">';
-            $out .= '<span class="pp-class-title"><span class="pp-class-num">Class ' . $c['num'] . '</span>' . lesson_title_html($lesson['title'], $h) . '</span>';
+            $out .= '<span class="pp-class-title">Class ' . $c['num'] . '</span>';
             $out .= '<span class="pp-class-meta">';
             if ($isMockCl) $out .= '<span class="pp-pill mock">Mock exam</span>';
             elseif ($required === 1) $out .= '<span class="pp-pill free">Free</span>';
             if (!$can) $out .= '<i class="bi bi-lock-fill"></i>';
+            $out .= (int) $lesson['duration_minutes'] > 0 ? '<span>' . (int) $lesson['duration_minutes'] . ' min</span>' : '';
             $out .= '<span>' . $partsDone . ' of ' . count($parts) . ' done</span><i class="bi bi-chevron-down pp-chev"></i></span></button>';
 
             $out .= '<div id="' . $cid2 . '" class="collapse' . ($isCurCl ? ' show' : '') . '" data-bs-parent="#' . $bodyId . '"><ul class="pp-parts">';
             foreach ($parts as $pt) {
                 $ico  = $pt['done'] ? '<i class="bi bi-check-circle-fill pp-part-ico is-done"></i>' : '<span class="pp-part-ico is-todo"></span>';
-                $text = '<span class="pp-part-text"><span class="pp-part-title' . ($pt['done'] ? ' is-done' : '') . '">' . (!empty($pt['lesson']) ? lesson_title_html($pt['title'], $h) : $h($pt['title'])) . '</span>'
+                $text = '<span class="pp-part-text"><span class="pp-part-title' . ($pt['done'] ? ' is-done' : '') . '">' . $h($pt['title']) . '</span>'
                       . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '')) . '</span></span>';
                 $inner = $ico . $text;
                 $out  .= '<li>' . (($pt['lesson'] && $can)
