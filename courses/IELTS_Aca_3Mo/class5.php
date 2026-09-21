@@ -71,6 +71,9 @@ $canAccess = can_access($minTier);
                 <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_writing_academic_001.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Writing Test 1
                 </a>
+                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_listening_formats_sample.php" class="btn btn-outline-primary btn-lg ms-2" target="_blank" rel="noopener">
+                    <i class="bi bi-headphones me-2"></i>Open Listening Question Formats
+                </a>
 
             <?php endif; ?>
 
