@@ -44,6 +44,8 @@ const PP_PALETTE = [
  * Looks tests up by code in separate queries (no string-column join), the
  * same pattern course_pacing.php uses -- avoids collation mismatches.
  */
+require_once __DIR__ . '/lesson_title.php';
+
 function progressPathLoadParts(PDO $db, int $courseId, int $studentId): array {
     $stmt = $db->prepare("SELECT lesson_id, title, item_type, test_code FROM course_pacing_items WHERE course_id = ? AND lesson_id IS NOT NULL ORDER BY display_order");
     $stmt->execute([$courseId]);
@@ -134,9 +136,9 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
     $out  = '<div class="pp-summary"><div class="pp-summary-title">' . $totalDone . ' of ' . $totalClasses . ' classes complete</div>';
     $out .= '<div class="pp-bar" role="progressbar" aria-valuenow="' . $pct . '" aria-valuemin="0" aria-valuemax="100"><span style="width:' . $pct . '%"></span></div>';
     if ($next) {
-        $label = 'Class ' . $next['num'] . ': ' . $h($next['lesson']['title']);
+        $label = lesson_title_html($next['lesson']['title'], $h);
         if ($next['url']) $label = '<a href="' . $h($next['url']) . '">' . $label . '</a>';
-        $out .= '<div class="pp-next">Up next: ' . $label . ' in ' . $unit . ' ' . (int) $next['week'] . '</div>';
+        $out .= '<div class="pp-next">Up next: Class ' . (int) $next['num'] . ', ' . $unit . ' ' . (int) $next['week'] . $label . '</div>';
     } else {
         $out .= '<div class="pp-next">All classes complete. Well done!</div>';
     }
@@ -183,7 +185,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
 
             $out .= '<div class="pp-class' . ($can ? '' : ' is-locked') . ($isMockCl ? ' is-mock' : '') . '">';
             $out .= '<button class="pp-class-toggle' . ($isCurCl ? '' : ' collapsed') . '" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cid2 . '" aria-expanded="' . ($isCurCl ? 'true' : 'false') . '" aria-controls="' . $cid2 . '">';
-            $out .= '<span class="pp-class-title"><span class="pp-class-num">Class ' . $c['num'] . ':</span> ' . $h($lesson['title']) . '</span>';
+            $out .= '<span class="pp-class-title"><span class="pp-class-num">Class ' . $c['num'] . '</span>' . lesson_title_html($lesson['title'], $h) . '</span>';
             $out .= '<span class="pp-class-meta">';
             if ($isMockCl) $out .= '<span class="pp-pill mock">Mock exam</span>';
             elseif ($required === 1) $out .= '<span class="pp-pill free">Free</span>';
@@ -193,7 +195,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             $out .= '<div id="' . $cid2 . '" class="collapse' . ($isCurCl ? ' show' : '') . '" data-bs-parent="#' . $bodyId . '"><ul class="pp-parts">';
             foreach ($parts as $pt) {
                 $ico  = $pt['done'] ? '<i class="bi bi-check-circle-fill pp-part-ico is-done"></i>' : '<span class="pp-part-ico is-todo"></span>';
-                $text = '<span class="pp-part-text"><span class="pp-part-title' . ($pt['done'] ? ' is-done' : '') . '">' . $h($pt['title']) . '</span>'
+                $text = '<span class="pp-part-text"><span class="pp-part-title' . ($pt['done'] ? ' is-done' : '') . '">' . (!empty($pt['lesson']) ? lesson_title_html($pt['title'], $h) : $h($pt['title'])) . '</span>'
                       . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '')) . '</span></span>';
                 $inner = $ico . $text;
                 $out  .= '<li>' . (($pt['lesson'] && $can)

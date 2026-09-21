@@ -28,6 +28,8 @@ const WEEK_BRIEF_TYPE_LABELS = [
     'note'          => 'Note',
 ];
 
+require_once __DIR__ . '/lesson_title.php';
+
 function weekBriefLoad(PDO $db, int $moduleId): ?array {
     $stmt = $db->prepare("SELECT id, course_id, module_title, module_order FROM modules WHERE id = ?");
     $stmt->execute([$moduleId]);
@@ -155,7 +157,7 @@ function weekBriefText(array $b): string {
     $t = $b['module']['module_title'] . "\n\n";
     if ($b['lessons']) {
         $t .= "Classes:\n";
-        foreach ($b['lessons'] as $l) $t .= ' - ' . $l['title'] . "\n";
+        foreach ($b['lessons'] as $l) foreach (lesson_title_lines($l['title']) as $line) $t .= ' - ' . $line . "\n";
         $t .= "\n";
     }
     if ($b['summary'] !== '') $t .= $b['summary'] . "\n\n";
@@ -282,7 +284,7 @@ function renderWeekPanel(PDO $db, int $courseId, int $studentId, ?int $moduleId 
         elseif ($fp === '') $href = weekIntroUrl($moduleId, 'classes');
         else $href = ACADEMY_URL . $fp . (str_contains($fp, '?') ? '&' : '?') . 'from=' . urlencode($courseFolder);
         $mark = isset($done[(int)$l['id']]) ? '&#10003; ' : ($locked ? '&#128274; ' : '');
-        $o .= '<div style="padding:.25rem 0;border-bottom:1px solid #eef1f4;"><a href="' . $h($href) . '" style="text-decoration:none;">' . $mark . $h($l['title']) . '</a></div>';
+        $o .= '<div style="padding:.25rem 0;border-bottom:1px solid #eef1f4;"><a href="' . $h($href) . '" style="text-decoration:none;">' . $mark . lesson_title_html($l['title'], $h) . '</a></div>';
     }
 
     if ($b['summary'] !== '') {

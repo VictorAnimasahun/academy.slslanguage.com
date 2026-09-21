@@ -19,7 +19,7 @@ $canAccess = can_access($minTier);
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Mock 1 Review + Reading Time-Management — <?= htmlspecialchars($course['title']) ?></title>
+    <title>Mock 1 Review · Reading Time-Management — <?= htmlspecialchars($course['title']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -47,14 +47,14 @@ $canAccess = can_access($minTier);
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../courses_catalogue.php" class="text-decoration-none">Courses</a></li>
                     <li class="breadcrumb-item"><a href="course_overview.php" class="text-decoration-none"><?= htmlspecialchars($course['title']) ?></a></li>
-                    <li class="breadcrumb-item active">Mock 1 Review + Reading Time-Management</li>
+                    <li class="breadcrumb-item active">Mock 1 Review · Reading Time-Management</li>
                 </ol>
             </nav>
 
             <p class="text-muted small mb-1">Week 5 — Mock Test 1 & Review &nbsp;·&nbsp; Class 10 of 24</p>
             <h1 class="mb-3">
                 <i class="bi bi-bar-chart me-2" style="color:#0b77ff;"></i>
-                Mock 1 Review + Reading Time-Management
+                Mock 1 Review<br>Reading Time-Management
             </h1>
 
             <?php if (!$canAccess): ?>

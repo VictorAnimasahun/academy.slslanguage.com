@@ -19,7 +19,7 @@ $canAccess = can_access($minTier);
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Writing Test 3 (Timed) + Final Self-Assessment — <?= htmlspecialchars($course['title']) ?></title>
+    <title>Writing Test 3 (Timed) · Final Self-Assessment — <?= htmlspecialchars($course['title']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -47,14 +47,14 @@ $canAccess = can_access($minTier);
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../courses_catalogue.php" class="text-decoration-none">Courses</a></li>
                     <li class="breadcrumb-item"><a href="course_overview.php" class="text-decoration-none"><?= htmlspecialchars($course['title']) ?></a></li>
-                    <li class="breadcrumb-item active">Writing Test 3 (Timed) + Final Self-Assessment</li>
+                    <li class="breadcrumb-item active">Writing Test 3 (Timed) · Final Self-Assessment</li>
                 </ol>
             </nav>
 
             <p class="text-muted small mb-1">Week 8 — Writing Test 3 & Final Mock &nbsp;·&nbsp; Class 15 of 16</p>
             <h1 class="mb-3">
                 <i class="bi bi-pencil-square me-2" style="color:#0b77ff;"></i>
-                Writing Test 3 (Timed) + Final Self-Assessment
+                Writing Test 3 (Timed)<br>Final Self-Assessment
             </h1>
 
             <?php if (!$canAccess): ?>

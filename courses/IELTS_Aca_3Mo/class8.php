@@ -19,7 +19,7 @@ $canAccess = can_access($minTier);
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Speaking Test 2 + Task 1 Report Structuring — <?= htmlspecialchars($course['title']) ?></title>
+    <title>Speaking Test 2 · Task 1 Report Structuring — <?= htmlspecialchars($course['title']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -31,6 +31,10 @@ $canAccess = can_access($minTier);
         .lesson-content li { margin-bottom: .4rem; }
         .lesson-content h5 { margin-top: 1.25rem; font-weight: 700; color: #0b77ff; }
         .lesson-content h5:first-child { margin-top: 0; }
+        .lesson-item { padding: 1rem 0; border-bottom: 1px solid #e5e7eb; }
+        .lesson-item:last-child { border-bottom: 0; }
+        .lesson-item h5 { margin-top: 0; }
+        .lesson-item .btn { margin-top: .5rem; }
         .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
         .lesson-nav .btn { max-width: 47%; }
     </style>
@@ -47,14 +51,14 @@ $canAccess = can_access($minTier);
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../courses_catalogue.php" class="text-decoration-none">Courses</a></li>
                     <li class="breadcrumb-item"><a href="course_overview.php" class="text-decoration-none"><?= htmlspecialchars($course['title']) ?></a></li>
-                    <li class="breadcrumb-item active">Speaking Test 2 + Task 1 Report Structuring</li>
+                    <li class="breadcrumb-item active">Speaking Test 2 · Task 1 Report Structuring</li>
                 </ol>
             </nav>
 
             <p class="text-muted small mb-1">Week 4 — Reading Test 2 & Speaking Test 2 &nbsp;·&nbsp; Class 8 of 24</p>
             <h1 class="mb-3">
                 <i class="bi bi-mic me-2" style="color:#0b77ff;"></i>
-                Speaking Test 2 + Task 1 Report Structuring
+                Speaking Test 2<br>Task 1 Report Structuring
             </h1>
 
             <?php if (!$canAccess): ?>
@@ -67,11 +71,19 @@ $canAccess = can_access($minTier);
                 </div>
             <?php else: ?>
 
-                <div class="lesson-content mb-4"><h5>Speaking</h5><ul><li>Complete Speaking Test 2 (Parts 1-3, recorded)</li><li>Feedback on lexical resource and grammar range</li></ul><h5>Writing</h5><ul><li>Structuring Task 1 reports</li><li>Academic tone and grammar correction</li></ul></div>
-                <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_speaking_003.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                <div class="lesson-content mb-4">
+                    <div class="lesson-item">
+                        <h5>Speaking Test 2</h5>
+                        <ul><li>Complete Speaking Test 2 (Parts 1-3, recorded)</li><li>Feedback on lexical resource and grammar range</li></ul>
+                        <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_speaking_003.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Test
                 </a>
-
+                    </div>
+                    <div class="lesson-item">
+                        <h5>Task 1 Report Structuring</h5>
+                        <ul><li>Structuring Task 1 reports</li><li>Academic tone and grammar correction</li></ul>
+                    </div>
+                </div>
             <?php endif; ?>
 
             <div class="lesson-nav">

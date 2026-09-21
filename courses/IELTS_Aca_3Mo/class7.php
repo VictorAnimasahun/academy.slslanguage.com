@@ -19,7 +19,7 @@ $canAccess = can_access($minTier);
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Reading Test 2 + Process Description & Passive Voice — <?= htmlspecialchars($course['title']) ?></title>
+    <title>Reading Test 2 · Process Description & Passive Voice — <?= htmlspecialchars($course['title']) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -47,14 +47,14 @@ $canAccess = can_access($minTier);
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../courses_catalogue.php" class="text-decoration-none">Courses</a></li>
                     <li class="breadcrumb-item"><a href="course_overview.php" class="text-decoration-none"><?= htmlspecialchars($course['title']) ?></a></li>
-                    <li class="breadcrumb-item active">Reading Test 2 + Process Description & Passive Voice</li>
+                    <li class="breadcrumb-item active">Reading Test 2 · Process Description & Passive Voice</li>
                 </ol>
             </nav>
 
             <p class="text-muted small mb-1">Week 4 — Reading Test 2 & Speaking Test 2 &nbsp;·&nbsp; Class 7 of 24</p>
             <h1 class="mb-3">
                 <i class="bi bi-book me-2" style="color:#0b77ff;"></i>
-                Reading Test 2 + Process Description & Passive Voice
+                Reading Test 2<br>Process Description &amp; Passive Voice
             </h1>
 
             <?php if (!$canAccess): ?>
