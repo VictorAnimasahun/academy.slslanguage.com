@@ -1627,6 +1627,17 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 116 — Repair every mangled word in vocabulary_words (generic, not one word)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-22 | Run twice (idempotent). Verified: 0 rows with `?`, 0 rows with the mojibake pattern, across every text column. |
+| Live  | [ ] | | Back up first. Import connection MUST be utf8mb4 (same warning as 102) or this re-corrupts the text. |
+
+**What it does:** generalises 102 (which only knew 30-odd hardcoded headwords) to every row currently in the table — "principle" (reported live as `/?pr?n.s?.p?l/`) is fixed by this, not by 102. Also found and fixed a second, different corruption in the same table: 4 words from migrations 059/060 ("colour in", "loan-sourced", "slap-on", "consumerism") were mojibake (double-encoded), not `?`-mangled — invisible to 102's own guard. See the file's header for the full explanation.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
