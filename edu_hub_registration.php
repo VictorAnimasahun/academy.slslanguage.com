@@ -44,7 +44,13 @@ $showRegister = isset($_GET['form']) && $_GET['form'] === 'register';
             
             <div class="form-group">
                 <label class="form-label" for="login_password">Password</label>
-                <input class="form-input" id="login_password" type="password" name="password" placeholder="Enter your password" required>
+                <div class="password-field">
+                    <input class="form-input form-input-password" id="login_password" type="password" name="password" placeholder="Enter your password" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility(this)" aria-label="Show password" aria-pressed="false">
+                        <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.5 10.5 0 0 1 12 19c-7 0-10.5-7-10.5-7a18.6 18.6 0 0 1 4.22-5.06M9.9 4.24A9.1 9.1 0 0 1 12 5c7 0 10.5 7 10.5 7a18.4 18.4 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
             </div>
             
             <button type="submit" name="login" class="submit-btn">Sign In</button>
@@ -78,12 +84,24 @@ $showRegister = isset($_GET['form']) && $_GET['form'] === 'register';
             
             <div class="form-group">
                 <label class="form-label" for="password">Password</label>
-                <input class="form-input" id="password" type="password" name="password" placeholder="Create a password" required>
+                <div class="password-field">
+                    <input class="form-input form-input-password" id="password" type="password" name="password" placeholder="Create a password" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility(this)" aria-label="Show password" aria-pressed="false">
+                        <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.5 10.5 0 0 1 12 19c-7 0-10.5-7-10.5-7a18.6 18.6 0 0 1 4.22-5.06M9.9 4.24A9.1 9.1 0 0 1 12 5c7 0 10.5 7 10.5 7a18.4 18.4 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="confirmpassword">Confirm Password</label>
-                <input class="form-input" id="confirmpassword" type="password" name="confirmpassword" placeholder="Confirm your password" required>
+                <div class="password-field">
+                    <input class="form-input form-input-password" id="confirmpassword" type="password" name="confirmpassword" placeholder="Confirm your password" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility(this)" aria-label="Show password" aria-pressed="false">
+                        <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.5 10.5 0 0 1 12 19c-7 0-10.5-7-10.5-7a18.6 18.6 0 0 1 4.22-5.06M9.9 4.24A9.1 9.1 0 0 1 12 5c7 0 10.5 7 10.5 7a18.4 18.4 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
             </div>
             
             <button type="submit" name="create" class="submit-btn register">Create Account</button>
@@ -160,6 +178,18 @@ $showRegister = isset($_GET['form']) && $_GET['form'] === 'register';
 				icon: 'error',
 				confirmButtonColor: '#ef4444'
 			});
+		}
+
+		// Show/hide password — lets a student confirm they typed the right thing
+		// before submitting, rather than finding out only after a failed login.
+		function togglePasswordVisibility(btn) {
+			const input = btn.previousElementSibling;
+			const showing = input.type === 'text';
+			input.type = showing ? 'password' : 'text';
+			btn.querySelector('.icon-eye').style.display = showing ? '' : 'none';
+			btn.querySelector('.icon-eye-off').style.display = showing ? 'none' : '';
+			btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+			btn.setAttribute('aria-pressed', showing ? 'false' : 'true');
 		}
 
 		// Close button functionality

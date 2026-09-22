@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                     directly to assess Speaking Part 2. Click below to submit your written sections and let your
                     instructor know you're ready.
                 </p>
-                <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:.9rem 1.25rem;margin-bottom:1.75rem;font-size:.88rem;text-align:left;">
+                <div style="background:#fffbeb;color:#92400e;border:1px solid #fcd34d;border-radius:10px;padding:.9rem 1.25rem;margin-bottom:1.75rem;font-size:.88rem;text-align:left;">
                     <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
                     Once you submit, you will not be able to modify your Listening, Reading, or Writing answers.
                 </div>

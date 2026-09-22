@@ -158,6 +158,43 @@ body {
     border-color: #10b981;
 }
 
+/* Show/hide password */
+.password-field {
+    position: relative;
+}
+
+.form-input-password {
+    padding-right: 44px;
+}
+
+.toggle-password-btn {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    color: #8896a6;
+    cursor: pointer;
+    padding: 0;
+}
+
+.toggle-password-btn:hover {
+    color: #38b6ff;
+    background: #f1f5f9;
+}
+
+.toggle-password-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
 /* Submit Button */
 .submit-btn {
     width: 100%;

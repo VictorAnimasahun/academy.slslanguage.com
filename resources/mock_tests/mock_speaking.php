@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                     to administer the Speaking assessment in person. Click the button below to submit your written
                     sections and notify your instructor.
                 </p>
-                <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:.9rem 1.25rem;margin-bottom:1.75rem;font-size:.88rem;text-align:left;">
+                <div style="background:#fffbeb;color:#92400e;border:1px solid #fcd34d;border-radius:10px;padding:.9rem 1.25rem;margin-bottom:1.75rem;font-size:.88rem;text-align:left;">
                     <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
                     Once you submit, you will not be able to modify your Listening, Reading, or Writing answers.
                 </div>
