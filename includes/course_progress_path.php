@@ -73,7 +73,7 @@ function progressPathLoadParts(PDO $db, int $courseId, int $studentId): array {
         if ($tid === null) continue; // content not seeded yet -- nothing to show or complete
         $parts[(int) $it['lesson_id']][] = [
             'title' => $it['title'],
-            'kind'  => $it['item_type'] === 'quiz' ? 'Quiz' : 'Practice test',
+            'kind'  => test_kind_label($it['test_code'], $it['item_type']),
             'done'  => isset($done[$tid]),
         ];
     }
