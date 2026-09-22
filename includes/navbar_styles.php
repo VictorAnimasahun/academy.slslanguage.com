@@ -404,3 +404,24 @@
 	}
 
 </style>
+
+<?php
+// Inside the sls_mobile app (its WebView adds "SLSApp" to the user agent) the
+// app supplies its own bottom tab bar, so hide the site's topbar, sidebar,
+// mobile header and ad column and give the content the full width. Normal
+// browser visitors never match, so their pages are unchanged.
+if (strpos($_SERVER['HTTP_USER_AGENT'] ?? '', 'SLSApp') !== false): ?>
+<style>
+	.topbar, .sidebar, .mobile-header, .mobile-overlay, .advert-sidebar { display: none !important; }
+	body .main-wrapper,
+	body:has(.advert-sidebar) .main-wrapper {
+		margin: 0 !important;
+		padding-top: 1rem !important;
+		max-width: 100% !important;
+	}
+	body .content {
+		margin: 0 !important;
+		max-width: 100% !important;
+	}
+</style>
+<?php endif; ?>
