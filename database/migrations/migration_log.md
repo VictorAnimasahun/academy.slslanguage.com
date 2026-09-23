@@ -1638,6 +1638,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+---
+
+## 117 — Remove exact-duplicate lesson rows
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-23 | Local had no duplicates to begin with (confirmed no-op: 0 rows before and after). Verified the fix itself by simulating the exact live bug — duplicated CELPIP_Gen_2Mo Week 1's two lessons, gave a real student completed progress on one of the duplicates, ran the migration, confirmed the duplicates were removed and that student's completed progress correctly landed on the surviving lesson instead of being lost. Test data cleaned up afterward. |
+| Live  | [ ] | | Reported by the instructor 2026-09-23: CELPIP 2-Month's Week 1 and Week 2 each showing 4 classes instead of 2 (screenshot showed "Foundational English Assessment" and "Mini Diagnostic — All 4 Skills" each appearing twice as separate classes). Origin of the duplicate rows on live not identified (113 only UPDATEs existing rows by lesson_order, doesn't insert). Generic across all courses/weeks, not just CELPIP_Gen_2Mo — back up DB first, then run. |
+
+**What it does:** finds lessons sharing the same (module_id, title) — i.e. an exact re-insert, not two lessons that are merely similar — keeps the lowest-id row, merges any student progress from the duplicate onto the kept row (doesn't just delete it), repoints any attached quiz/test, then deletes the duplicate. Same "scattered weeks" symptom as the earlier numbering-formula regressions, but a different root cause: literal duplicate rows, not a class-numbering formula.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
