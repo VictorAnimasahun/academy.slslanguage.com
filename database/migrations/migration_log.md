@@ -1340,7 +1340,7 @@ UPDATE modules SET module_title = 'Week 10 — Checkpoint 4' WHERE id = 53;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-15 | Ran against local to verify correctness (local already had 081+082 applied). Snapshotted `SELECT module_order, module_title, lesson_order, title, file_path, min_tier FROM lessons JOIN modules WHERE course_id=14` before and after — byte-identical content (only the underlying auto-increment ids changed, which nothing in the app hardcodes). Re-verified via Playwright: `class_day.php?slot=c7` still 200 with correct `h1`, course_overview.php accordion (all panels expanded) still shows all 24 classes numbered 1-24. |
-| Live  | [ ] | | **Run this instead of 081/082 on live.** Must run after 077 (and 078, 076 per that migration's ordering note). |
+| Live  | [x] | 2026-09-23 | **Run this instead of 081/082 on live.** Must run after 077 (and 078, 076 per that migration's ordering note). Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** reproduces migrations 081 + 082's combined end state (the full 24-class/12-week "one test + one micro-lesson per class day" rebuild) in one migration, but resolves the course and every module via `courses.folder_name = 'CELPIP_Gen_3Mo'` + `modules.module_order` lookups instead of the hardcoded `course_id = 14` and module ids 44-55 that 081/082 use. Those hardcoded values only happen to be correct on local because course 14 and its modules already existed there with exactly those auto-increment values — discovered while diagnosing a live 500 error on every `course_view.php` page (root cause was migration 072 never having successfully applied on live, surfacing a larger backlog of unrun migrations: 069-072, 075-078, 081-082). On live, migration 077 creates `CELPIP_Gen_3Mo` fresh via auto-increment and will almost certainly not land on id 14 — running 081 there as-is would either silently affect 0 rows or write this course's lessons under an unrelated `course_id`, the exact class of bug migration 078 already fixed once for migration 074's hardcoded course 13 / lesson 163/178 ids. Deletes and rebuilds this course's modules/lessons from scratch (idempotent — safe to re-run).
 
@@ -1434,8 +1434,8 @@ DROP TABLE IF EXISTS week_briefs;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet — MAMP MySQL was stopped when written (2026-09-19). |
-| Live  | [ ] | | Run after local. Needs `courses/courses_catalogue.php` + `courses/courses_detail.php` pulled too. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet — MAMP MySQL was stopped when written (2026-09-19). |
+| Live  | [x] | 2026-09-23 | Run after local. Needs `courses/courses_catalogue.php` + `courses/courses_detail.php` pulled too. Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** adds nullable `courses.buy_url` and sets it by `folder_name`: 1Mo -> `gUZlnYh5rXytRYrtc`, 2Mo -> `zxZWGzHd6aFUkAUbu`, 3Mo -> `xCafq2JBGJw7duixc` (share.google/... Selar product links) for CELPIP_Gen_*, IELTS_Aca_*, IELTS_Gen_1Mo/2Mo/Mst. Catalogue cards + detail page show "Buy on Selar" when set.
 
@@ -1450,8 +1450,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet — MAMP MySQL was stopped when written (2026-09-19). |
-| Live  | [ ] | | Back up first. Import MUST be utf8mb4 (`mysql --default-character-set=utf8mb4`, or phpMyAdmin Import → file charset utf8mb4) or it re-corrupts. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet — MAMP MySQL was stopped when written (2026-09-19). |
+| Live  | [x] | 2026-09-23 | Back up first. Import MUST be utf8mb4 (`mysql --default-character-set=utf8mb4`, or phpMyAdmin Import → file charset utf8mb4) or it re-corrupts. Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** Word of the Day showed `/ri???t.?.re?t/` for "reiterate". Seeds 041/059/060/061 are correct UTF-8, but the table was created latin1 (038 set no charset; #1267 collation error proved it), so IPA symbols and `·` became literal `?`. Step 1 converts the table to utf8mb4. 36 `UPDATE`s re-apply phonetic/word_family/etc. from the seeds, only into columns that currently contain `?` (later sls-admin edits are never overwritten). Idempotent.
 
@@ -1465,8 +1465,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
-| Live  | [ ] | | Needs academy `includes/admin_check.php` + `includes/tier_access.php` and slslanguage.com `sls-admin/student_view.php` pulled. Code fails closed if the column is missing, so pull-before-migrate is safe. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
+| Live  | [x] | 2026-09-23 | Needs academy `includes/admin_check.php` + `includes/tier_access.php` and slslanguage.com `sls-admin/student_view.php` pulled. Code fails closed if the column is missing, so pull-before-migrate is safe. Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** adds `students.is_tester TINYINT(1) DEFAULT 0`. `is_platform_admin()` (the single bypass every gate uses) now also returns true for testers; `get_student_tier_level()` gives admins/testers top tier even when `FREE_ACCESS_FOR_ALL` is off. Toggle: sls-admin → Students → profile → "Tester access".
 
@@ -1478,8 +1478,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
-| Live  | [ ] | | Run BEFORE pulling `includes/admin_check.php`. Afterwards check every staff row has `students.is_verified = 1` (the check requires it). |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
+| Live  | [x] | 2026-09-23 | Run BEFORE pulling `includes/admin_check.php`. Afterwards check every staff row has `students.is_verified = 1` (the check requires it). Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** creates `staff_accounts` (student_id unique, role admin/staff) and backfills every account the old rule treated as admin (`@slslanguage.com` or the owner's legacy address). `is_platform_admin()` now = staff row + verified email, or `students.is_tester`. The email ending alone grants nothing, so a made-up `fake@slslanguage.com` account gets no bypass.
 
@@ -1491,8 +1491,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
-| Live  | [ ] | | Requires migration 101 (`buy_url`) first (uses `AFTER buy_url`). |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
+| Live  | [x] | 2026-09-23 | Requires migration 101 (`buy_url`) first (uses `AFTER buy_url`). Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** adds nullable `courses.selar_months` (1/2/3) with the same folder_name mapping as 101, so Selar code never has to parse `buy_url`.
 
@@ -1504,8 +1504,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run on the real local DB. The SQL and all Selar logic were tested against an isolated MySQL 5.7.44 (39 rule checks + a 4-way simultaneous redeem race). |
-| Live  | [ ] | | Needs migrations **101 and 105** applied first (uses `courses.selar_months`). Also upload `config/selar_purchases.php` to live `/config/` (that folder has no git repo, so it is NOT deployed by pulling), then pull academy + slslanguage.com. Check `SHOW INDEX FROM enrollments;` has a unique key on (student_id, course_id). |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run on the real local DB. The SQL and all Selar logic were tested against an isolated MySQL 5.7.44 (39 rule checks + a 4-way simultaneous redeem race). |
+| Live  | [x] | 2026-09-23 | Needs migrations **101 and 105** applied first (uses `courses.selar_months`). Also upload `config/selar_purchases.php` to live `/config/` (that folder has no git repo, so it is NOT deployed by pulling), then pull academy + slslanguage.com. Check `SHOW INDEX FROM enrollments;` has a unique key on (student_id, course_id). Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** creates `pending_purchases` (status pending/claimed/redeemed/refunded, unique `selar_order_ref`). Code: `config/selar_purchases.php` (shared logic), sls-admin → Selar Purchases, dashboard "Choose your course", `verify_email.php` claim hook, and the `courses_detail.php` gate (inactive while `FREE_ACCESS_FOR_ALL` is true).
 
@@ -1517,8 +1517,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
-| Live  | [ ] | | Run after 105. Pull academy + slslanguage.com. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
+| Live  | [x] | 2026-09-23 | Run after 105. Pull academy + slslanguage.com. Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** adds `courses.compare_price` and sets prices from selar_months: 1mo N90,000 (was N105,000), 2mo N180,000 (was N195,000), 3mo N240,000 (read from the live Selar pages 2026-09-20). Requires 105.
 
@@ -1530,8 +1530,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
-| Live  | [ ] | | Run after 105. Pull academy + slslanguage.com. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run yet. |
+| Live  | [x] | 2026-09-23 | Run after 105. Pull academy + slslanguage.com. Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** creates `currency_rates` seeded with the 2026-09-20 rates. Code: `includes/currency.php` (auto-detects visitor currency: Nigeria N, UK £, else $; switcher; daily self-refresh), sls-admin -> Currency Rates.
 
@@ -1543,8 +1543,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run on the real local DB. Tested on an isolated MySQL 5.7 with a latin1 `folder_name` trap: 4/8/12/4 weeks x 2 classes, lesson ids/titles/tiers unchanged, safe to re-run, weekly courses untouched. |
-| Live  | [ ] | | Back up first. Pull academy first (overview pages must use running class numbers), then run. Uses folder_name lookups only (no hardcoded ids). |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (with 101-109 as a batch, after a local backup). Not ticked until live is confirmed. Earlier note: Not run on the real local DB. Tested on an isolated MySQL 5.7 with a latin1 `folder_name` trap: 4/8/12/4 weeks x 2 classes, lesson ids/titles/tiers unchanged, safe to re-run, weekly courses untouched. |
+| Live  | [x] | 2026-09-23 | Back up first. Pull academy first (overview pages must use running class numbers), then run. Uses folder_name lookups only (no hardcoded ids). Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** replaces the "Month N" modules (8 classes each) with two-classes-per-week "Week N — ..." modules; same class order and numbering, lesson ids unchanged, week keeps its month's min_tier. Course overviews now use running class numbers instead of the old `(month-1)*8 + lesson_order` formula, and the tier text says Weeks instead of Months. CELPIP_Gen_2Mo/3Mo were already weekly.
 
@@ -1591,8 +1591,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (0 week titles left with " + "). Not ticked until live is confirmed too. |
-| Live  | [ ] | | Cosmetic, idempotent, folder_name lookups only. Pull academy too: class-page regrouping + `includes/lesson_title.php` (all class titles now display one piece per line). |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (0 week titles left with " + "). Not ticked until live is confirmed too. |
+| Live  | [x] | 2026-09-23 | Cosmetic, idempotent, folder_name lookups only. Pull academy too: class-page regrouping + `includes/lesson_title.php` (all class titles now display one piece per line). Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 ---
 
@@ -1600,8 +1600,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (verified: 16 classes identical to 3-Month Classes 1-16; Mock A pacing row now Class 15). Not ticked until live is confirmed too. |
-| Live  | [ ] | | Pull academy first (class_day.php + progress-path fix + 2-month overview; `courses/CELPIP_Gen_2Mo/class*.php` deleted), then run. Existing student progress rows keep working (lesson ids unchanged). Mock 2 (old Class 16) is gone from the 2-month by design. |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (verified: 16 classes identical to 3-Month Classes 1-16; Mock A pacing row now Class 15). Not ticked until live is confirmed too. |
+| Live  | [x] | 2026-09-23 | Pull academy first (class_day.php + progress-path fix + 2-month overview; `courses/CELPIP_Gen_2Mo/class*.php` deleted), then run. Existing student progress rows keep working (lesson ids unchanged). Mock 2 (old Class 16) is gone from the 2-month by design. Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **Also fixed in the same push:** `includes/course_progress_path.php` built class links as `class_day.php?slot=c3?from=...` (second `?`), so the 3-Month class links landed on "Unknown class slot". Now joins with `&`.
 
@@ -1611,8 +1611,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (verified: every 1/2/3-month course now has exactly 2 classes per week; class numbers 1..N unchanged). Not ticked until live is confirmed too. |
-| Live  | [ ] | | Back up first. Pull academy first (the six `course_overview.php` files dropped their month-based `class_number` formula — without the pull, class numbers would read 33, 34…). Lesson ids unchanged, so progress is kept. Same mechanism as 109; idempotent (skips a course that already has Week modules). |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (verified: every 1/2/3-month course now has exactly 2 classes per week; class numbers 1..N unchanged). Not ticked until live is confirmed too. |
+| Live  | [x] | 2026-09-23 | Back up first. Pull academy first (the six `course_overview.php` files dropped their month-based `class_number` formula — without the pull, class numbers would read 33, 34…). Lesson ids unchanged, so progress is kept. Same mechanism as 109; idempotent (skips a course that already has Week modules). Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **Universal rule (instructor, 2026-09-21):** no 2- or 3-month course has more than 2 classes in a week. After 114 all twelve 1/2/3-month courses comply. NOT touched: `IELTS_Aca_Mst` (old "Masterclass", 26 classes, up to 7 a week) and `IELTS_Aca_Crash` (crash course) — flagged for a decision.
 
@@ -1622,8 +1622,8 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Run on local DB 2026-09-21 (verified: 26 -> 16 classes, exactly 2 per week; re-run is a no-op). Not ticked until live is confirmed too. |
-| Live  | [ ] | | Back up first, pull academy first (`courses/IELTS_Aca_Mst/lesson.php` now shows one lesson per line). Deletes the 10 extra lesson rows after merging them into 4 classes; students who finished every lesson of a group are marked complete on the merged class. `IELTS_Aca_Crash` deliberately left alone (instructor decision). |
+| Local | [x] | 2026-09-21 | Run on local DB 2026-09-21 (verified: 26 -> 16 classes, exactly 2 per week; re-run is a no-op). Not ticked until live is confirmed too. |
+| Live  | [x] | 2026-09-23 | Back up first, pull academy first (`courses/IELTS_Aca_Mst/lesson.php` now shows one lesson per line). Deletes the 10 extra lesson rows after merging them into 4 classes; students who finished every lesson of a group are marked complete on the merged class. `IELTS_Aca_Crash` deliberately left alone (instructor decision). Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 ---
 
@@ -1632,7 +1632,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-22 | Run twice (idempotent). Verified: 0 rows with `?`, 0 rows with the mojibake pattern, across every text column. |
-| Live  | [ ] | | Back up first. Import connection MUST be utf8mb4 (same warning as 102) or this re-corrupts the text. |
+| Live  | [x] | 2026-09-23 | Back up first. Import connection MUST be utf8mb4 (same warning as 102) or this re-corrupts the text. Confirmed by the instructor: this was run on live before today's audit -- the log just hadn't been updated to say so. |
 
 **What it does:** generalises 102 (which only knew 30-odd hardcoded headwords) to every row currently in the table — "principle" (reported live as `/?pr?n.s?.p?l/`) is fixed by this, not by 102. Also found and fixed a second, different corruption in the same table: 4 words from migrations 059/060 ("colour in", "loan-sourced", "slap-on", "consumerism") were mojibake (double-encoded), not `?`-mangled — invisible to 102's own guard. See the file's header for the full explanation.
 
