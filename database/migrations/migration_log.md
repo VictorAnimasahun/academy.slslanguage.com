@@ -1651,6 +1651,30 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+---
+
+## 118 — Overall (whole-session) speaking score + summary
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-24 | Verified via real HTTP calls against sls-admin's speaking_recordings_api.php (sync, manual save, override) — see 119 for the fuller test. |
+| Live  | [ ] | | `CREATE TABLE IF NOT EXISTS` — safe to run any time. |
+
+**What it does:** one row per (student_id, test_code) holding a total_score + summary for a whole speaking practice attempt, editable directly or filled by summing migration 119's per-task manual_score values (see practice_session_detail.php's "Sync from individual scores" button). An earlier draft tried an AI call combining every task into one prompt instead — dropped after it took 45-55s in testing (past Apache's default 30s FastCGI idle-timeout) and the instructor decided manual scoring off the transcript was preferable anyway.
+
+---
+
+## 119 — Manual per-task score + analysis on speaking_recordings
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-24 | `ADD COLUMN IF NOT EXISTS` (the syntax migration 013 assumed works on "MySQL 8") is a real ERROR 1064 on this actual local MySQL 8.0.40 — tested directly before trusting it, rewrote without it. Verified end-to-end: saved a manual score+note on two real recordings, synced the session total (8+7=15), then manually overrode it to 14.5 with a summary, reloaded the page and confirmed all values render correctly. Test data cleaned up after. |
+| Live  | [ ] | | NOT idempotent (see note above) — this only runs cleanly once. Check `DESCRIBE speaking_recordings` first if there's any doubt it's already been applied. |
+
+**What it does:** adds `manual_score` (varchar) and `manual_analysis` (mediumtext) to speaking_recordings, next to the existing AI `ai_feedback` column (untouched, the existing per-recording "Analyze" button still works as before). Lets an instructor score and comment on each task directly from the transcript, no AI involved.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
