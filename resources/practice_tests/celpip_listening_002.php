@@ -30,7 +30,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 require_once INCLUDES_PATH . '/course_lock.php';
 require_course_enrollment([14], 'this CELPIP Listening practice test');
-$isAdmin = is_platform_admin();
+$isAdmin = is_staff_account(); // exam-timing bypass: admin/staff only, NOT testers (testers get course access via is_platform_admin() elsewhere, not this)
 
 $testCode  = 'CELPIP_PT_L_002';
 $audioBase = ACADEMY_URL . 'assets/audio/' . $testCode . '/';

@@ -24,7 +24,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 require_once INCLUDES_PATH . '/admin_check.php';
-$isAdmin = is_platform_admin();
+$isAdmin = is_staff_account(); // exam-timing bypass: admin/staff only, NOT testers (testers get course access via is_platform_admin() elsewhere, not this)
 
 $testCode  = 'CELPIP_PT_L_001';
 $audioBase = ACADEMY_URL . 'assets/audio/' . $testCode . '/';

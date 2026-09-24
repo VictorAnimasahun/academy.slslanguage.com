@@ -26,7 +26,7 @@ if (!isset($_SESSION['user_id'])) {
 $student_id = (int)$_SESSION['user_id'];
 $session_id = (int)($_GET['session_id'] ?? 0);
 require_once INCLUDES_PATH . '/admin_check.php';
-$isAdmin = is_platform_admin();
+$isAdmin = is_staff_account(); // exam-timing bypass: admin/staff only, NOT testers (testers get course access via is_platform_admin() elsewhere, not this)
 
 if (!$session_id) { header("Location: index.php"); exit(); }
 
