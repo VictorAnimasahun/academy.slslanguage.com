@@ -72,6 +72,7 @@ $testCode = $map[$session['mock_code']]['reading']['test_code'] ?? '';
 // to the old text rendering until its image is supplied.
 $readingDiagramImages = [
     'CELPIP_FULL_MOCK_A' => [2 => 'reading_part2_diagram.png'],
+    'CELPIP_FULL_MOCK_B' => [2 => 'reading_part2_diagram.png'],
 ];
 
 $stmt = $db->prepare("SELECT id, duration_minutes FROM tests WHERE code = ? AND is_active = 1 LIMIT 1");
@@ -321,13 +322,18 @@ function renderCelpipInlineDocument(array $doc, array $options): void {
     // "Reader comment — ") — it's not part of the actual exam text.
     $stim = preg_replace('/^[^—\n]{0,40}—\s*/u', '', $doc['stim'], 1);
 
-    // Part 2's Q12 stimulus_text has the travel-options table appended as
-    // plain text after the email sign-off (e.g. "...Best,\nPeter\n\nTRAVEL
-    // OPTIONS TABLE (...):\n...") — that data now belongs to the diagram
-    // image shown in the left pane, so cut it from the right-pane document
-    // instead of duplicating it as unstyled text. Detected generically by a
-    // blank line followed by an ALL-CAPS heading-style line.
-    $stim = preg_replace('/\n\s*\n[A-Z][A-Z ]{8,}.*$/us', '', $stim);
+    // Part 2's Q12 stimulus_text has the diagram/table appended as plain
+    // text after the email sign-off (e.g. "...Best,\nPeter\n\nTRAVEL OPTIONS
+    // TABLE (...):\n..." or "...Natalie Moreau\n\nDIAGRAM — B&C Business
+    // Cards...") — that data now belongs to the diagram image shown in the
+    // left pane, so cut it from the right-pane document instead of
+    // duplicating it as unstyled text. Detected generically by a blank line
+    // followed by an ALL-CAPS heading-style line. Threshold was {8,} (9+
+    // pure caps/space chars before any other character) which missed
+    // "DIAGRAM —" -- the em-dash breaks the run one character short of 8
+    // ("IAGRAM " = 7). Lowered to {3,} so a single 4+ letter all-caps word
+    // (the shortest realistic heading) still triggers it.
+    $stim = preg_replace('/\n\s*\n[A-Z][A-Z ]{3,}.*$/us', '', $stim);
 
     // nl2br() must run BEFORE the dropdown widgets are spliced in — each
     // widget's own multi-line template markup contains real "\n" characters,
