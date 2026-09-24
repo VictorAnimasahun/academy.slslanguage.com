@@ -98,7 +98,7 @@ if ($writingTest) {
             // spaces" is not a safe way to detect a path -- the extension is.
             $rawInstructions = $wq['instructions'] ?? null;
             $task1['visual'] = ($rawInstructions && preg_match('/\.(png|jpe?g|gif|webp|svg)$/i', trim($rawInstructions)))
-                                ? $rawInstructions : null;
+                                ? ACADEMY_URL . $rawInstructions : null;
             if ($isCelpip && $rawInstructions) {
                 $task1Instr = json_decode($rawInstructions, true) ?: [];
             }
