@@ -1701,6 +1701,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+---
+
+## 122 — Fix tier progression for CELPIP_Gen_2Mo and CELPIP_Gen_3Mo
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-24 | Instructor confirmed 2026-09-24: a course's own duration name is its required tier. Verified via real HTTP with a real subscriptions row: an 'intermediate'-tier student correctly sees Weeks 5-9 locked (and Weeks 2-4 unlocked), then unlocks Weeks 5-9 after upgrading to 'advanced'. Test data cleaned up after. |
+| Live  | [ ] | | Resolves the open question from migration 121 — no longer open. |
+
+**What it does:** CELPIP_Gen_2Mo/3Mo's lessons sat flat at `intermediate` past Week 1 regardless of which month they're actually in — a 1-month subscriber got the entire 2- or 3-month course. Now mirrors `IELTS_Aca_2Mo`/`IELTS_Aca_3Mo`'s already-correct pattern exactly: 4-week month blocks, each one tier higher (intermediate → advanced → fluent). Invisible while `FREE_ACCESS_FOR_ALL` was on.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
