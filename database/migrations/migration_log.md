@@ -1688,6 +1688,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+---
+
+## 121 — Add Mock 2 (B) to CELPIP_Gen_2Mo (Week 9)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-24 | Reverses part of migration 113's decision -- instructor confirmed 2026-09-24 the 2-Month course should have its own Mock B too. Verified via real HTTP as a tester account: Week 9 renders with correct title/weeks-count/classes-count copy, classes number 17-18 continuing the running sequence, both Week 8 and Week 9 tinted as mock weeks, and Class 17 correctly links to celpip_full_mock_b.php (not Mock 1's link). Also fixed course_overview.php's `$mock_weeks` array, which was stale from before 113's restructure (`[5, 8]` — Week 5 was never actually a mock week) to `[8, 9]`. Test data cleaned up after. |
+| Live  | [ ] | | Idempotent (checks the module/lessons don't already exist). Also needs `courses/CELPIP_Gen_2Mo/course_overview.php` and `courses/CELPIP_Gen/lessons/class_day.php` pulled (copy text + `$class_total` 16→18). |
+
+**Open question raised while fixing this, NOT resolved:** CELPIP_Gen_2Mo's lessons are gated at `min_tier='intermediate'` (the 1-month subscription tier per `TIER_LABELS`), but this is a 2-month course. Since `intermediate` (level 2) already satisfies any gate requiring level ≤2, a student with only a 1-month subscription currently gets full access to this entire 2-month course. This was invisible while `FREE_ACCESS_FOR_ALL` was on (everyone had full access regardless) and is now a real, live pricing/access question — not something to silently "fix" by changing tier values without the instructor's input on the intended pricing model.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

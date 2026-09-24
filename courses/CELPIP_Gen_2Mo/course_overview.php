@@ -36,11 +36,13 @@ $student_tier_level = get_student_tier_level();
 $student_id = (int) $_SESSION['user_id'];
 $completedLessonIds = progressPathLoadCompleted($db, $course_id, $student_id);
 // Color-code by week type: mock weeks (full 4-skill simulations) stand out
-// from the regular one-test-per-class weeks. Keyed by module_order (1-8),
-// matching the 8-week schedule (migration 092).
-$mock_weeks = [5, 8];
+// from the regular one-test-per-class weeks. Keyed by module_order (1-9),
+// matching the 9-week schedule (migration 121 added Week 9/Mock 2; this
+// array was stale from before migration 113's restructure -- it still said
+// [5, 8], but Week 5 is a regular teaching week, not a mock week).
+$mock_weeks = [8, 9];
 $month_colors = [];
-foreach (range(1, 8) as $w) {
+foreach (range(1, 9) as $w) {
     $month_colors[$w] = in_array($w, $mock_weeks) ? '#16a34a' : '#0b77ff';
 }
 ?>
@@ -82,7 +84,7 @@ foreach (range(1, 8) as $w) {
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div>
                         <strong><?= (int) $course['total_lessons'] ?> Classes</strong> &nbsp;·&nbsp;
-                        <strong>8 Weeks</strong> &nbsp;·&nbsp;
+                        <strong>9 Weeks</strong> &nbsp;·&nbsp;
                         <strong>2 Sessions / Week</strong> &nbsp;·&nbsp;
                         <strong><?= htmlspecialchars($course['instructor_name'] ?? 'SLS') ?></strong>
                     </div>
@@ -105,12 +107,12 @@ foreach (range(1, 8) as $w) {
                 <h2>Course Content</h2>
                 <p class="text-muted small mb-3">
                     <i class="bi bi-unlock-fill me-1 text-success"></i>Classes 1-2 (Week 1) are free.
-                    <i class="bi bi-lock-fill ms-3 me-1 text-warning"></i>Classes 3-16 require the <strong>Intermediate</strong> plan.
+                    <i class="bi bi-lock-fill ms-3 me-1 text-warning"></i>Classes 3-18 require the <strong>Intermediate</strong> plan.
                 </p>
                 <?= renderProgressPath($modules, $completedLessonIds, [
                     'folder'       => 'CELPIP_Gen_2Mo',
                     'tier_level'   => $student_tier_level,
-                    'mock_classes' => [15],
+                    'mock_classes' => [15, 17],
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
                 ]) ?>
