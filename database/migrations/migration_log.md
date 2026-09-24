@@ -1714,6 +1714,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+---
+
+## 123 — Exactly one admin: v.animasahun@slslanguage.com
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-24 | Confirmed idempotent (ran twice, second run a no-op). |
+| Live  | [ ] | | Only matters if live's `staff_accounts` also has the legacy QA/preview account (animasahunvictor1@gmail.com) set to 'admin' from migration 104's original backfill — check first with the verify query. |
+
+**What it does:** `staff_accounts.role` is informational only (doesn't change access — see `documentation/ACCESS_CONTROL_MODEL.md`), but should still be accurate: exactly one person is admin.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

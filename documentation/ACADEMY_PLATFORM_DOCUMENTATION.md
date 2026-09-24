@@ -8,6 +8,7 @@
 
 ## Table of Contents
 
+0. [Access Control Model](ACCESS_CONTROL_MODEL.md) — who's admin/staff/tester and what each gets. Read this before touching any access-gating code.
 1. [File Structure Overview](#file-structure-overview)
 2. [Core System Files](#core-system-files)
 3. [Authentication System](#authentication-system)

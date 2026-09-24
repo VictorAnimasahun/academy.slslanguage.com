@@ -4,6 +4,11 @@
  * member (or named tester), for the purpose of previewing student-facing
  * content and bypassing access gates." Every gate calls this one function.
  *
+ * Full model, including the admin/staff/tester distinction and a known gap
+ * (testers currently also get exam-timing bypass, which they shouldn't):
+ * see documentation/ACCESS_CONTROL_MODEL.md. Don't re-derive this from
+ * scratch or ask the instructor to repeat it -- read that file first.
+ *
  * Decided by the DATABASE, never by the email text: staff/admin = a row in
  * staff_accounts (migration 104) for the logged-in student AND a verified
  * email. An address that merely ends in @slslanguage.com proves nothing, so
