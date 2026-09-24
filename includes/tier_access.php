@@ -23,17 +23,15 @@ define('TIER_ACCESS_LOADED', true);
 
 require_once INCLUDES_PATH . '/admin_check.php';
 
-// ── TEMPORARY: free access for all registered students ──────────────────────
-// Set 2026-09-15 per explicit instruction: "Make all the courses free to
-// access for now" — a testing/free-access phase across the whole platform,
-// not specific to any one course. This makes get_student_tier_level() (and
-// therefore can_access(), plus every course_overview.php page's own inline
-// tier comparison) always report the top tier, so no course content is
-// gated for any logged-in student. get_student_tier() itself is untouched,
-// so plan-display text (e.g. "Your Plan: Beginner") stays truthful even
-// while access is unrestricted. To restore real tier gating, set this back
-// to false.
-const FREE_ACCESS_FOR_ALL = true;
+// ── Free-access testing phase ended 2026-09-24 ───────────────────────────────
+// Was set true 2026-09-15 per "make all courses free for now" -- a testing
+// phase, not the real access model. Real model (instructor, 2026-09-24):
+// admin/staff = full access; tester = full course access (not admin); anyone
+// else = intro-only courses, nothing else. get_student_tier_level() already
+// implements this correctly once this flag is false -- is_platform_admin()
+// (staff OR tester) grants the top tier, everyone else falls to their real
+// paid tier (defaulting to 'beginner' if unsubscribed).
+const FREE_ACCESS_FOR_ALL = false;
 
 // ── Tier map ────────────────────────────────────────────────────────────────
 
