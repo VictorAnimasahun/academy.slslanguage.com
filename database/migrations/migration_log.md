@@ -1675,6 +1675,19 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+---
+
+## 120 — Release status for speaking_session_scores
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-24 | Verified end-to-end over real HTTP: released a test result, confirmed the student-facing page was gated ("aren't ready yet") before release and showed the correct score/summary/per-task breakdown after, confirmed the release email had no failure logged, then recalled and confirmed the student lost access again. Test data cleaned up after. |
+| Live  | [ ] | | Simple ADD COLUMN, but not idempotent (same as 119) — run once. |
+
+**What it does:** adds `status` ('pending'/'results_released') and `released_at` to speaking_session_scores, mirroring `mock_sessions`' own convention exactly. Speaking practice tests never delivered an official, instructor-confirmed result to students before this — only an instant, unsaved AI reaction right after submitting. Now there's a real Release/Recall flow (sls-admin/practice_session_detail.php) and a student-facing results page (`resources/practice_tests/my_speaking_result.php?test_code=...`), same shape as the other skills' results.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
