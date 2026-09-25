@@ -665,56 +665,57 @@ if (!isset($_SESSION['user_id'])) {
                 const result = quizResults[questionKey];
                 const questionNum = index + 1;
                 
-                // Check if we need a new page
-                if (yPosition > 270) {
+                // Measure the WHOLE block (question + answer row) before deciding on a page break:
+                // long questions/answers wrap to several lines, and checking only the top
+                // position let the row run into the footer or off the page.
+                doc.setFontSize(8);
+                const wrappedQuestion = doc.splitTextToSize(questions[questionKey], 180);
+                const userAnswerWrapped = doc.splitTextToSize(result.userAnswerText || 'Not Answered', 80);
+                const correctAnswerWrapped = doc.splitTextToSize(result.correctAnswerText, 65);
+                const questionHeight = wrappedQuestion.length * 4;
+                const rowHeight = Math.max(15, 5 + 4 * Math.max(userAnswerWrapped.length, correctAnswerWrapped.length));
+                if (yPosition + questionHeight + 3 + rowHeight + 4 > 278) {
                     doc.addPage();
                     yPosition = 20;
                 }
-                
+
                 // Question number
+                doc.setFontSize(9);
                 doc.setTextColor(0, 0, 0);
                 doc.text(`${questionNum}`, 15, yPosition);
-                
+
                 // Question text (wrapped)
                 doc.setFontSize(8);
-                const questionText = questions[questionKey];
-                const wrappedQuestion = doc.splitTextToSize(questionText, 180);
                 doc.text(wrappedQuestion, 15, yPosition + 5);
-                
-                const questionHeight = wrappedQuestion.length * 4;
                 yPosition += questionHeight + 3;
-                
+
                 // Draw answer row background
                 if (result.isCorrect) {
                     doc.setFillColor(212, 237, 218);
                 } else {
                     doc.setFillColor(248, 215, 218);
                 }
-                doc.rect(10, yPosition, 190, 15, 'F');
-                
-                // Your answer
+                doc.rect(10, yPosition, 190, rowHeight, 'F');
+
+                // Your answer / correct answer
                 doc.setFontSize(8);
                 doc.setTextColor(0, 0, 0);
-                const userAnswerWrapped = doc.splitTextToSize(result.userAnswerText || 'Not Answered', 80);
                 doc.text(userAnswerWrapped, 30, yPosition + 4);
-                
-                // Correct answer
-                const correctAnswerWrapped = doc.splitTextToSize(result.correctAnswerText, 65);
                 doc.text(correctAnswerWrapped, 115, yPosition + 4);
-                
+
                 // Result indicator
                 if (result.isCorrect) {
                     doc.setTextColor(correctGreen[0], correctGreen[1], correctGreen[2]);
                     doc.setFont(undefined, 'bold');
-                    doc.text('✓', 187, yPosition + 8);
+                    doc.text('OK', 186, yPosition + 8);
                 } else {
                     doc.setTextColor(incorrectRed[0], incorrectRed[1], incorrectRed[2]);
                     doc.setFont(undefined, 'bold');
-                    doc.text('✗', 187, yPosition + 8);
+                    doc.text('X', 187, yPosition + 8);
                 }
                 
                 doc.setFont(undefined, 'normal');
-                yPosition += 18;
+                yPosition += rowHeight + 3;
                 
                 // Separator line
                 doc.setDrawColor(200, 200, 200);

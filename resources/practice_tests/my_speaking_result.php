@@ -92,7 +92,7 @@ if ($result) {
             <?php if (trim((string)$result['summary']) !== ''): ?>
                 <div class="result-card">
                     <h5 class="mb-2"><i class="bi bi-chat-square-text me-2"></i>Instructor Summary</h5>
-                    <p class="mb-0" style="white-space:pre-wrap;"><?= nl2br(e($result['summary'])) ?></p>
+                    <p class="mb-0"><?= nl2br(e($result['summary'])) ?></p>
                 </div>
             <?php endif; ?>
 

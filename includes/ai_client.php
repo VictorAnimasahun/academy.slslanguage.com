@@ -27,7 +27,7 @@ function callClaude($prompt) {
 
     $data = [
         'model' => 'claude-sonnet-4-20250514',
-        'max_tokens' => 2000,
+        'max_tokens' => 4096,
         'messages' => [
             [
                 'role' => 'user',
@@ -60,6 +60,11 @@ function callClaude($prompt) {
     }
 
     $result = json_decode($response, true);
+    // A reply that hit the token ceiling is cut off mid-sentence -- better to
+    // say so than to hand back half an analysis that looks finished.
+    if (($result['stop_reason'] ?? '') === 'max_tokens') {
+        return ['success' => false, 'error' => 'The analysis was cut off before it finished -- please try again.'];
+    }
     return [
         'success' => true,
         'content' => $result['content'][0]['text']
@@ -107,7 +112,10 @@ function callGeminiOnce($prompt, $model) {
         CURLOPT_POST => true,
         CURLOPT_TIMEOUT => 45,
         CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_POSTFIELDS => json_encode(['contents' => [['role' => 'user', 'parts' => [['text' => $prompt]]]]]),
+        CURLOPT_POSTFIELDS => json_encode([
+            'contents' => [['role' => 'user', 'parts' => [['text' => $prompt]]]],
+            'generationConfig' => ['maxOutputTokens' => 8192],
+        ]),
         CURLOPT_HTTPHEADER => ['Content-Type: application/json']
     ]);
 
@@ -132,6 +140,11 @@ function callGeminiOnce($prompt, $model) {
     if (!isset($result['candidates'][0]['content']['parts'][0]['text'])) {
         error_log("Gemini ($model) unexpected response: " . print_r($result, true));
         return ['success' => false, 'error' => 'Unexpected response format from Gemini API', 'transient' => true];
+    }
+
+    if (($result['candidates'][0]['finishReason'] ?? '') === 'MAX_TOKENS') {
+        error_log("Gemini ($model) reply truncated (MAX_TOKENS)");
+        return ['success' => false, 'error' => 'The analysis was cut off before it finished.', 'transient' => true];
     }
 
     return ['success' => true, 'content' => $result['candidates'][0]['content']['parts'][0]['text']];

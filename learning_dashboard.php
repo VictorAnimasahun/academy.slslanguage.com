@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
+require_once INCLUDES_PATH . '/mock_report.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -74,9 +75,10 @@ $recentAttempts = $recentAttemptsStmt ? $recentAttemptsStmt->fetchAll(PDO::FETCH
 
 // Most recent mock session
 $mockSessionsStmt = executeQuery($db, "
-    SELECT ms.id, ms.status, ms.overall_band, ms.writing_band, ms.created_at,
+    SELECT ms.id, ms.status, ms.overall_band, ms.writing_band, ms.created_at, ms.released_at,
            ms.listening_attempt_id, ms.reading_attempt_id, ms.writing_attempt_id,
            ms.speaking_notes, ms.speaking_band,
+           ms.writing_notes, ms.writing_ai_feedback, ms.writing_graded_by,
            t.title AS mock_title, t.test_type AS mock_test_type, t.code AS mock_code,
            ta_l.band_score AS l_band, ta_l.score AS l_score, ta_l.max_score AS l_max,
            ta_r.band_score AS r_band, ta_r.score AS r_score, ta_r.max_score AS r_max
@@ -384,20 +386,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                             <span>W:<?php echo number_format((float)$ms['writing_band'],1); ?></span>
                                             <span>S:<?php echo number_format((float)$ms['speaking_band'],1); ?></span>
                                         </div>
-                                        <button onclick="downloadMockPDF(<?php echo htmlspecialchars(json_encode([
-                                            'title'      => $ms['mock_title'],
-                                            'scoreLabel' => $msScoreWord,
-                                            'date'    => $msDate,
-                                            'overall' => number_format((float)$ms['overall_band'], 1),
-                                            'l'       => number_format((float)$ms['l_band'], 1),
-                                            'l_score' => (int)$ms['l_score'] . '/' . (int)$ms['l_max'],
-                                            'r'       => number_format((float)$ms['r_band'], 1),
-                                            'r_score' => (int)$ms['r_score'] . '/' . (int)$ms['r_max'],
-                                            'w'       => number_format((float)$ms['writing_band'], 1),
-                                            's'       => number_format((float)$ms['speaking_band'], 1),
-                                            's_notes' => $ms['speaking_notes'] ?? '',
-                                            'name'    => $userFullName,
-                                        ])); ?>)"
+                                        <button onclick="downloadMockReportPDF(<?php echo htmlspecialchars(json_encode(mock_report_raw($db, $ms, $userFullName), JSON_INVALID_UTF8_SUBSTITUTE)); ?>)"
                                             style="background:none;border:1px solid #10b981;color:#10b981;border-radius:6px;padding:.15rem .5rem;font-size:.72rem;cursor:pointer;">
                                             ↓ PDF
                                         </button>
@@ -475,172 +464,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script>
-    function downloadMockPDF(data) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
-        const navy  = [14,  44,  96];
-        const blue  = [14, 165, 233];
-        const pink  = [236, 72, 153];
-        const dark  = [15,  23,  42];
-        const muted = [100, 116, 139];
-        const light = [241, 245, 249];
-        const white = [255, 255, 255];
-        const L = 15, R = 195, W = 180;
-
-        doc.setFillColor(...navy);
-        doc.rect(0, 0, 210, 46, 'F');
-        doc.setTextColor(180, 210, 255);
-        doc.setFontSize(7.5);
-        doc.setFont('helvetica', 'italic');
-        doc.text('Confidential Assessment Report', R, 8, { align: 'right' });
-        doc.setTextColor(...white);
-        doc.setFontSize(22);
-        doc.setFont('helvetica', 'bold');
-        doc.text(data.title.toUpperCase(), L, 22);
-        doc.setFontSize(10.5);
-        doc.setFont('helvetica', 'italic');
-        doc.text('Full ' + (data.scoreLabel || 'Band') + ' Assessment Report', L, 31);
-        doc.setDrawColor(100, 140, 200);
-        doc.setLineWidth(0.25);
-        doc.line(L, 35, R, 35);
-        doc.setFontSize(8);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(180, 210, 255);
-        doc.text('Scholarly Language Services', R, 43, { align: 'right' });
-
-        doc.setTextColor(...dark);
-        doc.setFontSize(12.5);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Candidate: ' + data.name, L, 59);
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(...muted);
-        doc.text('Date: ' + data.date, L, 66);
-
-        const tY = 73;
-        const colW = 45;
-        const cols = [
-            { label: 'Listening', band: data.l, sub: data.l_score || '' },
-            { label: 'Reading',   band: data.r, sub: data.r_score || '' },
-            { label: 'Writing',   band: data.w, sub: 'AI-graded' },
-            { label: 'Speaking',  band: data.s, sub: 'Instructor' },
-        ];
-
-        doc.setFillColor(...navy);
-        doc.rect(L, tY, W, 10, 'F');
-        doc.setTextColor(...white);
-        doc.setFontSize(8.5);
-        doc.setFont('helvetica', 'bold');
-        cols.forEach((c, i) => doc.text(c.label, L + colW*i + colW/2, tY + 7, { align: 'center' }));
-
-        doc.setFillColor(...light);
-        doc.rect(L, tY + 10, W, 22, 'F');
-        doc.setDrawColor(226, 232, 240);
-        doc.setLineWidth(0.2);
-        for (let i = 1; i < 4; i++) doc.line(L + colW*i, tY+10, L + colW*i, tY+32);
-        doc.setFontSize(22);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(...navy);
-        cols.forEach((c, i) => doc.text(c.band, L + colW*i + colW/2, tY + 26, { align: 'center' }));
-        doc.setFontSize(7.5);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(...muted);
-        cols.forEach((c, i) => { if (c.sub) doc.text(c.sub, L + colW*i + colW/2, tY + 31, { align: 'center' }); });
-
-        const oY = tY + 34;
-        doc.setFillColor(...navy);
-        doc.rect(L, oY, 120, 14, 'F');
-        doc.setTextColor(...white);
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'bold');
-        doc.text('OVERALL ' + (data.scoreLabel || 'Band').toUpperCase() + ' SCORE', L + 5, oY + 9.5);
-        doc.setFillColor(...pink);
-        doc.rect(L + 120, oY, 60, 14, 'F');
-        doc.setTextColor(...white);
-        doc.setFontSize(20);
-        doc.setFont('helvetica', 'bold');
-        doc.text(data.overall, L + 150, oY + 10.5, { align: 'center' });
-
-        const avg = ((parseFloat(data.l) + parseFloat(data.r) + parseFloat(data.w) + parseFloat(data.s)) / 4).toFixed(2);
-        doc.setFontSize(7.5);
-        doc.setFont('helvetica', 'italic');
-        doc.setTextColor(...muted);
-        const avgFormula = '(' + data.l + ' + ' + data.r + ' + ' + data.w + ' + ' + data.s + ') ÷ 4 = ' + avg + '  →  rounded to ' + data.overall;
-        doc.text(
-            (data.scoreLabel === 'CLB Level')
-                ? avgFormula + '  (informal average — CELPIP reports each skill\'s CLB level separately, not a single composite score)'
-                : avgFormula,
-            L, oY + 21
-        );
-
-        const panels = [
-            { label: 'LISTENING', band: data.l, score: data.l_score, note: 'Raw score shown. Part-by-part breakdown available in your online results.' },
-            { label: 'READING',   band: data.r, score: data.r_score, note: 'Raw score shown. Section breakdown available in your online results.' },
-            { label: 'WRITING',   band: data.w, score: '',            note: 'AI-graded. Full task feedback and criteria scores available in your online results.' },
-            { label: 'SPEAKING',  band: data.s, score: '',            note: data.s_notes || 'Instructor-graded. Detailed feedback available in your online results.' },
-        ];
-
-        let pY = oY + 29;
-        panels.forEach(p => {
-            doc.setFillColor(...navy);
-            doc.rect(L, pY, W, 10, 'F');
-            doc.setTextColor(...white);
-            doc.setFontSize(9.5);
-            doc.setFont('helvetica', 'bold');
-            doc.text(p.label, L + 5, pY + 7);
-            doc.text((data.scoreLabel || 'Band') + ' ' + p.band, R, pY + 7, { align: 'right' });
-            doc.setFillColor(...light);
-            doc.rect(L, pY + 10, W, 14, 'F');
-            if (p.score) {
-                doc.setFontSize(8.5);
-                doc.setFont('helvetica', 'bold');
-                doc.setTextColor(...dark);
-                doc.text('Raw Score: ' + p.score, L + 5, pY + 18);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(...muted);
-                doc.setFontSize(7.5);
-                // Wrap + cap at 2 lines so a long instructor note (free text)
-                // can't run off the right edge of the page unclipped.
-                const noteLines = doc.splitTextToSize(p.note, R - (L + 50) - 2).slice(0, 2);
-                doc.text(noteLines, L + 50, pY + 18);
-            } else {
-                doc.setFontSize(7.5);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(...muted);
-                const noteLines = doc.splitTextToSize(p.note, W - 10).slice(0, 2);
-                doc.text(noteLines, L + 5, pY + 18);
-            }
-            pY += 26;
-        });
-
-        doc.setFillColor(224, 242, 254);
-        doc.rect(L, pY + 4, W, 22, 'F');
-        doc.setDrawColor(...blue);
-        doc.setLineWidth(0.4);
-        doc.line(L, pY + 4, L, pY + 26);
-        doc.setTextColor(...dark);
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Full detailed results available at: academy.slslanguage.com', L + 5, pY + 13);
-        doc.setFontSize(8);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(...muted);
-        doc.text('Log in to your EduHub account to view correct/incorrect answers, AI writing feedback, and speaking notes.', L + 5, pY + 21);
-
-        doc.setFillColor(...navy);
-        doc.rect(0, 282, 210, 15, 'F');
-        doc.setTextColor(180, 210, 255);
-        doc.setFontSize(7.5);
-        doc.setFont('helvetica', 'normal');
-        doc.text('Scholarly Language Services  ·  slslanguage.com', L, 290);
-        doc.text('Generated ' + new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' }), R, 290, { align: 'right' });
-
-        const filename = 'IELTS_Report_' + data.name.replace(/\s+/g,'_') + '_' + data.date.replace(/\s+/g,'_') + '.pdf';
-        doc.save(filename);
-    }
-    </script>
+    <script src="assets/js/mock_report_pdf.js"></script>
 
     <script>
         // Theme restore before first paint

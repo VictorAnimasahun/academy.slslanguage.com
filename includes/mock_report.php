@@ -1,0 +1,65 @@
+<?php
+/**
+ * Raw saved fields for one RELEASED mock session, handed to
+ * assets/js/mock_report_pdf.js, which decides what the student is shown and
+ * builds the PDF. Keeping that logic in the one JS file means the tutor's
+ * "Preview what the student receives" panel in sls-admin (which loads the same
+ * file) can't show something different from what a student downloads.
+ */
+
+if (!function_exists('mock_report_raw')) {
+
+    /** True when saved AI writing feedback is really a failure placeholder, not a critique. */
+    function mock_ai_feedback_failed(?string $text): bool {
+        return (bool)preg_match('/\[AI GRADING FAILED\]|AI grading temporarily unavailable|Could not parse AI response/i', (string)$text);
+    }
+
+    /** Latest recording per speaking task for a mock session (a re-record replaces the earlier one). */
+    function mock_report_speaking_tasks(PDO $db, int $sessionId): array {
+        $st = $db->prepare("
+            SELECT sr.task_number, sr.task_title, sr.manual_score, sr.manual_analysis
+            FROM speaking_recordings sr
+            INNER JOIN (
+                SELECT task_number, MAX(id) AS max_id
+                FROM speaking_recordings
+                WHERE mock_session_id = ?
+                GROUP BY task_number
+            ) latest ON latest.max_id = sr.id
+            ORDER BY sr.task_number
+        ");
+        $st->execute([$sessionId]);
+        return $st->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param array $ms  a mock_sessions row (ms.*) joined with: mock_title, mock_test_type,
+     *                   l_band, l_score, l_max, r_band, r_score, r_max
+     */
+    function mock_report_raw(PDO $db, array $ms, string $studentName): array {
+        $isCelpip = str_starts_with((string)($ms['mock_test_type'] ?? ''), 'CELPIP');
+        $stamp    = $ms['released_at'] ?? null;
+        $tasks    = [];
+        foreach (mock_report_speaking_tasks($db, (int)$ms['id']) as $t) {
+            $tasks[] = ['n' => (int)$t['task_number'], 'title' => (string)$t['task_title'],
+                        'score' => (string)$t['manual_score'], 'analysis' => (string)$t['manual_analysis']];
+        }
+        return [
+            'title'          => (string)$ms['mock_title'],
+            'name'           => $studentName,
+            'date'           => $stamp ? date('d M Y', strtotime($stamp)) : date('d M Y'),
+            'label'          => $isCelpip ? 'CLB Level' : 'Band',
+            'l'              => $ms['l_band'],
+            'r'              => $ms['r_band'],
+            'w'              => $ms['writing_band'],
+            's'              => $ms['speaking_band'],
+            'overall'        => $ms['overall_band'],
+            'l_score'        => (int)$ms['l_score'] . '/' . (int)$ms['l_max'],
+            'r_score'        => (int)$ms['r_score'] . '/' . (int)$ms['r_max'],
+            'writing_by'     => ($ms['writing_graded_by'] ?? 'ai') === 'instructor' ? 'instructor' : 'ai',
+            'writing_notes'  => (string)($ms['writing_notes'] ?? ''),
+            'writing_ai'     => (string)($ms['writing_ai_feedback'] ?? ''),
+            'speaking_notes' => (string)($ms['speaking_notes'] ?? ''),
+            'tasks'          => $tasks,
+        ];
+    }
+}

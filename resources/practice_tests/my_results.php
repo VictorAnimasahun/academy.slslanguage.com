@@ -1,5 +1,6 @@
 <?php
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
+require_once INCLUDES_PATH . '/mock_report.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login");
@@ -21,11 +22,13 @@ $attemptId = isset($_GET['attempt_id']) ? (int)$_GET['attempt_id'] : 0;
 
 // ── Mock session detail ────────────────────────────────────────────────────────
 $mockSession = null;
+$speakingTasks = [];
+$reportRaw = null;
 $listeningAnswers = $readingAnswers = $writingEssays = $readingGroups = [];
 
 if ($sessionId) {
     $st = $db->prepare("
-        SELECT ms.*, t.title AS mock_title, t.code AS mock_code,
+        SELECT ms.*, t.title AS mock_title, t.code AS mock_code, t.test_type AS mock_test_type,
                ta_l.id AS l_att_id, ta_l.band_score AS l_band, ta_l.score AS l_score, ta_l.max_score AS l_max,
                ta_r.id AS r_att_id, ta_r.band_score AS r_band, ta_r.score AS r_score, ta_r.max_score AS r_max,
                ta_w.id AS w_att_id
@@ -96,6 +99,10 @@ if ($sessionId) {
         ");
         $st->execute([$mockSession['w_att_id']]);
         $writingEssays = $st->fetchAll(PDO::FETCH_ASSOC);
+
+        // Per-task speaking comments and the single payload the PDF is built from.
+        $speakingTasks = mock_report_speaking_tasks($db, (int)$mockSession['id']);
+        $reportRaw = mock_report_raw($db, $mockSession, $userFullName);
     }
 }
 
@@ -142,7 +149,8 @@ if (!$sessionId && !$attemptId) {
     $st = $db->prepare("
         SELECT ms.id, ms.status, ms.overall_band, ms.writing_band, ms.created_at, ms.released_at,
                ms.speaking_band, ms.speaking_notes,
-               t.title AS mock_title, t.code AS mock_code,
+               ms.writing_notes, ms.writing_ai_feedback, ms.writing_graded_by,
+               t.title AS mock_title, t.code AS mock_code, t.test_type AS mock_test_type,
                ta_l.band_score AS l_band, ta_l.score AS l_score, ta_l.max_score AS l_max,
                ta_r.band_score AS r_band, ta_r.score AS r_score, ta_r.max_score AS r_max
         FROM mock_sessions ms
@@ -317,19 +325,7 @@ if (!$sessionId && !$attemptId) {
                 Released <?= date('d M Y', strtotime($mockSession['released_at'])) ?>
             </div>
         </div>
-        <button onclick="downloadMockPDF(<?= htmlspecialchars(json_encode([
-            'title'   => $mockSession['mock_title'],
-            'date'    => date('d M Y', strtotime($mockSession['released_at'])),
-            'overall' => number_format((float)$mockSession['overall_band'], 1),
-            'l'       => number_format((float)$mockSession['l_band'], 1),
-            'l_score' => (int)$mockSession['l_score'] . '/' . (int)$mockSession['l_max'],
-            'r'       => number_format((float)$mockSession['r_band'], 1),
-            'r_score' => (int)$mockSession['r_score'] . '/' . (int)$mockSession['r_max'],
-            'w'       => number_format((float)$mockSession['writing_band'], 1),
-            's'       => number_format((float)$mockSession['speaking_band'], 1),
-            's_notes' => $mockSession['speaking_notes'] ?? '',
-            'name'    => $userFullName,
-        ])) ?>)" class="btn-pdf" style="font-size:.82rem;padding:.35rem 1rem;">
+        <button onclick="downloadMockReportPDF(<?= htmlspecialchars(json_encode($reportRaw, JSON_INVALID_UTF8_SUBSTITUTE)) ?>)" class="btn-pdf" style="font-size:.82rem;padding:.35rem 1rem;">
             ↓ Download PDF Report
         </button>
     </div>
@@ -349,7 +345,7 @@ if (!$sessionId && !$attemptId) {
         <div class="band-box">
             <div class="band-num"><?= number_format((float)$mockSession['writing_band'],1) ?></div>
             <div class="band-name">Writing</div>
-            <div class="band-raw">AI-graded</div>
+            <div class="band-raw"><?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Instructor' : 'AI-graded' ?></div>
         </div>
         <div class="band-box">
             <div class="band-num"><?= number_format((float)$mockSession['speaking_band'],1) ?></div>
@@ -362,11 +358,23 @@ if (!$sessionId && !$attemptId) {
         </div>
     </div>
 
-    <!-- Speaking notes -->
-    <?php if ($mockSession['speaking_notes']): ?>
+    <!-- Speaking notes + per-task comments -->
+    <?php
+    $speakingTasksShown = array_filter($speakingTasks, fn($t) => trim((string)$t['manual_score']) !== '' || trim((string)$t['manual_analysis']) !== '');
+    if ($mockSession['speaking_notes'] || $speakingTasksShown): ?>
     <div class="speaking-panel">
         <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--pink-dark);">Instructor Speaking Notes</div>
-        <div class="snotes"><?= e($mockSession['speaking_notes']) ?></div>
+        <?php if ($mockSession['speaking_notes']): ?>
+        <div class="snotes" style="white-space:pre-wrap;"><?= e($mockSession['speaking_notes']) ?></div>
+        <?php endif; ?>
+        <?php foreach ($speakingTasksShown as $t): ?>
+        <div class="snotes" style="margin-top:.6rem;">
+            <strong>Task <?= (int)$t['task_number'] ?><?= $t['task_title'] ? ' — ' . e($t['task_title']) : '' ?><?= trim((string)$t['manual_score']) !== '' ? ' · ' . e($reportRaw['label']) . ' ' . e($t['manual_score']) : '' ?></strong>
+            <?php if (trim((string)$t['manual_analysis']) !== ''): ?>
+            <div style="white-space:pre-wrap;margin-top:.25rem;"><?= e($t['manual_analysis']) ?></div>
+            <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
     </div>
     <?php endif; ?>
 
@@ -388,7 +396,7 @@ if (!$sessionId && !$attemptId) {
             <span class="sicon">✍️</span>
             <div class="stitle">Writing</div>
             <div class="ssub"><?= count($writingEssays) ?> task<?= count($writingEssays) !== 1 ? 's' : '' ?></div>
-            <div class="sscore">Band <?= number_format((float)$mockSession['writing_band'],1) ?> (AI)</div>
+            <div class="sscore">Band <?= number_format((float)$mockSession['writing_band'],1) ?> (<?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Instructor' : 'AI' ?>)</div>
         </button>
     </div>
 
@@ -470,7 +478,7 @@ if (!$sessionId && !$attemptId) {
     <div class="modal-overlay" id="modal-writing" onclick="closeOnBg(event,'writing')">
         <div class="modal-box">
             <div class="modal-head">
-                <div class="modal-title">✍️ Writing — Band <?= number_format((float)$mockSession['writing_band'],1) ?> (AI-graded)</div>
+                <div class="modal-title">✍️ Writing — Band <?= number_format((float)$mockSession['writing_band'],1) ?> (<?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Instructor-graded' : 'AI-graded' ?>)</div>
                 <button class="modal-close" onclick="closeModal('writing')">✕</button>
             </div>
             <div class="modal-body">
@@ -488,10 +496,14 @@ if (!$sessionId && !$attemptId) {
                         <div class="essay-box"><?= e($task['essay'] ?: '(no response submitted)') ?></div>
                     </div>
                     <?php endforeach; ?>
-                    <?php if (!empty($mockSession['writing_ai_feedback'])): ?>
-                    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--blue-dark);margin-bottom:.4rem;">AI Feedback</div>
-                    <div class="ai-box"><?= e($mockSession['writing_ai_feedback']) ?></div>
-                    <?php endif; ?>
+                <?php endif; ?>
+                <?php if (trim((string)($mockSession['writing_notes'] ?? '')) !== ''): ?>
+                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pink-dark);margin:1.25rem 0 .4rem;">Instructor Comments</div>
+                <div class="ai-box" style="background:var(--pink-light);border-left-color:var(--pink);margin-top:0;"><?= e($mockSession['writing_notes']) ?></div>
+                <?php endif; ?>
+                <?php if (!empty($mockSession['writing_ai_feedback']) && !mock_ai_feedback_failed($mockSession['writing_ai_feedback'])): ?>
+                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--blue-dark);margin:1.25rem 0 .4rem;"><?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Automated Feedback (for reference)' : 'AI Feedback' ?></div>
+                <div class="ai-box" style="margin-top:0;"><?= e($mockSession['writing_ai_feedback']) ?></div>
                 <?php endif; ?>
             </div>
         </div>
@@ -536,7 +548,7 @@ if (!$sessionId && !$attemptId) {
             ?>
             <div class="q-row">
                 <div class="q-n"><?= $row['question_number'] ?></div>
-                <div class="q-t"><?= e(mb_strimwidth($row['question_text'] ?? '', 0, 120, '…')) ?></div>
+                <div class="q-t"><?= e($row['question_text'] ?? '') ?></div>
                 <div class="q-a">
                     <div class="<?= $ok ? 'correct' : 'incorrect' ?>">
                         <?= e($stu) ?> <span class="ms-1 <?= $ok ? 'pill-c' : 'pill-w' ?>"><?= $ok ? '✓' : '✗' ?></span>
@@ -599,19 +611,7 @@ if (!$sessionId && !$attemptId) {
             <div class="d-flex flex-column align-items-end gap-1">
                 <?php if ($ms['status'] === 'results_released'): ?>
                     <a href="my_results.php?session_id=<?= $ms['id'] ?>" class="btn-view">View Results →</a>
-                    <button onclick="downloadMockPDF(<?= htmlspecialchars(json_encode([
-                        'title'   => $ms['mock_title'],
-                        'date'    => date('d M Y', strtotime($ms['released_at'])),
-                        'overall' => number_format((float)$ms['overall_band'],1),
-                        'l'       => number_format((float)$ms['l_band'],1),
-                        'l_score' => (int)$ms['l_score'].'/'.(int)$ms['l_max'],
-                        'r'       => number_format((float)$ms['r_band'],1),
-                        'r_score' => (int)$ms['r_score'].'/'.(int)$ms['r_max'],
-                        'w'       => number_format((float)$ms['writing_band'],1),
-                        's'       => number_format((float)$ms['speaking_band'],1),
-                        's_notes' => $ms['speaking_notes'] ?? '',
-                        'name'    => $userFullName,
-                    ])) ?>)" class="btn-pdf">↓ PDF</button>
+                    <button onclick="downloadMockReportPDF(<?= htmlspecialchars(json_encode(mock_report_raw($db, $ms, $userFullName), JSON_INVALID_UTF8_SUBSTITUTE)) ?>)" class="btn-pdf">↓ PDF</button>
                 <?php elseif ($ms['status'] === 'awaiting_speaking_grade'): ?>
                     <span class="status-pill pill-pending">⏳ Awaiting Speaking</span>
                 <?php else: ?>
@@ -669,88 +669,12 @@ if (!$sessionId && !$attemptId) {
 <?php include INCLUDES_PATH . '/adverts.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../../assets/js/mock_report_pdf.js"></script>
 <script>
 function openModal(name) { document.getElementById('modal-'+name).classList.add('open'); document.body.style.overflow='hidden'; }
 function closeModal(name) { document.getElementById('modal-'+name).classList.remove('open'); document.body.style.overflow=''; }
 function closeOnBg(e,name) { if (e.target===document.getElementById('modal-'+name)) closeModal(name); }
 document.addEventListener('keydown', e => { if (e.key==='Escape') ['listening','reading','writing'].forEach(closeModal); });
-
-function downloadMockPDF(data) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit:'mm', format:'a4' });
-    const navy=[14,44,96], blue=[14,165,233], pink=[236,72,153], dark=[15,23,42], muted=[100,116,139], light=[241,245,249], white=[255,255,255];
-    const L=15, R=195, W=180;
-
-    doc.setFillColor(...navy); doc.rect(0,0,210,46,'F');
-    doc.setTextColor(180,210,255); doc.setFontSize(7.5); doc.setFont('helvetica','italic');
-    doc.text('Confidential Assessment Report',R,8,{align:'right'});
-    doc.setTextColor(...white); doc.setFontSize(22); doc.setFont('helvetica','bold');
-    doc.text(data.title.toUpperCase(),L,22);
-    doc.setFontSize(10.5); doc.setFont('helvetica','italic');
-    doc.text('Full Band Assessment Report',L,31);
-    doc.setDrawColor(100,140,200); doc.setLineWidth(0.25); doc.line(L,35,R,35);
-    doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(180,210,255);
-    doc.text('Scholarly Language Services',R,43,{align:'right'});
-
-    doc.setTextColor(...dark); doc.setFontSize(12.5); doc.setFont('helvetica','bold');
-    doc.text('Candidate: '+data.name,L,59);
-    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(...muted);
-    doc.text('Date: '+data.date,L,66);
-
-    const tY=73, colW=45;
-    const cols=[{label:'Listening',band:data.l,sub:data.l_score||''},{label:'Reading',band:data.r,sub:data.r_score||''},{label:'Writing',band:data.w,sub:'AI-graded'},{label:'Speaking',band:data.s,sub:'Instructor'}];
-    doc.setFillColor(...navy); doc.rect(L,tY,W,10,'F');
-    doc.setTextColor(...white); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
-    cols.forEach((c,i)=>doc.text(c.label,L+colW*i+colW/2,tY+7,{align:'center'}));
-    doc.setFillColor(...light); doc.rect(L,tY+10,W,22,'F');
-    doc.setDrawColor(226,232,240); doc.setLineWidth(0.2);
-    for(let i=1;i<4;i++) doc.line(L+colW*i,tY+10,L+colW*i,tY+32);
-    doc.setFontSize(22); doc.setFont('helvetica','bold'); doc.setTextColor(...navy);
-    cols.forEach((c,i)=>doc.text(c.band,L+colW*i+colW/2,tY+26,{align:'center'}));
-    doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(...muted);
-    cols.forEach((c,i)=>{ if(c.sub) doc.text(c.sub,L+colW*i+colW/2,tY+31,{align:'center'}); });
-
-    const oY=tY+34;
-    doc.setFillColor(...navy); doc.rect(L,oY,120,14,'F');
-    doc.setTextColor(...white); doc.setFontSize(10); doc.setFont('helvetica','bold');
-    doc.text('OVERALL BAND SCORE',L+5,oY+9.5);
-    doc.setFillColor(...pink); doc.rect(L+120,oY,60,14,'F');
-    doc.setFontSize(20); doc.text(data.overall,L+150,oY+10.5,{align:'center'});
-    const avg=((parseFloat(data.l)+parseFloat(data.r)+parseFloat(data.w)+parseFloat(data.s))/4).toFixed(2);
-    doc.setFontSize(7.5); doc.setFont('helvetica','italic'); doc.setTextColor(...muted);
-    doc.text('('+data.l+' + '+data.r+' + '+data.w+' + '+data.s+') ÷ 4 = '+avg+'  →  rounded to '+data.overall,L,oY+21);
-
-    const panels=[
-        {label:'LISTENING',band:data.l,score:data.l_score,note:'Raw score shown. Full breakdown available in your online results.'},
-        {label:'READING',  band:data.r,score:data.r_score,note:'Raw score shown. Passage breakdown available in your online results.'},
-        {label:'WRITING',  band:data.w,score:'',note:'AI-graded. Full task feedback available in your online results.'},
-        {label:'SPEAKING', band:data.s,score:'',note:data.s_notes||'Instructor-graded. Feedback available in your online results.'},
-    ];
-    let pY=oY+29;
-    panels.forEach(p=>{
-        doc.setFillColor(...navy); doc.rect(L,pY,W,10,'F');
-        doc.setTextColor(...white); doc.setFontSize(9.5); doc.setFont('helvetica','bold');
-        doc.text(p.label,L+5,pY+7); doc.text('Band '+p.band,R,pY+7,{align:'right'});
-        doc.setFillColor(...light); doc.rect(L,pY+10,W,14,'F');
-        if(p.score){ doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(...dark); doc.text('Raw Score: '+p.score,L+5,pY+18); doc.setFont('helvetica','normal'); doc.setTextColor(...muted); doc.setFontSize(7.5); doc.text(doc.splitTextToSize(p.note, R-(L+50)-2).slice(0,2),L+50,pY+18); }
-        else { doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(...muted); doc.text(doc.splitTextToSize(p.note, W-10).slice(0,2),L+5,pY+18); }
-        pY+=26;
-    });
-
-    doc.setFillColor(224,242,254); doc.rect(L,pY+4,W,22,'F');
-    doc.setDrawColor(...blue); doc.setLineWidth(0.4); doc.line(L,pY+4,L,pY+26);
-    doc.setTextColor(...dark); doc.setFontSize(9); doc.setFont('helvetica','bold');
-    doc.text('Full detailed results: academy.slslanguage.com',L+5,pY+13);
-    doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(...muted);
-    doc.text('Log in to view correct/incorrect answers, AI writing feedback, and speaking notes.',L+5,pY+21);
-
-    doc.setFillColor(...navy); doc.rect(0,282,210,15,'F');
-    doc.setTextColor(180,210,255); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
-    doc.text('Scholarly Language Services  ·  slslanguage.com',L,290);
-    doc.text('Generated '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}),R,290,{align:'right'});
-
-    doc.save('IELTS_Report_'+data.name.replace(/\s+/g,'_')+'_'+data.date.replace(/\s+/g,'_')+'.pdf');
-}
 </script>
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
 <?php include INCLUDES_PATH . '/footer.php'; ?>

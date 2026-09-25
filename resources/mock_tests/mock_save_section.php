@@ -113,11 +113,11 @@ try {
             $writing_band = $examType === 'CELPIP'
                 ? round(($band1 + $band2) / 2)
                 : round((($band1 + $band2) / 2) * 2) / 2;
-            $writing_feedback = "Task 1 — {$scoreLabel} {$band1}\n" . ($r1['overall_feedback'] ?? '')
-                . "\n\nTask 2 — {$scoreLabel} {$band2}\n" . ($r2['overall_feedback'] ?? '');
+            $writing_feedback = "Task 1 — {$scoreLabel} {$band1}\n" . formatWritingFeedback($r1)
+                . "\n\nTask 2 — {$scoreLabel} {$band2}\n" . formatWritingFeedback($r2);
         } else {
             $writing_band = $band1;
-            $writing_feedback = "Task 1 — {$scoreLabel} {$band1}\n" . ($r1['overall_feedback'] ?? '');
+            $writing_feedback = "Task 1 — {$scoreLabel} {$band1}\n" . formatWritingFeedback($r1);
         }
 
         $stmt = $db->prepare("
@@ -333,33 +333,90 @@ function gradeMockEssay(string $question, string $essay, string $taskType, strin
     return callGeminiGrader($prompt);
 }
 
+/**
+ * Whole AI critique as readable text. The grader asks for a criterion-by-criterion
+ * breakdown plus an improvement list; only overall_feedback used to be kept, so a
+ * student saw a fraction of what was generated. A failed grade starts with the literal
+ * marker "[AI GRADING FAILED]" so the tutor's release preview can flag it instead of
+ * letting a silent band 0 reach the student.
+ */
+function formatWritingFeedback(array $r): string {
+    if (!empty($r['failed'])) {
+        return '[AI GRADING FAILED] ' . ($r['overall_feedback'] ?? 'No feedback was generated.') . ' The tutor must grade this task by hand.';
+    }
+    $parts = [];
+    $criteria = [
+        'task_achievement'   => 'Task achievement / response',
+        'coherence_cohesion' => 'Coherence and cohesion',
+        'lexical_resource'   => 'Vocabulary (lexical resource)',
+        'grammatical_range'  => 'Grammar (range and accuracy)',
+    ];
+    foreach ($criteria as $key => $title) {
+        $v = $r[$key] ?? '';
+        if (is_array($v)) $v = implode(' ', array_map('strval', $v));
+        if (trim((string)$v) !== '') $parts[] = "{$title}: " . trim((string)$v);
+    }
+    if (trim((string)($r['overall_feedback'] ?? '')) !== '') {
+        $parts[] = 'Overall: ' . trim((string)$r['overall_feedback']);
+    }
+    if (!empty($r['improvements']) && is_array($r['improvements'])) {
+        $list = [];
+        foreach ($r['improvements'] as $i => $imp) $list[] = ($i + 1) . '. ' . trim(is_array($imp) ? implode(' ', $imp) : (string)$imp);
+        $parts[] = "How to improve:\n" . implode("\n", $list);
+    }
+    return implode("\n\n", $parts);
+}
+
 function callGeminiGrader(string $prompt): array {
     $url = "https://generativelanguage.googleapis.com/v1/models/gemini-3.6-flash:generateContent?key=" . GEMINI_API_KEY;
-    $ch  = curl_init($url);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_TIMEOUT        => 45,
-        CURLOPT_SSL_VERIFYPEER => true,
-        CURLOPT_POSTFIELDS     => json_encode([
-            'contents' => [['role' => 'user', 'parts' => [['text' => $prompt]]]]
-        ]),
-        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-    ]);
-    $response  = curl_exec($ch);
-    $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlError = curl_error($ch);
+    $fail = fn(string $why) => ['band' => 0.0, 'failed' => true, 'overall_feedback' => $why];
+    $lastWhy = 'AI grading temporarily unavailable.';
 
-    if ($curlError || $httpCode !== 200) {
-        error_log("gradeMockEssay Gemini error {$httpCode}: {$response}");
-        return ['band' => 0.0, 'overall_feedback' => 'AI grading temporarily unavailable.'];
+    // One retry: Gemini answers 429/503 for a few seconds at a time, and a
+    // single transient blip used to become a permanent band 0 for the student.
+    for ($attempt = 1; $attempt <= 2; $attempt++) {
+        $ch  = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_TIMEOUT        => 45,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_POSTFIELDS     => json_encode([
+                'contents' => [['role' => 'user', 'parts' => [['text' => $prompt]]]],
+                // Explicit ceiling: a long critique must not be cut off mid-JSON.
+                'generationConfig' => ['maxOutputTokens' => 8192],
+            ]),
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        ]);
+        $response  = curl_exec($ch);
+        $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($curlError || $httpCode !== 200) {
+            error_log("gradeMockEssay Gemini error {$httpCode}: " . ($curlError ?: $response));
+            $lastWhy = 'AI grading temporarily unavailable.';
+            if ($attempt < 2 && (!$httpCode || in_array($httpCode, [429, 500, 502, 503, 504], true))) { sleep(2); continue; }
+            return $fail($lastWhy);
+        }
+
+        $result = json_decode($response, true);
+        if (($result['candidates'][0]['finishReason'] ?? '') === 'MAX_TOKENS') {
+            // Reply was cut off: the JSON is incomplete, so do not present half a critique as a grade.
+            error_log('gradeMockEssay Gemini reply truncated (MAX_TOKENS)');
+            $lastWhy = 'The AI reply was cut off before it finished.';
+            if ($attempt < 2) continue;
+            return $fail($lastWhy);
+        }
+
+        $text   = $result['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
+        $text   = preg_replace('/^```(?:json)?\s*/m', '', trim($text));
+        $text   = preg_replace('/\s*```$/m', '', $text);
+        $parsed = json_decode(trim($text), true);
+        if (is_array($parsed) && isset($parsed['band'])) return $parsed;
+
+        $lastWhy = 'The AI reply could not be read.';
+        if ($attempt < 2) continue;
     }
-
-    $result = json_decode($response, true);
-    $text   = $result['candidates'][0]['content']['parts'][0]['text'] ?? '{}';
-    $text   = preg_replace('/^```(?:json)?\s*/m', '', trim($text));
-    $text   = preg_replace('/\s*```$/m', '', $text);
-    $parsed = json_decode(trim($text), true);
-
-    return $parsed ?? ['band' => 0.0, 'overall_feedback' => 'Could not parse AI response.'];
+    return $fail($lastWhy);
 }
