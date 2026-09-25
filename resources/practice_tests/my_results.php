@@ -310,7 +310,10 @@ if (!$sessionId && !$attemptId) {
         </ol>
     </nav>
 
-<?php if ($mockSession): ?>
+<?php if ($mockSession):
+    $mkC = mock_is_celpip($mockSession);
+    $mkLabel = $mkC ? 'CLB Level' : 'Band';
+?>
 <!-- ══════════════════════════════════════════════════════════════════
      MOCK SESSION DETAIL
 ══════════════════════════════════════════════════════════════════════ -->
@@ -333,27 +336,27 @@ if (!$sessionId && !$attemptId) {
     <!-- Band bar -->
     <div class="band-bar">
         <div class="band-box">
-            <div class="band-num"><?= number_format((float)$mockSession['l_band'],1) ?></div>
+            <div class="band-num"><?= mock_fmt_score($mockSession['l_band'], $mkC) ?></div>
             <div class="band-name">Listening</div>
             <div class="band-raw"><?= (int)$mockSession['l_score'] ?>/<?= (int)$mockSession['l_max'] ?></div>
         </div>
         <div class="band-box">
-            <div class="band-num"><?= number_format((float)$mockSession['r_band'],1) ?></div>
+            <div class="band-num"><?= mock_fmt_score($mockSession['r_band'], $mkC) ?></div>
             <div class="band-name">Reading</div>
             <div class="band-raw"><?= (int)$mockSession['r_score'] ?>/<?= (int)$mockSession['r_max'] ?></div>
         </div>
         <div class="band-box">
-            <div class="band-num"><?= number_format((float)$mockSession['writing_band'],1) ?></div>
+            <div class="band-num"><?= mock_fmt_score($mockSession['writing_band'], $mkC) ?></div>
             <div class="band-name">Writing</div>
             <div class="band-raw"><?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Instructor' : 'AI-graded' ?></div>
         </div>
         <div class="band-box">
-            <div class="band-num"><?= number_format((float)$mockSession['speaking_band'],1) ?></div>
+            <div class="band-num"><?= mock_fmt_score($mockSession['speaking_band'], $mkC) ?></div>
             <div class="band-name">Speaking</div>
             <div class="band-raw">Instructor</div>
         </div>
         <div class="band-box overall">
-            <div class="band-num pink"><?= number_format((float)$mockSession['overall_band'],1) ?></div>
+            <div class="band-num pink"><?= mock_fmt_score($mockSession['overall_band'], $mkC, true) ?></div>
             <div class="band-name">Overall</div>
         </div>
     </div>
@@ -384,19 +387,19 @@ if (!$sessionId && !$attemptId) {
             <span class="sicon">🎧</span>
             <div class="stitle">Listening</div>
             <div class="ssub"><?= count($listeningAnswers) ?> questions</div>
-            <div class="sscore">Band <?= number_format((float)$mockSession['l_band'],1) ?> · <?= (int)$mockSession['l_score'] ?>/<?= (int)$mockSession['l_max'] ?></div>
+            <div class="sscore"><?= $mkLabel ?> <?= mock_fmt_score($mockSession['l_band'], $mkC) ?> · <?= (int)$mockSession['l_score'] ?>/<?= (int)$mockSession['l_max'] ?></div>
         </button>
         <button class="section-btn" onclick="openModal('reading')">
             <span class="sicon">📖</span>
             <div class="stitle">Reading</div>
             <div class="ssub"><?= count($readingAnswers) ?> questions · <?= count($readingGroups) ?> passage<?= count($readingGroups) !== 1 ? 's' : '' ?></div>
-            <div class="sscore">Band <?= number_format((float)$mockSession['r_band'],1) ?> · <?= (int)$mockSession['r_score'] ?>/<?= (int)$mockSession['r_max'] ?></div>
+            <div class="sscore"><?= $mkLabel ?> <?= mock_fmt_score($mockSession['r_band'], $mkC) ?> · <?= (int)$mockSession['r_score'] ?>/<?= (int)$mockSession['r_max'] ?></div>
         </button>
         <button class="section-btn" onclick="openModal('writing')">
             <span class="sicon">✍️</span>
             <div class="stitle">Writing</div>
             <div class="ssub"><?= count($writingEssays) ?> task<?= count($writingEssays) !== 1 ? 's' : '' ?></div>
-            <div class="sscore">Band <?= number_format((float)$mockSession['writing_band'],1) ?> (<?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Instructor' : 'AI' ?>)</div>
+            <div class="sscore"><?= $mkLabel ?> <?= mock_fmt_score($mockSession['writing_band'], $mkC) ?> (<?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Instructor' : 'AI' ?>)</div>
         </button>
     </div>
 
@@ -404,7 +407,7 @@ if (!$sessionId && !$attemptId) {
     <div class="modal-overlay" id="modal-listening" onclick="closeOnBg(event,'listening')">
         <div class="modal-box">
             <div class="modal-head">
-                <div class="modal-title">🎧 Listening — Band <?= number_format((float)$mockSession['l_band'],1) ?> &nbsp;·&nbsp; <?= (int)$mockSession['l_score'] ?>/<?= (int)$mockSession['l_max'] ?></div>
+                <div class="modal-title">🎧 Listening — <?= $mkLabel ?> <?= mock_fmt_score($mockSession['l_band'], $mkC) ?> &nbsp;·&nbsp; <?= (int)$mockSession['l_score'] ?>/<?= (int)$mockSession['l_max'] ?></div>
                 <button class="modal-close" onclick="closeModal('listening')">✕</button>
             </div>
             <div class="modal-body">
@@ -438,7 +441,7 @@ if (!$sessionId && !$attemptId) {
     <div class="modal-overlay" id="modal-reading" onclick="closeOnBg(event,'reading')">
         <div class="modal-box">
             <div class="modal-head">
-                <div class="modal-title">📖 Reading — Band <?= number_format((float)$mockSession['r_band'],1) ?> &nbsp;·&nbsp; <?= (int)$mockSession['r_score'] ?>/<?= (int)$mockSession['r_max'] ?></div>
+                <div class="modal-title">📖 Reading — <?= $mkLabel ?> <?= mock_fmt_score($mockSession['r_band'], $mkC) ?> &nbsp;·&nbsp; <?= (int)$mockSession['r_score'] ?>/<?= (int)$mockSession['r_max'] ?></div>
                 <button class="modal-close" onclick="closeModal('reading')">✕</button>
             </div>
             <div class="modal-body">
@@ -478,7 +481,7 @@ if (!$sessionId && !$attemptId) {
     <div class="modal-overlay" id="modal-writing" onclick="closeOnBg(event,'writing')">
         <div class="modal-box">
             <div class="modal-head">
-                <div class="modal-title">✍️ Writing — Band <?= number_format((float)$mockSession['writing_band'],1) ?> (<?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Instructor-graded' : 'AI-graded' ?>)</div>
+                <div class="modal-title">✍️ Writing — <?= $mkLabel ?> <?= mock_fmt_score($mockSession['writing_band'], $mkC) ?> (<?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Instructor-graded' : 'AI-graded' ?>)</div>
                 <button class="modal-close" onclick="closeModal('writing')">✕</button>
             </div>
             <div class="modal-body">
@@ -487,7 +490,7 @@ if (!$sessionId && !$attemptId) {
                 <?php else: ?>
                     <?php foreach ($writingEssays as $task): ?>
                     <div class="task-block">
-                        <div class="task-head">Task <?= $task['question_number'] ?><?= $task['band'] ? ' — Band '.number_format((float)$task['band'],1) : '' ?></div>
+                        <div class="task-head">Task <?= $task['question_number'] ?><?= $task['band'] ? ' — '.$mkLabel.' '.mock_fmt_score($task['band'], $mkC) : '' ?></div>
                         <?php if ($task['prompt']): ?>
                             <div style="font-size:.7rem;font-weight:700;color:var(--blue-dark);margin-bottom:.3rem;">Prompt</div>
                             <div class="prompt-box"><?= e($task['prompt']) ?></div>
@@ -590,7 +593,7 @@ if (!$sessionId && !$attemptId) {
         <div class="result-card mock-card">
             <div class="band-circle pink">
                 <?php if ($ms['status'] === 'results_released'): ?>
-                    <div class="bval"><?= number_format((float)$ms['overall_band'],1) ?></div>
+                    <div class="bval"><?= mock_fmt_score($ms['overall_band'], mock_is_celpip($ms), true) ?></div>
                     <div class="blbl">Band</div>
                 <?php elseif ($ms['status'] === 'awaiting_speaking_grade'): ?>
                     <div style="font-size:.6rem;font-weight:700;text-align:center;line-height:1.2;">Awaiting<br>Speaking</div>
@@ -601,10 +604,10 @@ if (!$sessionId && !$attemptId) {
             <div style="flex:1;min-width:0;">
                 <div class="fw-semibold text-dark" style="font-size:.9rem;"><?= e($ms['mock_title']) ?></div>
                 <div class="mini-bands mt-1">
-                    <?php if ($ms['l_band']): ?><span>L:</span><?= number_format((float)$ms['l_band'],1) ?><?php endif; ?>
-                    <?php if ($ms['r_band']): ?>&nbsp;<span>R:</span><?= number_format((float)$ms['r_band'],1) ?><?php endif; ?>
-                    <?php if ($ms['writing_band']): ?>&nbsp;<span>W:</span><?= number_format((float)$ms['writing_band'],1) ?><?php endif; ?>
-                    <?php if ($ms['speaking_band']): ?>&nbsp;<span>S:</span><?= number_format((float)$ms['speaking_band'],1) ?><?php endif; ?>
+                    <?php if ($ms['l_band']): ?><span>L:</span><?= mock_fmt_score($ms['l_band'], mock_is_celpip($ms)) ?><?php endif; ?>
+                    <?php if ($ms['r_band']): ?>&nbsp;<span>R:</span><?= mock_fmt_score($ms['r_band'], mock_is_celpip($ms)) ?><?php endif; ?>
+                    <?php if ($ms['writing_band']): ?>&nbsp;<span>W:</span><?= mock_fmt_score($ms['writing_band'], mock_is_celpip($ms)) ?><?php endif; ?>
+                    <?php if ($ms['speaking_band']): ?>&nbsp;<span>S:</span><?= mock_fmt_score($ms['speaking_band'], mock_is_celpip($ms)) ?><?php endif; ?>
                 </div>
                 <div class="text-muted" style="font-size:.75rem;margin-top:.2rem;"><?= $msDate ?></div>
             </div>

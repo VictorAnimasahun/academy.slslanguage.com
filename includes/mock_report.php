@@ -9,6 +9,24 @@
 
 if (!function_exists('mock_report_raw')) {
 
+    /** CELPIP mock? (scored in whole CLB levels, not IELTS bands) */
+    function mock_is_celpip(array $row): bool {
+        return str_starts_with((string)($row['mock_test_type'] ?? ''), 'CELPIP');
+    }
+
+    /**
+     * Score as a student should see it. IELTS: one decimal ("7.5"). CELPIP levels are whole numbers,
+     * and the overall is only an estimate kept to the nearest half, so 8.5 is shown as "8-9".
+     * (Same rule as fmtCelpip() in assets/js/mock_report_pdf.js.)
+     */
+    function mock_fmt_score($v, bool $isCelpip, bool $isOverall = false): string {
+        if ($v === null || $v === '') return $isCelpip ? '-' : '–';
+        $n = (float)$v;
+        if (!$isCelpip) return number_format($n, 1);
+        if ($isOverall && abs($n - floor($n) - 0.5) < 0.001) return (int)floor($n) . '-' . (int)ceil($n);
+        return (string)(int)round($n);
+    }
+
     /** True when saved AI writing feedback is really a failure placeholder, not a critique. */
     function mock_ai_feedback_failed(?string $text): bool {
         return (bool)preg_match('/\[AI GRADING FAILED\]|AI grading temporarily unavailable|Could not parse AI response/i', (string)$text);

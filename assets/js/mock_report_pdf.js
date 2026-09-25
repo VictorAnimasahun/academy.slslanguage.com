@@ -71,6 +71,15 @@
         var n = parseFloat(v);
         return (v == null || v === '' || isNaN(n)) ? '-' : n.toFixed(1);
     }
+    // CELPIP levels are whole numbers. The overall is only an estimate (average of four levels,
+    // kept to the nearest half), so a half-point is shown as the two levels either side: 8.5 -> "8-9".
+    // (Same rule as mock_fmt_score() in academy/includes/mock_report.php.)
+    function fmtCelpip(v, isOverall) {
+        var n = parseFloat(v);
+        if (v == null || v === '' || isNaN(n)) return '-';
+        if (isOverall && Math.abs(n - Math.floor(n) - 0.5) < 0.001) return Math.floor(n) + '-' + Math.ceil(n);
+        return String(Math.round(n));
+    }
 
     // Decide what the student is shown. A failed AI grade is a tutor-facing
     // warning, never student-facing text.
@@ -98,20 +107,23 @@
             });
         });
 
+        var celpip = label === 'CLB Level';
+        var F = celpip ? function (v) { return fmtCelpip(v, false); } : fmt1;
+        var O = celpip ? function (v) { return fmtCelpip(v, true); } : fmt1;
         return {
             title: raw.title, name: raw.name, date: raw.date, label: label,
-            overall: fmt1(raw.overall), l: fmt1(raw.l), r: fmt1(raw.r), w: fmt1(raw.w), s: fmt1(raw.s),
+            overall: O(raw.overall), l: F(raw.l), r: F(raw.r), w: F(raw.w), s: F(raw.s),
             l_score: raw.l_score || '', r_score: raw.r_score || '',
             w_by: byInstructor ? 'Instructor' : 'AI-graded',
             aiFailed: has(raw.writing_ai) && AI_FAILED_RE.test(raw.writing_ai),
             sections: [
-                { label: 'LISTENING', band: fmt1(raw.l), score: raw.l_score || '',
+                { label: 'LISTENING', band: F(raw.l), score: raw.l_score || '',
                   note: 'Every question with your answer and the correct one is in your online results.', blocks: [] },
-                { label: 'READING', band: fmt1(raw.r), score: raw.r_score || '',
+                { label: 'READING', band: F(raw.r), score: raw.r_score || '',
                   note: 'Every passage and question with your answer and the correct one is in your online results.', blocks: [] },
-                { label: 'WRITING', band: fmt1(raw.w), score: '',
+                { label: 'WRITING', band: F(raw.w), score: '',
                   note: writing.length ? '' : 'Your full responses are in your online results.', blocks: writing },
-                { label: 'SPEAKING', band: fmt1(raw.s), score: '',
+                { label: 'SPEAKING', band: F(raw.s), score: '',
                   note: speaking.length ? '' : 'Instructor-graded.', blocks: speaking }
             ]
         };
@@ -231,9 +243,10 @@
         if (nums.every(function (n) { return isFinite(n); })) {
             var avg = ((nums[0] + nums[1] + nums[2] + nums[3]) / 4).toFixed(2);
             doc.setFontSize(7.5); doc.setFont('helvetica', 'italic'); doc.setTextColor.apply(doc, muted);
-            var avgLine = '(' + data.l + ' + ' + data.r + ' + ' + data.w + ' + ' + data.s + ') / 4 = ' + avg + '  ->  rounded to ' + data.overall;
-            // CELPIP reports each skill's CLB level separately; the single figure is only an informal average.
-            if (label === 'CLB Level') avgLine += '  (informal average - CELPIP reports each skill\'s CLB level separately, not a single composite score)';
+            var avgLine = '(' + data.l + ' + ' + data.r + ' + ' + data.w + ' + ' + data.s + ') / 4 = ' + avg
+                + (label === 'CLB Level' ? '  ->  estimated ' + data.overall : '  ->  rounded to ' + data.overall);
+            // CELPIP reports each skill's CLB level separately; the single figure is only an estimate.
+            if (label === 'CLB Level') avgLine += '  (an estimate - CELPIP reports each skill\'s CLB level separately, not a single composite score)';
             doc.text(doc.splitTextToSize(S(avgLine), W), L, oY + 21);
         }
 

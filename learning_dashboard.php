@@ -379,12 +379,12 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                     <span style="background:#fef3c7;color:#92400e;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:600;">Awaiting Speaking</span>
                                 <?php elseif ($ms['status'] === 'results_released'): ?>
                                     <div class="d-flex flex-column align-items-end gap-1">
-                                        <span style="font-size:1.1rem;font-weight:800;color:#10b981;"><?php echo htmlspecialchars($msScoreWord); ?> <?php echo number_format((float)$ms['overall_band'], 1); ?></span>
+                                        <span style="font-size:1.1rem;font-weight:800;color:#10b981;"><?php echo htmlspecialchars($msScoreWord); ?> <?php echo mock_fmt_score($ms['overall_band'], $msIsCelpip, true); ?></span>
                                         <div style="font-size:.7rem;color:#94a3b8;display:flex;gap:.4rem;">
-                                            <span>L:<?php echo number_format((float)$ms['l_band'],1); ?></span>
-                                            <span>R:<?php echo number_format((float)$ms['r_band'],1); ?></span>
-                                            <span>W:<?php echo number_format((float)$ms['writing_band'],1); ?></span>
-                                            <span>S:<?php echo number_format((float)$ms['speaking_band'],1); ?></span>
+                                            <span>L:<?php echo mock_fmt_score($ms['l_band'], $msIsCelpip); ?></span>
+                                            <span>R:<?php echo mock_fmt_score($ms['r_band'], $msIsCelpip); ?></span>
+                                            <span>W:<?php echo mock_fmt_score($ms['writing_band'], $msIsCelpip); ?></span>
+                                            <span>S:<?php echo mock_fmt_score($ms['speaking_band'], $msIsCelpip); ?></span>
                                         </div>
                                         <button onclick="downloadMockReportPDF(<?php echo htmlspecialchars(json_encode(mock_report_raw($db, $ms, $userFullName), JSON_INVALID_UTF8_SUBSTITUTE)); ?>)"
                                             style="background:none;border:1px solid #10b981;color:#10b981;border-radius:6px;padding:.15rem .5rem;font-size:.72rem;cursor:pointer;">
