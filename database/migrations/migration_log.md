@@ -1727,6 +1727,28 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 124 — Fix CELPIP Full Mock B (Mock 2) Reading Q20 answer key (A → D)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-25 | Ran twice (idempotent). Verified exactly one correct option (D) and answers D/d. One saved local attempt, unanswered. |
+| Live  | [ ] | | Fixes the KEY only — attempts already saved are NOT rescored. The last query in the file lists affected attempts; correct individual students with the new score-correction feature (see 125). |
+
+**What it does:** Q20 "Dragonflies can be used as a form of pest and illness control." was keyed A by migration 073. The passage says D (Myanmar mosquito-larvae control; paragraph A is about age/species/habitats). Instructor confirmed D.
+
+---
+
+## 125 — score_corrections (audit log for tutor score corrections)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-25 | Ran twice (CREATE TABLE IF NOT EXISTS). Exercised end to end by the new correction feature. |
+| Live  | [ ] | | **Required before the sls-admin correction feature is used on live** — the API logs every correction here and fails without it. |
+
+**What it does:** one row per correction (question marked right/wrong, or total set by hand): old → new raw score, band and mock overall, who, when, and the tutor's reason. No foreign keys on purpose (mixed id types/collations have broken migrations on live before).
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
