@@ -9,6 +9,23 @@
 
 if (!function_exists('mock_report_raw')) {
 
+    /**
+     * True when a tutor set this attempt's total by hand AND it no longer equals what the question
+     * marks add up to -- the student is then told, so the page never looks like an arithmetic error.
+     * Quietly false if the score_corrections table doesn't exist yet (migration 125 not run).
+     */
+    function attempt_total_adjusted(PDO $db, ?int $attemptId, float $attemptScore, array $answerRows): bool {
+        if (!$attemptId) return false;
+        $sum = 0.0;
+        foreach ($answerRows as $r) $sum += (float)($r['score_awarded'] ?? 0);
+        if (abs($sum - $attemptScore) < 0.001) return false;
+        try {
+            $st = $db->prepare("SELECT 1 FROM score_corrections WHERE attempt_id = ? AND kind = 'total' LIMIT 1");
+            $st->execute([$attemptId]);
+            return (bool)$st->fetchColumn();
+        } catch (\Throwable $e) { return false; }
+    }
+
     /** CELPIP mock? (scored in whole CLB levels, not IELTS bands) */
     function mock_is_celpip(array $row): bool {
         return str_starts_with((string)($row['mock_test_type'] ?? ''), 'CELPIP');

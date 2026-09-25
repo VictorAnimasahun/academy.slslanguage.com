@@ -411,6 +411,9 @@ if (!$sessionId && !$attemptId) {
                 <button class="modal-close" onclick="closeModal('listening')">✕</button>
             </div>
             <div class="modal-body">
+                <?php if (attempt_total_adjusted($db, (int)$mockSession['l_att_id'], (float)$mockSession['l_score'], $listeningAnswers)): ?>
+                <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
+                <?php endif; ?>
                 <?php if (empty($listeningAnswers)): ?>
                     <p class="text-muted">No answers recorded.</p>
                 <?php else: ?>
@@ -445,6 +448,9 @@ if (!$sessionId && !$attemptId) {
                 <button class="modal-close" onclick="closeModal('reading')">✕</button>
             </div>
             <div class="modal-body">
+                <?php if (attempt_total_adjusted($db, (int)$mockSession['r_att_id'], (float)$mockSession['r_score'], $readingAnswers)): ?>
+                <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
+                <?php endif; ?>
                 <?php if (empty($readingGroups)): ?>
                     <p class="text-muted">No answers recorded.</p>
                 <?php else: ?>
@@ -534,6 +540,9 @@ if (!$sessionId && !$attemptId) {
             </div>
         </div>
 
+        <?php if (attempt_total_adjusted($db, (int)$practiceDetail['id'], (float)$practiceDetail['score'], $practiceAnswers)): ?>
+            <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
+        <?php endif; ?>
         <?php if (empty($practiceAnswers)): ?>
             <p class="text-muted">No answer breakdown available.</p>
         <?php else: ?>
