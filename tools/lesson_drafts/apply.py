@@ -4,7 +4,7 @@ import re,os,subprocess,sys,importlib
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(os.path.dirname(HERE))+'/'
 sys.path.insert(0,HERE)
 LIB={}
-for mod in ('lessons_ielts_a','lessons_ielts_b','lessons_pte_a','lessons_pte_b','lessons_pte_c'):
+for mod in ('lessons_ielts_a','lessons_ielts_b','lessons_pte_a','lessons_pte_b','lessons_pte_c','lessons_extra'):
     try: LIB.update(importlib.import_module(mod).LESSONS)
     except ModuleNotFoundError: pass
 def q(sql):

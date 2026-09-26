@@ -1903,6 +1903,15 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 **What it does:** 137 seeds the answer keys for `IELTS_PT_R_002..005` (the reading pages were empty "Placeholder" files; Practice Test 1 is unchanged). 138 adds the writing `tests` rows and, in the IELTS General Masterclass (3-Month) classes 20-23 (each a single one-hour piece), adds a practice-test piece next to it: Writing Task 2 Practice Test 2, Reading Practice Test 2, Speaking Practice Test 2 (existing page), Listening Practice Test 2 (existing page); the pieces are also appended to the class titles because the overview builds its piece list from the title. "Final Preparation — Listening Masterclass & Test-Day Strategy" is corrected from practice test to lesson. Nothing existing is replaced. GT Reading 3-5 and the other writing tests have no class slot: they exist as pages, open by link to General students. Listening and Speaking from the GT book stay in the bank (no audio).
 
+## 139 — "Test-Day" pieces are lessons, not practice tests  *(branch overnight-2026-09-26-content, not on main)*
+
+| Environment | Ran? | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran on local 8.0; run twice on MySQL 5.7.44 (throwaway instance) with the four pieces reset first: no error, same result. Pages open (AI-drafted text on all four). |
+| Live  | [ ] | | Merge the branch and pull FIRST (4 new page files), then run 139. Needs 126 and 128. Safe to repeat. |
+
+**What it does:** IELTS Academic 3-Month Class 24 "Test-Day Coaching" and PTE Crash / 2-Month / 3-Month Class 7 "AI Scoring Strategies & Test-Day Preparation" were stored as practice tests because their titles contain "Test" (only as part of "Test-Day"). By the founder's rule they are lessons; each now has its own page. This also answers half of the "classes holding a single practice test" question: the PTE Class 7s hold one *lesson* (still a one-piece class).
+
 ---
 
 ## Rules
