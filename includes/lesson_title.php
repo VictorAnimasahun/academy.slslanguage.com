@@ -126,6 +126,21 @@ if (!function_exists('lesson_piece_kind')) {
         } catch (\Throwable $e) { return []; }
     }
 
+    /**
+     * The plan a class needs, read from the database (lessons.min_tier) so the free-preview rule lives in one place.
+     * Class pages used to type their own tier, and drifted (Class 1 of IELTS Academic 2-Month said "intermediate"
+     * while the database and the overview said it was free). Falls back to $default if the class can't be found.
+     */
+    function lesson_min_tier(PDO $db, string $folder, int $classNum, string $default = 'intermediate'): string {
+        try {
+            $st = $db->prepare("SELECT l.min_tier FROM lessons l JOIN modules m ON m.id = l.module_id JOIN courses c ON c.id = m.course_id
+                                WHERE c.folder_name = ? ORDER BY c.is_visible DESC, c.id, m.module_order, l.lesson_order");
+            $st->execute([$folder]);
+            $tiers = $st->fetchAll(PDO::FETCH_COLUMN);
+            return ($tiers[$classNum - 1] ?? '') ?: $default;
+        } catch (\Throwable $e) { return $default; }
+    }
+
     /** "Open Lesson" button for a lesson piece that has its own page; '' when it has none. */
     function lesson_part_button(PDO $db, string $folder, int $classNum, string $pieceTitle): string {
         $pieceTitle = html_entity_decode($pieceTitle, ENT_QUOTES, 'UTF-8');

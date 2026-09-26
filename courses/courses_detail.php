@@ -65,6 +65,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && $comingS
     }
 }
 
+// Student ratings (course_ratings, migration 129). Nothing is shown until someone has rated; only a student who is
+// enrolled can rate, once per course (rating again updates it). Safe if the table is not there yet.
+$ratingMessage = ''; $ratingCount = 0; $ratingAvg = null; $myRating = null;
+try {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['rate_course'])) {
+        $stars = (int)($_POST['rating'] ?? 0);
+        if (!$course['is_enrolled']) {
+            $ratingMessage = 'Only students enrolled in this course can rate it.';
+        } elseif ($stars < 1 || $stars > 5) {
+            $ratingMessage = 'Choose a rating from 1 to 5 stars.';
+        } else {
+            $comment = trim((string)($_POST['comment'] ?? ''));
+            $db->prepare("INSERT INTO course_ratings (course_id, student_id, rating, comment) VALUES (?, ?, ?, ?)
+                          ON DUPLICATE KEY UPDATE rating = VALUES(rating), comment = VALUES(comment)")
+               ->execute([$course_id, $user_id, $stars, $comment !== '' ? mb_substr($comment, 0, 1000) : null]);
+            $ratingMessage = 'Thank you for rating this course.';
+        }
+    }
+    $st = $db->prepare("SELECT COUNT(*), AVG(rating) FROM course_ratings WHERE course_id = ?");
+    $st->execute([$course_id]);
+    [$ratingCount, $ratingAvg] = $st->fetch(PDO::FETCH_NUM);
+    $ratingCount = (int)$ratingCount;
+    $st = $db->prepare("SELECT rating, comment FROM course_ratings WHERE course_id = ? AND student_id = ?");
+    $st->execute([$course_id, $user_id]);
+    $myRating = $st->fetch(PDO::FETCH_ASSOC) ?: null;
+} catch (PDOException $e) { /* course_ratings not created yet */ }
+
 // Resolve "Continue / Start" link
 $courseFolder = $course['folder_name'] ?? '';
 $base = __DIR__ . '/' . $courseFolder;
@@ -199,6 +226,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             <span class="hero-stat"><i class="bi bi-play-circle me-1"></i><strong><?= (int)($course['total_lessons'] ?? 12) ?></strong> lessons</span>
             <span class="hero-stat"><i class="bi bi-clock me-1"></i><strong><?= (int)($course['total_hours'] ?? 8) ?></strong> hours</span>
             <span class="hero-stat"><i class="bi bi-person me-1"></i><strong><?= htmlspecialchars($course['instructor_name'] ?? 'EduHub Team') ?></strong></span>
+            <?php if ($ratingCount > 0): ?>
+                <span class="hero-stat"><i class="bi bi-star-fill me-1"></i><strong><?= number_format((float)$ratingAvg, 1) ?></strong> (<?= $ratingCount ?> rating<?= $ratingCount === 1 ? '' : 's' ?>)</span>
+            <?php endif; ?>
         </div>
     </section>
 
@@ -342,6 +372,19 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                             <a href="../learning_dashboard.php" class="btn btn-outline-secondary w-100" style="font-size:.85rem;">
                                 <i class="bi bi-speedometer2 me-1"></i>Back to Dashboard
                             </a>
+                            <hr class="my-3">
+                            <form method="POST" id="rate">
+                                <div class="fw-semibold mb-2" style="font-size:.9rem;"><?= $myRating ? 'Your rating' : 'Rate this course' ?></div>
+                                <?php if ($ratingMessage): ?><div class="alert alert-info py-2 mb-2" style="font-size:.82rem;"><?= htmlspecialchars($ratingMessage) ?></div><?php endif; ?>
+                                <select name="rating" class="form-select form-select-sm mb-2" required>
+                                    <option value="">Choose 1–5 stars…</option>
+                                    <?php for ($i = 5; $i >= 1; $i--): ?>
+                                        <option value="<?= $i ?>" <?= $myRating && (int)$myRating['rating'] === $i ? 'selected' : '' ?>><?= str_repeat('★', $i) . str_repeat('☆', 5 - $i) ?> (<?= $i ?>)</option>
+                                    <?php endfor; ?>
+                                </select>
+                                <textarea name="comment" rows="2" maxlength="1000" class="form-control form-control-sm mb-2" placeholder="Optional comment"><?= htmlspecialchars($myRating['comment'] ?? '') ?></textarea>
+                                <button type="submit" name="rate_course" value="1" class="btn btn-outline-primary btn-sm w-100"><?= $myRating ? 'Update rating' : 'Submit rating' ?></button>
+                            </form>
 
                         <?php else: ?>
                             <div class="text-center mb-3">

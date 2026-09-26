@@ -1760,7 +1760,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
-## Run order for 126, 127, 128 (tested 2026-09-26 on a scratch copy of the database)
+## Run order for 126, 127 (+127b), 128, 129 (tested 2026-09-26 on a scratch copy of the database)
 
 **126 → 127 → 128.** 127 does **not** need 126 (either order gives the same result). **128 needs 126** (it adds a column to `lesson_parts`); run first, it stops with "table doesn't exist" and changes nothing. The code is safe at any stage: with none, some or all of the three run, every page still loads (checked as students on the catalogue, overviews, class pages, lesson pages and course pages); features simply switch on as each migration is run. Pull the code after running all three.
 
@@ -1786,6 +1786,17 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Live  | [ ] | | Run after 126 and 127. NOT idempotent (`ADD COLUMN`). Until run, the overview treats every piece as ready (no Coming Soon tags). |
 
 **What it does:** a piece is Coming Soon when it has no page and `status='coming_soon'`, or when its page is an empty lesson file (worked out live from the file, so developing a lesson needs no data change). A class is Coming Soon when every piece is. The overview tags them and links each test straight to its test page.
+
+---
+
+## 129 — Course definition record; decisions 1-11 applied; ratings table; BEL course
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran once on local 8.0. Also tested on MySQL 5.7.44 against a copy of the real courses/modules/lessons tables (fresh run, and a second run refuses at the ALTER as intended). Checked as students: new names, BEL, Class 1 open with no plan, rating flow. |
+| Live  | [ ] | | Independent of 126/127/127b/128. The `ALTER TABLE` is first and not repeatable; everything after it can be re-run. Pull academy after running it (the code is safe without it). |
+
+**What it does:** adds `exam_variant`, `price_currency`, `length_months`, `access_extra_months`, `free_preview_classes`, `delivery` to `courses` and fills them; renames the 12 plans to `<Exam> — <N>-Month Plan`; sets the tutor to Victor Animasahun and clears stored star ratings; creates `course_ratings`; makes Class 2 of the Academic Masterclass and CELPIP 2/3-Month need the plan (free preview = Class 1 only); creates the BEL course (Coming Soon). Code: `lesson_min_tier()` (the 40 IELTS Academic 2/3-Month class pages read their plan from the database), the rating form on `courses_detail.php`.
 
 ---
 

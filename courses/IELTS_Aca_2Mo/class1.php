@@ -13,7 +13,7 @@ $stmt->execute();
 $course = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$course) { header("Location: ../courses_catalogue.php?message=Course+not+found"); exit(); }
 
-$minTier = 'intermediate';
+$minTier = lesson_min_tier($db, 'IELTS_Aca_2Mo', 1, 'intermediate');   // from the database (lessons.min_tier), not typed here
 $canAccess = can_access($minTier);
 ?>
 <!DOCTYPE html>
