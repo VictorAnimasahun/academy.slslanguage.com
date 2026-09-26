@@ -158,6 +158,31 @@ function saveAudioFile($testCode, $userId, $audioData) {
  * If the test hasn't been migrated yet the function returns [] and logs an
  * error — callers should detect this and show a graceful message.
  */
+/**
+ * loadTestAnswers(), except that a question with more than one correct option keeps ALL of them ("choose TWO letters" stored as two
+ * question rows that both list both letters). Separate from loadTestAnswers() on purpose: older tests rely on that function's
+ * behaviour (one letter per question) and must not change.
+ */
+function loadTestAnswersMulti(PDO $db, string $testCode): array {
+    $answers = loadTestAnswers($db, $testCode);
+    try {
+        $stmt = $db->prepare("
+            SELECT q.question_number, LOWER(qo.option_label) AS answer
+            FROM   questions q
+            JOIN   tests t ON t.id = q.test_id AND t.code = ? AND t.is_active = 1
+            JOIN   question_options qo ON qo.question_id = q.id AND qo.is_correct = 1
+            ORDER  BY q.question_number ASC, qo.display_order ASC
+        ");
+        $stmt->execute([$testCode]);
+        $all = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) $all[(int)$row['question_number']][] = strtolower($row['answer']);
+        foreach ($all as $n => $letters) if (count($letters) > 1) $answers[$n] = $letters;
+    } catch (PDOException $e) {
+        error_log("loadTestAnswersMulti DB error for '$testCode': " . $e->getMessage());
+    }
+    return $answers;
+}
+
 function loadTestAnswers(PDO $db, string $testCode): array {
     $answers = [];
 

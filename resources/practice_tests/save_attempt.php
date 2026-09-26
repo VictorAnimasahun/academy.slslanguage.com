@@ -124,6 +124,9 @@ try {
     $pair_defs_by_test = [
         'IELTS_PT_L_001' => [[[29, 30], ['b', 'd']]],
         'IELTS_PT_L_002' => [[[21, 22], ['b', 'd']], [[23, 24], ['b', 'c']]],
+        'IELTS_PT_R_ACA_C17T1' => [[[23, 24], ['c', 'd']], [[25, 26], ['b', 'e']]],
+        'IELTS_PT_R_ACA_C17T3' => [[[21, 22], ['b', 'c']]],
+        'IELTS_PT_R_ACA_C17T4' => [[[23, 24], ['b', 'e']], [[25, 26], ['b', 'd']]],
     ];
     $pair_scores = [];   // question_number => 0.0|1.0
     foreach ($pair_defs_by_test[$test_code] ?? [] as [$pair_qs, $pair_correct]) {

@@ -85,7 +85,7 @@ $canAccess = can_access($minTier);
                     <div class="lesson-item">
                         <h5>Reading Test 1 <?= lesson_kind_badge($db, 'IELTS_Aca_3Mo', 3, 'Reading Test 1') ?></h5>
                         <ul><li>Complete Reading Test 1 (full-length, 3 passages)</li><li>Answer review</li></ul>
-                        <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_reading_academic_001.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+                        <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_reading_academic_c17_t1.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Test
                 </a>
                     </div>

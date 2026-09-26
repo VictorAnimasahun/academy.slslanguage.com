@@ -1872,6 +1872,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 135 — IELTS Academic Reading Tests 1, 3 and 4 (Cambridge IELTS 17 Academic) wired  *(branch overnight-2026-09-26-content, not on main)*
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran on local 8.0; tested on MySQL 5.7.44 (run twice, no error). Checked as students on all three: 40 inputs, answer key identical to the bank, the page's own grading run in node (perfect = 40; a "choose TWO" pair answered in either order = 40; the same letter twice counts once), server-side scoring of a perfect attempt = 40/40, a student with no course cannot see the test, class pages link the right test. |
+| Live  | [ ] | | Merge the branch and pull FIRST (3 new pages, `functions.php` gets a new `loadTestAnswersMulti`, `save_attempt.php` gets the pair definitions for these codes, class 3 pages of the three Academic courses link the new Test 1), THEN run 135. Needs 126, 128, 133 and 134. Safe to repeat. |
+
+**What it does:** seeds `IELTS_PT_R_ACA_C17T1 / T3 / T4` and points the "Reading Test 1 / 3 / 4" pieces at them. **Reading Test 1 now opens the full Cambridge test instead of the compiled 30-question sample set** (that page, `ielts_reading_academic_001.php`, stays on disk). Reading Test 3 (2- and 3-Month) and Reading Test 4 (3-Month) were Coming Soon.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
