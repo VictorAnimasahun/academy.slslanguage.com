@@ -1760,7 +1760,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
-## LIVE RUN ORDER (final audit 2026-09-26): pull academy, then 126 → 128 → 129 → 130 → 131
+## LIVE RUN ORDER (final audit 2026-09-26): pull academy, then 126 → 128 → 129 → 130 → 131 → 132
 
 Done on live already: 127 and 127b. Back up first. Each file is safe to re-run EXCEPT 128 and 129 (their first statement is an `ALTER TABLE ... ADD COLUMN`, so they run once) and 126 (never run it again after 130/131: it re-seeds the pre-130/131 pieces).
 
@@ -1771,8 +1771,9 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | 3 | 129 | | adds the six course-definition columns; standard names; Selar links by length; tutor; `course_ratings`; BEL course |
 | 4 | 130 | 126 | CELPIP 2-Month = 8 weeks / 16 classes. Works whether or not 121 ever ran (tested both ways on 5.7) |
 | 5 | 131 | 126, 128, 129 | one IELTS Academic Crash Course (shape only) + removes the old 61-lesson course and the old Masterclass. Skips `course_pacing_items` / `course_ratings` if a server lacks them. Leaves any row a real student is enrolled in |
+| 6 | 132 | 129 | removes the four dead first-day seed courses (ids 2, 3, 7, 8 locally): no modules, lessons, folder or code, only the two test enrolments. Guarded: keeps any with content or a real student |
 
-**Also upload / pull:** pull `academy`; pull `config` (`selar_purchases.php` is in the config repo, pushed 2026-09-26).
+**Also:** pull `academy`. Do NOT pull `config` on live (its files hold live credentials). `selar_purchases.php` changed on 2026-09-26 (refuses Coming Soon courses, ownership = length + 1 month, chooser lists only available courses): upload that ONE file by hand over the live copy. It is safe before or after the migrations (it falls back on a server without the new columns).
 
 **Rehearsed:** the whole sequence 126 → 128 → 129 → 130 → 131 was run on a MySQL 5.7.44 copy of the full local database (with the columns those files add removed first). It ended identical to local. Student-side sweep of 76 pages (every course overview / detail page, catalogue, dashboard, every class and piece page): 0 errors. Lint of all 397 PHP files in academy + config: clean.
 
@@ -1835,6 +1836,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 **What it does:** keeps IELTS_Aca_1Mo (4 weeks / 8 classes) as THE IELTS Academic Crash Course: 90,000 / 105,000 NGN, Selar 1-month link, standard text. Shape only, no content: weeks are "Week N", classes are "Class N", no topics, no pages, one Coming Soon piece per class (what goes inside is decided later). Removes the original IELTS_Aca_Crash (9 modules / 61 lessons; its only enrolments, Akkad and Victor, are test accounts and are cleared with it) and the older IELTS_Aca_Mst (no students). A row is removed only if nobody is enrolled after that. The old course's page files stay on disk, unused. Code: `course_ids_for_folders()` in `includes/course_lock.php`; the 8 Crash Course module pages gate on the course found by folder, not on ids 5 / 15.
 
 **Also fixed:** `courses_catalogue.php` printed the SQL and every course row into the page source (a debug block from the first commit); removed.
+
+---
+
+## 132 — Remove the four dead first-day seed courses
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran on local 8.0 (19 → 15 courses). Tested on MySQL 5.7.44: run twice, nine real courses untouched, a course with a real student enrolled is kept. |
+| Live  | [ ] | | Run last (after 131). Safe to repeat. Back up first. |
+
+**What it does:** removes IELTS Crash Course, CELPIP Crash Course, IELTS Masterclass and CELPIP Masterclass (created 2025-09-26; no modules, lessons, folder or code; only the Akkad / Victor test enrolments). They are duplicates of the real General / Academic Crash Courses and Masterclasses. Skips any row that has content, assignments, learning points, activity or a real student.
 
 ---
 
