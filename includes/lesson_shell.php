@@ -15,7 +15,18 @@
  */
 if (!function_exists('render_lesson_shell')) {
 
-    function render_lesson_shell(PDO $db, string $folder, int $classNum, int $partOrder, string $bodyHtml = ''): void {
+    /**
+     * Everything a lesson page needs to know, WITHOUT drawing anything: who may see it, and which
+     * course / week / class / piece it is. Redirects to login when nobody is logged in.
+     * A lesson page that wants its own full design calls this and then writes its own HTML:
+     *
+     *     $ctx = lesson_context($db, 'IELTS_Aca_2Mo', 7, 2);
+     *     if (!$ctx['can_access']) { echo lesson_locked_html($ctx); exit; }
+     *     // ...your own <html> from here; $ctx['title'], ['kind'], ['week'], ['class'], ['back_url'] are ready.
+     *
+     * @return array{course:array,lesson:array,lessons:array,title:string,kind:string,week:int,class:int,class_total:int,min_tier:string,can_access:bool,back_url:string,back_label:string}
+     */
+    function lesson_context(PDO $db, string $folder, int $classNum, int $partOrder): array {
         require_once INCLUDES_PATH . '/tier_access.php';
         require_once INCLUDES_PATH . '/lesson_title.php';
 
@@ -23,8 +34,6 @@ if (!function_exists('render_lesson_shell')) {
             header("Location: " . ACADEMY_URL . "edu_hub_registration.php?message=Please+login+to+access+courses");
             exit();
         }
-        $h = fn($x) => htmlspecialchars((string)$x, ENT_QUOTES, 'UTF-8');
-
         $st = $db->prepare("SELECT * FROM courses WHERE folder_name = ? ORDER BY is_visible DESC, id LIMIT 1");
         $st->execute([$folder]);
         $course = $st->fetch(PDO::FETCH_ASSOC);
@@ -39,18 +48,40 @@ if (!function_exists('render_lesson_shell')) {
 
         $st = $db->prepare("SELECT title, kind FROM lesson_parts WHERE lesson_id = ? AND part_order = ?");
         $st->execute([(int)$lesson['id'], $partOrder]);
-        $part  = $st->fetch(PDO::FETCH_ASSOC);
+        $part   = $st->fetch(PDO::FETCH_ASSOC);
         $pieces = lesson_title_lines($lesson['title']);
-        $title = $part['title'] ?? ($pieces[$partOrder - 1] ?? $lesson['title']);
-        $kind  = $part['kind'] ?? lesson_piece_kind($title);
+        $title  = $part['title'] ?? ($pieces[$partOrder - 1] ?? $lesson['title']);
 
-        $minTier   = $lesson['min_tier'] ?: 'beginner';
-        $canAccess = can_access($minTier);
+        $minTier = $lesson['min_tier'] ?: 'beginner';
+        $classPageFs = dirname(__DIR__) . '/courses/' . $folder . '/class' . $classNum . '.php';
+        $hasClassPage = is_file($classPageFs);
+        return [
+            'course' => $course, 'lesson' => $lesson, 'lessons' => $lessons, 'folder' => $folder,
+            'title' => $title, 'kind' => $part['kind'] ?? lesson_piece_kind($title),
+            'week' => (int)$lesson['module_order'], 'class' => $classNum, 'class_total' => count($lessons),
+            'min_tier' => $minTier, 'can_access' => can_access($minTier),
+            'back_url' => ACADEMY_URL . 'courses/' . $folder . '/' . ($hasClassPage ? 'class' . $classNum . '.php' : 'course_overview.php'),
+            'back_label' => $hasClassPage ? 'Back to Class ' . $classNum : 'Back to course',
+        ];
+    }
 
-        $classPageFs  = dirname(__DIR__) . '/courses/' . $folder . '/class' . $classNum . '.php';
-        $backUrl      = is_file($classPageFs) ? ACADEMY_URL . 'courses/' . $folder . '/class' . $classNum . '.php'
-                                              : ACADEMY_URL . 'courses/' . $folder . '/course_overview.php';
-        $backLabel    = is_file($classPageFs) ? 'Back to Class ' . $classNum : 'Back to course';
+    /** The standard "this class needs plan X" box, for pages that draw their own layout. */
+    function lesson_locked_html(array $ctx): string {
+        $h = fn($x) => htmlspecialchars((string)$x, ENT_QUOTES, 'UTF-8');
+        return '<div class="highlight-box"><h4 style="color:var(--accent);"><i class="bi bi-lock-fill me-2"></i>Locked</h4>'
+             . '<p class="mb-2">This class requires the <strong>' . $h(ucfirst($ctx['min_tier'])) . '</strong> plan.</p>'
+             . '<a href="' . ACADEMY_URL . 'upgrade.php?required=' . $h($ctx['min_tier']) . '" class="btn btn-primary btn-sm"><i class="bi bi-lightning-charge me-1"></i>Upgrade to Access</a></div>';
+    }
+
+    /**
+     * The default frame around a lesson body (same look as the class pages). Optional: a lesson page can skip this
+     * entirely and use lesson_context() with its own HTML/CSS -- the frame never limits how a lesson is designed.
+     */
+    function render_lesson_shell(PDO $db, string $folder, int $classNum, int $partOrder, string $bodyHtml = ''): void {
+        $ctx = lesson_context($db, $folder, $classNum, $partOrder);
+        $h = fn($x) => htmlspecialchars((string)$x, ENT_QUOTES, 'UTF-8');
+        [$course, $lesson, $lessons, $title, $kind, $minTier, $canAccess, $backUrl, $backLabel] =
+            [$ctx['course'], $ctx['lesson'], $ctx['lessons'], $ctx['title'], $ctx['kind'], $ctx['min_tier'], $ctx['can_access'], $ctx['back_url'], $ctx['back_label']];
         // The LESSON BODY markers are HTML comments: they must not count as content.
         $hasBody      = trim(preg_replace('/<!--.*?-->/s', '', $bodyHtml)) !== '';
         ?>

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';   // session, $db and ACADEMY_URL (the shared navbar needs it)
 // Restrict access if not logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+this+course");

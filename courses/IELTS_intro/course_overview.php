@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once(__DIR__ . '/../../../../../config/db_connect.php');
+require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';   // session + $db, same as every other course
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {

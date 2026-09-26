@@ -1756,7 +1756,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Local | [x] | 2026-09-26 | Ran repeatedly (idempotent: it deletes and re-inserts every row). 373 pieces across every course, 77 with their own page; every stored title matches its class title; every assigned file exists. Rewritten the same day to cover all courses and add `file_path` (the table was dropped and recreated locally). |
 | Live  | [ ] | | Run it, **then pull the academy code** (the new class pages and shells need the table; they fall back to the old notice if it is missing, and the overview falls back to the title rule). Run with the file's own `SET NAMES utf8mb4`. |
 
-**What it does:** stores, for every piece of every class, its kind (lesson / resource / practice_test / mock_test) and, where it has one, the page that holds it. Instructor's rule: anything without the word "Test" is a lesson; "Mock Test/Exam N" is a mock. Lesson pieces that had no page (IELTS Academic 2/3-Month, PTE 1/2/3-Month) got an empty shell file: 75 files. See `documentation/LESSON_PAGES.md`.
+**What it does:** stores, for every piece of every class, its kind (lesson / resource / practice_test / mock_test) and, where it has one, the page that holds it. Instructor's rule: anything without the word "Test" is a lesson; "Mock Test/Exam N" is a mock. Lesson pieces that had no page (IELTS Academic 2/3-Month, PTE 1/2/3-Month) got an empty page: 75 files. Other courses' files untouched. See `documentation/LESSON_PAGES.md` (starts with the principle).
 
 ---
 

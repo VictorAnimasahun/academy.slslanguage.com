@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once('../../../config.php');
+require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';   // session + $db, same as every other course
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -18,11 +17,11 @@ if (!$user_id || !$course_id) {
 
 // === FETCH COURSE + ENROLLMENT STATUS ===
 $sql = "SELECT c.*, 
-        CASE WHEN e.user_id IS NOT NULL THEN 1 ELSE 0 END as is_enrolled,
+        CASE WHEN e.student_id IS NOT NULL THEN 1 ELSE 0 END as is_enrolled,
         COALESCE(e.progress_percentage, 0) as progress_percentage,
         e.enrolled_at
         FROM courses c
-        LEFT JOIN enrollments e ON c.id = e.course_id AND e.user_id = ?
+        LEFT JOIN enrollments e ON c.id = e.course_id AND e.student_id = ?
         WHERE c.id = ?";
 
 try {
@@ -43,7 +42,7 @@ if (!$course) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll'])) {
     if (!$course['is_enrolled']) {
         try {
-            $enrollSQL = "INSERT INTO enrollments (user_id, course_id, enrolled_at, progress_percentage) VALUES (?, ?, NOW(), 0)";
+            $enrollSQL = "INSERT INTO enrollments (student_id, course_id, enrolled_at, progress_percentage) VALUES (?, ?, NOW(), 0)";
             $enrollStmt = $db->prepare($enrollSQL);
             $enrollStmt->execute([$user_id, $course_id]);
             
