@@ -10,7 +10,7 @@
 --   price_currency        currency the stored price is in (NGN for Selar-sold plans, USD for the older programmes)
 --
 -- Answers applied:
---   2  names: every plan is "<Exam> — <N>-Month Plan"
+--   2  names: the Selar standard -- 1 month = "Crash Course", 2 and 3 months = "Masterclass": "<Exam> Crash Course — 1 Month", "<Exam> Masterclass — 2 Months"/"— 3 Months"
 --   5  buy links: ONE Selar product per LENGTH (1/2/3 months), shared by every course of that length -- the student
 --      pays, then chooses the course on the dashboard (config/selar_purchases.php). Nothing to change; a course has no
 --      link of its own by design. (My earlier "one link per course" requirement was wrong.)
@@ -55,19 +55,26 @@ UPDATE courses SET price_currency = 'NGN' WHERE selar_months IS NOT NULL;
 UPDATE courses SET price_currency = 'USD' WHERE selar_months IS NULL AND price > 0;
 UPDATE courses SET price_currency = 'NGN' WHERE folder_name IN ('PTE_Gen_1Mo','PTE_Gen_2Mo','PTE_Gen_3Mo');   -- PTE plans: 25,000 / 45,000 / 60,000 naira (not on sale yet: Coming Soon)
 
--- names: one pattern
-UPDATE courses SET title = 'IELTS General — 1-Month Plan'   WHERE folder_name = 'IELTS_Gen_1Mo';
-UPDATE courses SET title = 'IELTS General — 2-Month Plan'   WHERE folder_name = 'IELTS_Gen_2Mo';
-UPDATE courses SET title = 'IELTS General — 3-Month Plan'   WHERE folder_name = 'IELTS_Gen_Mst';
-UPDATE courses SET title = 'CELPIP General — 1-Month Plan'  WHERE folder_name = 'CELPIP_Gen_1Mo';
-UPDATE courses SET title = 'CELPIP General — 2-Month Plan'  WHERE folder_name = 'CELPIP_Gen_2Mo';
-UPDATE courses SET title = 'CELPIP General — 3-Month Plan'  WHERE folder_name = 'CELPIP_Gen_3Mo';
-UPDATE courses SET title = 'IELTS Academic — 1-Month Plan'  WHERE folder_name = 'IELTS_Aca_1Mo';
-UPDATE courses SET title = 'IELTS Academic — 2-Month Plan'  WHERE folder_name = 'IELTS_Aca_2Mo';
-UPDATE courses SET title = 'IELTS Academic — 3-Month Plan'  WHERE folder_name = 'IELTS_Aca_3Mo';
-UPDATE courses SET title = 'PTE Academic — 1-Month Plan'    WHERE folder_name = 'PTE_Gen_1Mo';
-UPDATE courses SET title = 'PTE Academic — 2-Month Plan'    WHERE folder_name = 'PTE_Gen_2Mo';
-UPDATE courses SET title = 'PTE Academic — 3-Month Plan'    WHERE folder_name = 'PTE_Gen_3Mo';
+-- names: the standard taken from the Selar product pages (1 month = Crash Course; 2 and 3 months = Masterclass):
+--   "IELTS/CELPIP CRASH COURSE 2026 - Four Sections (1-Month Standard)", "IELTS/CELPIP Masterclass 2026 - ... (2-Month / 3 Months Standard)"
+--   pattern here: "<Exam> Crash Course — 1 Month", "<Exam> Masterclass — 2 Months", "<Exam> Masterclass — 3 Months"
+UPDATE courses SET title = 'IELTS General Crash Course — 1 Month'      WHERE folder_name = 'IELTS_Gen_1Mo';
+UPDATE courses SET title = 'IELTS General Masterclass — 2 Months'      WHERE folder_name = 'IELTS_Gen_2Mo';
+UPDATE courses SET title = 'IELTS General Masterclass — 3 Months'      WHERE folder_name = 'IELTS_Gen_Mst';
+UPDATE courses SET title = 'CELPIP General Crash Course — 1 Month'     WHERE folder_name = 'CELPIP_Gen_1Mo';
+UPDATE courses SET title = 'CELPIP General Masterclass — 2 Months'     WHERE folder_name = 'CELPIP_Gen_2Mo';
+UPDATE courses SET title = 'CELPIP General Masterclass — 3 Months'     WHERE folder_name = 'CELPIP_Gen_3Mo';
+UPDATE courses SET title = 'IELTS Academic Crash Course — 1 Month'     WHERE folder_name = 'IELTS_Aca_1Mo';
+UPDATE courses SET title = 'IELTS Academic Masterclass — 2 Months'     WHERE folder_name = 'IELTS_Aca_2Mo';
+UPDATE courses SET title = 'IELTS Academic Masterclass — 3 Months'     WHERE folder_name = 'IELTS_Aca_3Mo';
+UPDATE courses SET title = 'PTE Academic Crash Course — 1 Month'       WHERE folder_name = 'PTE_Gen_1Mo';
+UPDATE courses SET title = 'PTE Academic Masterclass — 2 Months'       WHERE folder_name = 'PTE_Gen_2Mo';
+UPDATE courses SET title = 'PTE Academic Masterclass — 3 Months'       WHERE folder_name = 'PTE_Gen_3Mo';
+
+-- buy links: the canonical Selar product pages (the share.google addresses resolve to these); one product per length
+UPDATE courses SET buy_url = 'https://selar.com/sls_ielts_celpip_crash_course'            WHERE selar_months = 1;
+UPDATE courses SET buy_url = 'https://selar.com/sls_ielts_celpip_masterclass_two_months'  WHERE selar_months = 2;
+UPDATE courses SET buy_url = 'https://selar.com/sls_ielts_celpip_masterclass_three_months' WHERE selar_months = 3;
 
 -- descriptions that still speak in months for the weekly structure
 UPDATE courses SET description = REPLACE(REPLACE(description, 'Month 1 covers', 'Weeks 1-4 cover'), 'Month 2 delivers', 'Weeks 5-8 deliver') WHERE folder_name IN ('IELTS_Aca_2Mo','PTE_Gen_2Mo');

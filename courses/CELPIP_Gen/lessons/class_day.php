@@ -240,7 +240,7 @@ $title_lesson = $cfg['lesson']['skill'] . ': ' . $cfg['lesson']['topic'];
 $page_title   = $title_test . ' · ' . $title_lesson; // single-line contexts only (tab title, breadcrumb)
 // Course this class is being taken in (set by course_context.php from ?from=). Class numbers are
 // shared; only the length of the course differs.
-$class_total = ($_SESSION['celpip_gen_from'] ?? 'CELPIP_Gen_3Mo') === 'CELPIP_Gen_2Mo' ? 18 : 24;
+$class_total = ($_SESSION['celpip_gen_from'] ?? 'CELPIP_Gen_3Mo') === 'CELPIP_Gen_2Mo' ? 16 : 24;
 
 if (!can_access('intermediate')) {
     ?>

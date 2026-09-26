@@ -1794,9 +1794,20 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran once on local 8.0. Also tested on MySQL 5.7.44 against a copy of the real courses/modules/lessons tables (fresh run, and a second run refuses at the ALTER as intended). Checked as students: new names, BEL, Class 1 open with no plan, rating flow. |
-| Live  | [ ] | | Independent of 126/127/127b/128. The `ALTER TABLE` is first and not repeatable; everything after it can be re-run. Pull academy after running it (the code is safe without it). |
+| Live  | [ ] | | Run AFTER 126 and 128 (order: 126, 128, 129, 130). The `ALTER TABLE` is first and not repeatable; everything after it can be re-run. Pull academy after running it (the code is safe without it). |
 
-**What it does:** adds `exam_variant`, `price_currency`, `length_months`, `access_extra_months`, `free_preview_classes`, `delivery` to `courses` and fills them; renames the 12 plans to `<Exam> — <N>-Month Plan`; sets the tutor to Victor Animasahun and clears stored star ratings; creates `course_ratings`; makes Class 2 of the Academic Masterclass and CELPIP 2/3-Month need the plan (free preview = Class 1 only); creates the BEL course (Coming Soon). Code: `lesson_min_tier()` (the 40 IELTS Academic 2/3-Month class pages read their plan from the database), the rating form on `courses_detail.php`.
+**What it does:** adds `exam_variant`, `price_currency`, `length_months`, `access_extra_months`, `free_preview_classes`, `delivery` to `courses` and fills them; renames the plans to the Selar standard (`<Exam> Crash Course — 1 Month`, `<Exam> Masterclass — 2 Months` / `— 3 Months`; 1 month = Crash Course, 2 and 3 months = Masterclass) and sets the three shared Selar buy links by length; sets the tutor to Victor Animasahun and clears stored star ratings; creates `course_ratings`; makes Class 2 of the Academic Masterclass and CELPIP 2/3-Month need the plan (free preview = Class 1 only); creates the BEL course (Coming Soon). Code: `lesson_min_tier()` (the 40 IELTS Academic 2/3-Month class pages read their plan from the database), the rating form on `courses_detail.php`.
+
+---
+
+## 130 — CELPIP 2-Month is 8 weeks / 16 classes
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran on local 8.0; tested on MySQL 5.7.44 including a repeat run (guards on `@m9 IS NOT NULL`, no change the second time). |
+| Live  | [ ] | | Run after 126 and 129. Safe to repeat. |
+
+**What it does:** removes the 9th week. "Mock 1 Review" is deleted, "Mock Test 2" moves into week 8 (Class 16), the rest of week 9 and the module are deleted, week 8 is renamed "Week 8 — Mock Test 1 & Mock Test 2", `total_lessons` = 16, orphan `lesson_parts` cleaned. Classes 1-14 do not move (their `class_day.php` pages carry their own numbers). The review class pages stay on disk, unused. Code: `CELPIP_Gen_2Mo/course_overview.php` (8 weeks, mocks are classes 15 and 16) and `class_day.php` (`of 16`).
 
 ---
 

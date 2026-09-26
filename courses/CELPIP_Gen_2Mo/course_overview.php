@@ -36,13 +36,11 @@ $student_tier_level = get_student_tier_level();
 $student_id = (int) $_SESSION['user_id'];
 $completedLessonIds = progressPathLoadCompleted($db, $course_id, $student_id);
 // Color-code by week type: mock weeks (full 4-skill simulations) stand out
-// from the regular one-test-per-class weeks. Keyed by module_order (1-9),
-// matching the 9-week schedule (migration 121 added Week 9/Mock 2; this
-// array was stale from before migration 113's restructure -- it still said
-// [5, 8], but Week 5 is a regular teaching week, not a mock week).
-$mock_weeks = [8, 9];
+// from the regular one-test-per-class weeks. Keyed by module_order (1-8): a 2-month course is 8 weeks, and
+// Week 8 holds both mock exams (Class 15 = Mock 1, Class 16 = Mock 2; migration 130).
+$mock_weeks = [8];
 $month_colors = [];
-foreach (range(1, 9) as $w) {
+foreach (range(1, 8) as $w) {
     $month_colors[$w] = in_array($w, $mock_weeks) ? '#16a34a' : '#0b77ff';
 }
 ?>
@@ -84,7 +82,7 @@ foreach (range(1, 9) as $w) {
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div>
                         <strong><?= (int) $course['total_lessons'] ?> Classes</strong> &nbsp;·&nbsp;
-                        <strong>9 Weeks</strong> &nbsp;·&nbsp;
+                        <strong>8 Weeks</strong> &nbsp;·&nbsp;
                         <strong>2 Sessions / Week</strong> &nbsp;·&nbsp;
                         <strong><?= htmlspecialchars($course['instructor_name'] ?? 'SLS') ?></strong>
                     </div>
@@ -106,13 +104,13 @@ foreach (range(1, 9) as $w) {
             <div class="content-section">
                 <h2>Course Content</h2>
                 <p class="text-muted small mb-3">
-                    <i class="bi bi-unlock-fill me-1 text-success"></i>Classes 1-2 (Week 1) are free.
-                    <i class="bi bi-lock-fill ms-3 me-1 text-warning"></i>Classes 3-18 require the <strong>Intermediate</strong> plan.
+                    <i class="bi bi-unlock-fill me-1 text-success"></i>Class 1 is free.
+                    <i class="bi bi-lock-fill ms-3 me-1 text-warning"></i>Weeks 1-4 require the <strong>Intermediate</strong> plan or above. Weeks 5-8 require the <strong>Advanced</strong> plan.
                 </p>
                 <?= renderProgressPath($modules, $completedLessonIds, [
                     'folder'       => 'CELPIP_Gen_2Mo',
                     'tier_level'   => $student_tier_level,
-                    'mock_classes' => [15, 17],
+                    'mock_classes' => [15, 16],
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
                 ]) ?>
@@ -125,7 +123,7 @@ foreach (range(1, 9) as $w) {
                     <div class="info-card"><h4><i class="bi bi-question-circle me-2"></i>Class Quizzes</h4><p class="mb-0">A consolidation quiz after every class to reinforce CELPIP strategies and CLB descriptors.</p></div>
                     <div class="info-card"><h4><i class="bi bi-house-heart me-2"></i>Take-Home Tasks</h4><p class="mb-0">One practical task per class — email drafts, listening notes, or speaking recordings.</p></div>
                     <div class="info-card"><h4><i class="bi bi-clipboard-check me-2"></i>3 Practice Test Sets</h4><p class="mb-0">Practice Test Sets 1, 2 &amp; 3 — all four skills — one complete test per class, Classes 3 to 14.</p></div>
-                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>Full Mock Exam and Review</h4><p class="mb-0">A full timed mock exam in Class 15, then a review with your CLB band estimate in Class 16.</p></div>
+                    <div class="info-card"><h4><i class="bi bi-journal-richtext me-2"></i>Two Full Mock Exams</h4><p class="mb-0">Two full timed mock exams in Week 8: Mock Test 1 in Class 15 and Mock Test 2 in Class 16.</p></div>
                     <div class="info-card"><h4><i class="bi bi-arrow-up-circle me-2"></i>Upgrade Anytime</h4><p class="mb-0">Upgrade to the 3-Month Masterclass at any time — your progress carries over.</p></div>
                 </div>
             </div>
