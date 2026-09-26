@@ -1905,7 +1905,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ## 139 — "Test-Day" pieces are lessons, not practice tests  *(branch overnight-2026-09-26-content, not on main)*
 
-| Environment | Ran? | Date | Notes |
+| Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran on local 8.0; run twice on MySQL 5.7.44 (throwaway instance) with the four pieces reset first: no error, same result. Pages open (AI-drafted text on all four). |
 | Live  | [ ] | | Merge the branch and pull FIRST (4 new page files), then run 139. Needs 126 and 128. Safe to repeat. |
