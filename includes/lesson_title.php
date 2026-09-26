@@ -166,6 +166,9 @@ if (!function_exists('lesson_piece_kind')) {
             $o .= '<div class="lesson-item"><h5>' . $title . ' ' . $badge . '</h5>';
             if (!empty($p['file_path']) && ($p['kind'] === 'lesson' || $p['kind'] === 'resource')) {
                 $o .= '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-outline-primary"><i class="bi bi-journal-text me-2"></i>Open Lesson</a>';
+            } elseif (!empty($p['file_path']) && ($p['kind'] === 'practice_test' || $p['kind'] === 'mock_test')) {
+                // a test that has a real page opens it (same button the hand-written class pages use)
+                $o .= '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-primary btn-lg" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-2"></i>Open Test</a>';
             } else {
                 $o .= coming_soon_line();
             }
