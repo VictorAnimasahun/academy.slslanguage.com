@@ -1,14 +1,14 @@
 <?php
-// IELTS Academic Writing Task 1 (Task 1A) – Writing Test 1. Chart task, 20 minutes, AI-marked via essay_analyzer.php.
+// IELTS Academic Writing Task 1 (Cambridge IELTS 17 Academic, Test 2) – Writing Test 2. Chart task, 20 minutes, AI-marked via essay_analyzer.php.
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+resources");
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment(course_ids_for_folders(['IELTS_Aca_1Mo', 'IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Writing test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Writing test');
 
-$testCode   = 'IELTS_PT_W1_ACA_001';
+$testCode   = 'IELTS_PT_W1_ACA_002';
 $timeLimit  = 20 * 60;  // 20 minutes in seconds
 $wordTarget = 150;
 ?>
@@ -17,7 +17,7 @@ $wordTarget = 150;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Academic Writing Task 1 – Test 1 | EduHub</title>
+    <title>IELTS Academic Writing Task 1 – Test 2 | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
@@ -51,7 +51,7 @@ $wordTarget = 150;
         <div class="test-container">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="ielts_writing_academic_001.php">Academic Writing Test 1</a></li>
+                    <li class="breadcrumb-item"><a href="ielts_writing_academic_002.php">Academic Writing Test 2</a></li>
                     <li class="breadcrumb-item active">Task 1</li>
                 </ol>
             </nav>
@@ -66,10 +66,10 @@ $wordTarget = 150;
                         </div>
 
                         <div class="prompt-box">
-                            <p class="mb-2"><strong>The chart below shows the number of men and women in further education in Britain in three periods and whether they were studying full-time or part-time.</strong></p>
+                            <p class="mb-2"><strong>The table and charts below give information on the police budget for 2017 and 2018 in one area of Britain. The table shows where the money came from and the charts show how it was distributed.</strong></p>
                             <p class="mb-0">Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
                         </div>
-                        <img src="<?= ACADEMY_URL ?>assets/images/ielts_academic/writing_001_task1_chart.png" alt="Bar chart: thousands of men and women in further education in Britain, full-time and part-time, 1970/71, 1980/81 and 1990/91" class="img-fluid mb-3" style="border:1px solid #e5e7eb;border-radius:10px;width:100%;">
+                        <div class="table-responsive mb-3"><table class="table table-bordered table-sm" style="background:#fff"><caption class="fw-bold text-dark" style="caption-side:top">Police Budget 2017–2018 (in £m)</caption><thead class="table-light"><tr><th>Sources</th><th>2017</th><th>2018</th></tr></thead><tbody><tr><td>National Government</td><td>175.5m</td><td>177.8m</td></tr><tr><td>Local Taxes</td><td>91.2m</td><td>102.3m</td></tr><tr><td>Other sources (eg grants)</td><td>38m</td><td>38.5m</td></tr><tr class="fw-bold"><td>Total</td><td>304.7m</td><td>318.6m</td></tr></tbody></table></div><div class="mb-3" style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden"><svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two pie charts: how the police money was spent in 2017 and 2018" style="width:100%;height:auto;background:#fff;font-family:system-ui,sans-serif"><text x="340.0" y="22" text-anchor="middle" font-size="15" font-weight="700">How the money was spent</text><text x="170" y="43" text-anchor="middle" font-size="14" font-weight="700">2017</text><path d="M170,150 L170.0,55.0 A95,95 0 1 1 75.0,150.0 Z" fill="#6b7280" stroke="#111" stroke-width="1"/><text x="211.6" y="195.6" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">75%</text><path d="M170,150 L75.0,150.0 A95,95 0 0 1 86.8,104.2 Z" fill="#ffffff" stroke="#111" stroke-width="1"/><text x="113.0" y="139.4" text-anchor="middle" font-size="13" font-weight="700" fill="#111">8%</text><path d="M170,150 L86.8,104.2 A95,95 0 0 1 170.0,55.0 Z" fill="#111111" stroke="#111" stroke-width="1"/><text x="140.0" y="103.3" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">17%</text><text x="510" y="43" text-anchor="middle" font-size="14" font-weight="700">2018</text><path d="M510,150 L510.0,55.0 A95,95 0 1 1 421.7,185.0 Z" fill="#6b7280" stroke="#111" stroke-width="1"/><text x="558.7" y="187.1" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">69%</text><path d="M510,150 L421.7,185.0 A95,95 0 0 1 426.8,104.2 Z" fill="#ffffff" stroke="#111" stroke-width="1"/><text x="451.2" y="150.3" text-anchor="middle" font-size="13" font-weight="700" fill="#111">14%</text><path d="M510,150 L426.8,104.2 A95,95 0 0 1 510.0,55.0 Z" fill="#111111" stroke="#111" stroke-width="1"/><text x="480.0" y="103.3" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">17%</text><rect x="235.0" y="265" width="12" height="12" fill="#6b7280" stroke="#111"/><text x="252.0" y="276" font-size="12">Salaries (officers and staff)</text><rect x="235.0" y="285" width="12" height="12" fill="#ffffff" stroke="#111"/><text x="252.0" y="296" font-size="12">Technology</text><rect x="235.0" y="305" width="12" height="12" fill="#111111" stroke="#111"/><text x="252.0" y="316" font-size="12">Buildings and transport</text></svg></div>assets/images/ielts_academic/writing_001_task1_chart.png" alt="Bar chart: thousands of men and women in further education in Britain, full-time and part-time, 1970/71, 1980/81 and 1990/91" class="img-fluid mb-3" style="border:1px solid #e5e7eb;border-radius:10px;width:100%;">
 
                                         <div class="alert alert-light border small mb-0">
                             <i class="bi bi-info-circle me-1 text-success"></i>
@@ -116,7 +116,7 @@ $wordTarget = 150;
     let submitted = false;
 
     // Build the question string from the prompt box HTML for practice mode
-    const QUESTION = 'The chart below shows the number of men and women in further education in Britain in three periods and whether they were studying full-time or part-time.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nData shown in the chart (thousands, approximate): MALE part-time 1970/71 = 1000, 1980/81 = 850, 1990/91 = 900; MALE full-time 100, 135, 220. FEMALE part-time 720, 815, 1095; FEMALE full-time 62, 195, 225.';
+    const QUESTION = 'The table and charts below give information on the police budget for 2017 and 2018 in one area of Britain. The table shows where the money came from and the charts show how it was distributed.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.';
 
     const timerEl   = document.getElementById('timerEl');
     const textarea  = document.getElementById('responseText');
@@ -175,7 +175,7 @@ $wordTarget = 150;
             test_code: '<?= $testCode ?>',
             task_type: 'writing_task1',
             type:      'writing_task1',
-            title:     'IELTS Academic Writing Task 1 – Test 1',
+            title:     'IELTS Academic Writing Task 1 – Test 2',
             testType:  'IELTS Academic',
             question:  QUESTION,
             response:  textarea.value,

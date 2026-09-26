@@ -1,14 +1,14 @@
 <?php
-// IELTS Academic Writing Task 1 (Task 1A) – Writing Test 1. Chart task, 20 minutes, AI-marked via essay_analyzer.php.
+// IELTS Academic Writing Task 1 (Cambridge IELTS 17 Academic, Test 3) – Writing Test 3. Chart task, 20 minutes, AI-marked via essay_analyzer.php.
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+resources");
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment(course_ids_for_folders(['IELTS_Aca_1Mo', 'IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Writing test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Writing test');
 
-$testCode   = 'IELTS_PT_W1_ACA_001';
+$testCode   = 'IELTS_PT_W1_ACA_003';
 $timeLimit  = 20 * 60;  // 20 minutes in seconds
 $wordTarget = 150;
 ?>
@@ -17,7 +17,7 @@ $wordTarget = 150;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Academic Writing Task 1 – Test 1 | EduHub</title>
+    <title>IELTS Academic Writing Task 1 – Test 3 | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
@@ -51,7 +51,7 @@ $wordTarget = 150;
         <div class="test-container">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="ielts_writing_academic_001.php">Academic Writing Test 1</a></li>
+                    <li class="breadcrumb-item"><a href="ielts_writing_academic_003.php">Academic Writing Test 3</a></li>
                     <li class="breadcrumb-item active">Task 1</li>
                 </ol>
             </nav>
@@ -66,10 +66,10 @@ $wordTarget = 150;
                         </div>
 
                         <div class="prompt-box">
-                            <p class="mb-2"><strong>The chart below shows the number of men and women in further education in Britain in three periods and whether they were studying full-time or part-time.</strong></p>
+                            <p class="mb-2"><strong>The chart below gives information about how families in one country spent their weekly income in 1968 and in 2018.</strong></p>
                             <p class="mb-0">Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
                         </div>
-                        <img src="<?= ACADEMY_URL ?>assets/images/ielts_academic/writing_001_task1_chart.png" alt="Bar chart: thousands of men and women in further education in Britain, full-time and part-time, 1970/71, 1980/81 and 1990/91" class="img-fluid mb-3" style="border:1px solid #e5e7eb;border-radius:10px;width:100%;">
+                        <div class="mb-3" style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden"><svg viewBox="0 0 680 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bar chart: how families in one country spent their weekly income in 1968 and in 2018" style="width:100%;height:auto;background:#fff;font-family:system-ui,sans-serif"><text x="340.0" y="24" text-anchor="middle" font-size="15" font-weight="700">1968 and 2018: average weekly spending by families</text><rect x="270.0" y="32" width="12" height="12" fill="#111"/><text x="286.0" y="43" font-size="12">1968</text><rect x="350.0" y="32" width="12" height="12" fill="#9ca3af"/><text x="366.0" y="43" font-size="12">2018</text><line x1="170.0" y1="60" x2="170.0" y2="428" stroke="#e5e7eb"/><text x="170.0" y="446" text-anchor="middle" font-size="11">0</text><line x1="230.0" y1="60" x2="230.0" y2="428" stroke="#e5e7eb"/><text x="230.0" y="446" text-anchor="middle" font-size="11">5</text><line x1="290.0" y1="60" x2="290.0" y2="428" stroke="#e5e7eb"/><text x="290.0" y="446" text-anchor="middle" font-size="11">10</text><line x1="350.0" y1="60" x2="350.0" y2="428" stroke="#e5e7eb"/><text x="350.0" y="446" text-anchor="middle" font-size="11">15</text><line x1="410.0" y1="60" x2="410.0" y2="428" stroke="#e5e7eb"/><text x="410.0" y="446" text-anchor="middle" font-size="11">20</text><line x1="470.0" y1="60" x2="470.0" y2="428" stroke="#e5e7eb"/><text x="470.0" y="446" text-anchor="middle" font-size="11">25</text><line x1="530.0" y1="60" x2="530.0" y2="428" stroke="#e5e7eb"/><text x="530.0" y="446" text-anchor="middle" font-size="11">30</text><line x1="590.0" y1="60" x2="590.0" y2="428" stroke="#e5e7eb"/><text x="590.0" y="446" text-anchor="middle" font-size="11">35</text><line x1="650.0" y1="60" x2="650.0" y2="428" stroke="#e5e7eb"/><text x="650.0" y="446" text-anchor="middle" font-size="11">40</text><text x="162" y="77" text-anchor="end" font-size="12">Food</text><rect x="170" y="60" width="420.0" height="15" fill="#111"/><rect x="170" y="75" width="204.0" height="15" fill="#9ca3af"/><text x="162" y="123" text-anchor="end" font-size="12">Housing</text><rect x="170" y="106" width="120.0" height="15" fill="#111"/><rect x="170" y="121" width="228.0" height="15" fill="#9ca3af"/><text x="162" y="169" text-anchor="end" font-size="12">Fuel and power</text><rect x="170" y="152" width="72.0" height="15" fill="#111"/><rect x="170" y="167" width="48.0" height="15" fill="#9ca3af"/><text x="162" y="215" text-anchor="end" font-size="12">Clothing and footwear</text><rect x="170" y="198" width="120.0" height="15" fill="#111"/><rect x="170" y="213" width="60.0" height="15" fill="#9ca3af"/><text x="162" y="261" text-anchor="end" font-size="12">Household goods</text><rect x="170" y="244" width="96.0" height="15" fill="#111"/><rect x="170" y="259" width="96.0" height="15" fill="#9ca3af"/><text x="162" y="307" text-anchor="end" font-size="12">Personal goods</text><rect x="170" y="290" width="96.0" height="15" fill="#111"/><rect x="170" y="305" width="48.0" height="15" fill="#9ca3af"/><text x="162" y="353" text-anchor="end" font-size="12">Transport</text><rect x="170" y="336" width="96.0" height="15" fill="#111"/><rect x="170" y="351" width="168.0" height="15" fill="#9ca3af"/><text x="162" y="399" text-anchor="end" font-size="12">Leisure</text><rect x="170" y="382" width="108.0" height="15" fill="#111"/><rect x="170" y="397" width="264.0" height="15" fill="#9ca3af"/><text x="410.0" y="462" text-anchor="middle" font-size="12" font-weight="700">% of weekly income</text></svg></div>assets/images/ielts_academic/writing_001_task1_chart.png" alt="Bar chart: thousands of men and women in further education in Britain, full-time and part-time, 1970/71, 1980/81 and 1990/91" class="img-fluid mb-3" style="border:1px solid #e5e7eb;border-radius:10px;width:100%;">
 
                                         <div class="alert alert-light border small mb-0">
                             <i class="bi bi-info-circle me-1 text-success"></i>
@@ -116,7 +116,7 @@ $wordTarget = 150;
     let submitted = false;
 
     // Build the question string from the prompt box HTML for practice mode
-    const QUESTION = 'The chart below shows the number of men and women in further education in Britain in three periods and whether they were studying full-time or part-time.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nData shown in the chart (thousands, approximate): MALE part-time 1970/71 = 1000, 1980/81 = 850, 1990/91 = 900; MALE full-time 100, 135, 220. FEMALE part-time 720, 815, 1095; FEMALE full-time 62, 195, 225.';
+    const QUESTION = 'The chart below gives information about how families in one country spent their weekly income in 1968 and in 2018.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.';
 
     const timerEl   = document.getElementById('timerEl');
     const textarea  = document.getElementById('responseText');
@@ -175,7 +175,7 @@ $wordTarget = 150;
             test_code: '<?= $testCode ?>',
             task_type: 'writing_task1',
             type:      'writing_task1',
-            title:     'IELTS Academic Writing Task 1 – Test 1',
+            title:     'IELTS Academic Writing Task 1 – Test 3',
             testType:  'IELTS Academic',
             question:  QUESTION,
             response:  textarea.value,

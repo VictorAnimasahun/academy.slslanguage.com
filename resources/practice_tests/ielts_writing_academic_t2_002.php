@@ -1,5 +1,5 @@
 <?php
-// IELTS Academic Writing Task 2 (Task 2A) – Writing Test 1. Essay, 40 minutes, AI-marked via essay_analyzer.php.
+// IELTS Academic Writing Task 2 (Task 2A) – Writing Test 2. Essay, 40 minutes, AI-marked via essay_analyzer.php.
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+resources");
@@ -7,9 +7,9 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment(course_ids_for_folders(['IELTS_Aca_1Mo', 'IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Writing test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Writing test');
 
-$testCode   = 'IELTS_PT_W2_ACA_001';
+$testCode   = 'IELTS_PT_W2_ACA_002';
 $timeLimit  = 40 * 60;
 $wordTarget = 250;
 ?>
@@ -18,7 +18,7 @@ $wordTarget = 250;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Academic Writing Task 2 – Test 1 | EduHub</title>
+    <title>IELTS Academic Writing Task 2 – Test 2 | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
@@ -50,7 +50,7 @@ $wordTarget = 250;
         <div class="test-container">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="ielts_writing_academic_001.php">Academic Writing Test 1</a></li>
+                    <li class="breadcrumb-item"><a href="ielts_writing_academic_002.php">Academic Writing Test 2</a></li>
                     <li class="breadcrumb-item active">Task 2</li>
                 </ol>
             </nav>
@@ -64,9 +64,8 @@ $wordTarget = 250;
                         </div>
 
                         <div class="prompt-box">
-                            <p class="mb-2"><strong>The first car appeared on British roads in 1888. By the year 2000 there may be as many as 29 million vehicles on British roads.</strong></p>
-                            <p class="mb-2"><strong>Alternative forms of transport should be encouraged and international laws introduced to control car ownership and use.</strong></p>
-                            <p class="mb-2"><strong>To what extent do you agree or disagree?</strong></p>
+                            <p class="mb-2"><strong>Some children spend hours every day on their smartphones.</strong></p>
+                            <p class="mb-2"><strong>Why is this the case? Do you think this is a positive or a negative development?</strong></p>
                             <p class="mb-0">Give reasons for your answer and include any relevant examples from your knowledge or experience.</p>
                         </div>
 
@@ -151,10 +150,10 @@ $wordTarget = 250;
         const params = new URLSearchParams({
             test_code: '<?= $testCode ?>',
             type:      'writing_task2',
-            title:     'IELTS Academic Writing Task 2 – Test 1',
+            title:     'IELTS Academic Writing Task 2 – Test 2',
             testType:  'IELTS Academic',
             task_type: 'writing_task2',
-            question:  'The first car appeared on British roads in 1888. By the year 2000 there may be as many as 29 million vehicles on British roads.\n\nAlternative forms of transport should be encouraged and international laws introduced to control car ownership and use.\n\nTo what extent do you agree or disagree?\n\nGive reasons for your answer and include any relevant examples from your knowledge or experience.',
+            question:  'Some children spend hours every day on their smartphones.\n\nWhy is this the case? Do you think this is a positive or a negative development?\n\nGive reasons for your answer and include any relevant examples from your knowledge or experience.',
             response:  textarea.value,
             words:     countWords(textarea.value),
             time:      <?= $timeLimit ?> - timeLeft,

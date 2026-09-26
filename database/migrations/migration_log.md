@@ -1883,6 +1883,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 136 — IELTS Academic Writing Tests 2, 3 and 4 (Cambridge IELTS 17 Academic) wired  *(branch overnight-2026-09-26-content, not on main)*
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran on local 8.0; tested on MySQL 5.7.44 (run twice, no error). Checked as students: hub, Task 1 and Task 2 pages of Tests 2-4 open for an enrolled student and not for a student with no course; the figure shows; the prompt reaches the marker; the class pages 11, 15 and 21 link the right hub; the Crash Course student can open Writing Test 1 (its Task 1/2 pages were locked to ids 16/17 before; now by folder) and is locked out of Test 2. |
+| Live  | [ ] | | Merge the branch and pull FIRST (9 new pages, plus the Test 1 Task 1/2 pages now lock by folder), THEN run 136. Needs 126, 128 and 134. Safe to repeat. |
+
+**What it does:** the `tests` rows and page links for "Writing Test 2 (Timed)", "Writing Test 3 (Timed)" (2- and 3-Month) and "Writing Test 4" (3-Month), from the Cambridge 17 writing tasks. **Founder to check:** the Task 1 figures (police-budget table and pies, spending bar chart, shop closures/openings line graph) are REDRAWN as inline SVG from the printed figures, values read by eye from the book's images, not the book's own images. Writing Test 1 (official IELTS.org samples) is unchanged. The Cambridge Test 1 writing (a pair of maps) is only in the bank.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
