@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/currency.php';
+require_once INCLUDES_PATH . '/coming_soon.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -184,7 +185,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                 </div>
                                 
                                 <div style="position: absolute; top: 10px; left: 10px;">
-                                    <?php if ($course['is_free']): ?>
+                                    <?php if (course_is_coming_soon($course)): ?>
+                                        <?= coming_soon_pill() ?>
+                                    <?php elseif ($course['is_free']): ?>
                                         <span class="badge-free">FREE</span>
                                     <?php else: ?>
                                         <span class="badge-paid"><?= course_price_html($course) ?></span>
@@ -252,7 +255,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 
                                 <!-- Action Button -->
                                 <div class="mt-auto">
-                                    <?php if ($course['is_enrolled']): ?>
+                                    <?php if (course_is_coming_soon($course)): ?>
+                                        <button type="button" class="btn btn-secondary w-100" disabled><i class="bi bi-hourglass-split me-1"></i>Coming Soon</button>
+                                    <?php elseif ($course['is_enrolled']): ?>
                                         <a href="<?php echo htmlspecialchars($course['folder_name']); ?>/course_overview.php?id=<?php echo $course['id']; ?>" 
 										class="btn btn-success w-100">
 											<i class="bi bi-play-fill me-1"></i>

@@ -332,14 +332,14 @@ if (!can_access('intermediate')) {
                             <?php if ($d['link']): ?>
                                 <a href="<?= htmlspecialchars($d['link']) ?>" class="btn btn-primary" style="background-color:#0b77ff;border-color:#0b77ff;"><?= htmlspecialchars($d['name']) ?> <i class="bi bi-arrow-right ms-1"></i></a>
                             <?php else: ?>
-                                <div class="test-not-built"><i class="bi bi-hourglass-split me-2"></i><?= htmlspecialchars($d['name']) ?> — not built yet</div>
+                                <div class="test-not-built"><i class="bi bi-hourglass-split me-2"></i><?= htmlspecialchars($d['name']) ?> — Coming Soon</div>
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </div>
                 <?php elseif ($cfg['test']['link']): ?>
                     <a href="<?= htmlspecialchars($cfg['test']['link']) ?>" class="btn btn-primary btn-lg" style="background-color:#0b77ff;border-color:#0b77ff;">Start <?= htmlspecialchars($cfg['test']['skill']) ?> Test <i class="bi bi-arrow-right ms-1"></i></a>
                 <?php else: ?>
-                    <div class="test-not-built"><i class="bi bi-hourglass-split me-2"></i>This complete <?= htmlspecialchars($cfg['test']['skill']) ?> test hasn't been built yet. This class is wired into the schedule as a placeholder so the 12-week structure is complete — check back once it's added, or ask your instructor for interim material.</div>
+                    <div class="test-not-built"><i class="bi bi-hourglass-split me-2"></i><strong>Coming Soon</strong> — this <?= htmlspecialchars($cfg['test']['skill']) ?> test isn't ready yet. Check back soon.</div>
                 <?php endif; ?>
             </div>
 

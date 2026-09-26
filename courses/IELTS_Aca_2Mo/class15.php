@@ -80,7 +80,7 @@ $canAccess = can_access($minTier);
                 <?php if ($__parts !== ''): echo $__parts; else: ?>
                 <div class="highlight-box">
                     <h4 style="color:var(--accent);"><i class="bi bi-hourglass-split me-2"></i>Coming Soon</h4>
-                    <p class="mb-0">This class's lesson content is still being finalized. Please register for the course (or check back soon) to get full access as it's added.</p>
+                    <p class="mb-0">This class isn't ready yet. Check back soon.</p>
                 </div>
                 <?php endif; ?>
 

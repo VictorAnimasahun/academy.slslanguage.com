@@ -8,7 +8,7 @@ Stated by the instructor, 2026-09-26. Everything about lessons, tests and pages 
    carry the word "Test" in its title is a lesson ("Mock Test/Exam N" is a mock). Students always see which kind a thing is.
 3. **The instructor designs the content, page by page, later.** Developing a lesson means editing that lesson's own page.
    It never requires changing structure, navigation, access rules or the database.
-4. **An empty page says so honestly** ("This lesson is being designed"). No filler, no placeholder bullet points, no invented content.
+4. **Anything with nothing in it yet says "Coming Soon"**: course, class, lesson, resource, test, mock: one wording, one look (`includes/coming_soon.php`). Nothing is hidden or retired for being empty. No filler, no placeholder bullet points, no invented content.
 5. **Never overwrite developed content.** New pages are added beside existing ones; an existing page is only replaced when the
    instructor says so.
 6. **Rules live in data, in one place** (kind and page in `lesson_parts`, plan in the class row), not typed into many files.
@@ -24,6 +24,11 @@ stored row: `lesson_piece_kind()` in `includes/lesson_title.php`. A stored row a
 Students see the kind on the course overview (every course) and as a tag on class pages (IELTS Academic 2/3-Month).
 In the overview accordion, a lesson with its own page links straight to it, under its class.
 
+## Coming Soon: where it is decided
+- **Course:** `courses.availability = 'coming_soon'` (a business decision: "ready to sell?"). The catalogue shows a Coming Soon pill and a disabled button; the course page shows the Coming Soon box and refuses enrolment.
+- **Piece:** a piece with a page is judged by the page (an empty lesson file = Coming Soon); a piece without one follows `lesson_parts.status`.
+- **Class:** Coming Soon when every one of its pieces is. The overview tags all three.
+
 ## Every lesson piece has its own page (empty until designed)
 `lesson_parts.file_path` = the page that holds the piece, relative to the academy root. `NULL` = the class's own page shows it.
 
@@ -38,7 +43,7 @@ piece there should also get its own empty page is an open decision for the instr
 ## Developing a lesson
 Open the lesson's file and put its HTML between `LESSON BODY START` and `LESSON BODY END`. Everything around it (login, plan
 check from `lessons.min_tier`, header with week/class/kind, back link) is drawn by `includes/lesson_shell.php`. While the body
-is empty students see the "being designed" notice (the marker comments alone do not count as content).
+is empty students see "Coming Soon" (the marker comments alone do not count as content).
 
 ## Designing a lesson freely (no frame)
 A lesson page can skip the default frame and be laid out however it likes. Keep the two access lines and write your own HTML:

@@ -4,6 +4,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+this+course");
     exit();
 }
+require_once INCLUDES_PATH . '/course_lock.php';
+require_course_enrollment([5, 15], 'this Crash Course lesson');   // bought (Selar redemption enrols) or IELTS Academic 1-Month; staff/admin/testers pass
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -38,8 +38,20 @@ if (!$course) {
     exit();
 }
 
+// A Selar-sold course (courses.selar_months) is entered only by paying, then choosing it on the dashboard --
+// the same rule courses_detail.php enforces. This page used to enrol anyone who pressed the button.
+require_once INCLUDES_PATH . '/tier_access.php';
+require_once INCLUDES_PATH . '/currency.php';
+$selarBlocked = false;
+if (is_file(CONFIG_PATH . '/selar_purchases.php')) {
+    require_once CONFIG_PATH . '/selar_purchases.php';
+    $selarBlocked = selar_enrolment_blocked($course);
+}
+
 // === HANDLE ENROLLMENT ===
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled']) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled'] && $selarBlocked) {
+    $error_message = "This course is bought on Selar. After you pay, choose it from your dashboard.";
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled']) {
     try {
         $enrollSQL = "INSERT INTO enrollments (student_id, course_id, enrolled_at, progress_percentage) 
                       VALUES (?, ?, NOW(), 0)";
@@ -187,7 +199,7 @@ $total_hours = round($total_minutes / 60, 1);
                                 </span>
                             <?php else: ?>
                                 <span class="badge-paid">
-                                    $<?php echo number_format($course['price'], 2); ?>
+                                    <?= course_price_html($course) ?>
                                 </span>
                             <?php endif; ?>
 
@@ -268,12 +280,18 @@ $total_hours = round($total_minutes / 60, 1);
                                         <div class="h3 text-success mb-0">FREE</div>
                                         <small class="text-muted">No payment required</small>
                                     <?php else: ?>
-                                        <div class="h3 text-primary mb-0">$<?php echo number_format($course['price'], 2); ?></div>
+                                        <div class="h3 text-primary mb-0"><?= course_price_html($course) ?></div>
                                         <small class="text-muted">One-time payment</small>
                                     <?php endif; ?>
                                 </div>
                                 
-                                <!-- Enrollment Form -->
+                                <!-- Enrollment: Selar-sold courses are bought first -->
+                                <?php if ($selarBlocked): ?>
+                                    <?php if (!empty($course['buy_url'])): ?>
+                                        <a href="<?= htmlspecialchars($course['buy_url']) ?>" target="_blank" rel="noopener" class="btn btn-success btn-lg d-block mb-2"><i class="bi bi-cart me-2"></i>Buy on Selar</a>
+                                    <?php endif; ?>
+                                    <p class="text-muted text-center mb-0" style="font-size:.85rem;">Buy this course on Selar, then choose it from your dashboard.</p>
+                                <?php else: ?>
                                 <form method="POST" class="d-grid gap-2">
                                     <?php if ($course['is_free']): ?>
                                         <!-- Free Course Enrollment -->
@@ -283,13 +301,14 @@ $total_hours = round($total_minutes / 60, 1);
                                     <?php else: ?>
                                         <!-- Paid Course Options -->
                                         <button type="submit" name="enroll" class="btn btn-primary btn-lg">
-                                            <i class="bi bi-credit-card me-2"></i>Enroll Now - $<?php echo number_format($course['price'], 2); ?>
+                                            <i class="bi bi-credit-card me-2"></i>Enroll Now - <?= course_price_html($course) ?>
                                         </button>
                                         <small class="text-muted mt-1">
                                             <i class="bi bi-shield-check me-1"></i>30-day money-back guarantee
                                         </small>
                                     <?php endif; ?>
                                 </form>
+                                <?php endif; ?>
                                 
                                 <!-- Course Includes -->
                                 <div class="mt-4 text-start">

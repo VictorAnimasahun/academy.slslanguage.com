@@ -1760,6 +1760,28 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## 127 — Coming Soon at course level; Academic Crash Course paid; duplicate CELPIP 1-Month removed
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran once. Verified: 5 courses `coming_soon`; Academic Crash Course `selar_months=1`, price 90,000, Module 1 free and modules 2-9 `intermediate`; IELTS Academic 3-Month and IELTS General 2-Month visible; duplicate CELPIP 1-Month (0 enrolments) deleted with its modules/lessons, the real one (id 12) intact. |
+| Live  | [ ] | | NOT idempotent (`ALTER TABLE … ADD COLUMN`). **Before running:** confirm on live the hidden CELPIP 1-Month duplicate really has no enrolments (the migration only deletes it if so). Then pull academy. Note: 2- and 3-month Selar purchases can now be redeemed for IELTS General 2-Month and IELTS Academic 3-Month ("choose your course"). |
+
+**What it does:** the instructor's rule (2026-09-26): anything with nothing in it yet says Coming Soon, at every level; nothing is hidden or retired for being empty. Adds `courses.availability` (`available` / `coming_soon`). Sets it for IELTS Crash Course, CELPIP Crash Course and PTE 1/2/3-Month. Makes the IELTS Academic Crash Course a paid 1-month course (Selar-sold: self-enrolment blocked, its module pages require enrolment; interim price 90,000 / compare 105,000 and the shared 1-month buy link, to be confirmed under decisions 2.4 / 2.5). Shows IELTS Academic 3-Month and IELTS General 2-Month. Removes the duplicate CELPIP General 1-Month row (guarded: hidden, same folder as a visible course, no enrolments).
+
+---
+
+## 128 — lesson_parts.status + test pages (Coming Soon at class / piece level)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran once (needs 126 first). 17 test pieces of IELTS Academic 2/3-Month now point at their real test page; the rest of their tests/mocks and every PTE piece are `coming_soon`. |
+| Live  | [ ] | | Run after 126 and 127. NOT idempotent (`ADD COLUMN`). Until run, the overview treats every piece as ready (no Coming Soon tags). |
+
+**What it does:** a piece is Coming Soon when it has no page and `status='coming_soon'`, or when its page is an empty lesson file (worked out live from the file, so developing a lesson needs no data change). A class is Coming Soon when every piece is. The overview tags them and links each test straight to its test page.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

@@ -4,11 +4,11 @@
  *
  * Each lesson piece has its own small file (courses/<course>/lessons/classNN_pK_<slug>.php) that only says
  * which course / class / piece it is and holds the lesson body between two markers. This file draws
- * everything around it (login, plan check, header with week/class/kind, "being designed" notice while the
+ * everything around it (login, plan check, header with week/class/kind, "Coming Soon" notice while the
  * body is empty, back link), so changing the look of every lesson page is a one-file edit.
  *
  * To develop a lesson: open its file and put the HTML between  LESSON BODY START  and  LESSON BODY END.
- * Nothing else needs to change; while the body is empty students see "This lesson is being designed".
+ * Nothing else needs to change; while the body is empty students see "Coming Soon".
  *
  * Access is read from the database (lessons.min_tier for the class), not hard-coded here, so the plan
  * rule is not written down one more time.
@@ -28,7 +28,7 @@ if (!function_exists('render_lesson_shell')) {
      */
     function lesson_context(PDO $db, string $folder, int $classNum, int $partOrder): array {
         require_once INCLUDES_PATH . '/tier_access.php';
-        require_once INCLUDES_PATH . '/lesson_title.php';
+        require_once INCLUDES_PATH . '/lesson_title.php';   // also loads coming_soon.php
 
         if (!isset($_SESSION['user_id'])) {
             header("Location: " . ACADEMY_URL . "edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -144,10 +144,7 @@ if (!function_exists('render_lesson_shell')) {
             <?php elseif ($hasBody): ?>
                 <div class="lesson-content mb-4"><?= $bodyHtml ?></div>
             <?php else: ?>
-                <div class="highlight-box">
-                    <h4 style="color:var(--accent);"><i class="bi bi-hourglass-split me-2"></i>This lesson is being designed</h4>
-                    <p class="mb-0">The content for this lesson isn't ready yet. Check back soon.</p>
-                </div>
+                <?= coming_soon_box('lesson') ?>
             <?php endif; ?>
 
             <div class="lesson-nav">

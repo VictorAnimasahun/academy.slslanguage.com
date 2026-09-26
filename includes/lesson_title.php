@@ -5,6 +5,8 @@
  * storage separator: everywhere it is shown, each piece goes on its own line,
  * never tied together with a "+".
  */
+require_once __DIR__ . '/coming_soon.php';
+
 if (!function_exists('lesson_title_lines')) {
     /** @return string[] one entry per piece of content */
     function lesson_title_lines(string $title): array {
@@ -150,11 +152,54 @@ if (!function_exists('lesson_piece_kind')) {
             if (!empty($p['file_path']) && ($p['kind'] === 'lesson' || $p['kind'] === 'resource')) {
                 $o .= '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-outline-primary"><i class="bi bi-journal-text me-2"></i>Open Lesson</a>';
             } else {
-                $o .= '<p class="text-muted mb-0"><i class="bi bi-hourglass-split me-1"></i>Coming soon.</p>';
+                $o .= coming_soon_line();
             }
             $o .= '</div>';
         }
         return $o . '</div>';
+    }
+
+    /** Everything stored about pieces: [lesson_id => [piece title => ['kind','status','file_path']]]. Empty if migration 126/128 hasn't run. */
+    function lesson_parts_for_lessons(PDO $db, array $lessonIds): array {
+        $lessonIds = array_values(array_unique(array_filter(array_map('intval', $lessonIds))));
+        if (!$lessonIds) return [];
+        $out = [];
+        $ph = implode(',', array_fill(0, count($lessonIds), '?'));
+        foreach (["SELECT lesson_id, title, kind, status, file_path FROM lesson_parts WHERE lesson_id IN ($ph)",
+                  "SELECT lesson_id, title, kind, 'ready' AS status, file_path FROM lesson_parts WHERE lesson_id IN ($ph)"] as $sql) {   // second form: before migration 128
+            try {
+                $st = $db->prepare($sql); $st->execute($lessonIds);
+                foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) $out[(int)$r['lesson_id']][$r['title']] = ['kind' => $r['kind'], 'status' => $r['status'], 'file_path' => $r['file_path'] ?: null];
+                return $out;
+            } catch (\Throwable $e) { /* try the older shape / table missing */ }
+        }
+        return [];
+    }
+
+    /** Is this file one of the empty-lesson-page files (courses/<course>/lessons/classNN_pK_*.php)? */
+    function lesson_file_is_shell(string $relPath): bool {
+        return (bool)preg_match('#/lessons/class\d{2}_p\d+_[^/]*\.php$#', $relPath);
+    }
+
+    /** True when a lesson page still has nothing between its LESSON BODY markers. Read from the file, so developing a lesson needs no data change. */
+    function lesson_shell_is_empty(string $relPath): bool {
+        static $cache = [];
+        if (isset($cache[$relPath])) return $cache[$relPath];
+        $file = dirname(__DIR__) . '/' . $relPath;
+        if (!is_file($file)) return $cache[$relPath] = true;
+        $src = file_get_contents($file);
+        if (!preg_match('/LESSON BODY START -->(.*?)<!-- LESSON BODY END/s', $src, $m)) return $cache[$relPath] = false;   // not the shell layout: treat as a real page
+        return $cache[$relPath] = trim(preg_replace('/<!--.*?-->/s', '', $m[1])) === '';
+    }
+
+    /**
+     * Coming Soon for one piece. A piece with a page is judged by the page (an empty lesson shell = Coming Soon,
+     * any other page = ready); a piece without a page follows its stored status.
+     */
+    function lesson_piece_coming_soon(array $part): bool {
+        $f = $part['file_path'] ?? null;
+        if ($f) return lesson_file_is_shell($f) ? lesson_shell_is_empty($f) : false;
+        return ($part['status'] ?? 'ready') === 'coming_soon';
     }
 
     function lesson_piece_kind_stored(array $kinds, int $lessonId, string $pieceTitle): string {

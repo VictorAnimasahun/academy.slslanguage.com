@@ -102,14 +102,12 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
     $briefFn     = $opts['week_brief'] ?? null;
     $partsByLesson = $opts['parts'] ?? [];
     $numFn       = $opts['class_number'] ?? null; // fn($weekNum, $lesson, $runningIndex): int
-    $kindsStored = $opts['kinds'] ?? [];
-    if (!$kindsStored && isset($GLOBALS['db']) && $GLOBALS['db'] instanceof PDO) {
+    $partsStored = [];
+    if (isset($GLOBALS['db']) && $GLOBALS['db'] instanceof PDO) {
         $allIds = [];
         foreach ($modules as $mm) foreach ($mm['lessons'] as $ll) $allIds[] = (int) ($ll['lesson_id'] ?? $ll['id'] ?? 0);
-        $kindsStored = lesson_part_kinds_for_lessons($GLOBALS['db'], $allIds);
-        $filesStored = lesson_part_files_for_lessons($GLOBALS['db'], $allIds);
+        $partsStored = lesson_parts_for_lessons($GLOBALS['db'], $allIds);   // kind / page / Coming Soon per piece (migrations 126, 128)
     }
-    $filesStored = $filesStored ?? [];
     $mockFn      = $opts['is_mock'] ?? null;      // fn($weekNum, $lesson, $classNum, $indexInWeek): bool (overrides mock_classes)
     $urlFn       = $opts['class_url'] ?? null;    // fn($classNum, $lesson): ?string  (default: lesson file_path)
     $levels      = ['beginner' => 1, 'intermediate' => 2, 'advanced' => 3, 'fluent' => 4];
@@ -189,23 +187,25 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             // Every piece of the class (the stored title joins them with " + ") gets its own line.
             $parts = [];
             foreach (lesson_title_lines($lesson['title']) as $piece) {
-                // What the piece IS: stored kind (lesson_parts) or, failing that, the title rule
-                // (no "Test" in the title = a lesson). It used to say "Class lesson" for every piece,
-                // so "Reading Test 1" looked like a lesson.
-                $kindLabel = lesson_kind_label(lesson_piece_kind_stored($kindsStored, (int) $lid, $piece));
-                $ownFile = $filesStored[(int) $lid][$piece] ?? null;   // this piece has its own page (migration 126 file_path)
+                // What the piece IS (stored kind, else the title rule: no "Test" = lesson), the page that holds it, and
+                // whether it is Coming Soon. It used to say "Class lesson" for every piece, so tests looked like lessons.
+                $stored   = $partsStored[(int) $lid][$piece] ?? null;
+                $kindLabel = lesson_kind_label($stored['kind'] ?? lesson_piece_kind($piece));
                 $parts[] = ['title' => $piece, 'kind' => $kindLabel, 'meta' => '', 'done' => $c['done'], 'lesson' => true,
-                            'href' => $ownFile ? ACADEMY_URL . $ownFile : null];
+                            'href' => !empty($stored['file_path']) ? ACADEMY_URL . $stored['file_path'] : null,
+                            'soon' => $stored ? lesson_piece_coming_soon($stored) : false];
             }
             foreach ($partsByLesson[$lid] ?? [] as $pt) $parts[] = $pt + ['meta' => '', 'lesson' => false];
             $partsDone = count(array_filter($parts, fn($p) => $p['done']));
+            $classSoon = $parts && count(array_filter($parts, fn($p) => !empty($p['soon']))) === count($parts);   // every piece is Coming Soon
             $cid2 = 'pp-class-' . $lid;
 
             $out .= '<div class="pp-class' . ($can ? '' : ' is-locked') . ($isMockCl ? ' is-mock' : '') . '">';
             $out .= '<button class="pp-class-toggle' . ($isCurCl ? '' : ' collapsed') . '" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cid2 . '" aria-expanded="' . ($isCurCl ? 'true' : 'false') . '" aria-controls="' . $cid2 . '">';
             $out .= '<span class="pp-class-title">Class ' . $c['num'] . '</span>';
             $out .= '<span class="pp-class-meta">';
-            if ($isMockCl) $out .= '<span class="pp-pill mock">Mock exam</span>';
+            if ($classSoon) $out .= coming_soon_pill();
+            elseif ($isMockCl) $out .= '<span class="pp-pill mock">Mock exam</span>';
             elseif ($required === 1) $out .= '<span class="pp-pill free">Free</span>';
             if (!$can) $out .= '<i class="bi bi-lock-fill"></i>';
             $out .= (int) $lesson['duration_minutes'] > 0 ? '<span>' . (int) $lesson['duration_minutes'] . ' min</span>' : '';
@@ -215,7 +215,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             foreach ($parts as $pt) {
                 $ico  = $pt['done'] ? '<i class="bi bi-check-circle-fill pp-part-ico is-done"></i>' : '<span class="pp-part-ico is-todo"></span>';
                 $text = '<span class="pp-part-text"><span class="pp-part-title' . ($pt['done'] ? ' is-done' : '') . '">' . $h($pt['title']) . '</span>'
-                      . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '')) . '</span></span>';
+                      . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '') . (!empty($pt['soon']) ? ' · Coming Soon' : '')) . '</span></span>';
                 $inner = $ico . $text;
                 $out  .= '<li>' . (($pt['lesson'] && $can)
                     ? '<a class="pp-part" href="' . $h($pt['href'] ?? $c['url']) . '">' . $inner . '</a>'

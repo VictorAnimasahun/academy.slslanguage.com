@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/currency.php';
+require_once INCLUDES_PATH . '/coming_soon.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -44,7 +45,10 @@ if (is_file(CONFIG_PATH . '/selar_purchases.php')) {
 
 // Handle enrolment
 $error_message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled'] && $selarBlocked) {
+$comingSoon = course_is_coming_soon($course);   // nothing to enrol into yet: no purchase, no enrolment
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && $comingSoon) {
+    $error_message = "This course is coming soon.";
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled'] && $selarBlocked) {
     $error_message = "This course is bought on Selar. After you pay, choose it from your dashboard.";
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll']) && !$course['is_enrolled']) {
     try {
@@ -179,7 +183,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         </p>
 
         <div class="d-flex flex-wrap gap-2 mb-3">
-            <?php if ($course['is_free']): ?>
+            <?php if ($comingSoon): ?>
+                <span class="hero-badge hero-badge-paid"><i class="bi bi-hourglass-split"></i> Coming Soon</span>
+            <?php elseif ($course['is_free']): ?>
                 <span class="hero-badge hero-badge-free"><i class="bi bi-gift"></i> FREE</span>
             <?php else: ?>
                 <span class="hero-badge hero-badge-paid"><i class="bi bi-tag"></i> <?= course_price_html($course) ?></span>
@@ -306,7 +312,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 
                     <!-- Enrolment card -->
                     <div class="enrol-card mb-3">
-                        <?php if ($course['is_enrolled']): ?>
+                        <?php if ($comingSoon): ?>
+                            <div class="text-center"><?= coming_soon_box('course') ?></div>
+                        <?php elseif ($course['is_enrolled']): ?>
                             <div class="text-center mb-3">
                                 <i class="bi bi-check-circle-fill text-success" style="font-size:2.5rem;"></i>
                                 <div class="fw-bold mt-2">You're enrolled!</div>
