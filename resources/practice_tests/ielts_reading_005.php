@@ -5,12 +5,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-// IELTS General Training Reading Practice Test 3 = Cambridge IELTS 15 General Training, Test 2, Reading: three sections, 40 questions, 60 minutes.
-// Source: documentation/test_bank/cambridge_ielts15_gt/test2.json. Generated from the bank so the page and the answer key (migration 137) agree.
+// IELTS General Training Reading Practice Test 5 = Cambridge IELTS 15 General Training, Test 4, Reading: three sections, 40 questions, 60 minutes.
+// Source: documentation/test_bank/cambridge_ielts15_gt/test4.json. Generated from the bank so the page and the answer key (migration 137) agree.
 // Open to students enrolled in the IELTS General courses (staff, admins and testers always pass); course ids are looked up by folder, never typed.
 require_course_enrollment(course_ids_for_folders(['IELTS_Gen_Mst', 'IELTS_Gen_1Mo', 'IELTS_Gen_2Mo']), 'this IELTS Reading practice test');
 
-$testCode  = 'IELTS_PT_R_003';
+$testCode  = 'IELTS_PT_R_005';
 $timeLimit = 60 * 60;
 
 $parts = [
@@ -21,87 +21,89 @@ $parts = [
         'type' => 'mixed',
         'sections' => [
             [
-                'type' => 'true_false_ng',
+                'type' => 'section_matching',
                 'passage_title' => null,
                 'passage_subtitle' => null,
-                'passage' => '<h5 class="fw-bold mt-3">Harvey\'s Storage</h5>
-<p>Harvey\'s Storage is a well-established independent company. We are centrally located in the city and provide excellent facilities for all your storage requirements.</p>
-<p>We provide safe and secure units for both long- and short-term storage dependent on your needs. Our rates are competitive and tailored to your specific requirements and your choice of storage unit. Heavy-duty locks and keys are provided to all of our customers and included in the prices listed. You can hire the unit with the storage capacity you need, for the period of time that the storage is required, in a sound and secure environment, monitored by CCTV. With 24-hour access, customers can deliver and collect items when it is convenient to do so, unrestricted by business or office hours. Tarmac roadways allow customers to park cars and lorries immediately outside their units, minimising the effort required to collect or drop items off.</p>
-<p>Household storage: Self-storage is ideal for families or individuals with either a short- or long-term need to store their belongings. Some of our clients are de-cluttering, or they may be getting their property decorated, or planning to go abroad for a time.</p>
-<p>Student storage: You may be travelling or going home to see family and friends in the vacation, or need time to find a place to stay. You may want to store all your books and personal items, or just a few boxes or a musical instrument. We offer no-nonsense competitive pricing with flexible hire periods and with no hidden extras. We can provide you with short- or long-term affordable hire in a safe and secure environment. You are responsible for organising transport but we can also recommend local van and driver hire companies.</p>
-<p>Business storage: Free up your expensive retail space with affordable self-storage. We have three different business storage centres to choose from so you can choose the location that is most convenient for you.</p>
-<h5 class="fw-bold mt-3">Local museums</h5>
-<p><strong>A</strong> &nbsp; Whittlesey Museum - The museum is located in the Old Town Hall, which was originally built to house horse-drawn fire engines. It has eight rooms, and the exhibits cover topics such as archive photographs, costume, domestic life and local celebrities.</p>
-<p><strong>B</strong> &nbsp; Octavia Hill\'s Birthplace House - Built in 1740, this is the birthplace of pioneer social reformer Octavia Hill, who was active in the late 19th and early 20th centuries in social housing and the arts, as well as in conservation issues. Visitors are taken on a guided tour and are then free to explore the gardens.</p>
-<p><strong>C</strong> &nbsp; Chatteris Museum - The old market town of Chatteris was largely rebuilt, after two serious fires in 1706 and 1864 destroyed many of the town\'s ancient buildings. The museum\'s exhibits illustrate traditional aspects of the life of local farmers as well as the railway boom of the 19th century. The museum has a touch-screen kiosk which contains over 9,000 historic photographs and texts, reproductions of which can be made on request.</p>
-<p><strong>D</strong> &nbsp; March and District Museum - Located in the middle of the market town of March, the museum is housed in a former school built in 1851. Its wide-ranging collections include reconstructions of an early 20th-century kitchen, sitting room and nursery. There is also an interesting display of historic cameras and radios, and a medal which was awarded to train driver Ben Gimbert for his bravery in preventing loss of life when a train full of explosives caught fire in 1944.</p>
-<p><strong>E</strong> &nbsp; Wisbech and Fenland Museum - This 19th-century gem holds collections from around the world including Ancient Egypt. Its library, which is open to the public on the first Saturday of each month, contains the manuscript of Great Expectations by the 19th-century novelist Charles Dickens, and the Research Room can be booked for researching local records.</p>',
-                'instructions' => '<strong>Questions 1–6.</strong> Do the following statements agree with the information given in the text? Write <strong>TRUE</strong> if the statement agrees with the information, <strong>FALSE</strong> if the statement contradicts the information, <strong>NOT GIVEN</strong> if there is no information on this.',
+                'passage' => '<h5 class="fw-bold mt-3">New cycle path to Marshbrook Country Park</h5>
+<p><strong>A</strong> &nbsp; A new dual-purpose cycle and pedestrian route has been built from Atherton bus station to the country park\'s main entrance at Marshbrook. It avoids the main road into Atherton on the south side, and keeps mainly to less busy roads. Once the path leaves the built-up area, it goes through countryside until it reaches Marshbrook.</p>
+<p><strong>B</strong> &nbsp; Funding for the cycle path has come largely from the county and town councils, while almost a third of it was raised through crowdfunding. Maintenance of the path is the responsibility of the county council. The cycle path was completed ahead of schedule - partly thanks to perfect weather for construction - and under budget.</p>
+<p><strong>C</strong> &nbsp; Annie Newcome is the chief executive of Cycle Atherton, the organisation that aims to get people cycling more often and more safely. Cycle Atherton proposed the 12-kilometre-long cycle path initially, and has been active in promoting it. Ms Newcome says she is delighted that all the hard work to achieve the funding proved successful.</p>
+<p><strong>D</strong> &nbsp; Marshbrook Country Park is a very popular recreational area, and the new path makes it much easier to reach from the town in an environmentally friendly way. At 2.5 metres wide, it is also suitable for users of wheelchairs, mobility scooters and buggies, who have not previously had access to the park without using motor vehicles.</p>
+<p><strong>E</strong> &nbsp; Although the path is now open, work is continuing to improve the signs along it, such as warnings when the path approaches a road. New hedges and trees will also be planted along stretches of the path, to provide some shelter from the wind and to benefit wildlife.</p>
+<p><strong>F</strong> &nbsp; Further information and a detailed map of the path including a proposed 5-kilometre extension are available online. The map can easily be downloaded and printed. Visit the county council website and follow the links to Atherton Cycle Path.</p>
+<h5 class="fw-bold mt-3">Study dramatic arts at Thornley</h5>
+<p>If you are hoping for a career in the theatre, Thornley College of Dramatic Arts is the place to come. For fifty years we have been providing top-quality courses for actors, directors, producers, musicians and everyone else who wishes to work professionally in the theatre or related industries. We also have expertise in preparing students for the specialised requirements of TV, film and radio. We\'ll make sure you\'re thoroughly prepared for the reality of work in your chosen field.</p>
+<p>Our college-based tutors all have extensive practical experience in the entertainment industry as well as academic qualifications, and we also collaborate with some of the country\'s best directors, writers and actors to create challenging, inspiring and exciting projects with our students.</p>
+<p>We are well-known around the world, with our students coming from every continent. Every year, we receive two thousand applications for the one hundred places on our degree courses. Only the most talented get places, and we are proud that over ninety percent of our students gain professional work within a year of graduating - a figure few other drama colleges in the UK can match.</p>
+<p>To mark our fiftieth anniversary this year, we are putting on a production of Theatre 500. Written by two staff members especially for this occasion, this multimedia show celebrates five hundred years of drama, and involves all our students in one way or another.</p>
+<p>Another major development is that the college is about to move. Our new premises are now under construction in the heart of Thornley, next to the council building, which has won a prize for its architecture. For the last two years, we have been developing designs with Miller Furbank Architects for our new home, and one aim has been to ensure the buildings complement the council offices. Work started on the foundations of the buildings in March last year, and we plan to move to the new site this coming September.</p>
+<p>We have also been talking to cultural organisations in the district, and considering how we can bring cost-free benefits to the local community, as well as to our students. As a result, part of the space in the new buildings has been designed to be adaptable, in order to accommodate classes, performances and workshops for different-sized groups of local people.</p>',
+                'instructions' => '<strong>Questions 1–7.</strong> Which paragraph mentions the following? Write the correct letter, A-F (any letter may be used more than once).',
+                'options' => ['A', 'B', 'C', 'D', 'E', 'F'],
                 'questions' => [
                     [
                         'q' => 1,
-                        'text' => 'There is an extra charge for locks and keys.',
+                        'text' => 'what still needs to be done',
                     ],
                     [
                         'q' => 2,
-                        'text' => 'It is possible to arrange to share a storage unit with someone else.',
+                        'text' => 'the original suggestion for creating the path',
                     ],
                     [
                         'q' => 3,
-                        'text' => 'You can pick up your property from the storage unit during the night-time.',
+                        'text' => 'a reason why the path opened early',
                     ],
                     [
                         'q' => 4,
-                        'text' => 'You can drive your vehicle right next to your storage unit.',
+                        'text' => 'people who no longer need to get to the park by car',
                     ],
                     [
                         'q' => 5,
-                        'text' => 'Students\' possessions can only be stored during vacation periods.',
+                        'text' => 'the route of the path',
                     ],
                     [
                         'q' => 6,
-                        'text' => 'The storage company will collect and deliver students\' property.',
+                        'text' => 'the length of the path',
+                    ],
+                    [
+                        'q' => 7,
+                        'text' => 'who paid for the path',
                     ],
                 ],
             ],
             [
-                'type' => 'section_matching',
+                'type' => 'true_false_ng',
                 'passage_title' => null,
                 'passage' => null,
-                'instructions' => '<strong>Questions 7–14.</strong> Look at the five descriptions of museums, A-E. Write the correct letter A-E (any letter may be used more than once).',
-                'options' => ['A', 'B', 'C', 'D', 'E'],
+                'instructions' => '<strong>Questions 8–14.</strong> Do the following statements agree with the information given in the text? Write <strong>TRUE</strong> if the statement agrees with the information, <strong>FALSE</strong> if the statement contradicts the information, <strong>NOT GIVEN</strong> if there is no information on this.',
                 'questions' => [
                     [
-                        'q' => 7,
-                        'text' => 'There are exhibits related to the history of agriculture in the region.',
-                    ],
-                    [
                         'q' => 8,
-                        'text' => 'Equipment for putting out fires used to be kept in this building.',
+                        'text' => 'The college has introduced new courses since it opened.',
                     ],
                     [
                         'q' => 9,
-                        'text' => 'You can find information on the rise of one type of transport.',
+                        'text' => 'The college provides training for work in the film industry.',
                     ],
                     [
                         'q' => 10,
-                        'text' => 'There are things to see both inside and outside.',
+                        'text' => 'Students have the chance to work with relevant professionals.',
                     ],
                     [
                         'q' => 11,
-                        'text' => 'It is possible to obtain copies of old pictures and documents.',
+                        'text' => 'Many more people apply to study at the college than are accepted.',
                     ],
                     [
                         'q' => 12,
-                        'text' => 'On certain days you can see an original work by a writer of fiction.',
+                        'text' => 'Theatre 500 was created by students.',
                     ],
                     [
                         'q' => 13,
-                        'text' => 'Someone who was interested in environmental matters lived here for a time.',
+                        'text' => 'The new building and the council building were designed by the same architects.',
                     ],
                     [
                         'q' => 14,
-                        'text' => 'This museum has an exhibit related to a heroic achievement.',
+                        'text' => 'Local groups will be charged for using college premises.',
                     ],
                 ],
             ],
@@ -117,52 +119,56 @@ $parts = [
                 'type' => 'form_fill',
                 'passage_title' => null,
                 'passage_subtitle' => null,
-                'passage' => '<h5 class="fw-bold mt-3">Workplace health and safety considerations for plumbers</h5>
-<p>Like many trades, plumbing can be a dangerous job. It is important to take all reasonably practicable measures to keep customers and yourself incident and injury free.</p>
-<p>Biohazard waste: Plumbers regularly come into contact with biohazard waste. It\'s the nature of the job, but that doesn\'t mean you should be complacent about it. According to Safe Work Australia, communicable diseases from work-related exposures to biological hazards such as sewage have been estimated to cause 320,000 deaths across the globe each year. In addition to this, plumbers are regularly exposed to other biohazards such as mould, bacteria and algae. Don\'t risk it - make sure appropriate protective clothing and equipment is used.</p>
-<p>Confined spaces: Plumbers may spend much of their time working in confined spaces, where they are at risk from contaminants, including airborne gases, vapours and dusts, that may cause injury from fire or explosion. They may also be exposed to high concentrations of airborne contaminants that may be harmful to health. For example, one plumber was fined $220,000 after an employee suffered from carbon-monoxide poisoning. Another potential hazard for plumbers in confined spaces is that of drowning, if water sources are not adequately cut off.</p>
-<p>The Safe Work Australia confined spaces code of practice outlines the necessary steps and precautions for avoiding illness and injury.</p>
-<p>Electricity: The Master Plumbers\' Association calls electricity \'plumbing\'s hidden killer\'. Metal pipes are often conductive and so gloves which provide insulation should form part of a plumber\'s tool kit, as should a plumbing voltage monitor and a volt tester. Gloves should be checked prior to every use and replaced every 12 to 14 months. Electrical equipment like bridging conductors should be regularly checked, with appropriate tags on the equipment to verify its safety. The project should be stopped immediately if there is any sign of electricity, so that the power can be disconnected by a qualified electrician prior to continuing work.</p>
-<h5 class="fw-bold mt-3">How to manage flexible working with your employees</h5>
-<p>There is no denying that flexible working has grown enormously in recent years. It does, however, require careful management.</p>
-<p>When it comes to implementing flexible working one word is key: trust. All flexible workers should be trusted and given well-defined objectives from the start and their contribution should be assessed according to their output, as opposed to the time they spend on the job. It can be a big step to implement such a change in your business, so if you are slightly cautious then I recommend perhaps setting up an end-of-the-day review to see how much progress has been made. As all parties find their feet with the new set-up, this contact can slowly be reduced.</p>
-<p>In my eyes, it is also vital that there is shared calendar access for everyone so that people can see where their colleagues are each day. This way if they need to catch up with someone they can plan when to do so. Technology now exists to enable employees to stay in touch with other members of staff and external partners. iMeet, for example, is a tool which allows all forms of collaboration for remote working, from video conferencing, live chat and file sharing to screen sharing. The new breed of worker is therefore fully equipped to work productively away from the office, and can still feel like they\'re in the same room as others when necessary.</p>
-<p>In my experience, employees are often more productive working at home as they can work the exact hours they want and do not have to cope with distraction caused by other employees. Being outside the confines of the office walls also appears to foster creativity. In addition, we find staff are more motivated as they have a better work-life balance. In terms of the business, we find this helps with top talent recruitment and staff retention, and a happy workforce is a more successful one.</p>',
-                'instructions' => '<strong>Questions 15–20.</strong> Complete the table below, choose ONE WORD ONLY from the text.',
+                'passage' => '<h5 class="fw-bold mt-3">How to make your working day more enjoyable</h5>
+<p>Research shows that work takes up approximately a third of our lives. Most of us get so bogged down with day-to-day tasks though, that we easily forget why we originally applied for the job and what we can get out of it. Here are a few ideas for how to make your working day better.</p>
+<p>Physical changes to your work environment can make a massive difference to how you feel. Get some green plants or a family photo for your desk. File all those odd bits of paper or throw them away. All of these little touches can make your work environment feel like it\'s yours. Make sure any screens you have are at a suitable height so you\'re not straining your neck and shoulders.</p>
+<p>Humans need a change of environment every now and then to improve productivity. Go out at lunchtime for a quick walk. If you have the option, it\'s a good idea to work from home occasionally. And if there\'s a conference coming up, ask if you can go along to it. Not only will you practise your networking skills, but you\'ll also have a day away from the office.</p>
+<p>Use coffee time to get to know a colleague you don\'t usually speak to. There\'s no point in getting away from staring at one thing though, only to replace it with another; so leave your mobile alone! Another tip is to try and stay out of office gossip. In the long run it could get you in more trouble than you realise.</p>
+<p>When you\'re trying to focus on something, hunger is the worst thing. If you can, keep some healthy snacks in your desk because if you have something you can nibble on, it will make you work more effectively and you\'ll enjoy it more. Also, if you\'re dehydrated, you won\'t be able to focus properly. So keep drinking water.</p>
+<p>Finally, if you\'ve been dreaming about starting up a big project for some time, do it! There are so many different things you can do to get you enjoying work more each day.</p>
+<h5 class="fw-bold mt-3">How to get promoted</h5>
+<p>If you\'re sitting at your desk wondering whether this will be the year you finally get promoted, here are some tips.</p>
+<p>It starts with you. You are perhaps the most important part in the \'promotion process\', so you need to know what you want - and why you want it. Take an honest look at yourself - your achievements and also your skills, particularly those you could exploit to take on a different role.</p>
+<p>Your boss is the gatekeeper. If you think your boss is likely to be on your side, ask for a meeting to discuss your serious commitment to the organisation and how this could translate into a more defined career plan. If you are less sure about your boss\'s view of your prospects and how they may react, start softly with a more deliberate focus on increasing your boss\'s understanding of the work you do and the added value you deliver.</p>
+<p>Think about how you are perceived at work. In order for you to get your promotion, who needs to know about you? Who would be on the interview panel and whose opinion and input would they seek? And once you\'ve got a list of people to impress, ask yourself - do they know enough about you? And I mean really know - what you do day to day at your desk, your contribution to the team, and perhaps most importantly, your potential.</p>
+<p>The chances are that those decision-makers won\'t know all they should about you. Raising your profile in your organisation is critical so that when those in charge start looking at that empty office and considering how best to fill it, the first name that pops into their heads is yours. If your firm has a newsletter, volunteer to write a feature to include in it. If they arrange regular client events, get involved in the organisation of them. And so on.</p>
+<p>If you think your experience needs enhancing, then look at ways you can continue to improve it. If you are confident in your professional expertise but lack the latest management theory, enrol on some relevant courses that fit around your day job.</p>
+<p>So what are you waiting for?</p>',
+                'instructions' => '<strong>Questions 15–20.</strong> Complete the sentences below, choose ONE WORD ONLY from the text.',
                 'form_title' => null,
                 'groups' => [
                     [
                         'heading' => null,
                         'rows' => [
                             [
-                                'prefix' => 'Biohazard - Examples:',
+                                'prefix' => 'Bringing a personal',
                                 'q' => 15,
-                                'suffix' => ', mould, bacteria, algae',
+                                'suffix' => 'to work will make the place feel more homely.',
                             ],
                             [
-                                'prefix' => 'Confined spaces - high concentrations of harmful airborne contaminants e.g. carbon monoxide - Risks:',
+                                'prefix' => 'It is important to check the position of all',
                                 'q' => 16,
-                                'suffix' => '',
+                                'suffix' => 'before use to avoid pulling any muscles.',
                             ],
                             [
-                                'prefix' => 'Confined spaces - water - Risks:',
+                                'prefix' => 'Leaving the office in the middle of the day may help to raise',
                                 'q' => 17,
-                                'suffix' => '',
+                                'suffix' => 'later on.',
                             ],
                             [
-                                'prefix' => 'Electricity - use insulated',
+                                'prefix' => 'It is advisable to avoid checking a',
                                 'q' => 18,
-                                'suffix' => 'and appropriate equipment',
+                                'suffix' => 'during breaks.',
                             ],
                             [
-                                'prefix' => 'Electricity - ensure equipment has',
+                                'prefix' => 'Getting involved in',
                                 'q' => 19,
-                                'suffix' => 'on to show it is safe',
+                                'suffix' => 'at work may have negative results.',
                             ],
                             [
-                                'prefix' => 'Electricity - make sure electricity has been',
+                                'prefix' => 'Having a few',
                                 'q' => 20,
-                                'suffix' => '',
+                                'suffix' => 'available can help people concentrate better at work.',
                             ],
                         ],
                     ],
@@ -179,39 +185,39 @@ $parts = [
                         'heading' => null,
                         'rows' => [
                             [
-                                'prefix' => 'provide them with clear',
+                                'prefix' => 'First step: examine past successes and any',
                                 'q' => 21,
-                                'suffix' => '',
+                                'suffix' => 'that would help gain promotion',
                             ],
                             [
-                                'prefix' => 'initially, have a',
+                                'prefix' => 'how best to use your high level of',
                                 'q' => 22,
-                                'suffix' => 'of progress each day',
+                                'suffix' => 'in future',
                             ],
                             [
-                                'prefix' => 'make sure a',
+                                'prefix' => 'or how much extra',
                                 'q' => 23,
-                                'suffix' => 'is accessible to give details of colleague locations',
+                                'suffix' => 'you already bring to the company',
                             ],
                             [
-                                'prefix' => 'use a program to encourage different types of',
+                                'prefix' => 'find out which ones will be members of the',
                                 'q' => 24,
-                                'suffix' => 'between workers',
+                                'suffix' => 'who decide on the promotion',
                             ],
                             [
-                                'prefix' => 'less',
+                                'prefix' => 'consider how much they are aware of your',
                                 'q' => 25,
-                                'suffix' => 'from colleagues',
+                                'suffix' => 'for the future',
                             ],
                             [
-                                'prefix' => 'increase in',
+                                'prefix' => 'participating in the',
                                 'q' => 26,
-                                'suffix' => '',
+                                'suffix' => 'of events for customers',
                             ],
                             [
-                                'prefix' => 'greater success for the company with staff recruitment and',
+                                'prefix' => 'take any',
                                 'q' => 27,
-                                'suffix' => '',
+                                'suffix' => 'that fill in gaps in knowledge',
                             ],
                         ],
                     ],
@@ -226,49 +232,81 @@ $parts = [
         'type' => 'mixed',
         'sections' => [
             [
-                'type' => 'section_matching',
+                'type' => 'form_fill',
                 'passage_title' => null,
                 'passage_subtitle' => null,
-                'passage' => '<h5 class="fw-bold mt-3">Preventing the theft of turtle eggs</h5><p class="fst-italic text-muted small">conservationists and law enforcement have struggled to prevent wildlife trafficking; could plastic eggs and GPS trackers change the game?</p>
-<div class="p-3 my-2 border rounded-3 bg-light"><p class="fw-bold small mb-2">List of Headings</p><div class="small mb-1"><strong>i</strong> &nbsp; Developing an item that appears true to life</div><div class="small mb-1"><strong>ii</strong> &nbsp; Extending the project to other endangered species</div><div class="small mb-1"><strong>iii</strong> &nbsp; A short but intensive investigation with longer-term follow-up</div><div class="small mb-1"><strong>iv</strong> &nbsp; Problems facing sea turtles at a global level</div><div class="small mb-1"><strong>v</strong> &nbsp; Collection of eggs and their possible onward routes</div><div class="small mb-1"><strong>vi</strong> &nbsp; Intensive and large-scale poaching in one location</div><div class="small mb-1"><strong>vii</strong> &nbsp; Why catching the poachers may not solve the problem</div></div>
-<p><strong>A</strong> &nbsp; Humans have been eating sea turtle eggs (and killing adult turtles for meat) for millennia. However, as human populations exploded and as sea turtles began to confront additional threats such as intensive fishing, beach development and climate change, sea turtle populations declined precipitously. Today, all but one of the world\'s seven species of sea turtles are considered threatened according to the IUCN Red List. And the one that\'s not - the flatback turtle - is listed as data deficient, which means scientists simply don\'t know how it\'s doing.</p>
-<p><strong>B</strong> &nbsp; One major problem is that every year millions of sea turtle eggs are illegally taken by poachers for sale on the black market. The situation is particularly serious in Nicaragua, in Central America, which is home to four sea turtle species. Kim Williams-Guillen, who works for conservation body Paso Pacifico, described the poaching of sea turtle nests on the beaches of Nicaragua as \'uncontrolled, unregulated, extensive and contested\'. Even the best-protected beaches are plundered to some extent and it\'s not uncommon to see poachers digging up nests just meters from tourists watching sea turtles laying their clutch at night, she said. This poaching becomes particularly frenzied during the arribadas - mass laying events where thousands of turtles nest on the same beach for a single night in a biological strategy to overwhelm natural predators.</p>
-<p><strong>C</strong> &nbsp; \'Even with armed guards, the numbers of poachers overwhelm military personnel by ten or twenty to one,\' Williams-Guillen said. \'Although many poachers are locals with limited resources, during these arribadas there are influxes of gangs of poachers from larger cities outside local communities. These are not just local poor people without other options.\' But to protect the country\'s sea turtles, Williams-Guillen said conservationists shouldn\'t just depend on catching low-level operators. \'If one poacher decides to stop, another one will just step into his place ... we need to know more about the middlemen and people higher up in the distribution chain,\' she said.</p>
-<p><strong>D</strong> &nbsp; Paso Pacifico\'s solution is the creation of high-tech sea turtle eggs: fake eggs convincingly crafted to look like the real thing, but which contain GPS tracking devices. These have the potential to reveal the destination markets for trafficked sea turtle eggs.</p>
-<p>Making convincing sea turtle eggs is not easy, and Paso Pacifico is still working on perfecting a prototype. In particular, it\'s proving quite problematic to create the right texture, since sea turtle eggs are not covered in a hard shell like those of birds, but are quite flexible.</p>
-<p>So Paso Pacifico brought in Lauren Wilde, a special effects artist in the US, to create a convincing outer shell. First, Wilde had to get her hands on the real thing. Since it\'s illegal to send sea turtle eggs over the border, Wilde is using land turtle eggs from California. \'It was really eye opening and important for me to feel these eggs and how the shell bends a little,\' she said.</p>
-<p>To get the GPS device inside the shell, Paso Pacifico is using 3D printers to make a plastic ball which will then have a GPS transmitter fitted inside. This will take the place of the embryo inside the shell. Lastly the fake shells will be sealed with silicone, waterproofing them.</p>
-<p><strong>E</strong> &nbsp; Sea turtles on average lay around 100 eggs in a nest, and once the fake eggs are finished they will be slipped in with the real ones. Williams-Guillen said it might even be possible to deliver fake eggs into nests while poachers are at work. Wary of tourists, poachers will often back off if strangers come near and then return when they have gone. \'It would be pretty easy to drop an egg in the dark into a nest they have been digging up,\' she said.</p>
-<p>Once the poacher picks up the fake egg along with the real ones, conservationists and law enforcement agents will be able to track them. Experts believe most of the stolen eggs eventually make their way out of Nicaragua, possibly to El Salvador or Guatemala. However, there is also growing concern that sea turtle eggs from Central America are actually heading to the USA, from where they are sold on to other countries around the world.</p>
-<p><strong>F</strong> &nbsp; To date, Paso Pacifico has yet to put a single fake egg in a nest. But Williams-Guillen said she isn\'t too concerned that publicity for their scheme will result in poachers looking for the eggs. \'The vast majority of the poaching is happening at night, so already it is hard to tell [the eggs] apart, and at this point, poachers and middlemen are not closely inspecting eggs, but rather shoving them into a sack as quickly as possible.\'</p>
-<p>Of course, poachers will eventually become aware of the prospect of fake eggs among the real ones - especially when customers try to bite into an egg and break their teeth on the GPS transmitter instead. So, Paso Pacifico plans to do a massive deployment of as many fakes as possible to gather a lot of data before poachers get wise.</p>
-<p>Knowing where the eggs go will allow conservationists and law enforcement agents to focus their resources on the right places - whether it be through awareness-building campaigns or crackdowns on illegal sellers. And eventually Paso Pacifico hopes to share the technology with interested parties around the world.</p>',
-                'instructions' => '<strong>Questions 28–33.</strong> Choose the correct heading for each section from the list, write i-vii.',
-                'options' => ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'],
+                'passage' => '<h5 class="fw-bold mt-3">Animals can tell right from wrong</h5>
+<p>Until recently, humans were thought to be the only species to experience complex emotions and have a sense of morality. But Professor Marc Bekoff, an ecologist at University of Colorado, Boulder, US, believes that morals are \'hard-wired\' into the brains of all mammals and provide the \'social glue\' that allows animals to live together in groups.</p>
+<p>His conclusions will assist animal welfare groups pushing to have animals treated more humanely. Professor Bekoff, who presents his case in his book Wild Justice, said: \'Just as in humans, the moral nuances of a particular culture or group will be different from another, but they are certainly there. Moral codes are species specific, so they can be difficult to compare with each other or with humans.\' Professor Bekoff believes morals developed in animals to help regulate behaviour in social groups. He claims that these help to limit fighting within the group and encourage co-operative behaviour.</p>
+<p>His ideas have met with some controversy in the scientific community. Professor Frans de Waal, who examines the behaviour of primates, including chimpanzees, at Emory University, Atlanta, Georgia, US, said: \'I don\'t believe animals are moral in the sense we humans are - with a well-developed and reasoned sense of right and wrong - rather that human morality incorporates a set of psychological tendencies and capacities such as empathy, reciprocity, a desire for co-operation and harmony that are older than our species. Human morality was not formed from scratch, but grew out of our primate psychology. Primate psychology has ancient roots, and I agree that other animals show many of the same tendencies and have an intense sociality.\'</p>
+<p>Wolves live in tight-knit social groups that are regulated by strict rules. Wolves also demonstrate fairness. During play, dominant wolves will appear to exchange roles with lower-ranking wolves. They pretend to be submissive and go so far as to allow biting by the lower-ranking wolves, provided it is not too hard. Prof Bekoff argues that without a moral code governing their actions, this kind of behaviour would not be possible. Astonishingly, if an animal becomes aggressive, it will perform a \'play bow\' to ask forgiveness before play resumes.</p>
+<p>In other members of the dog family, play is controlled in a similar way. Among coyotes, cubs which are too aggressive are ignored by the rest of the group and often end up having to leave entirely. Experiments with domestic dogs, where one animal was given some \'sweets\' and another wasn\'t, have shown that they possess a sense of fairness as they allowed their companion to eat some.</p>
+<p>Elephants are intensely sociable and emotional animals. Research by Iain Douglas-Hamilton, from the department of zoology at Oxford University, suggests elephants experience compassion and has found evidence of elephants helping injured members of their herd. In 2003, a herd of 11 elephants rescued antelopes which were being held inside an enclosure in KwaZulu-Natal, South Africa. The top female elephant unfastened all of the metal latches holding the gates closed and swung them open, allowing the antelopes to escape. This is thought to be a rare example of animals showing empathy for members of another species - a trait previously thought to be the exclusive preserve of humankind.</p>
+<p>A laboratory experiment involved training Diana monkeys to insert a token into a slot to obtain food. A male who had become skilled at the task was found to be helping the oldest female, who had not learned how to do it. On three occasions the male monkey picked up tokens she dropped and inserted them into the slot and allowed her to have the food. As there was no benefit for the male monkey, Professor Bekoff argues that this is a clear example of an animal\'s actions being driven by some internal moral compass.</p>
+<p>Since chimpanzees are known to be among the most cognitively advanced of the great apes and our closest cousins, it is perhaps not remarkable that scientists should suggest they live by moral codes. A chimpanzee known as Knuckles is the only known captive chimpanzee to suffer from cerebral palsy, which leaves him physically and mentally impaired. What is extraordinary is that scientists have observed other chimpanzees interacting with him differently and he is rarely subjected to intimidating displays of aggression from older males. Chimpanzees also demonstrate a sense of justice and those who deviate from the code of conduct of a group are set upon by other members as punishment.</p>
+<p>Experiments with rats have shown that they will not take food if they know their actions will cause pain to another rat. In lab tests, rats were given food which then caused a second group of rats to receive an electric shock. The rats with the food stopped eating rather than see this happen.</p>
+<p>Whales have been found to have spindle cells in their brains. These specialised cells were thought to be restricted to humans and great apes, and appear to play a role in empathy and understanding the emotions of others. Humpback whales, fin whales, killer whales and sperm whales have all been found to have spindle cells. They also have three times as many spindle cells as humans and are thought to be older in evolutionary terms. This finding suggests that emotional judgements such as empathy may have evolved considerably earlier in history than formerly thought and could be widespread in the animal kingdom.</p>',
+                'instructions' => '<strong>Questions 28–32.</strong> Complete the summary, choose ONE WORD ONLY from the text.',
+                'form_title' => null,
+                'groups' => [
+                    [
+                        'heading' => null,
+                        'rows' => [
+                            [
+                                'prefix' => 'Wolves live in packs and it is clear that there are a number of',
+                                'q' => 28,
+                                'suffix' => 'concerning their behaviour.',
+                            ],
+                            [
+                                'prefix' => 'Some observers believe they exhibit a sense of',
+                                'q' => 29,
+                                'suffix' => '.',
+                            ],
+                            [
+                                'prefix' => 'They act as if they are',
+                                'q' => 30,
+                                'suffix' => 'to the juniors',
+                            ],
+                            [
+                                'prefix' => 'and even permit some gentle',
+                                'q' => 31,
+                                'suffix' => '.',
+                            ],
+                            [
+                                'prefix' => 'it bends down begging for',
+                                'q' => 32,
+                                'suffix' => '.',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'type' => 'section_matching',
+                'passage_title' => null,
+                'passage' => null,
+                'instructions' => '<strong>Questions 33–37.</strong> Match each animal with the correct description, A-G.',
+                'options' => ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
                 'questions' => [
                     [
-                        'q' => 28,
-                        'text' => 'Section A',
-                    ],
-                    [
-                        'q' => 29,
-                        'text' => 'Section B',
-                    ],
-                    [
-                        'q' => 30,
-                        'text' => 'Section C',
-                    ],
-                    [
-                        'q' => 31,
-                        'text' => 'Section D',
-                    ],
-                    [
-                        'q' => 32,
-                        'text' => 'Section E',
-                    ],
-                    [
                         'q' => 33,
-                        'text' => 'Section F',
+                        'text' => 'coyotes',
+                    ],
+                    [
+                        'q' => 34,
+                        'text' => 'domestic dogs',
+                    ],
+                    [
+                        'q' => 35,
+                        'text' => 'elephants',
+                    ],
+                    [
+                        'q' => 36,
+                        'text' => 'Diana monkeys',
+                    ],
+                    [
+                        'q' => 37,
+                        'text' => 'rats',
                     ],
                 ],
             ],
@@ -276,75 +314,36 @@ $parts = [
                 'type' => 'passage_mcq',
                 'passage_title' => null,
                 'passage' => null,
-                'instructions' => '<strong>Questions 34–37.</strong> Choose the correct letter, <strong>A, B, C</strong> or <strong>D</strong>.',
+                'instructions' => '<strong>Questions 38–40.</strong> Choose the correct letter, <strong>A, B, C</strong> or <strong>D</strong>.',
                 'questions' => [
                     [
-                        'q' => 34,
-                        'text' => 'What does the writer suggest about the flatback turtle?',
+                        'q' => 38,
+                        'text' => 'What view is expressed by Professor de Waal?',
                         'options' => [
-                            'A' => 'It could be as severely threatened as other turtles.',
-                            'B' => 'It has been neglected by scientists in the past.',
-                            'C' => 'It is in less danger than some other species.',
-                            'D' => 'It should be removed from the IUCN Red List.',
+                            'A' => 'Apes have advanced ideas about the difference between good and evil.',
+                            'B' => 'The social manners of some animals prove that they are highly moral.',
+                            'C' => 'Some human moral beliefs developed from our animal ancestors.',
+                            'D' => 'The desire to live in peace with others is a purely human quality.',
                         ],
                     ],
                     [
-                        'q' => 35,
-                        'text' => 'Williams-Guillen says that the poaching of sea turtle eggs in Nicaragua',
+                        'q' => 39,
+                        'text' => 'Why does Professor Bekoff mention the experiment on Diana monkeys?',
                         'options' => [
-                            'A' => 'is mainly carried out by local people.',
-                            'B' => 'may be encouraged by the presence of tourists.',
-                            'C' => 'sometimes has a highly organised structure.',
-                            'D' => 'can only be controlled by the use of armed guards.',
+                            'A' => 'It shows that this species of monkey is not very easy to train.',
+                            'B' => 'It confirms his view on the value of research into certain monkeys.',
+                            'C' => 'It proves that female monkeys are generally less intelligent than males.',
+                            'D' => 'It illustrates a point he wants to make about monkeys and other creatures.',
                         ],
                     ],
                     [
-                        'q' => 36,
-                        'text' => 'In Section E, Williams-Guillen says that one way to encourage poachers to take the fake eggs is to',
+                        'q' => 40,
+                        'text' => 'What does the writer find most surprising about chimpanzees?',
                         'options' => [
-                            'A' => 'make fake nests and put the eggs into them.',
-                            'B' => 'put them in nests with just a few real eggs.',
-                            'C' => 'distract the poachers after the fake eggs have been put in the nests.',
-                            'D' => 'put them in nests that the poachers have started to dig up.',
-                        ],
-                    ],
-                    [
-                        'q' => 37,
-                        'text' => 'It is planned to use a large number of fake eggs at the beginning because',
-                        'options' => [
-                            'A' => 'some of the fake eggs may be missed by the poachers.',
-                            'B' => 'it may not be possible to continue the project indefinitely.',
-                            'C' => 'some eggs may be hidden in the sand.',
-                            'D' => 'it may not be feasible to fund long-term research.',
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'type' => 'form_fill',
-                'passage_title' => null,
-                'passage' => null,
-                'instructions' => '<strong>Questions 38–40.</strong> Complete the summary, choose ONE WORD ONLY from the text.',
-                'form_title' => null,
-                'groups' => [
-                    [
-                        'heading' => null,
-                        'rows' => [
-                            [
-                                'prefix' => 'Unlike a bird\'s egg, a turtle\'s egg has a shell which is',
-                                'q' => 38,
-                                'suffix' => '.',
-                            ],
-                            [
-                                'prefix' => 'Lauren Wilde has studied eggs from Californian turtles that live on',
-                                'q' => 39,
-                                'suffix' => '',
-                            ],
-                            [
-                                'prefix' => 'A GPS device will then be placed inside a',
-                                'q' => 40,
-                                'suffix' => 'in the fake shell.',
-                            ],
+                            'A' => 'They can suffer from some of the same illnesses as humans.',
+                            'B' => 'They appear to treat disabled peers with consideration.',
+                            'C' => 'They have sets of social conventions that they follow.',
+                            'D' => 'The males can be quite destructive at times.',
                         ],
                     ],
                 ],
@@ -362,7 +361,7 @@ $answers = loadTestAnswers($db, $testCode);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS General Training Reading Practice Test 3 – EduHub</title>
+    <title>IELTS General Training Reading Practice Test 5 – EduHub</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
@@ -523,7 +522,7 @@ $answers = loadTestAnswers($db, $testCode);
             <ol class="breadcrumb mb-0" style="font-size:.8rem;">
                 <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
                 <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
-                <li class="breadcrumb-item active">IELTS General Training Reading – Practice 3</li>
+                <li class="breadcrumb-item active">IELTS General Training Reading – Practice 5</li>
             </ol>
         </nav>
         <div class="d-flex align-items-center gap-3">

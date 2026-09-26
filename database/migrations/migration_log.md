@@ -1894,6 +1894,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 137 + 138 — IELTS General Training practice tests from the Cambridge IELTS 15 GT book, into the IELTS General Masterclass  *(branch overnight-2026-09-26-content, not on main)*
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | 137 and 138 ran on local 8.0; tested on MySQL 5.7.44 (run twice, no error). Checked as students: GT Reading Practice Tests 2-5 (= Cambridge GT Tests 1-4): 40 inputs, key identical to the bank, GT band scale, server scoring of a perfect attempt = 40/40, closed to a student with no course; GT Writing Task 1 (letter) and Task 2 (essay) practice pages 2-5 open with the right prompt and code; the IELTS General Masterclass overview shows the four added pieces, each linked to its page. |
+| Live  | [ ] | | Merge the branch and pull FIRST (4 reading pages + 8 writing pages replace empty placeholders), THEN run 137, then 138. Needs 126 and 128. Both safe to repeat. |
+
+**What it does:** 137 seeds the answer keys for `IELTS_PT_R_002..005` (the reading pages were empty "Placeholder" files; Practice Test 1 is unchanged). 138 adds the writing `tests` rows and, in the IELTS General Masterclass (3-Month) classes 20-23 (each a single one-hour piece), adds a practice-test piece next to it: Writing Task 2 Practice Test 2, Reading Practice Test 2, Speaking Practice Test 2 (existing page), Listening Practice Test 2 (existing page); the pieces are also appended to the class titles because the overview builds its piece list from the title. "Final Preparation — Listening Masterclass & Test-Day Strategy" is corrected from practice test to lesson. Nothing existing is replaced. GT Reading 3-5 and the other writing tests have no class slot: they exist as pages, open by link to General students. Listening and Speaking from the GT book stay in the bank (no audio).
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

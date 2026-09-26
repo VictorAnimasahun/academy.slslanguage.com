@@ -1,5 +1,5 @@
 <?php
-// IELTS Writing Task 1 – Practice 003
+// IELTS Writing Task 1 – Practice 005
 require_once dirname(dirname(__DIR__)) . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+resources");
@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 require_once INCLUDES_PATH . '/course_lock.php';
 require_course_enrollment(course_ids_for_folders(['IELTS_Gen_Mst', 'IELTS_Gen_1Mo', 'IELTS_Gen_2Mo']), 'this IELTS Writing practice test');
 
-$testCode   = 'IELTS_PT_W1_003';
+$testCode   = 'IELTS_PT_W1_005';
 $timeLimit  = 20 * 60;  // 20 minutes in seconds
 $wordTarget = 150;
 ?>
@@ -17,7 +17,7 @@ $wordTarget = 150;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Writing Task 1 – Practice 3 | EduHub</title>
+    <title>IELTS Writing Task 1 – Practice 5 | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
@@ -52,7 +52,7 @@ $wordTarget = 150;
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
                     <li class="breadcrumb-item"><a href="index.php">Practice Tests</a></li>
-                    <li class="breadcrumb-item active">IELTS Writing Task 1 – Practice 3</li>
+                    <li class="breadcrumb-item active">IELTS Writing Task 1 – Practice 5</li>
                 </ol>
             </nav>
 
@@ -66,12 +66,12 @@ $wordTarget = 150;
                         </div>
 
                         <div class="prompt-box">
-                            <p class="mb-2"><strong>A museum near your home is looking for people to do part-time voluntary/unpaid work. You would like to do some voluntary/unpaid work at the museum.</strong></p>
-                            <p class="mb-0">Write a letter to the museum director to apply for the voluntary/unpaid work. In your letter:</p>
+                            <p class="mb-2"><strong>You have seen an advertisement from a couple, who live in Australia, for someone to teach their two children your language for a year.</strong></p>
+                            <p class="mb-0">Write a letter to the couple. In your letter:</p>
                             <ul class="mt-2 mb-0">
-                                <li>explain why you want to do voluntary/unpaid work at the museum</li>
-                                <li>describe some skills and qualities you have that would be useful</li>
-                                <li>give details of when you would be available for work</li>
+                                <li>explain why you think you would be suitable for the job</li>
+                                <li>say what else you could do for the family</li>
+                                <li>give your reasons for wanting the job</li>
                             </ul>
                         </div>
 
@@ -120,7 +120,7 @@ $wordTarget = 150;
     let submitted = false;
 
     // Build the question string from the prompt box HTML for practice mode
-    const QUESTION = "A museum near your home is looking for people to do part-time voluntary/unpaid work. You would like to do some voluntary/unpaid work at the museum.\n\nWrite a letter to the museum director to apply for the voluntary/unpaid work. In your letter:\n- explain why you want to do voluntary/unpaid work at the museum\n- describe some skills and qualities you have that would be useful\n- give details of when you would be available for work";
+    const QUESTION = "You have seen an advertisement from a couple, who live in Australia, for someone to teach their two children your language for a year.\n\nWrite a letter to the couple. In your letter:\n- explain why you think you would be suitable for the job\n- say what else you could do for the family\n- give your reasons for wanting the job";
 
     const timerEl   = document.getElementById('timerEl');
     const textarea  = document.getElementById('responseText');
@@ -179,7 +179,7 @@ $wordTarget = 150;
             test_code: '<?= $testCode ?>',
             task_type: 'writing_task1',
             type:      'writing_task1',
-            title:     'IELTS Writing Task 1 – Practice 3',
+            title:     'IELTS Writing Task 1 – Practice 5',
             testType:  'IELTS General Training',
             question:  QUESTION,
             response:  textarea.value,
