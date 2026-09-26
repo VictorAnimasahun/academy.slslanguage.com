@@ -12,7 +12,7 @@ require_once INCLUDES_PATH . '/course_lock.php';
 // identical between Academic and General Training, so this test is a
 // legitimate, permanent fit for the Academic course too (not a temporary
 // stand-in the way ielts_reading_001.php's GT content is).
-require_course_enrollment([9, 10, 11, 16, 17], 'this IELTS Listening practice test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Gen_Mst', 'IELTS_Gen_1Mo', 'IELTS_Gen_2Mo', 'IELTS_Aca_1Mo', 'IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Listening practice test');
 
 $testCode  = 'IELTS_PT_L_001';
 $timeLimit = 30 * 60;

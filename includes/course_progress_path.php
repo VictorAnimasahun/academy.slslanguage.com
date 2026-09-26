@@ -180,7 +180,11 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             $lid      = $c['lid'];
             $required = $levels[$lesson['min_tier']] ?? 1;
             $can      = $c['url'] !== null;
-            $isMockCl = $mockFn ? (bool) $mockFn($weekNum, $lesson, $c['num'], $ci) : in_array($c['num'], $mockClasses, true);
+            // A mock class is one that holds a piece of kind mock_test (stored data). The typed 'mock_classes' list is only a
+            // fallback for a course that has no stored pieces, so the schedule in the database is the one source of truth.
+            $storedMock = false;
+            foreach ($partsStored[(int) $lid] ?? [] as $sp) { if (($sp['kind'] ?? '') === 'mock_test') { $storedMock = true; break; } }
+            $isMockCl = $mockFn ? (bool) $mockFn($weekNum, $lesson, $c['num'], $ci) : ($partsStored ? $storedMock : in_array($c['num'], $mockClasses, true));
             $isCurCl  = $next && $next['num'] === $c['num'];
 
             // Parts: the class lesson first, then the tests/quizzes attached to it.

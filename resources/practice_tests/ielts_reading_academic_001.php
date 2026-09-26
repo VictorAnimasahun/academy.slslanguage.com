@@ -16,7 +16,7 @@ require_once INCLUDES_PATH . '/course_lock.php';
 // sequentially across the 5 parts (each source PDF used its own original
 // numbering in isolation). This is a compiled sample set, not one
 // continuous 60-minute/3-passage Cambridge-style exam — titled accordingly.
-require_course_enrollment([16, 17], 'this IELTS Academic Reading practice test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Aca_1Mo', 'IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Reading practice test');
 
 $testCode  = 'IELTS_PT_R_ACA_001';
 $timeLimit = 40 * 60;

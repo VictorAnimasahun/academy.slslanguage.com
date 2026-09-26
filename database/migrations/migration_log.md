@@ -1861,6 +1861,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 134 — Crash Course schedule (first month of the Masterclass) and CELPIP 3-Month's third mock
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-09-26 | Ran on local 8.0; tested on MySQL 5.7.44 (run twice, no error, second run changes nothing). Checked as students: the Crash Course overview shows 4 weeks / 8 classes with its mock marked; classes 1-8 open ("of 8"); a Crash Course student can take Listening 1 and 2, Reading 1 and Writing 1; Reading Test 2 stays Coming Soon and locked to them; the lesson shells say Coming Soon. Sweep of 80 pages: 0 errors. |
+| Live  | [ ] | | **Pull academy first** (8 new class pages + 6 shell pages under `courses/IELTS_Aca_1Mo/`, folder-based test locks in 4 test pages, and the overview now reads its mock classes from the stored pieces), THEN run 134. Needs 126 and 128; run after 131. Safe to repeat. |
+
+**What it does:** (1) IELTS Academic Crash Course = weeks 1-3 of the Masterclass as they are, week 4 = Class 7 (Reading Test 2, left Coming Soon) + Class 8 = Mock Test 1 (Coming Soon); its pieces copy the Masterclass's. (2) CELPIP 3-Month gets its third mock ("Mock Test 3 — Final Assessment", Coming Soon, Class 24) and "Test-Day Coaching" is corrected from practice test to lesson. **Code:** the course overview marks a mock class from the stored pieces (kind = mock_test) instead of a typed list, which fixes the Academic 2-Month (showed 8 and 16, really 9 and 16) and 3-Month (8/16/24, really 9/16/23) overviews.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

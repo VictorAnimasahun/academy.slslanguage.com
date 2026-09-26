@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment([16, 17], 'this IELTS Academic Writing test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Aca_1Mo', 'IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Writing test');
 ?>
 <!DOCTYPE html>
 <html lang="en">
