@@ -53,17 +53,7 @@ try {
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Debug output (hidden in HTML comments)
-    echo "\n<!-- ===== DEBUG START ===== -->\n";
-    echo "<!-- SQL Query: " . htmlspecialchars($sql) . " -->\n";
-    echo "<!-- Parameters: " . htmlspecialchars(print_r($params, true)) . " -->\n";
-    echo "<!-- Number of courses found: " . count($courses) . " -->\n";
-    echo "<!-- Courses data: " . htmlspecialchars(print_r($courses, true)) . " -->\n";
-    echo "<!-- ===== DEBUG END ===== -->\n\n";
-    
 } catch (PDOException $e) {
-    echo "\n<!-- ERROR: " . htmlspecialchars($e->getMessage()) . " -->\n\n";
     error_log("Database error: " . $e->getMessage());
     $courses = [];
 }

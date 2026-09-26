@@ -19,6 +19,22 @@ define('COURSE_LOCK_LOADED', true);
 require_once INCLUDES_PATH . '/admin_check.php';
 
 /**
+ * Course ids for folder names. Ids differ between local and live, so a page that must accept "any of these
+ * courses" names the folders and looks the ids up here rather than typing ids into the page.
+ *
+ * @param string[] $folders
+ * @return int[]
+ */
+function course_ids_for_folders(array $folders): array
+{
+    global $db;
+    if (empty($folders)) return [];
+    $stmt = $db->prepare("SELECT id FROM courses WHERE folder_name IN (" . implode(',', array_fill(0, count($folders), '?')) . ")");
+    $stmt->execute(array_values($folders));
+    return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+}
+
+/**
  * True if the current student has an enrollment row in any of the given
  * course ids, or is a platform admin (admins always pass, matching the
  * existing tier_access.php / can_access() convention).

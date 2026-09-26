@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment([5, 15], 'this Crash Course lesson');   // bought (Selar redemption enrols) or IELTS Academic 1-Month; staff/admin/testers pass
+require_course_enrollment(course_ids_for_folders(['IELTS_Aca_1Mo']), 'this Crash Course lesson');   // bought (Selar redemption enrols); staff/admin/testers pass
 
 ?>
 <!DOCTYPE html>

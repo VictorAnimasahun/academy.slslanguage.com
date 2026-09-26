@@ -1811,14 +1811,16 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
-## 131 — Remove the duplicate IELTS Academic rows (ids 15 and 4)
+## 131 — One IELTS Academic Crash Course (4 weeks / 8 classes) and one Masterclass — 2 Months
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [x] | 2026-09-26 | Ran once on local 8.0 (19 courses left, no orphan modules). Tested first on MySQL 5.7.44 against a copy of the 14 related tables: first run removes ids 15 and 4, second run changes nothing, ids 5 and 16 keep 61 and 16 lessons, no orphan lessons or pieces. |
-| Live  | [ ] | | Run after 126 and 129. Safe to repeat. Removes a row only if nobody is enrolled in it. Take a backup first. |
+| Local | [x] | 2026-09-26 | Ran on local 8.0. Tested first on MySQL 5.7.44 against a copy of the 15 related tables: run 1 removes the stray, run 2 changes nothing, no orphan lessons / pieces / enrolments. Checked as students: unpaid = class 2 locked; bought 1-month Selar plan, chose the Crash Course, overview shows 4 weeks / 8 classes, classes 1, 2, 5, 7 open. |
+| Live  | [ ] | | Run after 126 and 129. Safe to repeat. Back up first. Pull academy BEFORE running (the module pages now look the course up by folder). |
 
-**What it does:** one row per course. Keeps IELTS Academic Crash Course (id 5, students, paid) and Masterclass 2 Months (id 16); removes the empty IELTS_Aca_1Mo (id 15) and the older IELTS_Aca_Mst (id 4) with their modules, lessons and pieces. Renames id 5 to "IELTS Academic Crash Course — 1 Month". Id 5's own structure (9 modules / 61 lessons) does not fit the Crash Course rule (4 weeks / 8 classes); reshaping it, without losing its lessons, is Step 2.
+**What it does:** keeps IELTS_Aca_1Mo (4 weeks / 8 classes) as THE IELTS Academic Crash Course: 90,000 / 105,000 NGN, Selar 1-month link, standard text, and each class points at the old-course page for its topic (the seed had them one off). Removes the original IELTS_Aca_Crash (9 modules / 61 lessons; its only enrolments, Akkad and Victor, are test accounts and are cleared with it) and the older IELTS_Aca_Mst (no students). A row is removed only if nobody is enrolled after that. Page files stay on disk. Code: `course_ids_for_folders()` in `includes/course_lock.php`; the 8 Crash Course module pages gate on the course found by folder, not on ids 5 / 15.
+
+**Also fixed:** `courses_catalogue.php` printed the SQL and every course row into the page source (a debug block from the first commit); removed.
 
 ---
 
