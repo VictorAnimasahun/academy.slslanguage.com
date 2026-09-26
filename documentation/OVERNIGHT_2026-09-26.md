@@ -17,6 +17,11 @@ Everything below was done while the founder slept. **Nothing was put on `main`**
 - `php artisan course:audit [folder]` checks the structure rules (4 x months weeks, 2 classes a week, mocks = months, every class has pieces, kind agrees with title). On the imported real data: **0 errors, 0 warnings** for all 12 plans. Found while building it: EduHub allows NULL where Laravel does not (category, price...) and the importer handles that.
 - 58 tests pass.
 
+### Also in `academy-laravel`: the admin panel (Filament, L9) and roles (IDN-06)
+- Filament 4 installed at `/admin`: only **verified staff and the admin** get in (students, testers and unverified staff get 403). Screens: **Entitlements** (grant with an automatic end date, extend, revoke: no edit, no delete), **Courses** (admin edits price / availability / free-preview classes / buy link; staff can look; structure comes only from the import), **Accounts** (admin sets role and tester flag).
+- Roles change only through `AccountChanges`: admin-only, exactly one admin, staff must be a verified @slslanguage.com address, every change logged in `account_changes`. The very first admin is named at the server console with `php artisan academy:make-admin <email>` (refuses if an admin exists).
+- 75 tests pass. **Nothing here has been opened in a browser** — only tested through Livewire/HTTP tests; look at `/admin` on your first run (needs `php artisan migrate`, then `academy:make-admin`, then log in at `/admin/login`).
+
 ## To put the academy content live (you, in this order)
 
 1. Merge `overnight-2026-09-26-content` into `main` in `academy`, then on live: pull.
