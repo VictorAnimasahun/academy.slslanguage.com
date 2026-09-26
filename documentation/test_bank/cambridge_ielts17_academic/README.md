@@ -8,7 +8,7 @@ Source: "Cambridge IELTS 17 Academic with Answers", provided by the instructor 2
 | File | Reading | Listening | Writing | Speaking |
 |---|---|---|---|---|
 | test1.json | done (key p.120) | done (questions, keys, audioscripts) | not yet | not yet |
-| test2.json | done (key p.122) — **wired**, migration 133 | not yet | not yet | not yet |
+| test2.json | done (key p.122) — **wired**, migration 133 (live) | done (questions, keys, audioscripts) | not yet | not yet |
 | test3.json | done (key p.124) | not yet | not yet | not yet |
 | test4.json | done (key p.126) | not yet | not yet | not yet |
 

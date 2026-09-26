@@ -1855,7 +1855,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran on local 8.0; tested on MySQL 5.7.44 (run twice: 40 questions, 36 answer rows, 20 options / 5 correct; no change on the second run). Checked as students: enrolled student opens the class, sees "Open Test", takes the test (40 questions, 60:00 timer, answer key = the bank), a perfect attempt saved as 40/40 with 40 stored answers; a student not enrolled cannot see the test. Class pages of both courses still render. |
-| Live  | [ ] | | Pull academy FIRST (new page `resources/practice_tests/ielts_reading_academic_002.php` + a change to `includes/lesson_title.php`), then run 133. Needs 126 and 128. Safe to repeat. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26), after pulling academy.
 
 **What it does:** seeds test `IELTS_PT_R_ACA_002` (3 passages, 40 questions, answer key) from `documentation/test_bank/cambridge_ielts17_academic/test2.json`, and points the "Reading Test 2" piece of IELTS Academic 2-Month and 3-Month (Class 7) at the page. The shared class-piece list now opens a test that has a page ("Open Test"); before, only lessons and resources opened.
 
