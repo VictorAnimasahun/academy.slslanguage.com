@@ -42,20 +42,17 @@ UPDATE lessons l JOIN modules m ON m.id = l.module_id JOIN courses c ON c.id = m
 -- 1.5
 UPDATE courses SET is_visible = 1 WHERE folder_name IN ('IELTS_Aca_3Mo','IELTS_Gen_2Mo');
 
--- 1.4 (guarded; week_briefs has no foreign key, so its rows are removed explicitly first)
-DELETE wb FROM week_briefs wb
-  JOIN modules m ON m.id = wb.module_id
-  JOIN courses c ON c.id = m.course_id
- WHERE c.is_visible = 0
-   AND EXISTS (SELECT 1 FROM (SELECT id FROM courses WHERE folder_name = c.folder_name AND is_visible = 1) v)
-   AND NOT EXISTS (SELECT 1 FROM enrollments e WHERE e.course_id = c.id)
-   AND c.folder_name = 'CELPIP_Gen_1Mo';
-
-DELETE c FROM courses c
- WHERE c.folder_name = 'CELPIP_Gen_1Mo'
-   AND c.is_visible = 0
-   AND EXISTS (SELECT 1 FROM (SELECT id FROM courses WHERE folder_name = 'CELPIP_Gen_1Mo' AND is_visible = 1) v)
-   AND NOT EXISTS (SELECT 1 FROM enrollments e WHERE e.course_id = c.id);
+-- 1.4 (guarded). The duplicate is found ONCE and its id kept in a variable: older MySQL / MariaDB refuse a
+-- correlated reference inside a sub-query in FROM (error 1054), which the first version of this file used.
+-- week_briefs has no foreign key, so its rows are removed explicitly first; modules, lessons and progress cascade.
+-- If there is no such duplicate the variable is NULL and both deletes do nothing.
+SET @dup_course = (SELECT c.id FROM courses c
+                    WHERE c.folder_name = 'CELPIP_Gen_1Mo' AND c.is_visible = 0
+                      AND NOT EXISTS (SELECT 1 FROM enrollments e WHERE e.course_id = c.id)
+                      AND (SELECT COUNT(*) FROM courses v WHERE v.folder_name = 'CELPIP_Gen_1Mo' AND v.is_visible = 1) > 0
+                    ORDER BY c.id LIMIT 1);
+DELETE wb FROM week_briefs wb JOIN modules m ON m.id = wb.module_id WHERE m.course_id = @dup_course;
+DELETE FROM courses WHERE id = @dup_course;
 
 -- Verify
 SELECT id, folder_name, is_visible, availability, selar_months, price FROM courses
