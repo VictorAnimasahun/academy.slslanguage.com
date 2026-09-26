@@ -20,7 +20,7 @@ Everything below was done while the founder slept. **Nothing was put on `main`**
 ### Also in `academy-laravel`: the admin panel (Filament, L9) and roles (IDN-06)
 - Filament 4 installed at `/admin`: only **verified staff and the admin** get in (students, testers and unverified staff get 403). Screens: **Entitlements** (grant with an automatic end date, extend, revoke: no edit, no delete), **Courses** (admin edits price / availability / free-preview classes / buy link; staff can look; structure comes only from the import), **Accounts** (admin sets role and tester flag).
 - Roles change only through `AccountChanges`: admin-only, exactly one admin, staff must be a verified @slslanguage.com address, every change logged in `account_changes`. The very first admin is named at the server console with `php artisan academy:make-admin <email>` (refuses if an admin exists).
-- 75 tests pass. **Nothing here has been opened in a browser** — only tested through Livewire/HTTP tests; look at `/admin` on your first run (needs `php artisan migrate`, then `academy:make-admin`, then log in at `/admin/login`).
+- 75 tests pass. Opened in a real browser against the imported real courses: login, Courses, Entitlements (grant form), Accounts all render. First run: `php artisan migrate`, `php artisan academy:import-courses`, `php artisan academy:make-admin <email>`, then log in at `/admin/login`.
 
 ## To put the academy content live (you, in this order)
 
