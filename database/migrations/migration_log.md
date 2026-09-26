@@ -1760,6 +1760,12 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
+## Run order for 126, 127, 128 (tested 2026-09-26 on a scratch copy of the database)
+
+**126 → 127 → 128.** 127 does **not** need 126 (either order gives the same result). **128 needs 126** (it adds a column to `lesson_parts`); run first, it stops with "table doesn't exist" and changes nothing. The code is safe at any stage: with none, some or all of the three run, every page still loads (checked as students on the catalogue, overviews, class pages, lesson pages and course pages); features simply switch on as each migration is run. Pull the code after running all three.
+
+---
+
 ## 127 — Coming Soon at course level; Academic Crash Course paid; duplicate CELPIP 1-Month removed
 
 | Environment | Applied | Date | Notes |

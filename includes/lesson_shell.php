@@ -46,9 +46,12 @@ if (!function_exists('render_lesson_shell')) {
         $lesson  = $lessons[$classNum - 1] ?? null;
         if (!$lesson) { header("Location: " . ACADEMY_URL . "courses/" . $folder . "/course_overview.php?message=Lesson+not+found"); exit(); }
 
-        $st = $db->prepare("SELECT title, kind FROM lesson_parts WHERE lesson_id = ? AND part_order = ?");
-        $st->execute([(int)$lesson['id'], $partOrder]);
-        $part   = $st->fetch(PDO::FETCH_ASSOC);
+        $part = false;
+        try {   // lesson_parts (migration 126) may not exist yet on a server that has the code but not the migration
+            $st = $db->prepare("SELECT title, kind FROM lesson_parts WHERE lesson_id = ? AND part_order = ?");
+            $st->execute([(int)$lesson['id'], $partOrder]);
+            $part = $st->fetch(PDO::FETCH_ASSOC);
+        } catch (\Throwable $e) { /* fall back to the title and the title rule */ }
         $pieces = lesson_title_lines($lesson['title']);
         $title  = $part['title'] ?? ($pieces[$partOrder - 1] ?? $lesson['title']);
 
