@@ -1,18 +1,17 @@
-# Cambridge IELTS 17 Academic (staging bank) — PARTIAL
+# Cambridge IELTS 17 Academic (staging bank)
 
-Source: "Cambridge IELTS 17 Academic with Answers", provided by the instructor 2026-09-26. Same format as `../cambridge_ielts15_gt/` (one file per test; `question_type` values are the live `questions.question_type` enum; answers checked against the printed keys).
+Source: "Cambridge IELTS 17 Academic with Answers", provided by the instructor 2026-09-26. Same idea as `../cambridge_ielts15_gt/`: one file per test; `question_type` values are the live `questions.question_type` enum; every answer was checked against the printed key.
 
 **Academic content only.** Never cross-wire it into General Training tests.
 
-## What is extracted so far
-| File | Reading | Listening | Writing | Speaking |
-|---|---|---|---|---|
-| test1.json | done (key p.120) | done (questions, keys, audioscripts) | not yet | not yet |
-| test2.json | done (key p.122) — **wired**, migration 133 (live) | done (questions, keys, audioscripts) | not yet | not yet |
-| test3.json | done (key p.124) | not yet | not yet | not yet |
-| test4.json | done (key p.126) | not yet | not yet | not yet |
+## Contents (all four tests complete)
+Each `testN.json` holds:
+- `reading` - 3 passages, 40 questions, answer key (key pages 120 / 122 / 124 / 126). "Choose TWO letters" pairs are one `multiple_choice_multiple` entry covering two question numbers (correct_answers lists both letters, either order).
+- `listening` - 4 parts, 40 questions, answer key (pages 119 / 121 / 123 / 125) and the full audioscript of every part (`audioscript`). **The audio itself is not in the book text** (separate download): the instructor is handling audio.
+- `writing` - Task 1 and Task 2 prompts, plus the book's sample answer for each with its band and the examiner's comment. Task 1 figures (maps and charts) are images: Test 2's table and pie-chart data are in the file as data; for Tests 1, 3 and 4 the figure is only described and must be re-created from the book page if a Task 1 is ever wired.
+- `speaking` - Part 1 topic and questions, Part 2 cue card, Part 3 discussion topics.
 
-Still to extract: Listening tests 2-4 (questions, keys pp.121/123/125, audioscripts pp.101-118), Writing tasks 1-2 for all four tests (Task 1 has maps/charts as images) and the sample answers (pp.127-138), Speaking sets 1-4. Listening audio is a separate download and is the instructor's job.
+The sample answers keep the candidates' own mistakes on purpose (they are what the examiner comments discuss).
 
-## Wired
-Only Test 2 Reading (`IELTS_PT_R_ACA_002`, migration 133, page `resources/practice_tests/ielts_reading_academic_002.php`) is in the database and in the courses (the "Reading Test 2" piece of IELTS Academic 2-Month and 3-Month). Everything else here is staging only; nothing else is inserted.
+## Wired into the platform
+Only **Test 2 Reading** (`IELTS_PT_R_ACA_002`, migration 133, page `resources/practice_tests/ielts_reading_academic_002.php`; live 2026-09-26): the "Reading Test 2" piece of IELTS Academic 2-Month and 3-Month, Class 7. Everything else is staging only; nothing else is inserted. Which test goes where is decided at the content step.

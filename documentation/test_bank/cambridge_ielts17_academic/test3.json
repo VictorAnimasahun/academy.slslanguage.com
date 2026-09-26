@@ -472,5 +472,554 @@
     }
    }
   ]
+ },
+ "listening": {
+  "audio": "Not included in the book text: the audio is a separate download. The instructor is handling audio separately.",
+  "total_questions": 40,
+  "answer_key_page": 123,
+  "audioscript_pages": "107-112",
+  "parts": [
+   {
+    "title": "Advice on surfing holidays",
+    "instructions": "Questions 1-10. Complete the notes. Write ONE WORD AND/OR A NUMBER for each answer.",
+    "stimulus_text": "",
+    "questions": [
+     {
+      "question_number": 1,
+      "question_type": "form_note_completion",
+      "question_text": "Jack's advice: Recommends surfing for ___ holidays in the summer",
+      "correct_answers": [
+       "family"
+      ]
+     },
+     {
+      "question_number": 2,
+      "question_type": "form_note_completion",
+      "question_text": "Need to be quite ___",
+      "correct_answers": [
+       "fit"
+      ]
+     },
+     {
+      "question_number": 3,
+      "question_type": "form_note_completion",
+      "question_text": "Irish surfing locations - County Clare: Lahinch has some good quality ___ and surf schools",
+      "correct_answers": [
+       "hotels"
+      ]
+     },
+     {
+      "question_number": 4,
+      "question_type": "form_note_completion",
+      "question_text": "County Mayo: Good surf school at ___ beach",
+      "correct_answers": [
+       "Carrowniskey"
+      ]
+     },
+     {
+      "question_number": 5,
+      "question_type": "form_note_completion",
+      "question_text": "County Mayo: Surf camp lasts for one ___",
+      "correct_answers": [
+       "week"
+      ]
+     },
+     {
+      "question_number": 6,
+      "question_type": "form_note_completion",
+      "question_text": "County Mayo: Can also explore the local ___ by kayak",
+      "correct_answers": [
+       "bay"
+      ]
+     },
+     {
+      "question_number": 7,
+      "question_type": "form_note_completion",
+      "question_text": "Weather: Best month to go: ___",
+      "correct_answers": [
+       "September"
+      ]
+     },
+     {
+      "question_number": 8,
+      "question_type": "form_note_completion",
+      "question_text": "Weather: Average temperature in summer: approx. ___ degrees",
+      "correct_answers": [
+       "19",
+       "nineteen"
+      ]
+     },
+     {
+      "question_number": 9,
+      "question_type": "form_note_completion",
+      "question_text": "Costs - Equipment: Wetsuit and surfboard: ___ euros per day",
+      "correct_answers": [
+       "30",
+       "thirty"
+      ]
+     },
+     {
+      "question_number": 10,
+      "question_type": "form_note_completion",
+      "question_text": "Costs - Equipment: Also advisable to hire ___ for warmth",
+      "correct_answers": [
+       "boots"
+      ]
+     }
+    ],
+    "part_number": 1,
+    "audioscript": "WOMAN: Jack, I'm thinking of taking the kids to the seaside on a surfing holiday this summer and I wanted to ask your advice – as I know you're such an expert.\nJACK: Well, I don't know about that, but yes, I've done a bit of surfing over the years. I'd thoroughly recommend it. I think it's the kind of holiday all the family can enjoy together. The thing about surfing is that it's great for all ages and all abilities. My youngest started when he was only three!\nWOMAN: Wow! But it's quite physically demanding, isn't it? I've heard you need to be pretty fit.\nJACK: Yes. You'll certainly learn more quickly and won't tire as easily.\nWOMAN: Well – that should be OK for us. You've been surfing a few times in Ireland, haven't you?\nJACK: Yes. There's some great surfing there, which people don't always realise.\nWOMAN: And which locations would you recommend? – there seem to be quite a few.\nJACK: Yes, there are loads. Last year we went to County Donegal. There are several great places to surf there.\nWOMAN: What about in County Clare? I read that's also really good for surfing.\nJACK: Yes, it is. I've been there a few times. Most people go to Lahinch. My kids love it there. The waves aren't too challenging and the town is very lively.\nWOMAN: Are there good hotels there?\nJACK: Yes – some very nice ones and there are also a few basic hostels and campsites. It's great if you need lessons as the surf schools are excellent.\nWOMAN: Sounds good.\nJACK: Yes and there's lots to see in the area – like those well-known cliffs – ... I've forgotten the name of them ...\nWOMAN: Oh don't worry – I can look them up.\nJACK: I've also been surfing in County Mayo, which is less well-known for surfing, but we had a really good time. That was a few years ago when the kids were younger. There's a good surf school at Carrowniskey beach.\nWOMAN: How do you spell that?\nJACK: C-A-double R-O-W-N-I-S-K-E-Y\nWOMAN: OK.\nJACK: I put the kids into the surf camp they run during the summer for 10–16 year olds.\nWOMAN: Oh right. How long was that for?\nJACK: Three hours every day for a week. It was perfect – they were so tired out after that.\nWOMAN: I can imagine.\nJACK: One thing we did while the kids were surfing was to rent some kayaks to have a look around the bay which is nearby. It's really beautiful.\nWOMAN: Oh, I'd love to do that.\nWOMAN: Now the only time I went to Ireland it rained practically every day.\nJACK: Mmm yes – that can be a problem – but you can surf in the rain, you know.\nWOMAN: It doesn't have the same appeal, somehow.\nJACK: Well, the weather's been fine the last couple of years when I've been there, but actually, it tends to rain more in August than in the spring or autumn. September's my favourite month because the water is warmer then.\nWOMAN: The only problem is that the kids are back to school then.\nJACK: I know. But one good thing about Irish summers is that it doesn't get too hot. The average temperature is about 19 degrees and it usually doesn't go above 25 degrees.\nWOMAN: That sounds alright. Now what about costs?\nJACK: Surfing is a pretty cheap holiday really – the only cost is the hire of equipment. You can expect to pay a daily rate of about 30 euros for the hire of a wetsuit and board – but you can save about 40 euros if you hire by the week.\nWOMAN: That's not too bad.\nJACK: No. It's important to make sure you get good quality wetsuits – you'll all get too cold if you don't. And make sure you also get boots. They keep your feet warm and it's easier to surf with them on too.\nWOMAN: OK. Well, thanks very much ..."
+   },
+   {
+    "title": "School extended hours childcare",
+    "instructions": "Questions 11 and 12: Choose TWO letters, A-E. Questions 13-15: Choose the correct letter, A, B or C. Questions 16-20: What information is given about each of the following activities on offer? Choose FIVE answers from the box, A-G. Information: A has limited availability, B is no longer available, C is for over 8s only, D requires help from parents, E involves an additional fee, F is a new activity, G was requested by children.",
+    "stimulus_text": "",
+    "questions": [
+     {
+      "question_number": 11,
+      "question_type": "multiple_choice_multiple",
+      "question_text": "Which TWO facts are given about the school's extended hours childcare service? (Questions 11 and 12; either order)",
+      "options": [
+       {
+        "label": "A",
+        "text": "It started recently."
+       },
+       {
+        "label": "B",
+        "text": "More children attend after school than before school."
+       },
+       {
+        "label": "C",
+        "text": "An average of 50 children attend in the mornings."
+       },
+       {
+        "label": "D",
+        "text": "A child cannot attend both the before and after school sessions."
+       },
+       {
+        "label": "E",
+        "text": "The maximum number of children who can attend is 70."
+       }
+      ],
+      "correct_answers": [
+       "B",
+       "E"
+      ]
+     },
+     {
+      "question_number": 13,
+      "question_type": "multiple_choice_single",
+      "question_text": "How much does childcare cost for a complete afternoon session per child?",
+      "options": [
+       {
+        "label": "A",
+        "text": "£3.50"
+       },
+       {
+        "label": "B",
+        "text": "£5.70"
+       },
+       {
+        "label": "C",
+        "text": "£7.20"
+       }
+      ],
+      "correct_answers": [
+       "C"
+      ]
+     },
+     {
+      "question_number": 14,
+      "question_type": "multiple_choice_single",
+      "question_text": "What does the manager say about food?",
+      "options": [
+       {
+        "label": "A",
+        "text": "Children with allergies should bring their own food."
+       },
+       {
+        "label": "B",
+        "text": "Children may bring healthy snacks with them."
+       },
+       {
+        "label": "C",
+        "text": "Children are given a proper meal at 5 p.m."
+       }
+      ],
+      "correct_answers": [
+       "C"
+      ]
+     },
+     {
+      "question_number": 15,
+      "question_type": "multiple_choice_single",
+      "question_text": "What is different about arrangements in the school holidays?",
+      "options": [
+       {
+        "label": "A",
+        "text": "Children from other schools can attend."
+       },
+       {
+        "label": "B",
+        "text": "Older children can attend."
+       },
+       {
+        "label": "C",
+        "text": "A greater number of children can attend."
+       }
+      ],
+      "correct_answers": [
+       "A"
+      ]
+     },
+     {
+      "question_number": 16,
+      "question_type": "matching",
+      "question_text": "Activities: Spanish",
+      "correct_answers": [
+       "E"
+      ]
+     },
+     {
+      "question_number": 17,
+      "question_type": "matching",
+      "question_text": "Activities: Music",
+      "correct_answers": [
+       "D"
+      ]
+     },
+     {
+      "question_number": 18,
+      "question_type": "matching",
+      "question_text": "Activities: Painting",
+      "correct_answers": [
+       "G"
+      ]
+     },
+     {
+      "question_number": 19,
+      "question_type": "matching",
+      "question_text": "Activities: Yoga",
+      "correct_answers": [
+       "F"
+      ]
+     },
+     {
+      "question_number": 20,
+      "question_type": "matching",
+      "question_text": "Activities: Cooking",
+      "correct_answers": [
+       "C"
+      ]
+     }
+    ],
+    "part_number": 2,
+    "audioscript": "Good afternoon. My name's Mrs Carter and I run the before and after school extended hours childcare service. I hope you've had a chance to have a good look around the school and talk to staff and pupils. I know that many of you are interested in using our childcare service when your child joins the school, and perhaps you already know something about it, but for those that don't, I'll go through the main details now.\n\nWe offer childcare for children from the ages of four to eleven both before and after school. I know that many parents who work find this service invaluable. You can leave your child with us safe in the knowledge that they will be extremely well cared for.\n\nWe are insured to provide care for up to 70 children, although we rarely have this many attending at any one session. I think we generally expect around 50–60 children for the afternoon sessions and about half that number for the breakfast sessions. Although we currently do have 70 children registered with us, not all of these attend every day. It's ten years since we began offering an extended hours service and we've come a long way during that time. When we first opened, we only had about 20 children attending regularly.\n\nWe try to keep our costs as low as we can and we think we provide very good value for money. For the afternoon sessions, which run from 3.30 until 6 p.m., it's £7.20. But if you prefer, you can pay for one hour only, which costs £3.50, or two hours which costs £5.70.\n\nThe cost of the childcare includes food and snacks. They'll be given breakfast in the morning and in the afternoon, a healthy snack as soon as they finish school. At 5 p.m. children are given something more substantial, such as pasta or a casserole. Please inform us of any allergies that your child might have and we'll make sure they're offered a suitable alternative.\n\nAs you may know, the childcare service runs through the school holidays from 8 a.m. to 6 p.m. We offer a really varied and exciting programme to keep the children entertained – we don't want them to feel as if they are still at school! It will also feel different because they'll get the chance to make new friends with children from other schools – spaces are available for them because a lot of our term-time children don't always attend during the holiday. In the past, parents have asked if children over the age of 11 are allowed to come with their younger brothers and sisters – but I'm afraid we're unable to do this because of the type of insurance we have.\n\nSo now let me tell you about some of the activities that your child can do during the after-school sessions. As well as being able to use the playground equipment, computers and the library, there is usually at least one 'special' activity that children can do each day. For example, Spanish. We have a specialist teacher coming in every Thursday to give a basic introduction to the language through games and songs. She does two sessions: one for the over 8s and one for the younger children. This is the only activity which we have to make an extra charge for – but it's well worth it.\n\nOnce a week the children have the opportunity to do some music. We're very lucky that one of our staff is a member of a folk band. On Mondays, she teaches singing and percussion to groups of children. We do rely on parental support for this, so if any of you sing or play an instrument and would be prepared to help out at these sessions, we'd be delighted.\n\nPainting continues to be one of the most popular activities. To begin with we weren't keen on offering this because of the extra mess involved, but children kept asking if they could do some art and so we finally gave in. Art is great for helping the children to relax after working hard at school all day.\n\nYoga is something that we've been meaning to introduce for some time but haven't been able to find anyone available to teach it – until now that is. So we'll see how this goes. Hopefully, children will benefit in all sorts of ways from this.\n\nCooking is another popular activity. They make a different sort of cake, or pizza or bread each week. Although the younger children love doing it, we found that the mess was just too much, so we've decided to restrict this to the over 8s, as they are better able to clean up after themselves."
+   },
+   {
+    "title": "Holly's Work Placement Tutorial",
+    "instructions": "Questions 21-24: Choose the correct letter, A, B or C. Questions 25-30: What do Holly and her tutor agree is an important aspect of each of the following events management skills? Choose SIX answers from the box, A-H. Important aspects: A being flexible, B focusing on details, C having a smart appearance, D hiding your emotions, E relying on experts, F trusting your own views, G doing one thing at a time, H thinking of the future.",
+    "stimulus_text": "",
+    "questions": [
+     {
+      "question_number": 21,
+      "question_type": "multiple_choice_single",
+      "question_text": "Holly has chosen the Orion Stadium placement because",
+      "options": [
+       {
+        "label": "A",
+        "text": "it involves children."
+       },
+       {
+        "label": "B",
+        "text": "it is outdoors."
+       },
+       {
+        "label": "C",
+        "text": "it sounds like fun."
+       }
+      ],
+      "correct_answers": [
+       "B"
+      ]
+     },
+     {
+      "question_number": 22,
+      "question_type": "multiple_choice_single",
+      "question_text": "Which aspect of safety does Dr Green emphasise most?",
+      "options": [
+       {
+        "label": "A",
+        "text": "ensuring children stay in the stadium"
+       },
+       {
+        "label": "B",
+        "text": "checking the equipment children will use"
+       },
+       {
+        "label": "C",
+        "text": "removing obstacles in changing rooms"
+       }
+      ],
+      "correct_answers": [
+       "A"
+      ]
+     },
+     {
+      "question_number": 23,
+      "question_type": "multiple_choice_single",
+      "question_text": "What does Dr Green say about the spectators?",
+      "options": [
+       {
+        "label": "A",
+        "text": "They can be hard to manage."
+       },
+       {
+        "label": "B",
+        "text": "They make useful volunteers."
+       },
+       {
+        "label": "C",
+        "text": "They shouldn't take photographs."
+       }
+      ],
+      "correct_answers": [
+       "A"
+      ]
+     },
+     {
+      "question_number": 24,
+      "question_type": "multiple_choice_single",
+      "question_text": "What has affected the schedule in the past?",
+      "options": [
+       {
+        "label": "A",
+        "text": "bad weather"
+       },
+       {
+        "label": "B",
+        "text": "an injury"
+       },
+       {
+        "label": "C",
+        "text": "extra time"
+       }
+      ],
+      "correct_answers": [
+       "B"
+      ]
+     },
+     {
+      "question_number": 25,
+      "question_type": "matching",
+      "question_text": "Events management skills: Communication",
+      "correct_answers": [
+       "C"
+      ]
+     },
+     {
+      "question_number": 26,
+      "question_type": "matching",
+      "question_text": "Events management skills: Organisation",
+      "correct_answers": [
+       "A"
+      ]
+     },
+     {
+      "question_number": 27,
+      "question_type": "matching",
+      "question_text": "Events management skills: Time management",
+      "correct_answers": [
+       "D"
+      ]
+     },
+     {
+      "question_number": 28,
+      "question_type": "matching",
+      "question_text": "Events management skills: Creativity",
+      "correct_answers": [
+       "B"
+      ]
+     },
+     {
+      "question_number": 29,
+      "question_type": "matching",
+      "question_text": "Events management skills: Leadership",
+      "correct_answers": [
+       "F"
+      ]
+     },
+     {
+      "question_number": 30,
+      "question_type": "matching",
+      "question_text": "Events management skills: Networking",
+      "correct_answers": [
+       "H"
+      ]
+     }
+    ],
+    "part_number": 3,
+    "audioscript": "HOLLY: Hello Dr Green – I'm here to talk to you about my work placement.\nTUTOR: Oh yes, it's Holly, isn't it?\nHOLLY: Yes.\nTUTOR: So, which work placement have you chosen?\nHOLLY: I decided to go for the Orion Stadium placement. The event I'll be managing is one where I'm helping to set up a sports competition for primary school children.\nTUTOR: Yup. That's always a popular placement – even though it can be tougher than you think working with children.\nHOLLY: I know, but it's the fresh air that attracts me – organising something indoors doesn't have the same appeal, even though it might be fun.\nTUTOR: OK, so obviously safety's going to be one of your key concerns for this event.\nHOLLY: Yes, I've already thought about that. I'll need to make sure none of the equipment's damaged.\nTUTOR: Ah well, you'll be working with schools, so the equipment will be their responsibility. However, the grounds and what goes on there will be yours.\nHOLLY: Oh I see – that'll include keeping everyone within the boundary once they're in their kit and on the field?\nTUTOR: Exactly – you'll need to inspect areas like changing rooms as well for anything someone can trip over, but your main priority will be not to lose anyone!\nHOLLY: Right. I'll need staff to help with that.\nTUTOR: And don't forget about the spectators.\nHOLLY: Mmm. I was thinking that many of them will be parents, who could help run the event.\nTUTOR: I wouldn't rely on that. They'll be more interested in filming their children than volunteering.\nHOLLY: I'll need to make sure they don't interfere with events doing that!\nTUTOR: And that's not always easy, especially when a proud parent's trying to get a snap of their child and you want them to move elsewhere.\nHOLLY: OK. What about the scheduling?\nTUTOR: With sporting events there are all sorts of things that can alter the timetable – like rain, for instance – though so far, we've always been lucky with that.\nHOLLY: Yeah, and I was thinking about what to do if someone got hurt as well. I know that last year that caused a terrible delay.\nTUTOR: You have to be prepared for such things.\nHOLLY: Oh. What if a match ends in a draw – do you let the teams keep going until someone wins?\nTUTOR: That'll be up to you – and again, you need to plan for it.\nHOLLY: Right.\nTUTOR: Now, the aim of your work placement is to give you the opportunity to develop the skills that an events manager needs. So, let's talk about those a bit.\nHOLLY: Well, I think my communication skills are pretty good. I can talk on the phone to people and book venues and that kind of thing.\nTUTOR: Good – just remember it isn't only about what you say. If you meet someone face-to-face and want to persuade them to be a sponsor, for example ...\nHOLLY: Oh, I'll dress up for that! Sure.\nTUTOR: Good. Let's go on to think about your organisational skills. You're working in a very people-based industry and that means things won't always go to plan.\nHOLLY: I guess it's being prepared to make changes that matters.\nTUTOR: That's right. You may have to make an on-the-spot change to a timetable because of a problem you hadn't anticipated ...\nHOLLY: ... just do it! OK.\nTUTOR: How's your time management these days?\nHOLLY: I'm working on it – I'm certainly better when I have a deadline, which is why this work suits me.\nTUTOR: Yes, but it's how you respond as that deadline approaches!\nHOLLY: I know I've got to look calm even if I'm in a panic.\nTUTOR: Just think to yourself – no one must know I'm under pressure.\nHOLLY: Yeah – even though I'm multi-tasking like crazy!\nTUTOR: Another skill that events managers need is creativity. Often your client has what we call the 'big picture' idea, but it's up to the events manager to think of all the fine points that go to making it work.\nHOLLY: Right, so I need to listen carefully to that idea and then fill in all the gaps.\nTUTOR: That's right. And you'll have a team working under you, so another key skill is leadership. Your team may have lots of ideas too, but you've got to make the ultimate choices. Do we have refreshments inside or out, for example?\nHOLLY: Isn't it better to be democratic?\nTUTOR: It's a nice idea, but you have the ultimate responsibility. So, believe in what you think best. Be prepared to say 'yes, that's a good idea but it won't work here'.\nHOLLY: I see what you mean. What about the networking side of things? I know it's an area that a lot of students worry about because we don't have much experience to offer others.\nTUTOR: But even without it – you can still be an interesting person with useful ideas. And the more people you impress, the better.\nHOLLY: I guess that will help me when I apply for a real job.\nTUTOR: Exactly – think ahead – remember what your ambitions are and keep them in mind.\nHOLLY: Definitely."
+   },
+   {
+    "title": "Bird Migration Theory",
+    "instructions": "Questions 31-40. Complete the notes. Write ONE WORD ONLY for each answer.",
+    "stimulus_text": "",
+    "questions": [
+     {
+      "question_number": 31,
+      "question_type": "form_note_completion",
+      "question_text": "Hibernation theory: It was believed that birds hibernated underwater or buried themselves in ___",
+      "correct_answers": [
+       "mud"
+      ]
+     },
+     {
+      "question_number": 32,
+      "question_type": "form_note_completion",
+      "question_text": "Transmutation theory: In autumn Aristotle observed that redstarts experience the loss of ___ and thought they then turned into robins",
+      "correct_answers": [
+       "feathers"
+      ]
+     },
+     {
+      "question_number": 33,
+      "question_type": "form_note_completion",
+      "question_text": "Aristotle's assumptions were logical because the two species of birds had a similar ___",
+      "correct_answers": [
+       "shape"
+      ]
+     },
+     {
+      "question_number": 34,
+      "question_type": "form_note_completion",
+      "question_text": "17th century: Charles Morton popularised the idea that birds fly to the ___ in winter",
+      "correct_answers": [
+       "moon"
+      ]
+     },
+     {
+      "question_number": 35,
+      "question_type": "form_note_completion",
+      "question_text": "Scientific developments: In 1822, a stork was killed in Germany which had an African spear in its ___",
+      "correct_answers": [
+       "neck"
+      ]
+     },
+     {
+      "question_number": 36,
+      "question_type": "form_note_completion",
+      "question_text": "previously there had been no ___ that storks migrate to Africa",
+      "correct_answers": [
+       "evidence"
+      ]
+     },
+     {
+      "question_number": 37,
+      "question_type": "form_note_completion",
+      "question_text": "Little was known about the ___ and journeys of migrating birds until the practice of ringing was established",
+      "correct_answers": [
+       "destinations"
+      ]
+     },
+     {
+      "question_number": 38,
+      "question_type": "form_note_completion",
+      "question_text": "It was thought large birds carried small birds on some journeys because they were considered incapable of travelling across huge ___",
+      "correct_answers": [
+       "oceans"
+      ]
+     },
+     {
+      "question_number": 39,
+      "question_type": "form_note_completion",
+      "question_text": "Ringing depended on what is called the '___' of dead birds",
+      "correct_answers": [
+       "recovery"
+      ]
+     },
+     {
+      "question_number": 40,
+      "question_type": "form_note_completion",
+      "question_text": "In 1931, the first ___ to show the migration of European birds was printed",
+      "correct_answers": [
+       "atlas"
+      ]
+     }
+    ],
+    "part_number": 4,
+    "audioscript": "Scientists believe that a majority of the earth's bird population migrate in some fashion or other. Some travel seasonally for relatively short distances, such as birds that move from their winter habitats in lowlands to mountain tops for the summers. Others, like the Arctic Tern, travel more than 25,000 miles seasonally between the northern and southern poles. Bird migration has been studied over many centuries through a variety of observations.\n\nBut until relatively recently, where birds went to in the winter was considered something of a mystery. The lack of modern science and technology led to many theories that we now recognize as error-filled and even somewhat amusing. Take hibernation theory for example – two thousand years ago, it was commonly believed that when birds left an area, they went underwater to hibernate in the seas and oceans. Another theory for the regular appearance and disappearance of birds was that they spent winter hidden in mud till the weather changed and food became abundant again. The theory that some birds hibernate persisted until experiments were done on caged birds in the 1940s which demonstrated that birds have no hibernation instinct.\n\nOne of the earliest naturalists and philosophers from ancient Greece was Aristotle who was the first writer to discuss the disappearance and reappearance of some bird species at certain times of year. He developed the theory of transmutation, the seasonal change of one species into another, by observing redstarts and robins. He observed that in the autumn, small birds called 'redstarts' began to lose their feathers, which convinced Aristotle that they changed into robins for the winter, and back into redstarts in the summer. These assumptions are understandable given that this pair of species are similar in shape, but are a classic example of an incorrect interpretation based on correct observations.\n\nThe most bizarre theory was put forward by an English amateur scientist, Charles Morton, in the seventeenth century. He wrote a surprisingly well-regarded paper claiming that birds migrate to the moon and back every year. He came to this conclusion as the only logical explanation for the total disappearance of some species.\n\nOne of the key moments in the development of migration theory came in 1822 when a white stork was shot in Germany. This particular stork made history because of the long spear in its neck which incredibly had not killed it – everyone immediately realised this spear was definitely not European. It turned out to be a spear from a tribe in Central Africa. This was a truly defining moment in the history of ornithology because it was the first evidence that storks spend their winters in sub-Saharan Africa. You can still see the 'arrow stork' in the Zoological Collection of the University of Rostock in Germany.\n\nPeople gradually became aware that European birds moved south in autumn and north in summer but didn't know much about it until the practice of catching birds and putting rings on their legs became established. Before this, very little information was available about the actual destinations of particular species and how they travelled there. People speculated that larger birds provided a kind of taxi service for smaller birds by carrying them on their backs. This idea came about because it seemed impossible that small birds weighing only a few grams could fly over vast oceans. This idea was supported by observations of bird behaviour such as the harassment of larger birds by smaller birds.\n\nThe development of bird ringing, by a Danish schoolteacher, Hans Christian Cornelius Mortensen, made many discoveries possible. This is still common practice today and relies upon what is known as 'recovery' – this is when ringed birds are found dead in the place they have migrated to, and identified. Huge amounts of data were gathered in the early part of the twentieth century and for the first time in history people understood where birds actually went to in winter. In 1931, an atlas was published showing where the most common species of European birds migrated to. More recent theories about bird migration ..."
+   }
+  ]
+ },
+ "writing": {
+  "task1": {
+   "task_number": 1,
+   "time_minutes": 20,
+   "min_words": 150,
+   "prompt": "The chart below gives information about how families in one country spent their weekly income in 1968 and in 2018. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+   "figure": "IMAGE (not extracted from text): horizontal bar chart '1968 and 2018: average weekly spending by families' (% of weekly income, 0-40) for Food, Housing, Fuel and power, Clothing and footwear, Household goods, Personal goods, Transport, Leisure. Values are read from the chart on book page 72 if this task is ever wired.",
+   "sample_answer": {
+    "band": 5.5,
+    "text": "The chart describes the data about families weekly expenditure prospects in 1968 and in 2018.\n\nThe most significant spent rate is on food with a 35% ratio in the year 1968. Housing and clothing come next with the same prospect of 10% of the weekly income. Expenditure on leisure, transport, personal goods and household goods are almost same percentage, the former one is slightly more. Lastly, spent rates on fuel and the others are recorded the least with a 6% in the year of 1968.\n\nTurning to 2018, food expenditure of families had dropped dramatically to a percentage between 15 to 20. On the other hand, housing spent had rised significantly with an almost 20% slightly more than food expenditures. The most crucial rise was recorded on leisure spent rates. It had soared abut 10% in 50 years. Transportation expeditures comes after and followed by Household goods and the othe categories respetively. Last three had remained the least just as in 1968 which is fuel and power, clothing and footware and personal goods.\n\nOverall, weekly expenditure averages of families had dramatically changed over 50 years. Some spent rates had remained the same whereas some of the alterations are quite noticable.",
+    "examiner_comment": "This response clearly presents the data from the bar graph. The candidate presents all the data for 1968 first and then the data for 2018. There is an overview in the final sentence, but it should summarise the main changes from the bar chart rather than just saying that expenditure 'had ... changed'. Information is arranged coherently into four paragraphs, and there is clear overall progression. A range of cohesive devices is used [Turning to 2018 | followed by | whereas] with an awareness of referencing [former one | the othe categories | Last three].\n\nThere are some less common examples of vocabulary [dropped dramatically to | rised significantly | soared]. Errors remain [spent rates / expenditure | housing spent / housing costs] but do not impede communication. Similarly, grammatical structures include some complex forms [had dropped ... to] and sentences with multiple clauses; however, there are errors, including inconsistent use of articles and with past tenses.\n\nTo improve the response, a summary of the main trends from the bar chart is needed in the overview; for example, the candidate could say that there has been a significant decrease in spending on food over the 50-year period, but the cost of leisure, housing and transport has significantly increased."
+   }
+  },
+  "task2": {
+   "task_number": 2,
+   "time_minutes": 40,
+   "min_words": 250,
+   "prompt": "Some people believe that professionals, such as doctors and engineers, should be required to work in the country where they did their training. Others believe they should be free to work in another country if they wish. Discuss both these views and give your own opinion. Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.",
+   "sample_answer": {
+    "band": 6.5,
+    "text": "As the number of professionals workking abroad increases, it is often discussed whether they should stay where they did their trainings or they should be free to move to another country if they desired to. While I believe theat a person should be free to migrate, I agree that it has negative effects on the country of training.\n\nOn the one hand, professionals who decide to work abroad are seeking for a different lifestyle and career opportunities. Therefore, they should be allowed to improve their lives outside the limitations of their country of origin. For example, whilst in Spain residents in a hospital do not have hands-on experience due to safety measures, in other countries such as Argentina, residents actually practice their skills with patients. Besides, cultural exchanges have proven to increase efficiency, since different nationalities mean different believes and the introduction of new methods.\n\nOn the other hand, when professionals leave the country where they trained, countries are damaged socially and economically. In countries where the government provides free education and healthcare, many people think that the population should compensate the country with their skills and abilities. Furthermore, as a study fo South African emigration has pointed out when a professional lease the country it results in the loss of 10 unskilled jobs. Therefore it affect the economy and the community.\n\nTaking everything into account, it can be said that miving out from the country of training should not be taken lightly, given the adverse effects on the population. However, I firmly believe that someone's professional development should not depend on their country of origin and professionals should be allowed to look for better opportunities overseas.",
+    "examiner_comment": "This response addresses both parts of the question. Both views are considered and an opinion is given. For a higher rating, fuller coverage on the first point, the requirement to 'work in the country where they did their training' could be included. Organisation is logical and there is clear progression thorough the four paragraphs.\n\nThe range of vocabulary is good with examples of higher-level items [hands-on experience | compensate | better opportunities overseas], but there are a number of errors [theat / that | believes / beliefs | lease / leaves | miving / moving]. Similarly, the range of grammatical structures is reasonable, but the level of error means the Band Score cannot be higher than 6.5."
+   }
+  }
+ },
+ "speaking": {
+  "part1": {
+   "topic": "Drinks",
+   "questions": [
+    "What do you like to drink with your dinner? [Why?]",
+    "Do you drink a lot of water every day? [Why/Why not?]",
+    "Do you prefer drinking tea or coffee? [Why?]",
+    "If people visit you in your home, what do you usually offer them to drink? [Why/Why not?]"
+   ]
+  },
+  "part2": {
+   "cue_card": "Describe a monument (e.g., a statue or sculpture) that you like.",
+   "you_should_say": [
+    "what this monument is",
+    "where this monument is",
+    "what it looks like"
+   ],
+   "and_explain": "and explain why you like this monument.",
+   "prep_seconds": 60,
+   "talk_seconds": [
+    60,
+    120
+   ]
+  },
+  "part3": {
+   "discussion_topics": [
+    {
+     "topic": "Public monuments",
+     "example_questions": [
+      "What kinds of monuments do tourists in your country enjoy visiting?",
+      "Why do you think there are often statues of famous people in public places?",
+      "Do you agree that old monuments and buildings should always be preserved?"
+     ]
+    },
+    {
+     "topic": "Architecture",
+     "example_questions": [
+      "Why is architecture such a popular university subject?",
+      "In what ways has the design of homes changed in recent years?",
+      "To what extent does the design of buildings affect people's moods?"
+     ]
+    }
+   ]
+  }
  }
 }

@@ -921,5 +921,117 @@
     "audioscript": "Right, everyone, let's make a start. Over the past few sessions, we've been considering the reasons why some world languages are in decline, and today I'm going to introduce another factor that affects languages, and the speakers of those languages, and that's technology and, in particular, digital technology. In order to illustrate its effect, I'm going to focus on the Icelandic language, which is spoken by around 321,000 people, most of whom live in Iceland – an island in the North Atlantic Ocean.\n\nThe problem for this language is not the number of speakers – even though this number is small. Nor is it about losing words to other languages, such as English. In fact, the vocabulary of Icelandic is continually increasing because when speakers need a new word for something, they tend to create one, rather than borrowing from another language. All this makes Icelandic quite a special language – it's changed very little in the past millennium, yet it can handle twenty-first-century concepts related to the use of computers and digital technology. Take, for example, the word for web browser ... this is vafri in Icelandic, which comes from the verb 'to wander'. I can't think of a more appropriate term because that's exactly what you do mentally when you browse the internet. Then there's an Icelandic word for podcast – which is too hard to pronounce! And so on.\n\nIcelandic, then, is alive and growing, but – and it's a big but – young Icelanders spend a great deal of time in the digital world and this world is predominantly English. Think about smartphones. They didn't even exist until comparatively recently, but today young people use them all the time to read books, watch TV or films, play games, listen to music, and so on. Obviously, this is a good thing in many respects because it promotes their bilingual skills, but the extent of the influence of English in the virtual world is staggering and it's all happening really fast.\n\nFor their parents and grandparents, the change is less concerning because they already have their native-speaker skills in Icelandic. But for young speakers – well, the outcome is a little troubling. For example, teachers have found that playground conversations in Icelandic secondary schools can be conducted entirely in English, while teachers of much younger children have reported situations where their classes find it easier to say what is in a picture using English, rather than Icelandic. The very real and worrying consequence of all this is that the young generation in Iceland is at risk of losing its mother tongue.\n\nOf course, this is happening to other European languages too, but while internet companies might be willing to offer, say, French options in their systems, it's much harder for them to justify the expense of doing the same for a language that has a population the size of a French town, such as Nice. The other drawback of Icelandic is the grammar, which is significantly more complex than in most languages. At the moment, the tech giants are simply not interested in tackling this.\n\nSo, what is the Icelandic government doing about this? Well, large sums of money are being allocated to a language technology fund that it is hoped will lead to the development of Icelandic sourced apps and other social media and digital systems, but clearly this is going to be an uphill struggle.\n\nOn the positive side, they know that Icelandic is still the official language of education and government. It has survived for well over a thousand years and the experts predict that its future in this nation state is sound and will continue to be so. However, there's no doubt that it's becoming an inevitable second choice in young people's lives.\n\nThis raises important questions. When you consider how much of the past is tied up in a language, will young Icelanders lose their sense of their own identity? Another issue that concerns the government of Iceland is this. If children are learning two languages through different routes, neither of which they are fluent in, will they be able to express themselves properly?"
    }
   ]
+ },
+ "writing": {
+  "task1": {
+   "task_number": 1,
+   "time_minutes": 20,
+   "min_words": 150,
+   "prompt": "The table and charts below give information on the police budget for 2017 and 2018 in one area of Britain. The table shows where the money came from and the charts show how it was distributed. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+   "table": {
+    "title": "Police Budget 2017-2018 (in £m)",
+    "columns": [
+     "Sources",
+     "2017",
+     "2018"
+    ],
+    "rows": [
+     [
+      "National Government",
+      "175.5m",
+      "177.8m"
+     ],
+     [
+      "Local Taxes",
+      "91.2m",
+      "102.3m"
+     ],
+     [
+      "Other sources (eg grants)",
+      "38m",
+      "38.5m"
+     ],
+     [
+      "Total",
+      "304.7m",
+      "318.6m"
+     ]
+    ]
+   },
+   "pie_charts": {
+    "title": "How the money was spent",
+    "2017": {
+     "Salaries (officers and staff)": "75%",
+     "Technology": "8%",
+     "Buildings and transport": "17%"
+    },
+    "2018": {
+     "Salaries (officers and staff)": "69%",
+     "Technology": "14%",
+     "Buildings and transport": "17%"
+    }
+   },
+   "sample_answer": {
+    "band": 7.5,
+    "text": "The table illustrates the data on the police budget in which the money came from and the two pie charts describe the distribution of the amount of money in the two of year 2017 and 2018 in an area of Britain. Overall, there was an upward trend in all three different sources while the money spent on salaries was always the majority of contribution.\n\nLooking into more details, the highest amount of money on the police budget belonged to 'National Government', 175.5 million pounds in 2017 and it kept rising to 177.8 million pounds. Thus was followed by 'Local Taxes', at 91.2 million pounds in 2017, after one year, it increase significantly to 102.3 million pounds.\n\nIn term of the how the money was spent, the majority of police budget goes to salaries which was for officers and staff, dropping slightly from 75% in 2017 to 69% in 2018. Meanwhile, the proportion of 'Buildings and transport' remained constantly, at 17% each year. An opposite pattern can be seen in the category of technology, its figure rose sharply from 8% in 2017 to 14% in 2018, which was always the lowest rate during the given period.",
+    "examiner_comment": "This is a strong response. The candidate provides a clear overview at the end of the first paragraph which highlights the consistently increasing trend from the table and identifies the largest category from the pie charts. Full details are given for the first two sources of the budget but, to achieve a higher rating, key features in the table could be more fully extended.\n\nInformation is presented in the order of the table first and then the charts, in a logical manner. The test taker demonstrates a good range of cohesive devices [while | which was] and uses three paragraphs appropriately to organise and sequence the required data.\n\nThere is a wide range of vocabulary [figure rose sharply | during the given period] with accurate spelling, although there are occasional errors in word choice. The range of grammatical structures is wide, including modal [can] and continuous forms [kept rising] – although there are occasional errors e.g. using present tenses [goes on] to describe data from 2017 and 2018.\n\nTo improve this response, the key features presented from the table could be more fully extended. The candidate could also reduce the few errors in sentence structure."
+   }
+  },
+  "task2": {
+   "task_number": 2,
+   "time_minutes": 40,
+   "min_words": 250,
+   "prompt": "Some children spend hours every day on their smartphones. Why is this the case? Do you think this is a positive or a negative development? Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.",
+   "sample_answer": {
+    "band": 6.5,
+    "text": "Mobile phones, nowadays, contains essential features with entertainment also. There has been a large growth seen in usage hours of smartphones among youngsters. There are several reasons behind this situation and I find this development more beneficial than negative. Both the reasons and my view is elaborated further.\n\nThe first reason for overusage of smart devices by youngsters is the social benefit they provide. The smart phone connected with internet opens up the large possibilities, from creating new friends to communicating with them over social media. For instance, a child in my neighbourhood chats for hours with his school friends over Facebook (a social media) and also spend time over online video sharing phone application. Moreover, the mobile gaming, specially multiplayer games, is another major reason for the situation. Children plays different kind of games over mobile for the entertainment purpose and they involve themselves in games in such a manner, that they forget about the timing and other work to do.\n\nHowever, I believe that smartphones have also increased the knowledge of pupils. It has developed some important social skills, such as communication skill, team work and many more, by allowing them to work and play in groups, without the restriction of distance. In addition, children can learn through internet by watchin online videos and reading articles, which ultimately helps them in their studies as well as language skills. For example, whenever my niece require to know about something, he searches it over the internet and learns from it. Moreover, multiplayer online gaming improves their multitasking ability and it also gives them a competitive environment.\n\nOverall, I agree that overusage of smartphones on regular basis is harmful for them, but if given proper guidance, mobile phones can help them in learning some life-long skills.",
+    "examiner_comment": "This response addresses both parts of the question. A range of ideas is expressed and the candidate gives their position in the opening paragraph and then provides evidence and relevant examples.\n\nIdeas are logically organised and there is clear progression throughout the four paragraphs. A range of cohesive devices are used [The first reason | For instance | Moreover] with referencing used appropriately [they | themselves | their studies | it].\n\nThe range of vocabulary is good with examples of higher-level items [social skills | restriction of distance | ultimately] and there are few errors [overusage / overuse | niece ... he / niece ... she | watchin / watching | require to know / needs to know]. Similarly, the range of grammatical structures is reasonable, but the level of error means the Band Score cannot be higher than 6.5."
+   }
+  }
+ },
+ "speaking": {
+  "part1": {
+   "topic": "Reading",
+   "questions": [
+    "Did you have a favourite book when you were a child? [Why/Why not?]",
+    "How much reading do you do for your work/studies? [Why/Why not?]",
+    "What kinds of books do you read for pleasure? [Why/Why not?]",
+    "Do you prefer to read a newspaper or a magazine online, or to buy a copy? [Why?]"
+   ]
+  },
+  "part2": {
+   "cue_card": "Describe a big city you would like to visit.",
+   "you_should_say": [
+    "which big city you would like to visit",
+    "how you would travel there",
+    "what you would do there"
+   ],
+   "and_explain": "and explain why you would like to visit this big city.",
+   "prep_seconds": 60,
+   "talk_seconds": [
+    60,
+    120
+   ]
+  },
+  "part3": {
+   "discussion_topics": [
+    {
+     "topic": "Visiting cities on holiday",
+     "example_questions": [
+      "What are the most interesting things to do while visiting cities on holiday?",
+      "Why can it be expensive to visit cities on holiday?",
+      "Do you think it is better to visit cities alone or in a group with friends?"
+     ]
+    },
+    {
+     "topic": "The growth of cities",
+     "example_questions": [
+      "Why have cities increased in size in recent years?",
+      "What are the challenges created by ever-growing cities?",
+      "In what ways do you think cities of the future will be different to cities today?"
+     ]
+    }
+   ]
+  }
  }
 }
