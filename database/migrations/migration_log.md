@@ -1815,7 +1815,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [ ] | | Written 2026-09-26, NOT run and NOT tested on 5.7 yet (the deletion was declined by the environment; the founder runs it). |
+| Local | [x] | 2026-09-26 | Ran once on local 8.0 (19 courses left, no orphan modules). Tested first on MySQL 5.7.44 against a copy of the 14 related tables: first run removes ids 15 and 4, second run changes nothing, ids 5 and 16 keep 61 and 16 lessons, no orphan lessons or pieces. |
 | Live  | [ ] | | Run after 126 and 129. Safe to repeat. Removes a row only if nobody is enrolled in it. Take a backup first. |
 
 **What it does:** one row per course. Keeps IELTS Academic Crash Course (id 5, students, paid) and Masterclass 2 Months (id 16); removes the empty IELTS_Aca_1Mo (id 15) and the older IELTS_Aca_Mst (id 4) with their modules, lessons and pieces. Renames id 5 to "IELTS Academic Crash Course — 1 Month". Id 5's own structure (9 modules / 61 lessons) does not fit the Crash Course rule (4 weeks / 8 classes); reshaping it, without losing its lessons, is Step 2.
