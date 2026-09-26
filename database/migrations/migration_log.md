@@ -1658,7 +1658,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-24 | Verified via real HTTP calls against sls-admin's speaking_recordings_api.php (sync, manual save, override) — see 119 for the fuller test. |
-| Live  | [ ] | | `CREATE TABLE IF NOT EXISTS` — safe to run any time. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: `CREATE TABLE IF NOT EXISTS` — safe to run any time.) |
 
 **What it does:** one row per (student_id, test_code) holding a total_score + summary for a whole speaking practice attempt, editable directly or filled by summing migration 119's per-task manual_score values (see practice_session_detail.php's "Sync from individual scores" button). An earlier draft tried an AI call combining every task into one prompt instead — dropped after it took 45-55s in testing (past Apache's default 30s FastCGI idle-timeout) and the instructor decided manual scoring off the transcript was preferable anyway.
 
@@ -1669,7 +1669,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-24 | `ADD COLUMN IF NOT EXISTS` (the syntax migration 013 assumed works on "MySQL 8") is a real ERROR 1064 on this actual local MySQL 8.0.40 — tested directly before trusting it, rewrote without it. Verified end-to-end: saved a manual score+note on two real recordings, synced the session total (8+7=15), then manually overrode it to 14.5 with a summary, reloaded the page and confirmed all values render correctly. Test data cleaned up after. |
-| Live  | [ ] | | NOT idempotent (see note above) — this only runs cleanly once. Check `DESCRIBE speaking_recordings` first if there's any doubt it's already been applied. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: NOT idempotent (see note above) — this only runs cleanly once. Check `DESCRIBE speaking_recordings` first if there's any doubt it's already been applied.) |
 
 **What it does:** adds `manual_score` (varchar) and `manual_analysis` (mediumtext) to speaking_recordings, next to the existing AI `ai_feedback` column (untouched, the existing per-recording "Analyze" button still works as before). Lets an instructor score and comment on each task directly from the transcript, no AI involved.
 
@@ -1682,7 +1682,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-24 | Verified end-to-end over real HTTP: released a test result, confirmed the student-facing page was gated ("aren't ready yet") before release and showed the correct score/summary/per-task breakdown after, confirmed the release email had no failure logged, then recalled and confirmed the student lost access again. Test data cleaned up after. |
-| Live  | [ ] | | Simple ADD COLUMN, but not idempotent (same as 119) — run once. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Simple ADD COLUMN, but not idempotent (same as 119) — run once.) |
 
 **What it does:** adds `status` ('pending'/'results_released') and `released_at` to speaking_session_scores, mirroring `mock_sessions`' own convention exactly. Speaking practice tests never delivered an official, instructor-confirmed result to students before this — only an instant, unsaved AI reaction right after submitting. Now there's a real Release/Recall flow (sls-admin/practice_session_detail.php) and a student-facing results page (`resources/practice_tests/my_speaking_result.php?test_code=...`), same shape as the other skills' results.
 
@@ -1695,7 +1695,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-24 | Reverses part of migration 113's decision -- instructor confirmed 2026-09-24 the 2-Month course should have its own Mock B too. Verified via real HTTP as a tester account: Week 9 renders with correct title/weeks-count/classes-count copy, classes number 17-18 continuing the running sequence, both Week 8 and Week 9 tinted as mock weeks, and Class 17 correctly links to celpip_full_mock_b.php (not Mock 1's link). Also fixed course_overview.php's `$mock_weeks` array, which was stale from before 113's restructure (`[5, 8]` — Week 5 was never actually a mock week) to `[8, 9]`. Test data cleaned up after. |
-| Live  | [ ] | | Idempotent (checks the module/lessons don't already exist). Also needs `courses/CELPIP_Gen_2Mo/course_overview.php` and `courses/CELPIP_Gen/lessons/class_day.php` pulled (copy text + `$class_total` 16→18). |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Idempotent (checks the module/lessons don't already exist). Also needs `courses/CELPIP_Gen_2Mo/course_overview.php` and `courses/CELPIP_Gen/lessons/class_day.php` pulled (copy text + `$class_total` 16→18).) |
 
 **Open question raised while fixing this, NOT resolved:** CELPIP_Gen_2Mo's lessons are gated at `min_tier='intermediate'` (the 1-month subscription tier per `TIER_LABELS`), but this is a 2-month course. Since `intermediate` (level 2) already satisfies any gate requiring level ≤2, a student with only a 1-month subscription currently gets full access to this entire 2-month course. This was invisible while `FREE_ACCESS_FOR_ALL` was on (everyone had full access regardless) and is now a real, live pricing/access question — not something to silently "fix" by changing tier values without the instructor's input on the intended pricing model.
 
@@ -1708,7 +1708,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-24 | Instructor confirmed 2026-09-24: a course's own duration name is its required tier. Verified via real HTTP with a real subscriptions row: an 'intermediate'-tier student correctly sees Weeks 5-9 locked (and Weeks 2-4 unlocked), then unlocks Weeks 5-9 after upgrading to 'advanced'. Test data cleaned up after. |
-| Live  | [ ] | | Resolves the open question from migration 121 — no longer open. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Resolves the open question from migration 121 — no longer open.) |
 
 **What it does:** CELPIP_Gen_2Mo/3Mo's lessons sat flat at `intermediate` past Week 1 regardless of which month they're actually in — a 1-month subscriber got the entire 2- or 3-month course. Now mirrors `IELTS_Aca_2Mo`/`IELTS_Aca_3Mo`'s already-correct pattern exactly: 4-week month blocks, each one tier higher (intermediate → advanced → fluent). Invisible while `FREE_ACCESS_FOR_ALL` was on.
 
@@ -1721,7 +1721,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-24 | Confirmed idempotent (ran twice, second run a no-op). |
-| Live  | [ ] | | Only matters if live's `staff_accounts` also has the legacy QA/preview account (animasahunvictor1@gmail.com) set to 'admin' from migration 104's original backfill — check first with the verify query. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Only matters if live's `staff_accounts` also has the legacy QA/preview account (animasahunvictor1@gmail.com) set to 'admin' from migration 104's original backfill — check first with the verify query.) |
 
 **What it does:** `staff_accounts.role` is informational only (doesn't change access — see `documentation/ACCESS_CONTROL_MODEL.md`), but should still be accurate: exactly one person is admin.
 
@@ -1732,7 +1732,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-25 | Ran twice (idempotent). Verified exactly one correct option (D) and answers D/d. One saved local attempt, unanswered. |
-| Live  | [ ] | | Fixes the KEY only — attempts already saved are NOT rescored. The last query in the file lists affected attempts; correct individual students with the new score-correction feature (see 125). |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Fixes the KEY only — attempts already saved are NOT rescored. The last query in the file lists affected attempts; correct individual students with the new score-correction feature (see 125).) |
 
 **What it does:** Q20 "Dragonflies can be used as a form of pest and illness control." was keyed A by migration 073. The passage says D (Myanmar mosquito-larvae control; paragraph A is about age/species/habitats). Instructor confirmed D.
 
@@ -1743,7 +1743,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-25 | Ran twice (CREATE TABLE IF NOT EXISTS). Exercised end to end by the new correction feature. |
-| Live  | [ ] | | **Required before the sls-admin correction feature is used on live** — the API logs every correction here and fails without it. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: **Required before the sls-admin correction feature is used on live** — the API logs every correction here and fails without it.) |
 
 **What it does:** one row per correction (question marked right/wrong, or total set by hand): old → new raw score, band and mock overall, who, when, and the tutor's reason. No foreign keys on purpose (mixed id types/collations have broken migrations on live before).
 
@@ -1754,7 +1754,7 @@ ALTER TABLE courses DROP COLUMN buy_url;
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran repeatedly (idempotent: it deletes and re-inserts every row). 373 pieces across every course, 77 with their own page; every stored title matches its class title; every assigned file exists. Rewritten the same day to cover all courses and add `file_path` (the table was dropped and recreated locally). |
-| Live  | [ ] | | Run it, **then pull the academy code** (the new class pages and shells need the table; they fall back to the old notice if it is missing, and the overview falls back to the title rule). Run with the file's own `SET NAMES utf8mb4`. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Run it, **then pull the academy code** (the new class pages and shells need the table; they fall back to the old notice if it is missing, and the overview falls back to the title rule). Run with the file's own `SET NAMES utf8mb4`.) |
 
 **What it does:** stores, for every piece of every class, its kind (lesson / resource / practice_test / mock_test) and, where it has one, the page that holds it. Instructor's rule: anything without the word "Test" is a lesson; "Mock Test/Exam N" is a mock. Lesson pieces that had no page (IELTS Academic 2/3-Month, PTE 1/2/3-Month) got an empty page: 75 files. Other courses' files untouched. See `documentation/LESSON_PAGES.md` (starts with the principle).
 
@@ -1786,7 +1786,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran once. Verified: 5 courses `coming_soon`; Academic Crash Course `selar_months=1`, price 90,000, Module 1 free and modules 2-9 `intermediate`; IELTS Academic 3-Month and IELTS General 2-Month visible; duplicate CELPIP 1-Month (0 enrolments) deleted with its modules/lessons, the real one (id 12) intact. |
-| Live  | [~] | 2026-09-26 | **Partly applied.** The instructor's run stopped with `#1054 Unknown column 'c.folder_name'` on the week_briefs DELETE (my first version used a construct older MySQL/MariaDB reject; local 8.0.40 accepted it). Everything before that statement ran. **Do not re-run 127; run `127b_finish_remove_duplicate_celpip_1mo.sql` only** (safe to repeat). 127 itself is now rewritten to be portable and was tested on MySQL 5.7.44 on a fresh database and by replaying the partial run + 127b. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: **Partly applied.** The instructor's run stopped with `#1054 Unknown column 'c.folder_name'` on the week_briefs DELETE (my first version used a construct older MySQL/MariaDB reject; local 8.0.40 accepted it). Everything before that statement ran. **Do not re-run 127; run `127b_finish_remove_duplicate_celpip_1mo.sql` only** (safe to repeat). 127 itself is now rewritten to be portable and was tested on MySQL 5.7.44 on a fresh database and by replaying the partial run + 127b.) |
 | Live (original note) | | | NOT idempotent (`ALTER TABLE … ADD COLUMN`). **Before running:** confirm on live the hidden CELPIP 1-Month duplicate really has no enrolments (the migration only deletes it if so). Then pull academy. Note: 2- and 3-month Selar purchases can now be redeemed for IELTS General 2-Month and IELTS Academic 3-Month ("choose your course"). |
 
 **What it does:** the instructor's rule (2026-09-26): anything with nothing in it yet says Coming Soon, at every level; nothing is hidden or retired for being empty. Adds `courses.availability` (`available` / `coming_soon`). Sets it for IELTS Crash Course, CELPIP Crash Course and PTE 1/2/3-Month. Makes the IELTS Academic Crash Course a paid 1-month course (Selar-sold: self-enrolment blocked, its module pages require enrolment; interim price 90,000 / compare 105,000 and the shared 1-month buy link, to be confirmed under decisions 2.4 / 2.5). Shows IELTS Academic 3-Month and IELTS General 2-Month. Removes the duplicate CELPIP General 1-Month row (guarded: hidden, same folder as a visible course, no enrolments).
@@ -1798,7 +1798,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran once (needs 126 first). 17 test pieces of IELTS Academic 2/3-Month now point at their real test page; the rest of their tests/mocks and every PTE piece are `coming_soon`. |
-| Live  | [ ] | | Run after 126 and 127. NOT idempotent (`ADD COLUMN`). Until run, the overview treats every piece as ready (no Coming Soon tags). |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Run after 126 and 127. NOT idempotent (`ADD COLUMN`). Until run, the overview treats every piece as ready (no Coming Soon tags).) |
 
 **What it does:** a piece is Coming Soon when it has no page and `status='coming_soon'`, or when its page is an empty lesson file (worked out live from the file, so developing a lesson needs no data change). A class is Coming Soon when every piece is. The overview tags them and links each test straight to its test page.
 
@@ -1809,7 +1809,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran once on local 8.0. Also tested on MySQL 5.7.44 against a copy of the real courses/modules/lessons tables (fresh run, and a second run refuses at the ALTER as intended). Checked as students: new names, BEL, Class 1 open with no plan, rating flow. |
-| Live  | [ ] | | Run AFTER 126 and 128 (order: 126, 128, 129, 130). The `ALTER TABLE` is first and not repeatable; everything after it can be re-run. Pull academy after running it (the code is safe without it). |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Run AFTER 126 and 128 (order: 126, 128, 129, 130). The `ALTER TABLE` is first and not repeatable; everything after it can be re-run. Pull academy after running it (the code is safe without it).) |
 
 **What it does:** adds `exam_variant`, `price_currency`, `length_months`, `access_extra_months`, `free_preview_classes`, `delivery` to `courses` and fills them; renames the plans to the Selar standard (`<Exam> Crash Course — 1 Month`, `<Exam> Masterclass — 2 Months` / `— 3 Months`; 1 month = Crash Course, 2 and 3 months = Masterclass) and sets the three shared Selar buy links by length; sets the tutor to Victor Animasahun and clears stored star ratings; creates `course_ratings`; makes Class 2 of the Academic Masterclass and CELPIP 2/3-Month need the plan (free preview = Class 1 only); creates the BEL course (Coming Soon). Code: `lesson_min_tier()` (the 40 IELTS Academic 2/3-Month class pages read their plan from the database), the rating form on `courses_detail.php`.
 
@@ -1820,7 +1820,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran on local 8.0; tested on MySQL 5.7.44 including a repeat run (guards on `@m9 IS NOT NULL`, no change the second time). |
-| Live  | [ ] | | Run after 126 and 129. Safe to repeat. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Run after 126 and 129. Safe to repeat.) |
 
 **What it does:** removes the 9th week. "Mock 1 Review" is deleted, "Mock Test 2" moves into week 8 (Class 16), the rest of week 9 and the module are deleted, week 8 is renamed "Week 8 — Mock Test 1 & Mock Test 2", `total_lessons` = 16, orphan `lesson_parts` cleaned. Classes 1-14 do not move (their `class_day.php` pages carry their own numbers). The review class pages stay on disk, unused. Code: `CELPIP_Gen_2Mo/course_overview.php` (8 weeks, mocks are classes 15 and 16) and `class_day.php` (`of 16`).
 
@@ -1831,7 +1831,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran on local 8.0. Tested first on MySQL 5.7.44 against a copy of the 15 related tables: run 1 removes the stray, run 2 changes nothing, no orphan lessons / pieces / enrolments. Checked as students: unpaid = class 2 locked; bought 1-month Selar plan, chose the Crash Course, overview shows 4 weeks / 8 classes, then the shape was reduced to Weeks 1-4 / Classes 1-8 with nothing inside: overview shows Coming Soon on every class, no errors. Re-tested on 5.7 after that change (two runs, 8 pieces, all coming_soon). |
-| Live  | [ ] | | Run after 126, 128 and 129. Safe to repeat. Back up first. Pull academy BEFORE running (the module pages now look the course up by folder). |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Run after 126, 128 and 129. Safe to repeat. Back up first. Pull academy BEFORE running (the module pages now look the course up by folder).) |
 
 **What it does:** keeps IELTS_Aca_1Mo (4 weeks / 8 classes) as THE IELTS Academic Crash Course: 90,000 / 105,000 NGN, Selar 1-month link, standard text. Shape only, no content: weeks are "Week N", classes are "Class N", no topics, no pages, one Coming Soon piece per class (what goes inside is decided later). Removes the original IELTS_Aca_Crash (9 modules / 61 lessons; its only enrolments, Akkad and Victor, are test accounts and are cleared with it) and the older IELTS_Aca_Mst (no students). A row is removed only if nobody is enrolled after that. The old course's page files stay on disk, unused. Code: `course_ids_for_folders()` in `includes/course_lock.php`; the 8 Crash Course module pages gate on the course found by folder, not on ids 5 / 15.
 
@@ -1844,7 +1844,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-09-26 | Ran on local 8.0 (19 → 15 courses). Tested on MySQL 5.7.44: run twice, nine real courses untouched, a course with a real student enrolled is kept. |
-| Live  | [ ] | | Run last (after 131). Safe to repeat. Back up first. |
+| Live  | [x] | 2026-09-26 | Confirmed run on live by the instructor (2026-09-26). (Earlier note: Run last (after 131). Safe to repeat. Back up first.) |
 
 **What it does:** removes IELTS Crash Course, CELPIP Crash Course, IELTS Masterclass and CELPIP Masterclass (created 2025-09-26; no modules, lessons, folder or code; only the Akkad / Victor test enrolments). They are duplicates of the real General / Academic Crash Courses and Masterclasses. Skips any row that has content, assignments, learning points, activity or a real student.
 
