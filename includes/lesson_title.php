@@ -54,12 +54,12 @@ if (!function_exists('lesson_piece_kind')) {
     /**
      * What a piece of a class IS -- 'lesson', 'resource', 'practice_test' or 'mock_test'.
      * Instructor's rule (2026-09-26): anything that does not carry the word "Test" is a lesson;
-     * "Mock Test N" is a mock, any other "... Test ..." is a practice test. The stored value in
+     * "Mock Test N" / "Mock Exam N" is a mock, any other "... Test ..." is a practice test. The stored value in
      * `lesson_parts.kind` (migration 126) wins over this rule where a row exists, so an
      * exception (a resource, an assessment) is set in the data, not in code.
      */
     function lesson_piece_kind(string $pieceTitle): string {
-        if (preg_match('/\bMock\s+Test\b/i', $pieceTitle)) return 'mock_test';
+        if (preg_match('/\bMock\s+(Test|Exam)\b/i', $pieceTitle)) return 'mock_test';
         if (preg_match('/\bTest\b/i', $pieceTitle))       return 'practice_test';
         return 'lesson';
     }
@@ -93,6 +93,68 @@ if (!function_exists('lesson_piece_kind')) {
             foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) $out[(int)$r['lesson_id']][$r['title']] = $r['kind'];
         } catch (\Throwable $e) { /* table not there yet */ }
         return $out;
+    }
+
+    /** Own page per piece for specific lessons: [lesson_id => [piece title => file path relative to the academy root]]. */
+    function lesson_part_files_for_lessons(PDO $db, array $lessonIds): array {
+        $lessonIds = array_values(array_unique(array_filter(array_map('intval', $lessonIds))));
+        if (!$lessonIds) return [];
+        $out = [];
+        try {
+            $ph = implode(',', array_fill(0, count($lessonIds), '?'));
+            $st = $db->prepare("SELECT lesson_id, title, file_path FROM lesson_parts WHERE file_path IS NOT NULL AND file_path <> '' AND lesson_id IN ($ph)");
+            $st->execute($lessonIds);
+            foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) $out[(int)$r['lesson_id']][$r['title']] = $r['file_path'];
+        } catch (\Throwable $e) { /* column/table not there yet */ }
+        return $out;
+    }
+
+    /** The stored parts of one class (by course folder + running class number), in order. */
+    function lesson_class_parts(PDO $db, string $folder, int $classNum): array {
+        try {
+            $st = $db->prepare("SELECT l.id FROM lessons l JOIN modules m ON m.id = l.module_id JOIN courses c ON c.id = m.course_id
+                                WHERE c.folder_name = ? ORDER BY c.is_visible DESC, c.id, m.module_order, l.lesson_order");
+            $st->execute([$folder]);
+            $ids = array_map('intval', $st->fetchAll(PDO::FETCH_COLUMN));
+            $lid = $ids[$classNum - 1] ?? 0;
+            if (!$lid) return [];
+            $st = $db->prepare("SELECT title, kind, file_path FROM lesson_parts WHERE lesson_id = ? ORDER BY part_order");
+            $st->execute([$lid]);
+            return $st->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\Throwable $e) { return []; }
+    }
+
+    /** "Open Lesson" button for a lesson piece that has its own page; '' when it has none. */
+    function lesson_part_button(PDO $db, string $folder, int $classNum, string $pieceTitle): string {
+        $pieceTitle = html_entity_decode($pieceTitle, ENT_QUOTES, 'UTF-8');
+        foreach (lesson_class_parts($db, $folder, $classNum) as $p) {
+            if ($p['title'] === $pieceTitle && !empty($p['file_path']) && ($p['kind'] === 'lesson' || $p['kind'] === 'resource')) {
+                return '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-outline-primary mt-2"><i class="bi bi-journal-text me-2"></i>Open Lesson</a>';
+            }
+        }
+        return '';
+    }
+
+    /**
+     * For a class page with no content of its own: every piece with its kind, an "Open Lesson" button where the
+     * piece has a page, and a plain "coming soon" line where it doesn't (tests not built yet).
+     */
+    function lesson_class_parts_list(PDO $db, string $folder, int $classNum): string {
+        $parts = lesson_class_parts($db, $folder, $classNum);
+        if (!$parts) return '';
+        $o = '<div class="lesson-content mb-4">';
+        foreach ($parts as $p) {
+            $title = htmlspecialchars($p['title']);
+            $badge = lesson_kind_badge($db, $folder, $classNum, $p['title']);
+            $o .= '<div class="lesson-item"><h5>' . $title . ' ' . $badge . '</h5>';
+            if (!empty($p['file_path']) && ($p['kind'] === 'lesson' || $p['kind'] === 'resource')) {
+                $o .= '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-outline-primary"><i class="bi bi-journal-text me-2"></i>Open Lesson</a>';
+            } else {
+                $o .= '<p class="text-muted mb-0"><i class="bi bi-hourglass-split me-1"></i>Coming soon.</p>';
+            }
+            $o .= '</div>';
+        }
+        return $o . '</div>';
     }
 
     function lesson_piece_kind_stored(array $kinds, int $lessonId, string $pieceTitle): string {

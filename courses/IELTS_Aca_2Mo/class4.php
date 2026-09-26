@@ -92,6 +92,7 @@ $canAccess = can_access($minTier);
                     <div class="lesson-item">
                         <h5>Comparative Structures &amp; TEE <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 4, 'Comparative Structures &amp; TEE') ?></h5>
                         <ul><li>Comparative/superlative structures for Task 1</li><li>TEE body paragraph structure</li><li>Exercises on both</li></ul>
+                        <?= lesson_part_button($db, 'IELTS_Aca_2Mo', 4, 'Comparative Structures &amp; TEE') ?>
                     </div>
                 </div>
             <?php endif; ?>

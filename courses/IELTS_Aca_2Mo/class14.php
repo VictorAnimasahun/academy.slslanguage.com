@@ -92,6 +92,7 @@ $canAccess = can_access($minTier);
                     <div class="lesson-item">
                         <h5>Complex Passage Strategy <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 14, 'Complex Passage Strategy') ?></h5>
                         <ul><li>Complex passage strategy — long sentences, academic vocabulary, implied meaning</li><li>Timed practice</li></ul>
+                        <?= lesson_part_button($db, 'IELTS_Aca_2Mo', 14, 'Complex Passage Strategy') ?>
                     </div>
                 </div>
             <?php endif; ?>

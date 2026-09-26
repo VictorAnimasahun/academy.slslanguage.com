@@ -107,7 +107,9 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
         $allIds = [];
         foreach ($modules as $mm) foreach ($mm['lessons'] as $ll) $allIds[] = (int) ($ll['lesson_id'] ?? $ll['id'] ?? 0);
         $kindsStored = lesson_part_kinds_for_lessons($GLOBALS['db'], $allIds);
+        $filesStored = lesson_part_files_for_lessons($GLOBALS['db'], $allIds);
     }
+    $filesStored = $filesStored ?? [];
     $mockFn      = $opts['is_mock'] ?? null;      // fn($weekNum, $lesson, $classNum, $indexInWeek): bool (overrides mock_classes)
     $urlFn       = $opts['class_url'] ?? null;    // fn($classNum, $lesson): ?string  (default: lesson file_path)
     $levels      = ['beginner' => 1, 'intermediate' => 2, 'advanced' => 3, 'fluent' => 4];
@@ -191,7 +193,9 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
                 // (no "Test" in the title = a lesson). It used to say "Class lesson" for every piece,
                 // so "Reading Test 1" looked like a lesson.
                 $kindLabel = lesson_kind_label(lesson_piece_kind_stored($kindsStored, (int) $lid, $piece));
-                $parts[] = ['title' => $piece, 'kind' => $kindLabel, 'meta' => '', 'done' => $c['done'], 'lesson' => true];
+                $ownFile = $filesStored[(int) $lid][$piece] ?? null;   // this piece has its own page (migration 126 file_path)
+                $parts[] = ['title' => $piece, 'kind' => $kindLabel, 'meta' => '', 'done' => $c['done'], 'lesson' => true,
+                            'href' => $ownFile ? ACADEMY_URL . $ownFile : null];
             }
             foreach ($partsByLesson[$lid] ?? [] as $pt) $parts[] = $pt + ['meta' => '', 'lesson' => false];
             $partsDone = count(array_filter($parts, fn($p) => $p['done']));
@@ -214,7 +218,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
                       . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '')) . '</span></span>';
                 $inner = $ico . $text;
                 $out  .= '<li>' . (($pt['lesson'] && $can)
-                    ? '<a class="pp-part" href="' . $h($c['url']) . '">' . $inner . '</a>'
+                    ? '<a class="pp-part" href="' . $h($pt['href'] ?? $c['url']) . '">' . $inner . '</a>'
                     : '<span class="pp-part">' . $inner . '</span>') . '</li>';
             }
             $out .= '</ul></div></div>';

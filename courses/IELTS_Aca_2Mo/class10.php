@@ -1,6 +1,7 @@
 <?php
 require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
+require_once INCLUDES_PATH . '/lesson_title.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -75,11 +76,13 @@ $canAccess = can_access($minTier);
                     </a>
                 </div>
             <?php else: ?>
-
+                <?php $__parts = lesson_class_parts_list($db, 'IELTS_Aca_2Mo', 10); ?>
+                <?php if ($__parts !== ''): echo $__parts; else: ?>
                 <div class="highlight-box">
                     <h4 style="color:var(--accent);"><i class="bi bi-hourglass-split me-2"></i>Coming Soon</h4>
                     <p class="mb-0">This class's lesson content is still being finalized. Please register for the course (or check back soon) to get full access as it's added.</p>
                 </div>
+                <?php endif; ?>
 
             <?php endif; ?>
 

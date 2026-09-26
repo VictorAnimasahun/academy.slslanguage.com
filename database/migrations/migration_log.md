@@ -1749,14 +1749,14 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
-## 126 — lesson_parts: what each piece of a class IS (lesson / resource / practice test / mock test)
+## 126 — lesson_parts: what each piece of a class IS, and the page that holds it
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [x] | 2026-09-26 | Ran 3 times (idempotent). Fixed a double-encoded em dash on the first run: the file now sets `SET NAMES utf8mb4`. Verified 72 of 72 stored titles match their class titles. |
-| Live  | [ ] | | Optional for display (the overview and class pages fall back to the same title rule when the table is missing); required only if a kind is ever changed by hand. Run with the file's own `SET NAMES`. |
+| Local | [x] | 2026-09-26 | Ran repeatedly (idempotent: it deletes and re-inserts every row). 373 pieces across every course, 77 with their own page; every stored title matches its class title; every assigned file exists. Rewritten the same day to cover all courses and add `file_path` (the table was dropped and recreated locally). |
+| Live  | [ ] | | Run it, **then pull the academy code** (the new class pages and shells need the table; they fall back to the old notice if it is missing, and the overview falls back to the title rule). Run with the file's own `SET NAMES utf8mb4`. |
 
-**What it does:** a class title holds one or two pieces joined with " + "; nothing said what each piece was, so the overview labelled every piece "Class lesson" ("Reading Test 1" included). Now each piece has a kind. Instructor's rule (2026-09-26): anything without the word "Test" is a lesson; "Mock Test N" is a mock; other "... Test ..." is a practice test. Seeded for IELTS_Aca_2Mo and IELTS_Aca_3Mo (72 pieces: 38 lessons, 29 practice tests, 5 mock tests); every other course uses the title rule until it gets rows. Code: `includes/lesson_title.php` (`lesson_piece_kind`, `lesson_kind_badge`), `includes/course_progress_path.php`.
+**What it does:** stores, for every piece of every class, its kind (lesson / resource / practice_test / mock_test) and, where it has one, the page that holds it. Instructor's rule: anything without the word "Test" is a lesson; "Mock Test/Exam N" is a mock. Lesson pieces that had no page (IELTS Academic 2/3-Month, PTE 1/2/3-Month) got an empty shell file: 75 files. See `documentation/LESSON_PAGES.md`.
 
 ---
 

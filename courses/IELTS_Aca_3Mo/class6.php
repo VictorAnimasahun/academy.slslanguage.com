@@ -92,6 +92,7 @@ $canAccess = can_access($minTier);
                     <div class="lesson-item">
                         <h5>Map Description &amp; Passive Voice <?= lesson_kind_badge($db, 'IELTS_Aca_3Mo', 6, 'Map Description &amp; Passive Voice') ?></h5>
                         <ul><li>Map description phrases and passive voice</li><li>Strengthening weak arguments</li></ul>
+                        <?= lesson_part_button($db, 'IELTS_Aca_3Mo', 6, 'Map Description &amp; Passive Voice') ?>
                     </div>
                 </div>
             <?php endif; ?>

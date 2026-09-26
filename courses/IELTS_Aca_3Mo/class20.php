@@ -92,6 +92,7 @@ $canAccess = can_access($minTier);
                     <div class="lesson-item">
                         <h5>Advanced Speaking <?= lesson_kind_badge($db, 'IELTS_Aca_3Mo', 20, 'Advanced Speaking') ?></h5>
                         <ul><li>Extending answers, idiomatic language</li><li>Natural hesitation devices</li></ul>
+                        <?= lesson_part_button($db, 'IELTS_Aca_3Mo', 20, 'Advanced Speaking') ?>
                     </div>
                 </div>
             <?php endif; ?>

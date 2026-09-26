@@ -92,6 +92,7 @@ $canAccess = can_access($minTier);
                     <div class="lesson-item">
                         <h5>Trend Vocabulary &amp; Paraphrasing <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 3, 'Trend Vocabulary &amp; Paraphrasing') ?></h5>
                         <ul><li>Trend vocabulary and sentence structures</li><li>Paraphrasing questions and thesis statements</li><li>Exercises on both</li></ul>
+                        <?= lesson_part_button($db, 'IELTS_Aca_2Mo', 3, 'Trend Vocabulary &amp; Paraphrasing') ?>
                     </div>
                 </div>
             <?php endif; ?>

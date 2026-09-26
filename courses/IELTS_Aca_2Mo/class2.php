@@ -92,6 +92,7 @@ $canAccess = can_access($minTier);
                     <div class="lesson-item">
                         <h5>Writing Task Overview <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 2, 'Writing Task Overview') ?></h5>
                         <ul><li>Task 1 &amp; Task 2 overview — chart/graph/map/process types, essay types</li><li>Assessment criteria</li><li>Band 5 vs. Band 7+ sample analysis</li></ul>
+                        <?= lesson_part_button($db, 'IELTS_Aca_2Mo', 2, 'Writing Task Overview') ?>
                     </div>
                 </div>
             <?php endif; ?>
