@@ -1,6 +1,7 @@
 <?php
 require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
+require_once INCLUDES_PATH . '/lesson_title.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -82,14 +83,14 @@ $canAccess = can_access($minTier);
 
                 <div class="lesson-content mb-4">
                     <div class="lesson-item">
-                        <h5>Speaking Test 2</h5>
+                        <h5>Speaking Test 2 <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 8, 'Speaking Test 2') ?></h5>
                         <ul><li>Complete Speaking Test 2 (Parts 1-3, recorded)</li><li>Feedback on lexical resource and grammar range</li></ul>
                         <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_speaking_003.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Test
                 </a>
                     </div>
                     <div class="lesson-item">
-                        <h5>Task 1 Report Structuring</h5>
+                        <h5>Task 1 Report Structuring <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 8, 'Task 1 Report Structuring') ?></h5>
                         <ul><li>Structuring Task 1 reports — Introduction, Overview, Key Features, Details</li><li>Academic tone and grammar correction</li><li>Exercises on both</li></ul>
                     </div>
                 </div>

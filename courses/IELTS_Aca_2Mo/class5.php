@@ -1,6 +1,7 @@
 <?php
 require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
+require_once INCLUDES_PATH . '/lesson_title.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -82,17 +83,17 @@ $canAccess = can_access($minTier);
 
                 <div class="lesson-content mb-4">
                     <div class="lesson-item">
-                        <h5>Writing Test 1 (Timed)</h5>
+                        <h5>Writing Test 1 (Timed) <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 5, 'Writing Test 1 (Timed)') ?></h5>
                         <ul><li>Complete Writing Test 1: Task 1 (20 minutes, timed) and Task 2 (40 minutes, timed)</li><li>Self-assessment against the band descriptors</li></ul>
                         <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_writing_academic_001.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Writing Test 1
                 </a>
                     </div>
                     <div class="lesson-item">
-                        <h5>Listening Formats</h5>
+                        <h5>Listening Formats <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 5, 'Listening Formats') ?></h5>
                         <ul><li>Section formats and question types (Sections 1-4)</li><li>Common distractor patterns</li><li>Sample question set</li></ul>
                         <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_listening_formats_sample.php" class="btn btn-outline-primary btn-lg" target="_blank" rel="noopener">
-                    <i class="bi bi-headphones me-2"></i>Open Listening Question Formats
+                    <i class="bi bi-headphones me-2"></i>Open Lesson
                 </a>
                     </div>
                 </div>

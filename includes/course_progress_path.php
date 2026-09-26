@@ -102,6 +102,12 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
     $briefFn     = $opts['week_brief'] ?? null;
     $partsByLesson = $opts['parts'] ?? [];
     $numFn       = $opts['class_number'] ?? null; // fn($weekNum, $lesson, $runningIndex): int
+    $kindsStored = $opts['kinds'] ?? [];
+    if (!$kindsStored && isset($GLOBALS['db']) && $GLOBALS['db'] instanceof PDO) {
+        $allIds = [];
+        foreach ($modules as $mm) foreach ($mm['lessons'] as $ll) $allIds[] = (int) ($ll['lesson_id'] ?? $ll['id'] ?? 0);
+        $kindsStored = lesson_part_kinds_for_lessons($GLOBALS['db'], $allIds);
+    }
     $mockFn      = $opts['is_mock'] ?? null;      // fn($weekNum, $lesson, $classNum, $indexInWeek): bool (overrides mock_classes)
     $urlFn       = $opts['class_url'] ?? null;    // fn($classNum, $lesson): ?string  (default: lesson file_path)
     $levels      = ['beginner' => 1, 'intermediate' => 2, 'advanced' => 3, 'fluent' => 4];
@@ -181,7 +187,11 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             // Every piece of the class (the stored title joins them with " + ") gets its own line.
             $parts = [];
             foreach (lesson_title_lines($lesson['title']) as $piece) {
-                $parts[] = ['title' => $piece, 'kind' => 'Class lesson', 'meta' => '', 'done' => $c['done'], 'lesson' => true];
+                // What the piece IS: stored kind (lesson_parts) or, failing that, the title rule
+                // (no "Test" in the title = a lesson). It used to say "Class lesson" for every piece,
+                // so "Reading Test 1" looked like a lesson.
+                $kindLabel = lesson_kind_label(lesson_piece_kind_stored($kindsStored, (int) $lid, $piece));
+                $parts[] = ['title' => $piece, 'kind' => $kindLabel, 'meta' => '', 'done' => $c['done'], 'lesson' => true];
             }
             foreach ($partsByLesson[$lid] ?? [] as $pt) $parts[] = $pt + ['meta' => '', 'lesson' => false];
             $partsDone = count(array_filter($parts, fn($p) => $p['done']));

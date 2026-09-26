@@ -1,6 +1,7 @@
 <?php
 require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
+require_once INCLUDES_PATH . '/lesson_title.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -82,14 +83,14 @@ $canAccess = can_access($minTier);
 
                 <div class="lesson-content mb-4">
                     <div class="lesson-item">
-                        <h5>Listening Test 2</h5>
+                        <h5>Listening Test 2 <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 6, 'Listening Test 2') ?></h5>
                         <ul><li>Complete Listening Test 2</li><li>Answer review focused on weak section types</li></ul>
                         <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_listening_002.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Listening Test 2
                 </a>
                     </div>
                     <div class="lesson-item">
-                        <h5>Map Description &amp; Passive Voice</h5>
+                        <h5>Map Description &amp; Passive Voice <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 6, 'Map Description &amp; Passive Voice') ?></h5>
                         <ul><li>Map description phrases and passive voice</li><li>Strengthening weak arguments</li><li>Exercises on both</li></ul>
                     </div>
                 </div>

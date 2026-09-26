@@ -1,6 +1,7 @@
 <?php
 require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
+require_once INCLUDES_PATH . '/lesson_title.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -82,14 +83,14 @@ $canAccess = can_access($minTier);
 
                 <div class="lesson-content mb-4">
                     <div class="lesson-item">
-                        <h5>Speaking Test 3</h5>
+                        <h5>Speaking Test 3 <?= lesson_kind_badge($db, 'IELTS_Aca_3Mo', 14, 'Speaking Test 3') ?></h5>
                         <ul><li>Complete Speaking Test 3 (full 3-part simulation)</li><li>Detailed feedback across all 4 criteria</li></ul>
                         <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_speaking_004.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Test
                 </a>
                     </div>
                     <div class="lesson-item">
-                        <h5>Complex Passage Strategy</h5>
+                        <h5>Complex Passage Strategy <?= lesson_kind_badge($db, 'IELTS_Aca_3Mo', 14, 'Complex Passage Strategy') ?></h5>
                         <ul><li>Complex passage strategy — long sentences, implied meaning</li></ul>
                     </div>
                 </div>

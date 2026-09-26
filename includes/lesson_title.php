@@ -49,3 +49,74 @@ if (!function_exists('test_kind_label')) {
         return $itemType === 'mock_test' ? 'Mock test' : 'Practice test';
     }
 }
+
+if (!function_exists('lesson_piece_kind')) {
+    /**
+     * What a piece of a class IS -- 'lesson', 'resource', 'practice_test' or 'mock_test'.
+     * Instructor's rule (2026-09-26): anything that does not carry the word "Test" is a lesson;
+     * "Mock Test N" is a mock, any other "... Test ..." is a practice test. The stored value in
+     * `lesson_parts.kind` (migration 126) wins over this rule where a row exists, so an
+     * exception (a resource, an assessment) is set in the data, not in code.
+     */
+    function lesson_piece_kind(string $pieceTitle): string {
+        if (preg_match('/\bMock\s+Test\b/i', $pieceTitle)) return 'mock_test';
+        if (preg_match('/\bTest\b/i', $pieceTitle))       return 'practice_test';
+        return 'lesson';
+    }
+
+    function lesson_kind_label(string $kind): string {
+        return ['lesson' => 'Lesson', 'resource' => 'Resource', 'practice_test' => 'Practice test', 'mock_test' => 'Mock test'][$kind] ?? 'Lesson';
+    }
+
+    /** Stored kinds for a whole course: [lesson_id => [piece title => kind]]. Empty if migration 126 hasn't run. */
+    function lesson_part_kinds_for_course(PDO $db, int $courseId): array {
+        static $cache = [];
+        if (isset($cache[$courseId])) return $cache[$courseId];
+        $out = [];
+        try {
+            $st = $db->prepare("SELECT lp.lesson_id, lp.title, lp.kind FROM lesson_parts lp JOIN lessons l ON l.id = lp.lesson_id WHERE l.course_id = ?");
+            $st->execute([$courseId]);
+            foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) $out[(int)$r['lesson_id']][$r['title']] = $r['kind'];
+        } catch (\Throwable $e) { /* table not there yet: fall back to the title rule */ }
+        return $cache[$courseId] = $out;
+    }
+
+    /** Stored kinds for specific lessons: [lesson_id => [piece title => kind]]. Empty if migration 126 hasn't run. */
+    function lesson_part_kinds_for_lessons(PDO $db, array $lessonIds): array {
+        $lessonIds = array_values(array_unique(array_filter(array_map('intval', $lessonIds))));
+        if (!$lessonIds) return [];
+        $out = [];
+        try {
+            $ph = implode(',', array_fill(0, count($lessonIds), '?'));
+            $st = $db->prepare("SELECT lesson_id, title, kind FROM lesson_parts WHERE lesson_id IN ($ph)");
+            $st->execute($lessonIds);
+            foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) $out[(int)$r['lesson_id']][$r['title']] = $r['kind'];
+        } catch (\Throwable $e) { /* table not there yet */ }
+        return $out;
+    }
+
+    function lesson_piece_kind_stored(array $kinds, int $lessonId, string $pieceTitle): string {
+        return $kinds[$lessonId][$pieceTitle] ?? lesson_piece_kind($pieceTitle);
+    }
+
+    /**
+     * Small coloured tag for a class page heading. Looks the class up by course folder + running
+     * class number, then the piece by its title; falls back to the title rule.
+     */
+    function lesson_kind_badge(PDO $db, string $folder, int $classNum, string $pieceTitle): string {
+        static $lessonIds = [];
+        $pieceTitle = html_entity_decode($pieceTitle, ENT_QUOTES, 'UTF-8');
+        if (!isset($lessonIds[$folder])) {
+            $st = $db->prepare("SELECT l.id, c.id AS course_id FROM lessons l JOIN modules m ON m.id = l.module_id JOIN courses c ON c.id = m.course_id
+                                WHERE c.folder_name = ? ORDER BY m.module_order, l.lesson_order");
+            $st->execute([$folder]);
+            $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+            $lessonIds[$folder] = ['ids' => array_map('intval', array_column($rows, 'id')), 'course' => (int)($rows[0]['course_id'] ?? 0)];
+        }
+        $lid = $lessonIds[$folder]['ids'][$classNum - 1] ?? 0;
+        $kind = lesson_piece_kind_stored(lesson_part_kinds_for_course($db, $lessonIds[$folder]['course']), $lid, $pieceTitle);
+        $colours = ['lesson' => ['#e0f2fe', '#075985'], 'resource' => ['#f1f5f9', '#475569'], 'practice_test' => ['#fef3c7', '#92400e'], 'mock_test' => ['#fee2e2', '#991b1b']];
+        [$bg, $fg] = $colours[$kind] ?? $colours['lesson'];
+        return '<span style="display:inline-block;vertical-align:middle;margin-left:.5rem;padding:.12rem .55rem;border-radius:999px;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:' . $bg . ';color:' . $fg . ';">' . lesson_kind_label($kind) . '</span>';
+    }
+}

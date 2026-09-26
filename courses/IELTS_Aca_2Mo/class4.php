@@ -1,6 +1,7 @@
 <?php
 require_once (dirname(dirname(__DIR__))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
+require_once INCLUDES_PATH . '/lesson_title.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+courses");
@@ -82,14 +83,14 @@ $canAccess = can_access($minTier);
 
                 <div class="lesson-content mb-4">
                     <div class="lesson-item">
-                        <h5>Speaking Test 1</h5>
+                        <h5>Speaking Test 1 <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 4, 'Speaking Test 1') ?></h5>
                         <ul><li>Complete Speaking Test 1 (Parts 1-3, recorded)</li><li>Immediate feedback</li></ul>
                         <a href="<?= ACADEMY_URL ?>resources/practice_tests/ielts_speaking_002.php" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
                     <i class="bi bi-box-arrow-up-right me-2"></i>Open Test
                 </a>
                     </div>
                     <div class="lesson-item">
-                        <h5>Comparative Structures &amp; TEE</h5>
+                        <h5>Comparative Structures &amp; TEE <?= lesson_kind_badge($db, 'IELTS_Aca_2Mo', 4, 'Comparative Structures &amp; TEE') ?></h5>
                         <ul><li>Comparative/superlative structures for Task 1</li><li>TEE body paragraph structure</li><li>Exercises on both</li></ul>
                     </div>
                 </div>

@@ -503,9 +503,10 @@ function ls_task_close(string $id, int $total, array $tapescript): void { ?>
                         <li class="breadcrumb-item active">IELTS Listening – Question Formats</li>
                     </ol>
                 </nav>
+                <div style="display:inline-block;padding:.12rem .6rem;border-radius:999px;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#e0f2fe;color:#075985;margin-bottom:.4rem;">Lesson</div>
                 <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:.25rem;">IELTS Listening – Question Formats</h1>
                 <p class="text-muted mb-2">Seven official IELTS sample tasks, one for each common question format. Work through each one, check your answers, then read the tapescript to see where the answer — and the distractor — came from.</p>
-                <p class="small text-secondary mb-4"><i class="bi bi-info-circle me-1"></i>These are practice tasks, not a timed test, and your answers are not saved. Where a task has a <em>Listen</em> button it is a computer voice reading the official tapescript, not the real recording — your instructor may also read the tapescript aloud in class.</p>
+                <p class="small text-secondary mb-4"><i class="bi bi-info-circle me-1"></i>This is a <strong>lesson worksheet</strong>, not a test: these are practice tasks, not timed, and your answers are not saved. Where a task has a <em>Listen</em> button it is a computer voice reading the official tapescript, not the real recording — your instructor may also read the tapescript aloud in class.</p>
 
 <?php
 // ── 1. Form completion ────────────────────────────────────────────────
