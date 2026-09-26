@@ -4,18 +4,18 @@
 -- Rule (founder): a 1-month course is a Crash Course of 4 weeks / 8 classes; a 2-month course is a Masterclass of
 -- 8 weeks / 16 classes; "the major issue is to not have a duplicate -- remove that guy if someone else already exists".
 --
---   1 month  KEEP   IELTS_Aca_1Mo  -- 4 weeks / 8 classes (the Crash Course shape). Gets the Crash Course price and text,
---                                     and each class now points at the old-course page that matches its topic (the seed
---                                     had them one off: "Reading" opened the Listening page).
+--   1 month  KEEP   IELTS_Aca_1Mo  -- 4 weeks / 8 classes (the Crash Course shape). Gets the Crash Course price and text.
+--                                     Shape only, no content: weeks are "Week N", classes are "Class N", no topics and no
+--                                     pages yet (every class says Coming Soon until the instructor designs it).
 --            REMOVE IELTS_Aca_Crash -- the original 9-module / 61-lesson course (the "stray"). Its only two enrolments are
---                                     test accounts (Akkad, Victor) and are removed with it. Its page files stay on disk:
---                                     the fresh course's classes still open them until the instructor designs new ones.
+--                                     test accounts (Akkad, Victor) and are removed with it. Its page files stay on disk,
+--                                     unused.
 --   2 months KEEP   IELTS_Aca_2Mo  -- 8 weeks / 16 classes.
 --            REMOVE IELTS_Aca_Mst  -- the older Masterclass (no students, $50, no purchase route).
 --
 -- A row is removed ONLY if nobody is enrolled in it (after the two test enrolments are cleared) and it has no activity;
 -- otherwise it is left alone and the final SELECT still lists it. Safe to run more than once.
--- Run AFTER 126 and 129. Back up live first.
+-- Run AFTER 126, 128 and 129. Back up live first.
 -- ============================================================
 
 SET NAMES utf8mb4;
@@ -52,26 +52,32 @@ DELETE FROM courses WHERE id IN (@d1, @d2);
 -- 3. the surviving Crash Course: name, price, text (same as the other 1-month courses: 90,000 / 105,000 NGN, Selar link by length)
 UPDATE courses
    SET title = 'IELTS Academic Crash Course — 1 Month',
-       description = 'A focused 4-week IELTS Academic Crash Course: 8 classes (2 per week) covering Academic Reading, Writing Tasks 1 and 2, Listening and Speaking, ending with a full mock exam.',
+       description = 'A focused 4-week IELTS Academic Crash Course: 8 classes, 2 per week.',
        price = 90000.00,
        compare_price = 105000.00
  WHERE folder_name = 'IELTS_Aca_1Mo';
 UPDATE courses SET buy_url = 'https://selar.com/sls_ielts_celpip_crash_course' WHERE folder_name = 'IELTS_Aca_1Mo';
 
--- 4. each class opens the page for ITS topic. (module N of the old course: 2 Listening, 3 Reading, 4 Writing Task 1,
---    5 Writing Task 2, 6 Speaking Parts 1 & 2, 7 Speaking Part 3.) Class 8 is the mock exam: no page yet, so Coming Soon.
+-- 4. shape only: what goes inside each week / class is content and is decided later. Weeks are "Week N", classes are
+--    "Class N", no topic in any title, no page. Each class gets ONE piece (kind lesson, no page, status coming_soon)
+--    so the overview and the class say Coming Soon until the instructor designs it. Needs lesson_parts.status (migration 128).
+DELETE lp FROM lesson_parts lp
+  JOIN lessons l ON l.id = lp.lesson_id
+  JOIN modules m ON m.id = l.module_id
+  JOIN courses c ON c.id = m.course_id
+ WHERE c.folder_name = 'IELTS_Aca_1Mo';
 UPDATE lessons l
   JOIN modules m ON m.id = l.module_id
   JOIN courses c ON c.id = m.course_id
-   SET l.file_path = CASE (m.module_order - 1) * 2 + l.lesson_order
-        WHEN 1 THEN 'courses/IELTS_Aca_Crash/intro.php'
-        WHEN 2 THEN 'courses/IELTS_Aca_Crash/module3.php'
-        WHEN 3 THEN 'courses/IELTS_Aca_Crash/module4.php'
-        WHEN 4 THEN 'courses/IELTS_Aca_Crash/module5.php'
-        WHEN 5 THEN 'courses/IELTS_Aca_Crash/module2.php'
-        WHEN 6 THEN 'courses/IELTS_Aca_Crash/module6.php'
-        WHEN 7 THEN 'courses/IELTS_Aca_Crash/module7.php'
-        ELSE NULL END
+   SET l.title = CONCAT('Class ', (m.module_order - 1) * 2 + l.lesson_order),
+       l.file_path = NULL
+ WHERE c.folder_name = 'IELTS_Aca_1Mo';
+INSERT INTO lesson_parts (lesson_id, part_order, title, kind, file_path, status)
+SELECT l.id, 1, l.title, 'lesson', NULL, 'coming_soon'
+  FROM lessons l JOIN modules m ON m.id = l.module_id JOIN courses c ON c.id = m.course_id
+ WHERE c.folder_name = 'IELTS_Aca_1Mo';
+UPDATE modules m JOIN courses c ON c.id = m.course_id
+   SET m.module_title = CONCAT('Week ', m.module_order)
  WHERE c.folder_name = 'IELTS_Aca_1Mo';
 
 -- Verify: IELTS Academic = Crash Course 1 Month, Masterclass 2 Months, Masterclass 3 Months (three rows), 8 classes in the Crash Course
