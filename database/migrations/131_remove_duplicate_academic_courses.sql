@@ -41,12 +41,18 @@ DELETE wr FROM week_resources wr JOIN modules m ON m.id = wr.module_id WHERE m.c
 DELETE wv FROM week_vocab_words wv JOIN modules m ON m.id = wv.module_id WHERE m.course_id IN (@d1, @d2);
 DELETE lp FROM lesson_parts lp JOIN lessons l ON l.id = lp.lesson_id JOIN modules m ON m.id = l.module_id WHERE m.course_id IN (@d1, @d2);
 DELETE pr FROM lesson_progress pr JOIN lessons l ON l.id = pr.lesson_id JOIN modules m ON m.id = l.module_id WHERE m.course_id IN (@d1, @d2);
-DELETE FROM course_pacing_items WHERE course_id IN (@d1, @d2);
+-- course_pacing_items (migration 072) and course_ratings (129) may not exist on a server that has not run those yet:
+-- delete from them only when they exist, so a missing table never stops this file half-way.
+SET @sql = IF((SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'course_pacing_items') > 0,
+              'DELETE FROM course_pacing_items WHERE course_id IN (@d1, @d2)', 'SELECT 1');
+PREPARE st FROM @sql; EXECUTE st; DEALLOCATE PREPARE st;
 DELETE l FROM lessons l JOIN modules m ON m.id = l.module_id WHERE m.course_id IN (@d1, @d2);
 DELETE FROM modules WHERE course_id IN (@d1, @d2);
 DELETE FROM learning_points WHERE course_id IN (@d1, @d2);
 DELETE FROM assignments WHERE course_id IN (@d1, @d2);
-DELETE FROM course_ratings WHERE course_id IN (@d1, @d2);
+SET @sql = IF((SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'course_ratings') > 0,
+              'DELETE FROM course_ratings WHERE course_id IN (@d1, @d2)', 'SELECT 1');
+PREPARE st FROM @sql; EXECUTE st; DEALLOCATE PREPARE st;
 DELETE FROM courses WHERE id IN (@d1, @d2);
 
 -- 3. the surviving Crash Course: name, price, text (same as the other 1-month courses: 90,000 / 105,000 NGN, Selar link by length)

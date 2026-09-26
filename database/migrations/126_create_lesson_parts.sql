@@ -20,6 +20,9 @@
 -- Class 1 of IELTS Academic 2/3-Month, "Orientation & Diagnostic Assessment", is a lesson by the rule
 -- although it names an assessment -- left to the instructor.
 -- IDEMPOTENT: CREATE TABLE IF NOT EXISTS; the seed deletes and re-inserts every row.
+-- RUN ORDER WARNING: the seed below describes the courses AS THEY WERE when this file was written. Run it BEFORE 128, 129, 130 and 131.
+-- Re-running it AFTER them would put back the old pieces (CELPIP 2-Month week 9 / Mock 1 Review, IELTS Academic 1-Month topics).
+-- If it stops half-way, fix and re-run it, then continue with 128-131 in order; never run it again once 130/131 have run.
 -- ============================================================
 
 -- Titles contain a real em dash: force UTF-8 for this session so it is stored as one character

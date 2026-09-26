@@ -1760,9 +1760,23 @@ ALTER TABLE courses DROP COLUMN buy_url;
 
 ---
 
-## Run order for 126, 127 (+127b), 128, 129 (tested 2026-09-26 on a scratch copy of the database)
+## LIVE RUN ORDER (final audit 2026-09-26): pull academy, then 126 → 128 → 129 → 130 → 131
 
-**126 → 127 → 128.** 127 does **not** need 126 (either order gives the same result). **128 needs 126** (it adds a column to `lesson_parts`); run first, it stops with "table doesn't exist" and changes nothing. The code is safe at any stage: with none, some or all of the three run, every page still loads (checked as students on the catalogue, overviews, class pages, lesson pages and course pages); features simply switch on as each migration is run. Pull the code after running all three.
+Done on live already: 127 and 127b. Back up first. Each file is safe to re-run EXCEPT 128 and 129 (their first statement is an `ALTER TABLE ... ADD COLUMN`, so they run once) and 126 (never run it again after 130/131: it re-seeds the pre-130/131 pieces).
+
+| Order | File | Needs | Notes |
+|---|---|---|---|
+| 1 | 126 | | creates `lesson_parts` and seeds every piece |
+| 2 | 128 | 126 | adds `lesson_parts.status`; marks unbuilt tests/mocks and all PTE pieces Coming Soon |
+| 3 | 129 | | adds the six course-definition columns; standard names; Selar links by length; tutor; `course_ratings`; BEL course |
+| 4 | 130 | 126 | CELPIP 2-Month = 8 weeks / 16 classes. Works whether or not 121 ever ran (tested both ways on 5.7) |
+| 5 | 131 | 126, 128, 129 | one IELTS Academic Crash Course (shape only) + removes the old 61-lesson course and the old Masterclass. Skips `course_pacing_items` / `course_ratings` if a server lacks them. Leaves any row a real student is enrolled in |
+
+**Also upload / pull:** pull `academy`; pull `config` (`selar_purchases.php` is in the config repo, pushed 2026-09-26).
+
+**Rehearsed:** the whole sequence 126 → 128 → 129 → 130 → 131 was run on a MySQL 5.7.44 copy of the full local database (with the columns those files add removed first). It ended identical to local. Student-side sweep of 76 pages (every course overview / detail page, catalogue, dashboard, every class and piece page): 0 errors. Lint of all 397 PHP files in academy + config: clean.
+
+**Not verifiable from here:** live's state of 118-125 (log shows them unticked). 121 and 122 change CELPIP 2/3-Month (130 copes either way); 124 and 125 are needed before the sls-admin score-correction feature works on live.
 
 ---
 
