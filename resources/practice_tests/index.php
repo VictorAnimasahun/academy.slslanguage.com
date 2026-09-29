@@ -22,6 +22,14 @@ $sections = [
             ['file' => 'ielts_speaking_002.php',     'title' => 'Speaking Practice 2 – Online Shopping', 'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],
             ['file' => 'ielts_speaking_003.php',     'title' => 'Speaking Practice 3 – Famous People',   'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],
             ['file' => 'ielts_speaking_004.php',     'title' => 'Speaking Practice 4 – Science',         'section' => 'Speaking',        'icon' => 'bi-mic',           'meta' => '~15 min · Parts 1–3'],
+            // 2026-09-30: the Academic course's own Writing/Speaking Test 1-4 slots are already fully wired
+            // (see courses/IELTS_Aca_*Mo), so this Cambridge 17 Test 1 content would otherwise sit unused in
+            // the bank; moved here instead of being wired into a course, per instructor policy.
+            ['file' => 'ielts_writing_academic_005.php', 'title' => 'Academic Writing – Practice Test 5',    'section' => 'Writing (Academic)', 'icon' => 'bi-file-earmark-text', 'meta' => '60 min · Task 1 + Task 2'],
+            ['file' => 'ielts_speaking_005.php',     'title' => 'Speaking Practice 5 – History & Neighbourhoods',  'section' => 'Speaking', 'icon' => 'bi-mic', 'meta' => '~15 min · Parts 1–3'],
+            ['file' => 'ielts_speaking_006.php',     'title' => 'Speaking Practice 6 – Reading & Big Cities',       'section' => 'Speaking', 'icon' => 'bi-mic', 'meta' => '~15 min · Parts 1–3'],
+            ['file' => 'ielts_speaking_007.php',     'title' => 'Speaking Practice 7 – Drinks & Monuments',         'section' => 'Speaking', 'icon' => 'bi-mic', 'meta' => '~15 min · Parts 1–3'],
+            ['file' => 'ielts_speaking_008.php',     'title' => 'Speaking Practice 8 – Maps & Being in a Hurry',    'section' => 'Speaking', 'icon' => 'bi-mic', 'meta' => '~15 min · Parts 1–3'],
         ],
     ],
     'CELPIP' => [
