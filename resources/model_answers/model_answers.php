@@ -11,6 +11,9 @@ $ielts_tests = [
     2 => ['task1' => 'Task 1: Letter · Band 6.5', 'task2' => 'Task 2: Essay · Band 5.5'],
     3 => ['task1' => 'Task 1: Letter · Band 7.0', 'task2' => 'Task 2: Essay · Band 6.0'],
     4 => ['task1' => 'Task 1: Email · Band 5.0',  'task2' => 'Task 2: Essay · Band 7.0'],
+    // Test 5 (added 2026-10-03): a single Task 1 letter, AI-assessed rather than an official Cambridge
+    // script -- it has no task2, and model_answers_test.php's own subtitle flags the source difference.
+    5 => ['task1' => 'Task 1: Letter · Band 8.0', 'task2' => null],
 ];
 ?>
 <!DOCTYPE html>
@@ -80,7 +83,7 @@ $ielts_tests = [
                         <div class="test-num"><?php echo $num; ?></div>
                         <div>
                             <div class="test-title">Test <?php echo $num; ?></div>
-                            <div class="test-meta"><?php echo $test['task1']; ?> &nbsp;&middot;&nbsp; <?php echo $test['task2']; ?></div>
+                            <div class="test-meta"><?php echo $test['task1']; ?><?php if (!empty($test['task2'])): ?> &nbsp;&middot;&nbsp; <?php echo $test['task2']; ?><?php endif; ?></div>
                         </div>
                         <i class="bi bi-chevron-right test-arrow"></i>
                     </a>

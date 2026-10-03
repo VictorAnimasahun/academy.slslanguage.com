@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $test_num = isset($_GET['test']) ? intval($_GET['test']) : 0;
-if ($test_num < 1 || $test_num > 4) {
+if ($test_num < 1 || $test_num > 5) {
     header("Location: model_answers.php");
     exit();
 }
@@ -86,6 +86,24 @@ $all_tests = [
                 'question' => "Some people say that now is the best time in history to be living.\n\nWhat is your opinion about this?\nWhat other time in history would be interesting to live in?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.\nWrite at least 250 words.",
                 'answer' => "I personally agree with those who claim that the present days are the best period in the history of mankind to be living.\n\nBreakthroughs in science and advancements in technology have dramatically improved our standards of living, at least in the Western world, making life actually worth living. Advances in medical treatments and the invention of new drugs all have allowed us to live long and healthy lives. We no longer face the problems of food and water scarcity, thanks to new agricultural techniques that allow farmers to produce larger quantities of food. Everyone, no matter its race and religion, can receive a proper education and make a decent living out of a good job. We should not also undervalue things such as the freedom of speech, which has not always been guaranteed in the past.\n\nHowever, if I had the chance to choose an other time in our history to live in, I would opt for ancient Rome. I think it would be interesting to try living in a society whose beliefs and values significantly differs from our. In today's world, the most valuable personal \"qualities\" are selfishness and greed. We tend to put ourselves before other, whereas, in my opinion, things were different for the ancient civilizations, for wich the society as a whole came first.\n\nIn the end, I think we could learn some very interesting lessons from our past, without having to sacrifice all our the efforts made to get where we are today.",
                 'comment' => "This is a well-developed response which presents a range of evidence to justify the opinion expressed, including improvements in science, technology, medical treatments, agriculture, education, employment opportunities and freedom of speech. There is also a clear rationale for the 'other' time in history that would be interesting to live in.\n\nIdeas are arranged logically with one paragraph exploring each part of the question. However, we cannot say that paragraphing is used appropriately.\n\nThe first and last paragraphs have only one sentence, and it is not clear if the final sentence is a new paragraph. The overall score of this response would be improved with an appropriate introductory and concluding paragraph. Other aspects of cohesion are good [those who claim that | whose beliefs | to get where we are today] with some slips [its race / their race | our / ours].\n\nThe use of vocabulary is precise [Breakthroughs in science and advancements in technology | making life ... worth living | freedom of speech | ancient civilizations] despite a few slips [an other / another | wich / which] and the range of grammatical structures is wide with frequent examples of error-free complex sentences. There are a few slips, e.g., third-person agreement [differs / differ] and plural ending [before other / before others], but overall there is good control.",
+            ],
+        ],
+    ],
+    5 => [
+        'label' => 'Test 5',
+        // Not from the Cambridge collection like Tests 1-4: a candidate letter assessed by AI against the
+        // same four IELTS Writing criteria, supplied by the instructor 2026-10-03. Kept separate and
+        // labelled honestly (see 'source_note' and 'comment_label') rather than folded in as if it were
+        // another official examiner script.
+        'source_note' => 'AI-assessed sample, not from the official Cambridge collection',
+        'tasks' => [
+            [
+                'id' => 9, 'task_num' => 1, 'title' => 'Task 1: Letter to the Admissions Tutor',
+                'type' => 'General Training Letter', 'band' => '8.0',
+                'comment_label' => 'AI Feedback',
+                'question' => "You have been invited to attend an interview for a place on a course of study at a college. Unfortunately, because of a previous appointment, you cannot go to the interview at the time they wish.\n\nWrite a letter to the admissions tutor. In your letter:\n• explain why you cannot keep the appointment\n• apologise and offer to arrange a new appointment\n• ask how long the interview will be, and whether there will be any tests during it\n\nYou should write at least 150 words. You do NOT need to write any addresses. Begin your letter 'Dear Sir or Madam,'.",
+                'answer' => "Dear Sir or Madam,\n\nI received your invitation for an interview that would secure a place for me in your College's Paleontology program. Sadly, I am unable to attend the interview this Tuesday as I have made arrangements for another appointment.\n\nFirst of all, I want you to know that I deeply appreciate the invitation. Paleontology has been a childhood passion of mine, and studying at your college would mean the world to me. However, I have a medical appointment slated for the exact day the program's interview is expected to take place. This appointment took several months to secure and it is for a serious medical condition, so I am unable to miss it.\n\nI offer my sincerest apologies and I ask, can I make a new appointment? I am free on Wednesday and the rest of the week so any one of these days would be fine. Additionally, I'd like to know how long the interview will be. Are there going to be any tests? Do I need to come in with any writing material or am I going to be provided everything I need?\n\nI hope to hear from you soon.\n\nYours Sincerely,\nVictor Animasahun.",
+                'comment' => "Overall: Band 8. The response aptly covers all required areas of the task. The letter was well-written, with a consistent formal tone. Adequate attention was given to the letter's purpose, and it was presented with clarity. The response demonstrated a wide vocabulary range and flexibility in grammatical usage. To improve, strive for perfection in grammatical variety and maintain full relevance in all aspects of the task.\n\nTASK ACHIEVEMENT — 7\nStrengths: all elements of the task were addressed with appropriate detail; the purpose of the letter was clear throughout, with an evident understanding of the task's requirements; adequate and relevant information was given about the inability to attend the interview and the request for rescheduling.\nWeaknesses: one minor lapse was noticed in the presentation of the purpose of the medical check-up, which made the situation not totally clear to the reader.\nTo move up a band: provide a logical and comprehensive detailing of each point to enhance the task's relevance.\n\nCOHERENCE AND COHESION — 8\nStrengths: the overall progression of the letter was clear, with organised ideas throughout; cohesive devices linking ideas were effective and sufficiently used; consistent paragraphing enhanced the clear organisation of information.\nWeaknesses: two minor lapses in sentence cohesion were noticed, causing a slight break in the flow of ideas; minor misuse of the linking word 'However' in the context it was used.\nTo move up a band: use more diverse and flexible linking devices, with perfect organisation of paragraphing.\n\nLEXICAL RESOURCE — 8\nStrengths: a wide range of vocabulary was used with great control; effective use of less common and idiomatic expressions; precision in descriptions and explanation of points.\nWeaknesses: one or two lapses in word choice; the word 'slated' is a little casual for the formal tone of the letter (a more formal synonym, e.g. 'scheduled', would suit the register better).\nTo move up a band: ensure consistent use of appropriate words in line with the formal register.\n\nGRAMMATICAL RANGE AND ACCURACY — 8\nStrengths: a wide range of grammatical structures was demonstrated; frequent and flexible use of complex sentences; a high level of accuracy in sentence structure with minimal punctuation errors.\nWeaknesses: slight repetitive use of certain grammatical structures.\nTo move up a band: show more variety in sentence structure.",
             ],
         ],
     ],
@@ -188,7 +206,7 @@ $test = $all_tests[$test_num];
                 <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:0.2rem;">
                     IELTS Writing — <?php echo htmlspecialchars($test['label']); ?>
                 </h1>
-                <p class="text-muted mb-4" style="font-size:0.9rem;">Cambridge IELTS 16 General Training · Sample answers with examiner feedback</p>
+                <p class="text-muted mb-4" style="font-size:0.9rem;"><?= isset($test['source_note']) ? htmlspecialchars($test['source_note']) : 'Cambridge IELTS 16 General Training · Sample answers with examiner feedback' ?></p>
 
                 <?php
                 $colors = ['blue', 'pink'];
@@ -232,7 +250,7 @@ $test = $all_tests[$test_num];
                                     <div class="modal-section-label">Sample Answer</div>
                                     <p class="modal-passage"><?php echo htmlspecialchars($task['answer']); ?></p>
                                     <hr>
-                                    <div class="modal-section-label">Examiner's Comment</div>
+                                    <div class="modal-section-label"><?= htmlspecialchars($task['comment_label'] ?? "Examiner's Comment") ?></div>
                                     <p class="modal-passage"><?php echo htmlspecialchars($task['comment']); ?></p>
                                 </div>
                             </div>
