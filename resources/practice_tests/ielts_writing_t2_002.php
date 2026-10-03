@@ -111,6 +111,9 @@ $wordTarget = 250;
     const TARGET = <?= $wordTarget ?>;
     let timeLeft = <?= $timeLimit ?>;
 
+    // Build the question string from the prompt box HTML for practice mode
+    const QUESTION = "In many countries today, crime novels and TV crime dramas are becoming more and more popular.\n\nWhy do you think these books and TV shows are popular?\n\nWhat is your opinion of crime fiction and TV crime dramas?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.";
+
     const timerEl  = document.getElementById('timerEl');
     const textarea = document.getElementById('responseText');
     const wordEl   = document.getElementById('wordCount');
@@ -152,6 +155,7 @@ $wordTarget = 250;
             test_code: '<?= $testCode ?>',
             type:      'writing_task2',
             title:     'IELTS Writing Task 2 – Practice 2',
+            question:  QUESTION,
             response:  textarea.value,
             words:     countWords(textarea.value),
             time:      <?= $timeLimit ?> - timeLeft,

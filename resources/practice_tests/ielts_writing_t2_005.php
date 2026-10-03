@@ -110,6 +110,9 @@ $wordTarget = 250;
     const TARGET = <?= $wordTarget ?>;
     let timeLeft = <?= $timeLimit ?>;
 
+    // Build the question string from the prompt box HTML for practice mode
+    const QUESTION = "In many countries, paying for things using mobile phone (cellphone) apps is becoming increasingly common.\n\nDoes this development have more advantages or more disadvantages?\n\nGive reasons for your answer and include any relevant examples from your own knowledge or experience.";
+
     const timerEl  = document.getElementById('timerEl');
     const textarea = document.getElementById('responseText');
     const wordEl   = document.getElementById('wordCount');
@@ -151,6 +154,7 @@ $wordTarget = 250;
             test_code: '<?= $testCode ?>',
             type:      'writing_task2',
             title:     'IELTS Writing Task 2 – Practice 5',
+            question:  QUESTION,
             response:  textarea.value,
             words:     countWords(textarea.value),
             time:      <?= $timeLimit ?> - timeLeft,
