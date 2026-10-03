@@ -108,6 +108,9 @@ $wordTarget = 250;
     const TARGET = <?= $wordTarget ?>;
     let timeLeft = <?= $timeLimit ?>;
 
+    // Build the question string from the prompt box HTML for practice mode
+    const QUESTION = "Some people believe that it is best to accept a bad situation, such as an unsatisfactory job or shortage of money. Others argue that it is better to try to improve such situations.\n\nDiscuss both these views and give your own opinion.";
+
     const timerEl  = document.getElementById('timerEl');
     const textarea = document.getElementById('responseText');
     const wordEl   = document.getElementById('wordCount');
@@ -149,6 +152,7 @@ $wordTarget = 250;
             test_code: '<?= $testCode ?>',
             type:      'writing_task2',
             title:     'IELTS Writing Task 2 – Practice 1',
+            question:  QUESTION,
             response:  textarea.value,
             words:     countWords(textarea.value),
             time:      <?= $timeLimit ?> - timeLeft,
