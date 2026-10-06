@@ -72,8 +72,8 @@ if (!function_exists('render_lesson_shell')) {
     function lesson_locked_html(array $ctx): string {
         $h = fn($x) => htmlspecialchars((string)$x, ENT_QUOTES, 'UTF-8');
         return '<div class="highlight-box"><h4 style="color:var(--accent);"><i class="bi bi-lock-fill me-2"></i>Locked</h4>'
-             . '<p class="mb-2">This class requires the <strong>' . $h(ucfirst($ctx['min_tier'])) . '</strong> plan.</p>'
-             . '<a href="' . ACADEMY_URL . 'upgrade.php?required=' . $h($ctx['min_tier']) . '" class="btn btn-primary btn-sm"><i class="bi bi-lightning-charge me-1"></i>Upgrade to Access</a></div>';
+             . '<p class="mb-2">This class is part of a paid course. Buy the course to unlock it.</p>'
+             . '<a href="' . ACADEMY_URL . 'courses/courses_catalogue.php" class="btn btn-primary btn-sm"><i class="bi bi-lightning-charge me-1"></i>Upgrade to Access</a></div>';
     }
 
     /**
@@ -141,8 +141,8 @@ if (!function_exists('render_lesson_shell')) {
             <?php if (!$canAccess): ?>
                 <div class="highlight-box">
                     <h4 style="color:var(--accent);"><i class="bi bi-lock-fill me-2"></i>Locked</h4>
-                    <p class="mb-2">This class requires the <strong><?= $h(ucfirst($minTier)) ?></strong> plan.</p>
-                    <a href="<?= ACADEMY_URL ?>upgrade.php?required=<?= $h($minTier) ?>" class="btn btn-primary btn-sm"><i class="bi bi-lightning-charge me-1"></i>Upgrade to Access</a>
+                    <p class="mb-2">This class is part of a paid course. Buy the course to unlock it.</p>
+                    <a href="<?= ACADEMY_URL ?>courses/courses_catalogue.php" class="btn btn-primary btn-sm"><i class="bi bi-lightning-charge me-1"></i>Upgrade to Access</a>
                 </div>
             <?php elseif ($hasBody): ?>
                 <div class="lesson-content mb-4"><?= $bodyHtml ?></div>

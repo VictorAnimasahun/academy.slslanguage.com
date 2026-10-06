@@ -83,7 +83,7 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1', 3 => '#16a34a'];
                         <?php if ($student_tier_level >= 4): ?>
                             <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i>Access: Fluent Plan</span>
                         <?php else: ?>
-                            <a href="../../upgrade.php?required=fluent" class="btn btn-primary btn-sm">
+                            <a href="../../courses/courses_catalogue.php" class="btn btn-primary btn-sm">
                                 <i class="bi bi-lightning-charge me-1"></i>Upgrade to Access
                             </a>
                         <?php endif; ?>

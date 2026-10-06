@@ -280,7 +280,7 @@ function renderWeekPanel(PDO $db, int $courseId, int $studentId, ?int $moduleId 
         $need = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$l['min_tier']] ?? 1;
         $locked = $tier < $need;
         $fp = (string)$l['file_path'];
-        if ($locked) $href = ACADEMY_URL . 'upgrade.php?required=' . urlencode($l['min_tier']);
+        if ($locked) $href = ACADEMY_URL . 'courses/courses_catalogue.php';
         elseif ($fp === '') $href = weekIntroUrl($moduleId, 'classes');
         else $href = ACADEMY_URL . $fp . (str_contains($fp, '?') ? '&' : '?') . 'from=' . urlencode($courseFolder);
         $mark = isset($done[(int)$l['id']]) ? '&#10003; ' : ($locked ? '&#128274; ' : '');

@@ -70,8 +70,8 @@ $canAccess = can_access($minTier);
             <?php if (!$canAccess): ?>
                 <div class="highlight-box">
                     <h4 style="color:var(--accent);"><i class="bi bi-lock-fill me-2"></i>Locked</h4>
-                    <p class="mb-2">This class requires the <strong><?= htmlspecialchars(ucfirst($minTier)) ?></strong> plan.</p>
-                    <a href="../../upgrade.php?required=<?= htmlspecialchars($minTier) ?>" class="btn btn-primary btn-sm">
+                    <p class="mb-2">This class is part of a paid course. Buy the course to unlock it.</p>
+                    <a href="../../courses/courses_catalogue.php" class="btn btn-primary btn-sm">
                         <i class="bi bi-lightning-charge me-1"></i>Upgrade to Access
                     </a>
                 </div>

@@ -142,6 +142,11 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             text-overflow: ellipsis;
             max-width: 200px;
         }
+
+        /* Dark mode: the card is near-black, so the label and progress track need light colours */
+        body.dark .progress-course-label { color: #e5e7eb; }
+        body.dark .progress-track { background: #374151 !important; }
+        body.dark .progress-pct { color: #9ca3af !important; }
     </style>
 </head>
 
@@ -446,9 +451,9 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                         <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-baseline mb-1">
                                 <span class="progress-course-label"><?= htmlspecialchars($course['title']) ?></span>
-                                <span style="font-size:.75rem;color:#6b7280;flex-shrink:0;margin-left:.5rem;"><?= $pct ?>%</span>
+                                <span class="progress-pct" style="font-size:.75rem;color:#6b7280;flex-shrink:0;margin-left:.5rem;"><?= $pct ?>%</span>
                             </div>
-                            <div style="height:6px;background:#f0f4ff;border-radius:4px;">
+                            <div class="progress-track" style="height:6px;background:#f0f4ff;border-radius:4px;">
                                 <div style="width:<?= $pct ?>%;height:100%;background:<?= $barCol ?>;border-radius:4px;transition:width .6s;"></div>
                             </div>
                         </div>

@@ -132,7 +132,7 @@ $color = '#0b77ff';
                     $need = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$l['min_tier']] ?? 1;
                     $locked = $tier < $need;
                     $fp = (string)$l['file_path'];
-                    $href = $locked ? '../upgrade.php?required=' . urlencode($l['min_tier'])
+                    $href = $locked ? '../courses/courses_catalogue.php'
                           : ($fp === '' ? '#classes' : ACADEMY_URL . $fp . (str_contains($fp, '?') ? '&' : '?') . 'from=' . urlencode($folder));
                     $isDone = isset($done[(int)$l['id']]);
                     $note = $locked ? 'Upgrade to unlock' : ($isDone ? 'Completed' : ((int)$l['duration_minutes'] ? (int)$l['duration_minutes'] . ' min' : ''));

@@ -143,13 +143,12 @@ function render_upgrade_prompt(string $required_tier, string $content_label = 't
     ">
         <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
         <h4 style="color: #1e293b; margin-bottom: 0.5rem;">
-            This content requires the <strong><?= htmlspecialchars($label) ?></strong> plan
+            This content is part of a paid course
         </h4>
         <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
-            You're currently on the <strong><?= htmlspecialchars($current_label) ?></strong> plan.
-            Upgrade to unlock <?= htmlspecialchars($content_label) ?> and everything at this level.
+            Buy the course to unlock this content.
         </p>
-        <a href="<?= defined('ACADEMY_URL') ? ACADEMY_URL : '/academy/' ?>upgrade.php?required=<?= urlencode($required_tier) ?>"
+        <a href="<?= defined('ACADEMY_URL') ? ACADEMY_URL : '/academy/' ?>courses/courses_catalogue.php"
            style="
                display: inline-block;
                background: linear-gradient(90deg, #0b77ff, #6366f1);

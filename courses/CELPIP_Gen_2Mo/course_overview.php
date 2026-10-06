@@ -90,7 +90,7 @@ foreach (range(1, 8) as $w) {
                         <?php if ($student_tier_level >= 3): ?>
                             <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i>Access: Advanced Plan</span>
                         <?php else: ?>
-                            <a href="../../upgrade.php?required=advanced" class="btn btn-primary btn-sm">
+                            <a href="../../courses/courses_catalogue.php" class="btn btn-primary btn-sm">
                                 <i class="bi bi-lightning-charge me-1"></i>Upgrade to Access
                             </a>
                         <?php endif; ?>

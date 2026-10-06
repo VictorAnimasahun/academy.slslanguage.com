@@ -85,7 +85,7 @@ $month_colors = [1 => '#0b77ff'];
                                 <i class="bi bi-check-circle me-1"></i>Access: Intermediate Plan
                             </span>
                         <?php else: ?>
-                            <a href="../../upgrade.php?required=intermediate" class="btn btn-primary btn-sm">
+                            <a href="../../courses/courses_catalogue.php" class="btn btn-primary btn-sm">
                                 <i class="bi bi-lightning-charge me-1"></i>Upgrade to Access
                             </a>
                         <?php endif; ?>
