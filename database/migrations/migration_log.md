@@ -1939,6 +1939,15 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 **What it does:** replaces the static `mentors.php` with a real, bookable Mentors feature (SLS-Academy-App-Spec.md 8.7/8.22, MEN-01..04, MBK-01..04). `mentors` holds the coach profile, `mentor_availability` a simple weekly day/time-range template (not a real calendar integration), `mentor_requests` the booking itself (requested/confirmed/declined/cancelled). Seeded with the one real instructor (Victor Animasahun, linked to his existing `staff_accounts` row) and a Mon-Fri 9am-5pm hourly template -- not the spec's sample "Coach Scholar"/"Coach Vee" personas, which are prototype sample content, not real people. The founder can add more mentors by inserting rows directly for now; no admin UI yet.
 
+## 143 — students.last_seen_at
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-07 | Ran twice on local 8.0 (second run: "already exists -- skipping"). Also run twice on MySQL 5.7.44 (throwaway instance, minimal `students` shape): same. `DESCRIBE students` confirmed the column both times. Checked the heartbeat and `students.php` end to end with two throwaway students in the same course: classmate shows real target band and "online now" when `last_seen_at` is recent. |
+| Live  | [ ] | | `bootstrap.php` (adds the heartbeat write) and `students.php` (was a static Coming Soon page) both change -- pull before running. Safe to repeat. |
+
+**What it does:** adds `students.last_seen_at`, stamped by `bootstrap.php` on every signed-in web page load (throttled to once a minute per student). Backs the "online now" dot on the real `students.php` classmates list (SLS-Academy-App-Spec.md 8.5, STU-01..05): classmates are students sharing any course enrollment with the viewer, shown with name, initials (tinted stably by id, not list position -- STU-05), target band (now real, from migration 141) and online status, with a client-side search filter. Web only for now -- the mobile app's own API requests don't update this yet.
+
 ---
 
 ## Rules

@@ -74,6 +74,14 @@ if (isset($_SESSION['user_id'])) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $unread_count = intval($row['unread_count']);
     }
+
+    // "Online now" heartbeat for Students/classmates (STU-03: real-time or at most 2 minutes
+    // stale). Throttled to once a minute per student so this doesn't write on every single
+    // request. Web only for now -- the mobile app's own requests don't hit this file.
+    executeQuery($db, "
+        UPDATE students SET last_seen_at = NOW()
+        WHERE id = ? AND (last_seen_at IS NULL OR last_seen_at < NOW() - INTERVAL 60 SECOND)
+    ", [$uid]);
 }
 
 
