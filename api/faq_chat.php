@@ -168,12 +168,14 @@ $system = "You are the helpful assistant on the SLS website and the EduHub learn
     . "Contact: email {$kb['contact']['email']}, phone {$kb['contact']['phone']}.\n\n"
     . "Common questions:\n" . implode("\n\n", $faqLines);
 
+// Gemini is the provider this site has a working key for, so it goes first. Claude is only a
+// backup for when a real Anthropic key is in config/api_keys.php.
 $reply = null;
-if (defined('ANTHROPIC_API_KEY') && ANTHROPIC_API_KEY !== '') {
-    $reply = faqAskClaude($system, $messages);
-}
-if ($reply === null && defined('GEMINI_API_KEY') && GEMINI_API_KEY !== '') {
+if (defined('GEMINI_API_KEY') && GEMINI_API_KEY !== '') {
     $reply = faqAskGemini($system, $messages);
+}
+if ($reply === null && defined('ANTHROPIC_API_KEY') && ANTHROPIC_API_KEY !== '') {
+    $reply = faqAskClaude($system, $messages);
 }
 if ($reply === null || $reply === '') {
     faqFail(502, 'The assistant could not answer just now. Please try again.');
