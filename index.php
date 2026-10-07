@@ -523,5 +523,6 @@ $userEmail = $isLoggedIn ? $_SESSION['user_email'] : '';
             observer.observe(statsSection);
         }
     </script>
+    <script src="assets/js/faq_chat.js" defer></script>
 </body>
 </html>
