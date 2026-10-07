@@ -43,6 +43,17 @@ function normalizeMobileStudent(array $row): array {
 }
 
 /**
+ * A SQL fragment that normalizes a DATETIME/TIMESTAMP column to true UTC, for endpoints that
+ * serialize timestamps as ISO 8601 UTC (spec section 11). MySQL's own clock here runs its session
+ * time zone (SYSTEM), not UTC, while PHP is UTC (found while building migration 144/v1) -- this
+ * computes the live offset with UTC_TIMESTAMP() (always available, no named-timezone tables
+ * needed) rather than assume the two already agree.
+ */
+function academyUtcExpr(string $column): string {
+    return "DATE_SUB($column, INTERVAL TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), NOW()) SECOND)";
+}
+
+/**
  * Call this at the top of a mobile endpoint to require auth.
  * Sends a 401 and exits if there's no valid token.
  */
