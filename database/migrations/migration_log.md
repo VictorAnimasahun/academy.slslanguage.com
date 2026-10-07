@@ -1930,6 +1930,15 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 **What it does:** adds `exam_type` (`ielts_academic` / `ielts_general` / `celpip`), `target_band`, `baseline_band` (both `DECIMAL(2,1)`, the IELTS 0.0-9.0 half-band scale) and `test_date` to `students`. Backs the mobile app's "Set your test date" editor (SLS-Academy-App-Spec.md ME-01, HOME-02/03). CELPIP's CLB 1-12 scale doesn't fit the same column cleanly (spec OQ-7, still open) -- for now a CELPIP student's target/baseline band is stored unvalidated in the same column; revisit when OQ-7 is settled.
 
+## 142 — Mentors: mentors, mentor_availability, mentor_requests
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-07 | Ran twice on local 8.0 (`CREATE TABLE IF NOT EXISTS` + `NOT EXISTS`-guarded seeds, no duplicates either run). Also run twice on MySQL 5.7.44 (throwaway instance, minimal `students`/`staff_accounts` shape): same result -- one mentor, 5 availability rows both times. Checked as a temp student end to end: booking a slot, trying to double-book the same slot as a second student (correctly rejected), cancelling, re-booking. |
+| Live  | [ ] | | `mentors.php` is replaced (was a static "Coming Soon" page) and `mentor_book.php` is new -- pull before running. Safe to repeat. |
+
+**What it does:** replaces the static `mentors.php` with a real, bookable Mentors feature (SLS-Academy-App-Spec.md 8.7/8.22, MEN-01..04, MBK-01..04). `mentors` holds the coach profile, `mentor_availability` a simple weekly day/time-range template (not a real calendar integration), `mentor_requests` the booking itself (requested/confirmed/declined/cancelled). Seeded with the one real instructor (Victor Animasahun, linked to his existing `staff_accounts` row) and a Mon-Fri 9am-5pm hourly template -- not the spec's sample "Coach Scholar"/"Coach Vee" personas, which are prototype sample content, not real people. The founder can add more mentors by inserting rows directly for now; no admin UI yet.
+
 ---
 
 ## Rules
