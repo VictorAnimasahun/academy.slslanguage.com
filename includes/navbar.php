@@ -38,12 +38,22 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <i class="bi bi-collection-fill me-2"></i>Resources
         </a>
 
-        
+
+		<a class="nav-link <?php echo (in_array($current_page, ['threads.php', 'thread_view.php'])) ? 'active' : ''; ?>"
+		   href="<?php echo ACADEMY_URL; ?>threads.php">
+				<i class="bi bi-chat-dots-fill me-2"></i>
+				Messages
+		</a>
+
+		<!-- This was labelled "Messages" until the real two-way Messages above was built -- it is
+		     actually the one-way announcement feed (broadcast_messages), already presented like a
+		     notifications feed via the bell/drawer in topbar.php/footer.php. Same page, same
+		     unread-count wiring (get_unread_count.php); only the label and icon changed. -->
 		<a class="nav-link <?php echo ($current_page == 'messages.php') ? 'active' : ''; ?>"
 		   href="<?php echo ACADEMY_URL; ?>messages.php"
 		   id="msgNavLink">
-				<i class="bi bi-chat-dots-fill me-2"></i>
-				Messages
+				<i class="bi bi-bell-fill me-2"></i>
+				Notifications
 				<span class="navbar-badge-unread badge bg-danger ms-2"
 					style="font-size:0.7rem; animation:pulse 1.8s infinite; display:none;">
 					0

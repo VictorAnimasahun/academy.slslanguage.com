@@ -1957,6 +1957,15 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 **What it does:** replaces `events.php`'s single hand-written HTML event card with a real, data-driven list (SLS-Academy-App-Spec.md 8.12/8.23, EVT-01..06): upcoming events soonest first, a collapsed past-events section, and Join/Going/"I can't make it" registration. The existing Gen-Z Experience event is seeded as a real row rather than hardcoded HTML/JS, keeping its existing detail page (`events/gen_z_experience.php`, not rebuilt). Found while seeding it: MySQL's clock (`NOW()`) currently reads about an hour ahead of PHP's (PHP is UTC, MySQL is SYSTEM) -- a pre-existing mismatch, noted in the migration file, not fixed here.
 
+## 145 — real two-way Messages: threads, thread_participants, thread_messages
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-07 | Ran twice on local 8.0 and twice on a throwaway MySQL 5.7.44 instance (minimal `students`/`mentors` shape); idempotent both. Checked end to end with a throwaway student and the real mentor (Victor): start a conversation, send, the mentor's side shows it unread, mentor replies, both sides show the right bubble alignment. Also loaded `learning_dashboard.php` as a throwaway student after the `navbar.php` change -- both "Messages" and "Notifications" render, no PHP errors or warnings in the output. Cleaned up all test data and sessions afterward. |
+| Live  | [ ] | | New files (`threads.php`, `thread_view.php`) plus a changed `includes/navbar.php` (relabels the old "Messages" item to "Notifications", adds a real "Messages" item) -- pull before running. Safe to repeat. |
+
+**What it does:** the web's "Messages" was always the one-way `broadcast_messages` announcement feed (`messages.php`/`message_view.php`), never a real conversation. This adds one: a student can message a mentor, the mentor (a `staff_accounts`-linked student row) is added as a thread participant automatically on the first message, and `thread_participants.last_read_message_id` drives the unread count. `includes/navbar.php` now has a real "Messages" item (`threads.php`) and relabels the old one "Notifications" (same page, same unread-count wiring -- `messages.php`/`get_unread_count.php` untouched) since the bell/drawer in `topbar.php`/`footer.php` already presented it that way. Group threads (MSG-05) are not built -- coach threads only.
+
 ---
 
 ## Rules
