@@ -1926,7 +1926,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-07 | Ran twice on local 8.0 (no error, all four columns show "already exists -- skipping" the second time). Also run twice on MySQL 5.7.44 (throwaway instance, minimal `students` shape): same result. `DESCRIBE students` confirmed the four new columns and types on both. |
-| Live  | [ ] | | Safe to repeat. No existing feature reads or writes these columns yet, so there is no live behaviour change until `api/mobile_update_goal.php` and the app's editor screen are merged and pulled. |
+| Live  | [x] | 2026-10-08 | Ran clean. `DESCRIBE students` confirmed on live (phpMyAdmin). |
 
 **What it does:** adds `exam_type` (`ielts_academic` / `ielts_general` / `celpip`), `target_band`, `baseline_band` (both `DECIMAL(2,1)`, the IELTS 0.0-9.0 half-band scale) and `test_date` to `students`. Backs the mobile app's "Set your test date" editor (SLS-Academy-App-Spec.md ME-01, HOME-02/03). CELPIP's CLB 1-12 scale doesn't fit the same column cleanly (spec OQ-7, still open) -- for now a CELPIP student's target/baseline band is stored unvalidated in the same column; revisit when OQ-7 is settled.
 
@@ -1935,7 +1935,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-07 | Ran twice on local 8.0 (`CREATE TABLE IF NOT EXISTS` + `NOT EXISTS`-guarded seeds, no duplicates either run). Also run twice on MySQL 5.7.44 (throwaway instance, minimal `students`/`staff_accounts` shape): same result -- one mentor, 5 availability rows both times. Checked as a temp student end to end: booking a slot, trying to double-book the same slot as a second student (correctly rejected), cancelling, re-booking. |
-| Live  | [ ] | | `mentors.php` is replaced (was a static "Coming Soon" page) and `mentor_book.php` is new -- pull before running. Safe to repeat. |
+| Live  | [x] | 2026-10-08 | Ran clean after pulling. Confirmed via `SHOW TABLES` on live. |
 
 **What it does:** replaces the static `mentors.php` with a real, bookable Mentors feature (SLS-Academy-App-Spec.md 8.7/8.22, MEN-01..04, MBK-01..04). `mentors` holds the coach profile, `mentor_availability` a simple weekly day/time-range template (not a real calendar integration), `mentor_requests` the booking itself (requested/confirmed/declined/cancelled). Seeded with the one real instructor (Victor Animasahun, linked to his existing `staff_accounts` row) and a Mon-Fri 9am-5pm hourly template -- not the spec's sample "Coach Scholar"/"Coach Vee" personas, which are prototype sample content, not real people. The founder can add more mentors by inserting rows directly for now; no admin UI yet.
 
@@ -1944,7 +1944,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-07 | Ran twice on local 8.0 (second run: "already exists -- skipping"). Also run twice on MySQL 5.7.44 (throwaway instance, minimal `students` shape): same. `DESCRIBE students` confirmed the column both times. Checked the heartbeat and `students.php` end to end with two throwaway students in the same course: classmate shows real target band and "online now" when `last_seen_at` is recent. |
-| Live  | [ ] | | `bootstrap.php` (adds the heartbeat write) and `students.php` (was a static Coming Soon page) both change -- pull before running. Safe to repeat. |
+| Live  | [x] | 2026-10-08 | Ran clean after pulling. `last_seen_at` column confirmed on live. |
 
 **What it does:** adds `students.last_seen_at`, stamped by `bootstrap.php` on every signed-in web page load (throttled to once a minute per student). Backs the "online now" dot on the real `students.php` classmates list (SLS-Academy-App-Spec.md 8.5, STU-01..05): classmates are students sharing any course enrollment with the viewer, shown with name, initials (tinted stably by id, not list position -- STU-05), target band (now real, from migration 141) and online status, with a client-side search filter. Web only for now -- the mobile app's own API requests don't update this yet.
 
@@ -1953,7 +1953,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-07 | Ran twice on local 8.0 and twice on a throwaway MySQL 5.7.44 instance (minimal `students` shape); idempotent both. Checked end to end with a throwaway future event and student: Join shows Going, Leave removes it, reload reflects each state. Cleaned up afterward. |
-| Live  | [ ] | | `events.php` is fully replaced (was one hardcoded event card) -- pull before running. Safe to repeat. |
+| Live  | [x] | 2026-10-08 | Ran clean after pulling. Confirmed via `SHOW TABLES` on live. |
 
 **What it does:** replaces `events.php`'s single hand-written HTML event card with a real, data-driven list (SLS-Academy-App-Spec.md 8.12/8.23, EVT-01..06): upcoming events soonest first, a collapsed past-events section, and Join/Going/"I can't make it" registration. The existing Gen-Z Experience event is seeded as a real row rather than hardcoded HTML/JS, keeping its existing detail page (`events/gen_z_experience.php`, not rebuilt). Found while seeding it: MySQL's clock (`NOW()`) currently reads about an hour ahead of PHP's (PHP is UTC, MySQL is SYSTEM) -- a pre-existing mismatch, noted in the migration file, not fixed here.
 
@@ -1962,9 +1962,18 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-07 | Ran twice on local 8.0 and twice on a throwaway MySQL 5.7.44 instance (minimal `students`/`mentors` shape); idempotent both. Checked end to end with a throwaway student and the real mentor (Victor): start a conversation, send, the mentor's side shows it unread, mentor replies, both sides show the right bubble alignment. Also loaded `learning_dashboard.php` as a throwaway student after the `navbar.php` change -- both "Messages" and "Notifications" render, no PHP errors or warnings in the output. Cleaned up all test data and sessions afterward. |
-| Live  | [ ] | | New files (`threads.php`, `thread_view.php`) plus a changed `includes/navbar.php` (relabels the old "Messages" item to "Notifications", adds a real "Messages" item) -- pull before running. Safe to repeat. |
+| Live  | [x] | 2026-10-08 | Ran clean after pulling. Confirmed via `SHOW TABLES` on live. |
 
 **What it does:** the web's "Messages" was always the one-way `broadcast_messages` announcement feed (`messages.php`/`message_view.php`), never a real conversation. This adds one: a student can message a mentor, the mentor (a `staff_accounts`-linked student row) is added as a thread participant automatically on the first message, and `thread_participants.last_read_message_id` drives the unread count. `includes/navbar.php` now has a real "Messages" item (`threads.php`) and relabels the old one "Notifications" (same page, same unread-count wiring -- `messages.php`/`get_unread_count.php` untouched) since the bell/drawer in `topbar.php`/`footer.php` already presented it that way. Group threads (MSG-05) are not built -- coach threads only.
+
+## 146 — fix migration 142's mentor seed (no hardcoded email)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-08 | Ran twice: no-op both times (local's `mentors` already has a row from 142's own seed, which matched there). Simulated live's actual shape on a throwaway MySQL 5.7.44 instance (one `staff_accounts` row, role `staff`, no `v.animasahun@...` row) and confirmed it seeds correctly there, idempotent on a second run. |
+| Live  | [ ] | | **Needed**: 142 ran clean on live but seeded zero mentors -- confirmed via `mentors.php` showing "No mentors available right now" after running 141-145. Run this after 145. Safe to repeat. |
+
+**What it does:** 142's seed matched `students.email = 'v.animasahun@slslanguage.com'` to link the one real mentor to the founder's `staff_accounts` row. That account is **local only** (never committed, doesn't exist on live) -- on live the real admin is a different account (`animasahunvictor1@gmail.com`, confirmed by the founder's live screenshot: "Welcome back, Ashonibare"), so 142's `INSERT ... SELECT` matched zero rows there and silently did nothing (not an error -- an `INSERT...SELECT` with no matching row just inserts nothing). This migration seeds from whichever `staff_accounts` row actually exists in the environment instead (preferring `role = 'admin'`, oldest first), only when `mentors` is completely empty -- so it's a no-op anywhere 142's seed already worked, and fixes it anywhere it didn't.
 
 ---
 
