@@ -4,6 +4,7 @@
 // login branch, but returns a JSON token instead of setting a PHP session.
 
 require_once dirname(__DIR__) . '/bootstrap.php';
+require_once __DIR__ . '/mobile_auth.php';
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -30,7 +31,9 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     $stmt = $db->prepare(
-        "SELECT id, firstname, lastname, email, password, is_verified FROM students WHERE email = ?"
+        "SELECT id, firstname, lastname, email, password, is_verified,
+                exam_type, target_band, baseline_band, test_date
+         FROM students WHERE email = ?"
     );
     $stmt->execute([$email]);
     $student = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -59,12 +62,16 @@ try {
         'success' => true,
         'token' => $token,
         'expires_at' => $expiresAt,
-        'student' => [
+        'student' => normalizeMobileStudent([
             'id' => $student['id'],
             'firstname' => $student['firstname'],
             'lastname' => $student['lastname'],
             'email' => $student['email'],
-        ],
+            'exam_type' => $student['exam_type'],
+            'target_band' => $student['target_band'],
+            'baseline_band' => $student['baseline_band'],
+            'test_date' => $student['test_date'],
+        ]),
     ]);
 } catch (PDOException $e) {
     error_log('mobile_login error: ' . $e->getMessage());

@@ -16,7 +16,8 @@ function authenticateMobileRequest($db) {
     }
 
     $stmt = $db->prepare(
-        "SELECT s.id, s.firstname, s.lastname, s.email
+        "SELECT s.id, s.firstname, s.lastname, s.email,
+                s.exam_type, s.target_band, s.baseline_band, s.test_date
          FROM api_tokens t
          JOIN students s ON s.id = t.student_id
          WHERE t.token = ?
@@ -26,7 +27,19 @@ function authenticateMobileRequest($db) {
     $stmt->execute([$token]);
     $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    return $student ?: null;
+    return $student ? normalizeMobileStudent($student) : null;
+}
+
+/**
+ * PDO returns DECIMAL/DATE columns as strings; the app expects target_band/baseline_band as
+ * numbers (or null) and the rest as plain strings (or null). Every endpoint that serializes a
+ * student row -- this file, mobile_login.php, mobile_update_goal.php -- should pass it through
+ * this so the shape is identical everywhere.
+ */
+function normalizeMobileStudent(array $row): array {
+    $row['target_band'] = $row['target_band'] !== null ? (float) $row['target_band'] : null;
+    $row['baseline_band'] = $row['baseline_band'] !== null ? (float) $row['baseline_band'] : null;
+    return $row;
 }
 
 /**

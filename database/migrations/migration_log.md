@@ -1921,6 +1921,15 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 **What it does:** seeds `IELTS_PT_L_003` (= Cambridge 17 Test 1) and `IELTS_PT_L_004` (= Cambridge 17 Test 2) so the two empty placeholder pages are real tests. **Not wired into any class:** "Listening Test 3" (2Mo/3Mo Class 12) and "Listening Test 4" (3Mo Class 18) stay Coming Soon. The instructor still needs to add `assets/audio/IELTS_PT_L_003/part1.mp4 .. part4.mp4` and `assets/audio/IELTS_PT_L_004/part1.mp4 .. part4.mp4`; then the wiring is a two-line data change (set the piece's file_path and status). Until then the page can be checked by staff by opening its address directly (the pieces do not link to it).
 
+## 141 — students.exam_type / target_band / baseline_band / test_date
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-07 | Ran twice on local 8.0 (no error, all four columns show "already exists -- skipping" the second time). Also run twice on MySQL 5.7.44 (throwaway instance, minimal `students` shape): same result. `DESCRIBE students` confirmed the four new columns and types on both. |
+| Live  | [ ] | | Safe to repeat. No existing feature reads or writes these columns yet, so there is no live behaviour change until `api/mobile_update_goal.php` and the app's editor screen are merged and pulled. |
+
+**What it does:** adds `exam_type` (`ielts_academic` / `ielts_general` / `celpip`), `target_band`, `baseline_band` (both `DECIMAL(2,1)`, the IELTS 0.0-9.0 half-band scale) and `test_date` to `students`. Backs the mobile app's "Set your test date" editor (SLS-Academy-App-Spec.md ME-01, HOME-02/03). CELPIP's CLB 1-12 scale doesn't fit the same column cleanly (spec OQ-7, still open) -- for now a CELPIP student's target/baseline band is stored unvalidated in the same column; revisit when OQ-7 is settled.
+
 ---
 
 ## Rules
