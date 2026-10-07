@@ -26,9 +26,11 @@ and Study materials, by contrast, were already real and just needed an API wrapp
 | 5 | `5d6dcc9` | **Notifications**: new `notifications.php` -- a real unified feed (announcements + unread messages + assignments due soon + events starting soon), Mark all as read. |
 | 6 | `0612999` | **API layer**: `academy/api/v1/*.php` -- flat files (no URL rewriting exists on this site), token-authenticated, for everything above: classmates, mentors + mentor_requests, events + event_registrations, threads + thread_messages + thread_read. Added `academyUtcExpr()` to `mobile_auth.php`, because MySQL's own clock here runs SYSTEM time, not UTC, while PHP is UTC -- every timestamp these endpoints return is now genuinely normalized to UTC, not silently off by the live offset. |
 
-Migrations 142-145 are LOCAL ONLY. Each was run twice on local 8.0 and twice on a throwaway MySQL
-5.7.44 instance (confirmed idempotent both times) before being committed. **None have been run on
-live.** Run them in order (142, 143, 144, 145) after pulling.
+Migrations 141-145 are LOCAL ONLY (141 was built earlier in the night, for the goal-editor feature,
+before this web-first pass started -- it's the same "not run on live yet" situation, just not new
+tonight). Each was run twice on local 8.0 and twice on a throwaway MySQL 5.7.44 instance (confirmed
+idempotent both times) before being committed. **None have been run on live.** Run them in order
+(141, 142, 143, 144, 145) after pulling -- 143 depends on columns 141 adds.
 
 ## Not built, and why
 
