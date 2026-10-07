@@ -31,6 +31,18 @@ if (isset($_SESSION['user_id'])) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $unread_count = intval($row['unread_count']);
     }
+
+    // The bell/nav badge now represents Notifications broadly (notifications.php), not just
+    // announcements -- add threads with an unread message, one per thread.
+    $msgStmt = executeQuery($db, "
+        SELECT COUNT(*) AS unread_threads FROM threads t
+        JOIN thread_participants tp ON tp.thread_id = t.id AND tp.student_id = ?
+        JOIN thread_messages lm ON lm.id = (SELECT MAX(id) FROM thread_messages WHERE thread_id = t.id)
+        WHERE lm.sender_id != ? AND lm.id > COALESCE(tp.last_read_message_id, 0)
+    ", [$uid, $uid]);
+    if ($msgStmt) {
+        $unread_count += intval($msgStmt->fetch(PDO::FETCH_ASSOC)['unread_threads']);
+    }
 }
 
 echo json_encode(['unread_count' => $unread_count]);

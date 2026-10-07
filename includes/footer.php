@@ -13,9 +13,9 @@
     </div>
     <div id="msgDrawerBody" style="flex:1;overflow-y:auto;padding:1rem;"></div>
     <div style="padding:1rem; border-top:1px solid #e2e8f0; text-align:center;">
-        <a href="<?php echo defined('ACADEMY_URL') ? ACADEMY_URL : '/academy/'; ?>messages.php"
+        <a href="<?php echo defined('ACADEMY_URL') ? ACADEMY_URL : '/academy/'; ?>notifications.php"
            style="color:#0b77ff;font-size:.9rem;text-decoration:none;">
-            View all messages →
+            View all notifications →
         </a>
     </div>
 </div>

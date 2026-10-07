@@ -45,12 +45,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
 				Messages
 		</a>
 
-		<!-- This was labelled "Messages" until the real two-way Messages above was built -- it is
-		     actually the one-way announcement feed (broadcast_messages), already presented like a
-		     notifications feed via the bell/drawer in topbar.php/footer.php. Same page, same
-		     unread-count wiring (get_unread_count.php); only the label and icon changed. -->
-		<a class="nav-link <?php echo ($current_page == 'messages.php') ? 'active' : ''; ?>"
-		   href="<?php echo ACADEMY_URL; ?>messages.php"
+		<!-- notifications.php is a unified feed (announcements + unread messages + assignment-due +
+		     event reminders); this used to point straight at messages.php (the broadcast
+		     announcement list), which is still where an announcement row itself opens
+		     (message_view.php). get_unread_count.php now counts across both sources. -->
+		<a class="nav-link <?php echo (in_array($current_page, ['notifications.php', 'messages.php', 'message_view.php'])) ? 'active' : ''; ?>"
+		   href="<?php echo ACADEMY_URL; ?>notifications.php"
 		   id="msgNavLink">
 				<i class="bi bi-bell-fill me-2"></i>
 				Notifications
