@@ -1948,6 +1948,15 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 **What it does:** adds `students.last_seen_at`, stamped by `bootstrap.php` on every signed-in web page load (throttled to once a minute per student). Backs the "online now" dot on the real `students.php` classmates list (SLS-Academy-App-Spec.md 8.5, STU-01..05): classmates are students sharing any course enrollment with the viewer, shown with name, initials (tinted stably by id, not list position -- STU-05), target band (now real, from migration 141) and online status, with a client-side search filter. Web only for now -- the mobile app's own API requests don't update this yet.
 
+## 144 — Events: events, event_registrations
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-07 | Ran twice on local 8.0 and twice on a throwaway MySQL 5.7.44 instance (minimal `students` shape); idempotent both. Checked end to end with a throwaway future event and student: Join shows Going, Leave removes it, reload reflects each state. Cleaned up afterward. |
+| Live  | [ ] | | `events.php` is fully replaced (was one hardcoded event card) -- pull before running. Safe to repeat. |
+
+**What it does:** replaces `events.php`'s single hand-written HTML event card with a real, data-driven list (SLS-Academy-App-Spec.md 8.12/8.23, EVT-01..06): upcoming events soonest first, a collapsed past-events section, and Join/Going/"I can't make it" registration. The existing Gen-Z Experience event is seeded as a real row rather than hardcoded HTML/JS, keeping its existing detail page (`events/gen_z_experience.php`, not rebuilt). Found while seeding it: MySQL's clock (`NOW()`) currently reads about an hour ahead of PHP's (PHP is UTC, MySQL is SYSTEM) -- a pre-existing mismatch, noted in the migration file, not fixed here.
+
 ---
 
 ## Rules

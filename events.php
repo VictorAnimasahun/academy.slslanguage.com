@@ -2,6 +2,45 @@
 require_once __DIR__ . '/bootstrap.php';
 if (!isset($_SESSION['user_id'])) { header("Location: edu_hub_registration.php"); exit(); }
 $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['user_firstname']) : 'Learner';
+$studentId = (int) $_SESSION['user_id'];
+
+if (!function_exists('e')) {
+    function e($s) { return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8'); }
+}
+
+// EVT-01/02: join/leave, same-page POST like the rest of this site's small write actions.
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $eventId = (int) ($_POST['event_id'] ?? 0);
+    $action = $_POST['action'] ?? '';
+    if ($eventId && $action === 'join') {
+        executeQuery($db, "INSERT IGNORE INTO event_registrations (event_id, student_id) VALUES (?, ?)", [$eventId, $studentId]);
+    } elseif ($eventId && $action === 'leave') {
+        executeQuery($db, "DELETE FROM event_registrations WHERE event_id = ? AND student_id = ?", [$eventId, $studentId]);
+    }
+    header("Location: events.php");
+    exit();
+}
+
+$tintBg = ['blue' => '#E3EEFF', 'green' => '#DDF5E6', 'orange' => '#FFE9CC', 'purple' => '#EAE3FF', 'pink' => '#FFE0EA', 'teal' => '#D6F3F0', 'yellow' => '#FFF0C2'];
+$tintFg = ['blue' => '#2F6FE0', 'green' => '#1E9E5A', 'orange' => '#D9771A', 'purple' => '#6D3FE0', 'pink' => '#D6336C', 'teal' => '#0F9488', 'yellow' => '#B7860B'];
+
+// EVT-04: upcoming only, soonest first; past events get their own (collapsed) section.
+$upcoming = executeQuery($db, "
+    SELECT e.*, (r.id IS NOT NULL) AS registered
+    FROM events e
+    LEFT JOIN event_registrations r ON r.event_id = e.id AND r.student_id = ?
+    WHERE e.starts_at >= NOW()
+    ORDER BY e.starts_at ASC
+", [$studentId])->fetchAll(PDO::FETCH_ASSOC);
+
+$past = executeQuery($db, "
+    SELECT e.*, (r.id IS NOT NULL) AS registered
+    FROM events e
+    LEFT JOIN event_registrations r ON r.event_id = e.id AND r.student_id = ?
+    WHERE e.starts_at < NOW()
+    ORDER BY e.starts_at DESC
+    LIMIT 10
+", [$studentId])->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,63 +54,10 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
     <link href="assets/css/dashboard.css" rel="stylesheet">
     <style>
         @media(min-width:1400px){.content{max-width:calc(100vw - 500px);}}
-
-        .event-card {
-            border-radius: 18px;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 6px 24px rgba(15,23,42,.07);
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
-        .event-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(15,23,42,.1); }
-        body.dark .event-card { background: #1f1f1f; }
-
-        .event-card-header {
-            background: linear-gradient(135deg, #0d1b4e 0%, #0b5c45 100%);
-            color: #fff;
-            padding: 2.5rem 2.25rem 2rem;
-            position: relative;
-        }
-        .event-live-badge {
-            position: absolute; top: 1.25rem; right: 1.25rem;
-            background: rgba(255,255,255,.15);
-            border: 1px solid rgba(255,255,255,.3);
-            border-radius: 20px; padding: .3rem 1rem;
-            font-size: .78rem; font-weight: 600; letter-spacing: .05em;
-            display: flex; align-items: center; gap: .4rem;
-        }
-        .event-card-body { padding: 1.75rem 2.25rem; }
-
-        .countdown-row {
-            display: flex; gap: 1rem; margin: 1.5rem 0 .5rem;
-            flex-wrap: wrap;
-        }
-        .cd-unit {
-            flex: 1; min-width: 70px; background: rgba(255,255,255,.12);
-            border-radius: 12px; text-align: center; padding: .75rem .5rem;
-        }
-        .cd-num {
-            display: block; font-size: 2.2rem; font-weight: 900; line-height: 1;
-        }
-        .cd-lbl {
-            font-size: .68rem; text-transform: uppercase; letter-spacing: .07em;
-            opacity: .75; margin-top: .3rem;
-        }
-
-        .detail-btn {
-            display: inline-flex; align-items: center; gap: .5rem;
-            background: #fff; color: #0b77ff;
-            border: 2px solid #fff; border-radius: 12px;
-            padding: .7rem 1.75rem; font-weight: 700; font-size: 1rem;
-            text-decoration: none; transition: background .15s, color .15s;
-            margin-top: 1.25rem;
-        }
-        .detail-btn:hover { background: transparent; color: #fff; }
-
-        .event-meta span {
-            font-size: .88rem; opacity: .85;
-            display: inline-flex; align-items: center; gap: .35rem;
-        }
+        .event-card { border-radius:16px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.06); padding:1.75rem; margin-bottom:1rem; }
+        body.dark .event-card { background:#1f1f1f; }
+        .event-badge { display:inline-flex; align-items:center; gap:.35rem; background:#fee2e2; color:#991b1b; border-radius:20px; padding:.25rem .8rem; font-size:.75rem; font-weight:700; }
+        .event-meta span { font-size:.88rem; color:#6b7280; display:inline-flex; align-items:center; gap:.35rem; margin-right:1rem; }
     </style>
 </head>
 <body class="light">
@@ -80,8 +66,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
     <div class="main-wrapper flex-grow-1">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
-        <main class="content p-4">
-
+        <main class="content p-4" style="max-width:760px;">
             <div class="d-flex align-items-center gap-3 mb-4">
                 <i class="bi bi-calendar-event-fill fs-2 text-primary"></i>
                 <div>
@@ -90,86 +75,64 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                 </div>
             </div>
 
-            <!-- ── EVENT CARD: Gen-Z Experience ── -->
-            <div class="event-card mb-4">
-                <div class="event-card-header">
-                    <div class="event-live-badge">
-                        <i class="bi bi-linkedin"></i> LinkedIn Live
-                    </div>
-                    <p class="mb-1" style="opacity:.7;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;">
-                        Navigating the Corporate World
-                    </p>
-                    <h3 class="fw-bold mb-2" style="font-size:1.9rem;line-height:1.2;">The Gen-Z Experience</h3>
-                    <div class="event-meta d-flex flex-wrap gap-3 mb-1">
-                        <span><i class="bi bi-calendar3"></i> Saturday, May 9, 2026</span>
-                        <span><i class="bi bi-clock"></i> 11:00 AM EDT &nbsp;·&nbsp; 4:00 PM WAT</span>
-                        <span><i class="bi bi-globe"></i> Online — Free</span>
-                    </div>
-                    <!-- Countdown -->
-                    <div class="countdown-row" id="genz-countdown">
-                        <div class="cd-unit"><span class="cd-num" id="gz-d">--</span><div class="cd-lbl">Days</div></div>
-                        <div class="cd-unit"><span class="cd-num" id="gz-h">--</span><div class="cd-lbl">Hours</div></div>
-                        <div class="cd-unit"><span class="cd-num" id="gz-m">--</span><div class="cd-lbl">Minutes</div></div>
-                        <div class="cd-unit"><span class="cd-num" id="gz-s">--</span><div class="cd-lbl">Seconds</div></div>
-                    </div>
-                    <a href="events/gen_z_experience.php" class="detail-btn">
-                        <i class="bi bi-arrow-right-circle-fill"></i> View Full Event Details
-                    </a>
-                </div>
-                <div class="event-card-body">
-                    <div class="row g-4 align-items-center">
-                        <div class="col-md-8">
-                            <p class="text-muted mb-0" style="font-size:.93rem;line-height:1.75;">
-                                What does it really feel like to enter the corporate world as a Gen-Z professional?
-                                Join host <strong>Scholar Mfeseer Alibo</strong> and guest speaker <strong>Georgina Ijachi</strong>
-                                alongside four panelists for an unfiltered live conversation about workplace culture,
-                                communication, and career growth in today's world.
-                            </p>
-                        </div>
-                        <div class="col-md-4 text-center text-md-end">
-                            <div class="d-flex flex-wrap gap-2 justify-content-md-end">
-                                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2">1 Host</span>
-                                <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2">1 Guest Speaker</span>
-                                <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning px-3 py-2">4 Panelists</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Placeholder for future events -->
-            <div class="event-card" style="border: 2px dashed #e2e8f0; box-shadow:none; background:transparent;">
-                <div class="event-card-body text-center py-5">
+            <?php if (!$upcoming): ?>
+                <div class="stat-card text-center py-5">
                     <i class="bi bi-calendar-plus fs-1 text-muted mb-3 d-block"></i>
-                    <h6 class="text-muted">More Events Coming Soon</h6>
-                    <p class="text-muted mb-0" style="font-size:.85rem;">
-                        New workshops and webinars will be listed here. Stay tuned!
-                    </p>
+                    <h5 class="text-muted">No upcoming events</h5>
                 </div>
-            </div>
+            <?php else: foreach ($upcoming as $ev): $start = new DateTime($ev['starts_at']); ?>
+                <div class="event-card">
+                    <?php if ($ev['is_live_badge_label']): ?>
+                        <span class="event-badge mb-2"><i class="bi bi-broadcast"></i> <?= e($ev['is_live_badge_label']) ?></span>
+                    <?php endif; ?>
+                    <h4 class="fw-bold mb-2"><?= e($ev['title']) ?></h4>
+                    <div class="event-meta mb-2">
+                        <span><i class="bi bi-calendar3"></i> <?= e($start->format('l, j F Y')) ?></span>
+                        <span><i class="bi bi-clock"></i> <?= e($start->format('g:i A')) ?></span>
+                        <?php if ($ev['host']): ?><span><i class="bi bi-person"></i> <?= e($ev['host']) ?></span><?php endif; ?>
+                    </div>
+                    <?php if ($ev['description']): ?><p class="text-muted" style="font-size:.93rem;"><?= e($ev['description']) ?></p><?php endif; ?>
+
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <?php if ($ev['registered']): ?>
+                            <span class="badge rounded-pill" style="background:#dcfce7;color:#166534;padding:.5rem 1rem;"><i class="bi bi-check-circle-fill"></i> Going</span>
+                            <form method="post" class="d-inline" onsubmit="return confirm('Leave this event? Your reminder is removed too.');">
+                                <input type="hidden" name="event_id" value="<?= (int) $ev['id'] ?>">
+                                <input type="hidden" name="action" value="leave">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">I can't make it</button>
+                            </form>
+                        <?php else: ?>
+                            <form method="post" class="d-inline">
+                                <input type="hidden" name="event_id" value="<?= (int) $ev['id'] ?>">
+                                <input type="hidden" name="action" value="join">
+                                <button type="submit" class="btn btn-primary">Join this event</button>
+                            </form>
+                        <?php endif; ?>
+                        <?php if ($ev['detail_url']): ?>
+                            <a href="<?= e($ev['detail_url']) ?>" class="btn btn-sm btn-outline-primary">Full details</a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; endif; ?>
+
+            <?php if ($past): ?>
+                <p class="text-muted mt-4 mb-2" style="cursor:pointer;" data-bs-toggle="collapse" href="#pastEvents">
+                    <i class="bi bi-chevron-down"></i> Past events
+                </p>
+                <div class="collapse" id="pastEvents">
+                    <?php foreach ($past as $ev): $start = new DateTime($ev['starts_at']); ?>
+                        <div class="event-card" style="opacity:.7;">
+                            <h5 class="fw-semibold mb-1"><?= e($ev['title']) ?></h5>
+                            <div class="event-meta"><span><i class="bi bi-calendar3"></i> <?= e($start->format('j F Y')) ?></span></div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </main>
     </div>
 </div>
 <?php include INCLUDES_PATH . '/adverts.php'; ?>
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
-
-<script>
-const genzDate = new Date('2026-05-09T15:00:00Z');
-function tickGenz() {
-    const diff = genzDate - new Date();
-    if (diff <= 0) {
-        document.getElementById('genz-countdown').innerHTML =
-            '<span style="font-weight:700;font-size:1rem;">🔴 Live Now!</span>';
-        return;
-    }
-    const pad = n => String(Math.floor(n)).padStart(2,'0');
-    document.getElementById('gz-d').textContent = pad(diff / 86400000);
-    document.getElementById('gz-h').textContent = pad((diff % 86400000) / 3600000);
-    document.getElementById('gz-m').textContent = pad((diff % 3600000) / 60000);
-    document.getElementById('gz-s').textContent = pad((diff % 60000) / 1000);
-}
-tickGenz(); setInterval(tickGenz, 1000);
-</script>
 </body>
 </html>
