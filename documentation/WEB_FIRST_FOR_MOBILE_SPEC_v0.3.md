@@ -35,27 +35,37 @@ Resources, honouring D11 by keeping tests/analysers off that layer entirely.
 
 ## Build order (tonight, web first)
 
-1. [ ] **Mentors** -- `mentors` + `mentor_requests` tables, real `mentors.php` (list + request), a day/time
-   slot picker page, a tiny sls-admin page so the founder can add coaches later. Seed with the one
-   real instructor (Victor) only, clearly editable -- not fictional "Coach Scholar/Vee" personas.
-2. [ ] **Students (classmates)** -- real `students.php`: cohort list (same-course enrollees), search,
-   a lightweight `last_seen_at` heartbeat for "online now".
-3. [ ] **Events** -- `events` + `event_registrations` tables, rebuild `events.php` from the DB (migrate
-   the existing Gen-Z event into a real row), add/registration, event detail page.
-4. [ ] **Messages (real threads)** -- `threads` + `thread_participants` + `thread_messages`, a real
-   chat UI on the web (coach <-> student), keep `broadcast_messages` as-is (it becomes one
-   Notifications source, not "Messages").
-5. [ ] **Notifications** -- unify broadcast messages + assignment-due + event-reminder + mentor
-   confirmation + new-message into one feed (table or computed view), a real `notifications.php`.
-6. [ ] **Study sessions** -- an endpoint/page-level hook that actually writes to `students_activity`,
-   so Analytics' study-time side and the streak (section 12.4) have real data instead of nothing.
-7. [ ] **API layer** -- `academy/api/v1/*.php`, versioned per the spec's own base path, covering
-   every one of the above plus the already-real features (courses/lesson content, assignments,
-   results summary, resources wrappers for vocab/quizzes/exercises/model-answers).
-8. [ ] **Then mobile** -- wire the app's existing placeholder screens to the real endpoints, and
-   build the screens spec v0.3 added: Course detail redesign, Lesson, Assignment/Result/Mentor/
-   Event detail, Vocabulary banks + Word, Quizzes + Quiz player, Exercises, Model answers,
-   Notifications, Settings, Sign up/Verify/Forgot password.
+1. [x] **Mentors** -- migration 142 (`mentors`, `mentor_availability`, `mentor_requests`), real
+   `mentors.php` + `mentor_book.php` (day/time slot picker, request/cancel, re-validated
+   server-side against double-booking). Seeded with the one real instructor (Victor) only. No
+   sls-admin management page yet -- founder adds more mentors by inserting rows directly for now.
+2. [x] **Students (classmates)** -- migration 143 (`last_seen_at`, stamped in `bootstrap.php`),
+   real `students.php`: cohort list, search, "online now" dot.
+3. [x] **Events** -- migration 144 (`events`, `event_registrations`), real `events.php`: upcoming
+   list, past-events section, Join/Going/"I can't make it". Gen-Z event seeded as a real row.
+4. [x] **Messages (real threads)** -- migration 145 (`threads`, `thread_participants`,
+   `thread_messages`), new `threads.php` + `thread_view.php`. `includes/navbar.php` relabelled:
+   old "Messages" (broadcast_messages) is now "Notifications", the new item is the real "Messages".
+   Coach threads only -- group threads (MSG-05) not built.
+5. [x] **Notifications** -- new `notifications.php`: unifies broadcast announcements + unread
+   message threads + assignments due within 2 days + registered events within 24h, grouped
+   Today/Earlier, Mark all as read. `get_unread_count.php` now counts threads too.
+6. [ ] **Study sessions -- blocked, not a quick add.** `students_activity` is real but has zero
+   rows and nothing writes to it, because nothing writes to `lesson_progress` either -- lesson
+   completion tracking (video watch time + 70% on exercises) was already identified as "not built"
+   before tonight (see memory: Class completion rules). Study-time analytics and the streak
+   (section 12.4) both depend on this. This is its own feature, not a side effect of tonight's work.
+7. [x] **API layer (partial)** -- `academy/api/v1/*.php`: `classmates.php`, `mentors.php` +
+   `mentor_requests.php`, `events.php` + `event_registrations.php`, `threads.php` +
+   `thread_messages.php` + `thread_read.php`. Flat files, not nested REST paths -- there is no URL
+   rewriting anywhere on this site, so `mentors/{id}/requests`-style paths aren't servable without
+   untested Apache rewrite infra; the mobile app's `api.ts` was adjusted to match (see below).
+   **Not yet wrapped:** assignments, results summary, resources (vocab/quizzes/exercises/model
+   answers), analytics -- all real on the web already, just no `/v1` endpoint yet.
+8. [ ] **Then mobile** -- wire the app's Students/Mentors/Events/Messages screens to the endpoints
+   above (api.ts updated to call the real flat paths), and build the screens spec v0.3 added:
+   Course detail redesign, Lesson, Assignment/Result/Mentor/Event detail, Vocabulary banks + Word,
+   Quizzes + Quiz player, Exercises, Model answers, Settings, Sign up/Verify/Forgot password.
 
 ## Rules carried over from CLAUDE.md for this work
 
