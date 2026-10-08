@@ -54,6 +54,21 @@ function academyUtcExpr(string $column): string {
 }
 
 /**
+ * The PHP-side companion to academyUtcExpr(), for a datetime string already fetched in PHP
+ * (e.g. built by shared logic like buildNotificationItems() that other, non-mobile callers also
+ * use, so the SQL itself can't normalize it). Returns "Y-m-d\TH:i:s" UTC, ready for a trailing 'Z'.
+ * The offset is cached per request -- one query, however many timestamps need converting.
+ */
+function academyUtcIso(PDO $db, string $localDatetime): string {
+    static $offsetSeconds = null;
+    if ($offsetSeconds === null) {
+        $offsetSeconds = (int) $db->query('SELECT TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), NOW())')->fetchColumn();
+    }
+    $ts = strtotime($localDatetime) - $offsetSeconds;
+    return gmdate('Y-m-d\TH:i:s', $ts);
+}
+
+/**
  * Call this at the top of a mobile endpoint to require auth.
  * Sends a 401 and exits if there's no valid token.
  */
