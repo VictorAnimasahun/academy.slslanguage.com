@@ -21,9 +21,14 @@ if ($id <= 0) {
 }
 
 try {
-    $c = $db->prepare("SELECT id, title, exam_variant, length_months, availability, description, instructor_name
-                         FROM courses WHERE id = ? AND is_visible = 1");
-    $c->execute([$id]);
+    $c = $db->prepare(
+        "SELECT c.id, c.title, c.exam_variant, c.length_months, c.availability, c.description, c.instructor_name,
+                c.total_lessons, e.progress_percentage AS progress, (e.id IS NOT NULL) AS enrolled
+           FROM courses c
+           LEFT JOIN enrollments e ON e.course_id = c.id AND e.student_id = ?
+          WHERE c.id = ? AND c.is_visible = 1"
+    );
+    $c->execute([$student['id'], $id]);
     $course = $c->fetch(PDO::FETCH_ASSOC);
     if (!$course) {
         http_response_code(404);
@@ -82,6 +87,9 @@ try {
             'availability' => $course['availability'],
             'description' => $course['description'],
             'instructor' => $course['instructor_name'],
+            'totalClasses' => (int) $course['total_lessons'],
+            'enrolled' => (bool) $course['enrolled'],
+            'progress' => $course['progress'] !== null ? (int) $course['progress'] : 0,
             'weeks' => array_values($weeks),
         ],
     ], JSON_UNESCAPED_UNICODE);
