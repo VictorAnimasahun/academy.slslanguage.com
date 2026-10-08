@@ -33,14 +33,16 @@ try {
 
     $rows = $db->prepare(
         "SELECT m.module_order, m.module_title, l.id AS lesson_id, l.lesson_order, l.title AS class_title,
-                lp.id AS part_id, lp.part_order, lp.title AS part_title, lp.kind, lp.status
+                lp.id AS part_id, lp.part_order, lp.title AS part_title, lp.kind, lp.status, lp.file_path,
+                (prog.completed = 1) AS class_completed
            FROM modules m
            JOIN lessons l ON l.module_id = m.id
            LEFT JOIN lesson_parts lp ON lp.lesson_id = l.id
+           LEFT JOIN lesson_progress prog ON prog.lesson_id = l.id AND prog.student_id = ?
           WHERE m.course_id = ?
           ORDER BY m.module_order, l.lesson_order, lp.part_order"
     );
-    $rows->execute([$id]);
+    $rows->execute([$student['id'], $id]);
 
     $weeks = [];
     foreach ($rows->fetchAll(PDO::FETCH_ASSOC) as $r) {
@@ -49,15 +51,19 @@ try {
 
         $classNumber = ($w - 1) * 2 + (int) $r['lesson_order'];
         $weeks[$w]['classes'][$r['lesson_id']] ??= [
+            'id' => (int) $r['lesson_id'],
             'number' => $classNumber,
             'title' => $r['class_title'],
+            'completed' => (bool) $r['class_completed'],
             'pieces' => [],
         ];
         if ($r['part_id'] !== null) {
             $weeks[$w]['classes'][$r['lesson_id']]['pieces'][] = [
+                'id' => (int) $r['part_id'],
                 'title' => $r['part_title'],
                 'kind' => $r['kind'],
                 'comingSoon' => $r['status'] === 'coming_soon',
+                'filePath' => $r['file_path'],
             ];
         }
     }
