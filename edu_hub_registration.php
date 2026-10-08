@@ -54,7 +54,8 @@ $showRegister = isset($_GET['form']) && $_GET['form'] === 'register';
             </div>
             
             <button type="submit" name="login" class="submit-btn">Sign In</button>
-            
+
+            <a href="forgot_password.php" class="auth-link">Forgot password?</a>
             <a href="?form=register" class="auth-link">Don't have an account? Sign up here</a>
         </form>
         
@@ -169,6 +170,13 @@ $showRegister = isset($_GET['form']) && $_GET['form'] === 'register';
 			}).then(() => {
 				// Redirect to dashboard
 				window.location.href = 'learning_dashboard.php';
+			});
+		} else if (status === 'password_reset_success') {
+			Swal.fire({
+				title: 'Password updated',
+				text: 'You can now log in with your new password.',
+				icon: 'success',
+				confirmButtonColor: '#38b6ff'
 			});
 		} else if (status === 'login_error') {
 			const loginError = message ? decodeURIComponent(message.replace(/\+/g, ' ')) : 'Invalid email or password.';
