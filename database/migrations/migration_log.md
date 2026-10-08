@@ -1977,6 +1977,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 147 — students.password_reset_token / password_reset_token_created_at
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-08 | Ran twice on local 8.0 (second run: both columns "already exists -- skipping"). Also run twice on a throwaway MySQL 5.7.44 instance (minimal `students` shape): same. `DESCRIBE students` confirmed both columns on both. Tested the full web Forgot/Reset password flow end to end with a throwaway student: request, immediate re-request correctly rate-limited (no token rotation), mismatched/short password rejected, successful reset accepts the new password via `mobile_login.php` and rejects the old one, token confirmed single-use (rejected on reuse). Same end to end for the mobile `api/mobile_forgot_password.php` endpoint. Cleaned up all test data afterward. |
+| Live  | [ ] | | **Needed**: run after pulling. |
+
+**What it does:** adds `password_reset_token` (`VARCHAR(64)`) and `password_reset_token_created_at` (`TIMESTAMP`) to `students`, backing the new Forgot password feature (SLS-Academy-App-Spec.md 8.16) on both web (`forgot_password.php`/`reset_password.php`) and mobile (`api/mobile_forgot_password.php`). Deliberately separate from `verification_token`/`token_created_at` so a verified student resetting their password never touches `is_verified` or the signup verification flow.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
