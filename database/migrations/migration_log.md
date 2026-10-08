@@ -1971,7 +1971,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-08 | Ran twice: no-op both times (local's `mentors` already has a row from 142's own seed, which matched there). Simulated live's actual shape on a throwaway MySQL 5.7.44 instance (one `staff_accounts` row, role `staff`, no `v.animasahun@...` row) and confirmed it seeds correctly there, idempotent on a second run. |
-| Live  | [ ] | | **Needed**: 142 ran clean on live but seeded zero mentors -- confirmed via `mentors.php` showing "No mentors available right now" after running 141-145. Run this after 145. Safe to repeat. |
+| Live  | [x] | 2026-10-08 | Confirmed by the founder after running on live. |
 
 **What it does:** 142's seed matched `students.email = 'v.animasahun@slslanguage.com'` to link the one real mentor to the founder's `staff_accounts` row. That account is **local only** (never committed, doesn't exist on live) -- on live the real admin is a different account (`animasahunvictor1@gmail.com`, confirmed by the founder's live screenshot: "Welcome back, Ashonibare"), so 142's `INSERT ... SELECT` matched zero rows there and silently did nothing (not an error -- an `INSERT...SELECT` with no matching row just inserts nothing). This migration seeds from whichever `staff_accounts` row actually exists in the environment instead (preferring `role = 'admin'`, oldest first), only when `mentors` is completely empty -- so it's a no-op anywhere 142's seed already worked, and fixes it anywhere it didn't.
 
