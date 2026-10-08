@@ -62,10 +62,18 @@ Resources, honouring D11 by keeping tests/analysers off that layer entirely.
    untested Apache rewrite infra; the mobile app's `api.ts` was adjusted to match (see below).
    **Not yet wrapped:** assignments, results summary, resources (vocab/quizzes/exercises/model
    answers), analytics -- all real on the web already, just no `/v1` endpoint yet.
-8. [ ] **Then mobile** -- wire the app's Students/Mentors/Events/Messages screens to the endpoints
-   above (api.ts updated to call the real flat paths), and build the screens spec v0.3 added:
-   Course detail redesign, Lesson, Assignment/Result/Mentor/Event detail, Vocabulary banks + Word,
-   Quizzes + Quiz player, Exercises, Model answers, Settings, Sign up/Verify/Forgot password.
+8. [x] **Then mobile** -- wired the app's Students/Mentors/Events/Messages screens to the endpoints
+   above (api.ts updated to call the real flat paths). Also built: Course detail (real weeks/
+   classes/progress), Lesson (bridges to the real web content via the mobile_session.php token
+   bridge, first-ever `lesson_progress`/`enrollments.progress_percentage` writer), Assignment
+   detail, Result detail, Notifications, Settings (real Appearance override + shared Class
+   reminders preference), Sign up (`mobile_register.php`, already existed and worked), Check
+   your email (new `api/mobile_resend_verification.php` -- its 60s rate-limit check hit the same
+   MySQL-NOW()-vs-PHP-time() mismatch as migration 144's finding; fixed by moving the comparison
+   into SQL), Forgot password (new `api/mobile_forgot_password.php` + web
+   `forgot_password.php`/`reset_password.php`/`process_password_reset.php`, migration 147).
+   Mentor profile/booking day-time-picker parity, a native Event detail screen, and Analytics
+   study-time (blocked on item 6 above) remain not built.
 
 ## Rules carried over from CLAUDE.md for this work
 
