@@ -72,8 +72,11 @@ Resources, honouring D11 by keeping tests/analysers off that layer entirely.
    MySQL-NOW()-vs-PHP-time() mismatch as migration 144's finding; fixed by moving the comparison
    into SQL), Forgot password (new `api/mobile_forgot_password.php` + web
    `forgot_password.php`/`reset_password.php`/`process_password_reset.php`, migration 147).
-   Mentor profile/booking day-time-picker parity, a native Event detail screen, and Analytics
-   study-time (blocked on item 6 above) remain not built.
+   Mentor profile/booking now has the real day/time picker too (api/v1/mentor_detail.php, shared
+   includes/mentor_booking.php with the web's mentor_book.php; also fixed a real bug found while
+   building it -- api/v1/mentors.php never returned the mentor_requests row's own id, so the
+   app's cancel action was passing the mentor's id instead and silently cancelling nothing). A
+   native Event detail screen and Analytics study-time (blocked on item 6 above) remain not built.
 
 ## Rules carried over from CLAUDE.md for this work
 
