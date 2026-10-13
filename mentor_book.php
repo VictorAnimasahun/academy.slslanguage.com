@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__ . '/includes/mentor_booking.php';
 if (!isset($_SESSION['user_id'])) { header("Location: edu_hub_registration.php"); exit(); }
 $studentId = (int) $_SESSION['user_id'];
 
@@ -34,36 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$parsed) {
             $error = 'Choose a day and time.';
         } else {
-            // Re-validate the slot is still genuinely open (availability window + not already taken),
-            // rather than trusting the posted value -- the picker only ever renders open slots, but
-            // two students could race for the same one.
-            $weekday = (int) $parsed->format('w');
-            $time = $parsed->format('H:i:s');
-            $inWindow = executeQuery($db, "
-                SELECT 1 FROM mentor_availability
-                WHERE mentor_id = ? AND weekday = ? AND ? >= start_time AND ? < end_time
-                LIMIT 1
-            ", [$mentorId, $weekday, $time, $time])->fetch();
-
-            $taken = executeQuery($db, "
-                SELECT 1 FROM mentor_requests
-                WHERE mentor_id = ? AND preferred_at = ? AND status IN ('requested','confirmed')
-                LIMIT 1
-            ", [$mentorId, $parsed->format('Y-m-d H:i:s')])->fetch();
-
-            $alreadyOpen = executeQuery($db, "
-                SELECT 1 FROM mentor_requests
-                WHERE mentor_id = ? AND student_id = ? AND status IN ('requested','confirmed')
-                LIMIT 1
-            ", [$mentorId, $studentId])->fetch();
-
-            if ($alreadyOpen) {
-                $error = 'You already have an open request with this mentor.';
-            } elseif (!$inWindow) {
-                $error = 'That time is outside this mentor\'s hours.';
-            } elseif ($taken) {
-                $error = 'That time was just taken. Choose another.';
-            } else {
+            // Re-validate the slot is still genuinely open, rather than trusting the posted value --
+            // the picker only ever renders open slots, but two students could race for the same one.
+            $error = validateMentorBookingSlot($db, $mentorId, $studentId, $parsed);
+            if (!$error) {
                 executeQuery($db, "INSERT INTO mentor_requests (mentor_id, student_id, preferred_at, note, status) VALUES (?, ?, ?, ?, 'requested')", [
                     $mentorId, $studentId, $parsed->format('Y-m-d H:i:s'), $note !== '' ? $note : null,
                 ]);
@@ -82,32 +57,7 @@ $openRequest = executeQuery($db, "
 ", [$mentorId, $studentId])->fetch(PDO::FETCH_ASSOC);
 
 // Build the next 5 days that have an availability window, with open/taken slots for each.
-$availability = executeQuery($db, "SELECT * FROM mentor_availability WHERE mentor_id = ? ORDER BY weekday", [$mentorId])->fetchAll(PDO::FETCH_ASSOC);
-$byWeekday = [];
-foreach ($availability as $a) $byWeekday[(int) $a['weekday']][] = $a;
-
-$takenSlots = array_column(executeQuery($db, "
-    SELECT preferred_at FROM mentor_requests WHERE mentor_id = ? AND status IN ('requested','confirmed') AND preferred_at >= NOW()
-", [$mentorId])->fetchAll(PDO::FETCH_ASSOC), 'preferred_at');
-$takenSlots = array_flip($takenSlots);
-
-$days = [];
-$cursor = new DateTime('tomorrow');
-for ($i = 0; count($days) < 5 && $i < 21; $i++, $cursor->modify('+1 day')) {
-    $weekday = (int) $cursor->format('w');
-    if (empty($byWeekday[$weekday])) continue;
-    $slots = [];
-    foreach ($byWeekday[$weekday] as $win) {
-        $t = DateTime::createFromFormat('Y-m-d H:i:s', $cursor->format('Y-m-d') . ' ' . $win['start_time']);
-        $end = DateTime::createFromFormat('Y-m-d H:i:s', $cursor->format('Y-m-d') . ' ' . $win['end_time']);
-        while ($t < $end) {
-            $key = $t->format('Y-m-d H:i:s');
-            $slots[] = ['value' => $key, 'label' => $t->format('g:i A'), 'taken' => isset($takenSlots[$key])];
-            $t->modify('+' . (int) $win['slot_minutes'] . ' minutes');
-        }
-    }
-    $days[] = ['date' => $cursor->format('Y-m-d'), 'weekday_label' => $cursor->format('D'), 'day_label' => $cursor->format('j M'), 'slots' => $slots];
-}
+$days = buildMentorBookingDays($db, $mentorId);
 ?>
 <!DOCTYPE html>
 <html lang="en">
