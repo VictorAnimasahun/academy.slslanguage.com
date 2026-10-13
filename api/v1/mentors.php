@@ -14,7 +14,7 @@ $student = requireMobileAuth($db);
 
 $rows = executeQuery($db, "
     SELECT m.id, m.display_name, m.focus_area,
-           r.status AS request_status
+           r.id AS request_id, r.status AS request_status
     FROM mentors m
     LEFT JOIN mentor_requests r
         ON r.mentor_id = m.id AND r.student_id = ? AND r.status IN ('requested', 'confirmed')
@@ -27,6 +27,9 @@ $items = array_map(fn ($r) => [
     'name' => $r['display_name'],
     'focusArea' => $r['focus_area'],
     'requested' => $r['request_status'] !== null,
+    // The actual mentor_requests row id -- cancelMentorRequest() needs this, not the mentor's own
+    // id, to cancel the right row (DELETE filters by mentor_requests.id).
+    'requestId' => $r['request_id'] !== null ? (string) $r['request_id'] : null,
 ], $rows);
 
 echo json_encode(['items' => $items]);
