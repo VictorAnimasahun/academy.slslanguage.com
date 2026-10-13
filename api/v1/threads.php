@@ -16,7 +16,7 @@ $student = requireMobileAuth($db);
 // (see migration 144's note) -- normalize every timestamp to true UTC here with the live offset,
 // rather than assume the two already agree. academyUtc() is defined in mobile_auth.php.
 $rows = executeQuery($db, "
-    SELECT t.id, t.type, m.display_name AS mentor_name,
+    SELECT t.id, t.type, t.subject, t.is_urgent, m.display_name AS mentor_name,
            lm.body AS last_body, " . academyUtcExpr('lm.created_at') . " AS last_at, lm.sender_id AS last_sender_id,
            (SELECT COUNT(*) FROM thread_messages tm2
              WHERE tm2.thread_id = t.id AND tm2.sender_id != ?
@@ -32,6 +32,8 @@ $items = array_map(fn ($r) => [
     'id' => (string) $r['id'],
     'name' => $r['mentor_name'] ?? 'Conversation',
     'kind' => $r['type'],
+    'subject' => $r['subject'],
+    'urgent' => (bool) $r['is_urgent'],
     'lastMessage' => $r['last_body'],
     'lastMessageMine' => $r['last_sender_id'] !== null && (int) $r['last_sender_id'] === (int) $student['id'],
     'lastMessageAt' => $r['last_at'] ? str_replace(' ', 'T', $r['last_at']) . 'Z' : null,

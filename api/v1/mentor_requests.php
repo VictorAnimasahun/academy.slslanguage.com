@@ -16,7 +16,7 @@ $input = json_decode(file_get_contents('php://input'), true) ?: [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mentorId = (int) ($input['mentor_id'] ?? 0);
-    $mentor = $mentorId ? executeQuery($db, "SELECT id FROM mentors WHERE id = ? AND is_active = 1", [$mentorId])->fetch() : null;
+    $mentor = $mentorId ? executeQuery($db, "SELECT id FROM mentors WHERE id = ? AND is_active = 1 AND is_bookable = 1", [$mentorId])->fetch() : null;
     if (!$mentor) {
         http_response_code(404);
         echo json_encode(['error' => 'Mentor not found']);

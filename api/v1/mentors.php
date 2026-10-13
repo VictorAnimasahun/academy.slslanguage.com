@@ -18,7 +18,7 @@ $rows = executeQuery($db, "
     FROM mentors m
     LEFT JOIN mentor_requests r
         ON r.mentor_id = m.id AND r.student_id = ? AND r.status IN ('requested', 'confirmed')
-    WHERE m.is_active = 1
+    WHERE m.is_active = 1 AND m.is_bookable = 1
     ORDER BY m.display_name
 ", [$student['id']])->fetchAll(PDO::FETCH_ASSOC);
 

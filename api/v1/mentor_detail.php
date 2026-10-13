@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $student = requireMobileAuth($db);
 $mentorId = (int) ($_GET['id'] ?? 0);
 
-$mentor = $mentorId ? executeQuery($db, "SELECT id, display_name, focus_area, bio FROM mentors WHERE id = ? AND is_active = 1", [$mentorId])->fetch(PDO::FETCH_ASSOC) : null;
+$mentor = $mentorId ? executeQuery($db, "SELECT id, display_name, focus_area, bio FROM mentors WHERE id = ? AND is_active = 1 AND is_bookable = 1", [$mentorId])->fetch(PDO::FETCH_ASSOC) : null;
 if (!$mentor) {
     http_response_code(404);
     echo json_encode(['error' => 'Mentor not found']);
