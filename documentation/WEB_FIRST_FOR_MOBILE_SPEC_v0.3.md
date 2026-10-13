@@ -75,8 +75,13 @@ Resources, honouring D11 by keeping tests/analysers off that layer entirely.
    Mentor profile/booking now has the real day/time picker too (api/v1/mentor_detail.php, shared
    includes/mentor_booking.php with the web's mentor_book.php; also fixed a real bug found while
    building it -- api/v1/mentors.php never returned the mentor_requests row's own id, so the
-   app's cancel action was passing the mentor's id instead and silently cancelling nothing). A
-   native Event detail screen and Analytics study-time (blocked on item 6 above) remain not built.
+   app's cancel action was passing the mentor's id instead and silently cancelling nothing). Event
+   detail is built too (api/v1/event_detail.php): description/host/live badge, Join/Going, a
+   "Join the call" link gated to 15 minutes before start (the web never gates join_url at all),
+   and a "Full details" bridge to any existing static detail page via the same web-session token
+   bridge Lesson/Resources use. Only Analytics study-time (blocked on item 6 above -- no
+   lesson-completion tracking exists yet to derive it from) remains not built from spec v0.3's screen
+   list.
 
 ## Rules carried over from CLAUDE.md for this work
 
