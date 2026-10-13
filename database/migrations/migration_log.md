@@ -1988,6 +1988,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 148 — threads.subject/is_urgent, mentors.is_bookable, seed "SLS Support"
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-13 | Ran twice on local 8.0 (second run: all three columns "already exists -- skipping", Support row not re-inserted). Also run twice on a throwaway MySQL 5.7.44 instance (minimal `mentors`/`threads`/`staff_accounts` shape): same. Tested the full 8.37/CMP-01..04 flow end to end: recipients list (real coach + Support), all three New message validation errors, a real urgent send to the real coach and to Support (both emails dispatched), the 3-urgent-per-day cap firing exactly on the 4th, a reply into the new thread, and participant rows confirmed correct (coach threads get both students; Support threads get only the sender). Also verified the new web inbox (`sls-admin/student_messages.php`/`student_message_view.php`) end to end with two throwaway admin sessions: a real urgent thread showed correctly in "My conversations" with the right badges, a reply from there round-tripped to the student's `thread_messages.php` as `mine:false` with unread set, an employee with no linked coach profile saw the honest "not linked yet" state, and that same employee was correctly blocked from opening another coach's private thread by URL. All bookable-mentor endpoints (`mentors.php`, `mentor_detail.php`, `mentor_requests.php`) confirmed to reject Support (`is_bookable=0`). Cleaned up all test data afterward. |
+| Live  | [ ] | | **Needed**: run after pulling. |
+
+**What it does:** backs 8.37 "New message" / CMP-01..04 (SLS-Academy-App-Spec v0.6) -- a student can now start a brand-new conversation from the app (not just reply inside one a coach already started), choosing a real coach or the new seeded "SLS Support" recipient (a `mentors` row with `staff_account_id = NULL` and the new `is_bookable = 0`, so it's a valid message target without ever appearing as a bookable coach), with a subject and an optional urgent flag (rate-limited to 3/day, triggers an email to the coach's real address or `info@slslanguage.com`). `threads.subject`/`is_urgent` back the subject line and urgent badge everywhere they're shown (mobile list/conversation header, the new web inbox).
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
