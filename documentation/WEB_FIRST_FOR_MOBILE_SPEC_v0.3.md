@@ -82,6 +82,13 @@ Resources, honouring D11 by keeping tests/analysers off that layer entirely.
    bridge Lesson/Resources use. Only Analytics study-time (blocked on item 6 above -- no
    lesson-completion tracking exists yet to derive it from) remains not built from spec v0.3's screen
    list.
+9. [x] **CMP-04 / 8.37 New message (spec v0.6, built 2026-10-13)** -- students can now start a
+   brand-new conversation from the app (migration 148: `threads.subject`/`is_urgent`,
+   `mentors.is_bookable` + a seeded non-bookable "SLS Support" recipient), with a web inbox for
+   coaches/admins to read and reply (`slslanguage.com/sls-admin/student_messages.php` +
+   `student_message_view.php`) -- nothing existed before this; the only prior reply path was the
+   founder's own personal student-side login (`academy/thread_view.php`), which doesn't scale past
+   one person.
 
 ## Rules carried over from CLAUDE.md for this work
 
