@@ -89,6 +89,35 @@ Resources, honouring D11 by keeping tests/analysers off that layer entirely.
    `student_message_view.php`) -- nothing existed before this; the only prior reply path was the
    founder's own personal student-side login (`academy/thread_view.php`), which doesn't scale past
    one person.
+10. [x] **Real APK vs. interactive prototype audit (2026-10-14)** -- founder walked the actual
+    installed APK against the full interactive HTML prototype and found several real gaps that
+    `tsc`/lint/curl-only testing had never caught:
+    - **Analytics was calling a 404.** `api/v1/analytics.php` never existed, and separately the
+      app's own `api.ts` call was missing `.php` on the path (every other v1 endpoint has it).
+      Built for real on `test_attempts.time_spent`/`completed_at` (same source the web Analytics
+      page already shows as "Time Practising") plus `lesson_progress` for the streak -- true
+      lesson-level watch-time tracking still doesn't exist (item 6 above), so this is honest about
+      what it measures rather than inventing study-time data.
+    - **Courses had no Browse.** `mobile_courses.php` already returned every visible course, not
+      just enrolled ones, but carried none of `is_free`/`free_preview_classes`/`buy_url`, and the
+      app's own `courses.tsx` filtered the response down to `enrolled` courses only, with its
+      "Browse courses" button wired to a toast stub. Added those three fields to
+      `mobile_courses.php`/`mobile_course.php`, a new `api/v1/course_enroll.php` (mirrors
+      `courses_detail.php`'s own enrol branch exactly), and a My courses / Browse tab toggle with
+      real Joined/Free/Preview/Coming soon tags and per-class locking beyond the free preview.
+    - **All 5 Resources rows opened a web view.** Real content, but not "working in the app" the
+      way the prototype shows it. All five are now native: Vocabulary banks (word of the day,
+      A-Z/search list, word detail, scored quiz), Quizzes (4 real "Quiz Master" knowledge quizzes,
+      119 questions, transcribed verbatim -- these are pure client-side on the web too, no DB
+      writes, so no backend endpoint was needed), Exercises (Letter Parts Sorter, Sentence
+      Sequencing, Data Detective, Build your Evidence, Thin to Thick -- the one with a real AI
+      grader, `api/v1/exercise_thin_to_thick.php`), Model answers (Writing Tests 1-5, the Academic
+      Writing Band 5/6 script comparison with the real scanned images, the Speaking transcript --
+      `api/v1/model_answers.php`, backed by shared `_*.php` data files so the web pages and the
+      app read the same content), and Study materials (native list; the actual download still
+      bridges through the existing token-to-web-session mechanism, since that's exactly the right
+      tool for handing a binary file to the OS). `expo-image` added for the first real remote-image
+      use case in the app.
 
 ## Rules carried over from CLAUDE.md for this work
 
