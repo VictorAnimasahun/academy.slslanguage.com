@@ -1999,6 +1999,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 149 — speaking_recordings.tutor_marked_transcribed_at
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-14 | Ran twice on local 8.0 (second run: "already exists -- skipping"). Also built a throwaway MySQL 5.7.44 instance from scratch (minimal `speaking_recordings` shape) and ran it twice there too: same. Tested the new `mark_transcribed` toggle logic and the new `cron/cleanup_speaking_recordings.php` script end to end with throwaway recordings (one 10 days old/unmarked, one today/marked, one today/unmarked) — confirmed the script's own WHERE clause catches exactly the first two and leaves the third alone, via a scoped real run against only the throwaway rows (the full script's `--dry-run` also surfaced 15 real pre-existing local recordings older than 7 days, left untouched since they're local test data from earlier sessions, not something to clean up without being asked). Cleaned up all test data afterward. |
+| Live  | [ ] | | **Needed**: run after pulling. |
+
+**What it does:** adds a lightweight flag so a tutor can mark a speaking recording as "transcribed" from `practice_session_detail.php` / `mock_session_detail.php` (both got the same new button + JS handler, per the mock/practice parity rule) without immediately deleting the audio the way the existing "Delete audio" button does. `cron/cleanup_speaking_recordings.php` is the automated sweep: it deletes the audio file (never the transcript/feedback/score) for anything flagged this way, or anything older than 7 days regardless of the flag -- same unlink + `audio_path = NULL` + `audio_deleted_at = NOW()` logic the manual delete button already used. Built after the live cPanel disk quota (2GB) was found mostly full of real shared test content, not recordings yet, but with zero retention policy on student-uploaded audio, that was only a matter of time. **Needs a cPanel cron job added by the founder** (not something run from here) -- see the comment at the top of `cron/cleanup_speaking_recordings.php` for the exact command and a suggested daily schedule.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
