@@ -19,6 +19,7 @@ try {
     $stmt = $db->prepare(
         "SELECT c.id, c.title, c.folder_name, c.exam_variant, c.length_months, c.availability,
                 c.description, c.instructor_name, c.total_lessons,
+                c.is_free, c.free_preview_classes, c.buy_url,
                 e.progress_percentage AS progress, (e.id IS NOT NULL) AS enrolled
            FROM courses c
            LEFT JOIN enrollments e ON e.course_id = c.id AND e.student_id = ?
@@ -36,6 +37,9 @@ try {
         'description' => $c['description'],
         'instructor' => $c['instructor_name'],
         'totalClasses' => (int) $c['total_lessons'],
+        'isFree' => (bool) $c['is_free'],
+        'freePreviewClasses' => (int) $c['free_preview_classes'],
+        'buyUrl' => $c['buy_url'],
         'enrolled' => (bool) $c['enrolled'],
         'progress' => $c['progress'] !== null ? (int) $c['progress'] : 0,
     ], $stmt->fetchAll(PDO::FETCH_ASSOC));

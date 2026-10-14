@@ -23,7 +23,8 @@ if ($id <= 0) {
 try {
     $c = $db->prepare(
         "SELECT c.id, c.title, c.exam_variant, c.length_months, c.availability, c.description, c.instructor_name,
-                c.total_lessons, e.progress_percentage AS progress, (e.id IS NOT NULL) AS enrolled
+                c.total_lessons, c.is_free, c.free_preview_classes, c.buy_url,
+                e.progress_percentage AS progress, (e.id IS NOT NULL) AS enrolled
            FROM courses c
            LEFT JOIN enrollments e ON e.course_id = c.id AND e.student_id = ?
           WHERE c.id = ? AND c.is_visible = 1"
@@ -88,6 +89,9 @@ try {
             'description' => $course['description'],
             'instructor' => $course['instructor_name'],
             'totalClasses' => (int) $course['total_lessons'],
+            'isFree' => (bool) $course['is_free'],
+            'freePreviewClasses' => (int) $course['free_preview_classes'],
+            'buyUrl' => $course['buy_url'],
             'enrolled' => (bool) $course['enrolled'],
             'progress' => $course['progress'] !== null ? (int) $course['progress'] : 0,
             'weeks' => array_values($weeks),
