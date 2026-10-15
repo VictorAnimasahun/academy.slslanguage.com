@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Mini Mock Test</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+	<link rel="stylesheet" href="css/style.css">
+	<style>
+	</style>
+</head>
+<body>
+	<!-- ===== QUIZ HEADER ===== -->
+	<header class="quiz-header">
+		<div class="quiz-logo">
+			<img src="../../images/Logo5.png" alt="SLS Logo" onerror="this.style.display='none'">
+		</div>
+		<div id="quiz-timer">
+			Time Left: <span id="time">60:00</span>
+		</div>
+	</header>
+    
+    <div class="container">
+        <!-- Introduction Page -->
+        <div id="intro" class="page active">
+            <h1>IELTS Mini Mock Test</h1>
+            <div class="intro-text">
+                <p>Welcome to the IELTS Mini Mock Test. This test simulates parts of the IELTS exam so you can practice under timed conditions. The full IELTS exam has four sections (Listening, Reading, Writing, and Speaking). This Mock Test will also evaluate the same sections.</p>
+                <br>
+                <p>You have a total of 1 hour to complete all four sections. The timer will begin counting down as soon as you click the button below:</p>
+                <ul style="text-align: left; max-width: 500px; margin: 20px auto;">
+                    <li>Listening (10 questions)</li>
+                    <li>Reading (6 questions)</li>
+                    <li>Writing (1 task)</li>
+                    <li>Speaking (examiner administered)</li>
+                </ul>
+                <br>
+                <p>Click on the <strong>Start Test</strong> button below when you are ready to begin. At the end, you'll receive a detailed assessment of your English level and personalized feedback on areas for improvement.</p>
+            </div>
+            <div class="navigation">
+                <div></div>
+                <button class="btn btn-primary" onclick="startQuiz()">Start Test</button>
+            </div>
+        </div>
+
+		<!-- Section 1: Listening -->
+		<div id="section1" class="page">
+			<div class="progress-bar">
+				<div class="progress" style="width: 25%"></div>
+			</div>
+
+			<h2>Section 1: Listening</h2>
+			
+			<!-- Audio Player Section -->
+			<div class="audio-section">
+			<div class="wrap">
+				<div class="card" style="border-left:4px solid var(--primary-color);">
+				<h3 style="color:var(--primary-color); margin-bottom:15px;">🎧 Audio Instructions</h3>
+
+				<div class="audio-info">
+					<p><strong>Important:</strong> Click <em>Start Listening</em> to begin the audio. The audio plays only ONCE. You cannot pause, rewind, or replay - just like the real IELTS test.</p>
+					<p>Listen carefully and complete the notes as you hear the information.</p>
+				</div>
+
+				<!-- Audio element with sources (fix the file names / extensions to match your files) -->
+				<audio id="listeningAudio" preload="auto">
+					<!-- Preferred audio file (update path & extension to match your file). Remove/replace sources you don't have. -->
+					<source src="audio/Ieltsminimockaud.mp4" type="audio/mp4">
+					Your browser does not support the audio element.
+				</audio>
+
+				<!-- Single, canonical status block (no duplicate ids) -->
+				<div class="audio-status" id="audioStatus">
+					<div class="status-indicator">
+					<span id="audioIndicator">⚪</span>
+					<span id="audioText">Click "Start Listening" to begin</span>
+					</div>
+					<div id="audioStatusText" style="margin-bottom:8px; color:#444">Ready</div>
+					<div class="audio-timer">Audio Time: <span id="audioTimeDisplay">00:00</span></div>
+				</div>
+
+				<div style="margin-top:12px;">
+					<button id="startAudioBtn">▶ Start Listening</button>
+					<button id="nextSectionBtn" disabled>Next Section →</button>
+				</div>
+
+				<div class="audio-warning" style="margin-top:14px;">
+					<p style="color:#d32f2f; font-weight:bold;">⚠️ Remember: This audio plays only once. Take notes as you listen!</p>
+				</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Questions Section -->
+		<div class="wrap">
+			<div class="card" role="main" aria-labelledby="title">
+				<h1 id="title">Listening Section</h1>
+				<div class="subtitle">Questions 1–10 — Complete the notes. <strong>Write ONE WORD ONLY</strong> for each answer.</div>
+
+				<h2 style="margin-top:6px;text-align:center">Agricultural programme in Mozambique</h2>
+
+				<h3>How the programme was organised</h3>
+				<ul id="listeningList">
+					<li>It focused on a dry and arid region in Chicualacuala district, near the Limpopo River.</li>
+					<li>People depended on the forest to provide charcoal as a source of income.</li>
+					<li>1. <input id="l1" type="text" autocomplete="off" placeholder="______">was seen as the main priority to ensure the supply of water.</li>
+					<li>Most of the work organised by farmers' association was done by 2. <input id="l2" type="text" autocomplete="off" placeholder="______"></li>
+					<li>Fenced areas were created to keep animals away from crops.</li>
+					<li>The program provided:</li>
+						<ul class="LL-sub">
+							<li>3.<input id="l3" type="text" autocomplete="off" placeholder="______">for the fences.</li>
+							<li>4.<input id="l4" type="text" autocomplete="off" placeholder="______">for suitable crops.</li>
+							<li>Water pumps.</li>
+						</ul>
+					<li>The farmers provided:</li>
+						<ul class="LL-sub">
+							<li>Labour</li>
+							<li><input id="l5" type="text" autocomplete="off" placeholder="______"> for the fences on their land</li>
+						</ul>
+
+					<h3>How the programme was organised</h3>
+					<li>The marketing of the produce was sometimes difficult due to lack of 6.<input id="l6" type="text" autocomplete="off" placeholder="______">.</li>
+					<li>Training was therefore provided in methods of food 7.<input id="l7" type="text" autocomplete="off" placeholder="______">.</li>
+					<li>Farmers made special places where 8.<input id="l8" type="text" autocomplete="off" placeholder="______"> could be kept</li>
+					<li>Local people later suggested keeping 9.<input id="l9" type="text" autocomplete="off" placeholder="______">.</li>
+					
+					<h3>Evaluation and lessons learned</h3>
+					<li>Agricultural production increased, improving incomes and food security</li>
+					<li>Enough time must be allowed, particularly for the 10.<input id="l10" type="text" autocomplete="off" placeholder="______"> phase of the programme</li>
+				</ul>
+				
+				<div class="note">
+					<p><strong>Tip:</strong> Answers are not case-sensitive. You can edit your answers until you proceed to the next section.</p>
+					<p><strong>Audio Status:</strong> <span id="audioStatusText">Ready to play</span></p>
+				</div>
+			</div>
+		</div>
+
+		<div class="navigation">
+			<button class="btn btn-secondary" onclick="goToPage('intro')">← Back</button>
+			<button class="btn btn-primary" onclick="goToSection(2)" id="nextSectionBtn">Next Section →</button>
+		</div>
+	</div>
+
+        <!-- Section 2: Reading -->
+        <div id="section2" class="page">
+            <div class="progress-bar">
+                <div class="progress" style="width: 50%"></div>
+            </div>
+            <h2>Section 2: Reading</h2>
+            <p style="margin-bottom: 25px; color: #666;">Questions 1–6 — Complete the notes. <strong>Write ONE WORD ONLY</strong> for each answer.</p>
+
+			<div class="wrap">
+    			<div class="card" role="main">
+      				<h1>Reading Section</h1>
+      				<div class="subtitle">Questions 1–6 — Complete the notes. <strong>Write ONE WORD ONLY</strong> for each answer.</div>
+
+					<!-- (short passage header for context) -->
+					<div class="passage">
+						
+						<h3>Resigning from a job in a professional manner</h3>
+						<p>
+							When you take the decision to resign and move on to another job, you might really want 
+							to dance your way out of the door, or get your own back by criticising your boss to the 
+							whole office. But you need to resist these temptations because in future you might find 
+							you’re working with your ex-line manager or other colleagues in a different company.
+						</p>
+
+						<h4>Letting your manager know</h4>
+						<p>
+							Show courtesy by telling your boss first. Request a meeting to say that you’re leaving, 
+							following up soon after with an official letter. Before the meeting with your boss, write 
+							a list of ongoing tasks along with status updates and suggestions concerning completion.
+						</p>
+						<p>
+							Use the meeting to clarify any other points, such as your notice period and leaving date, 
+							and how you will inform others (colleagues or external clients, contacts and suppliers). 
+							Ask about a reference too; your employer may only supply the most basic type but your 
+							line manager might also give you a more personal one. Making sure you get a good one 
+							can make subsequent job hunting less stressful.
+						</p>
+
+						<h4>Preparation</h4>
+						<p>
+							Work out how you can ensure a smooth transition and minimise disruption to your employer. 
+							There may be a range of things you can do to hand over professionally, such as completing 
+							projects, working out the priorities with your line manager, and leaving clear documentation 
+							for the successor in your post concerning processes or software.
+						</p>
+
+						<h4>Your letter of resignation</h4>
+						<p>
+							Keep your letter short. You don’t need to give lots of explanations or justification for why 
+							you’re leaving. Don’t be tempted to address the failings of the company or your boss, either. 
+							Instead, thanking your employer for the job and mentioning what you appreciated about it 
+							is a graceful touch. Here’s an idea of what to include:
+						</p>
+						<ul class="passage-sub">
+							<li><strong>First paragraph – the basics</strong><br>
+							Inform the employer that you wish to resign and confirm the agreed final date at work.
+							</li>
+							<li><strong>Second paragraph – thank your employer</strong><br>
+							Mention any particular career-building projects you worked on or opportunities to develop 
+							skills and contribute to the employer’s goals and successes. You can also mention your 
+							appreciation at being able to work in a great team.
+							</li>
+							<li><strong>Third paragraph – handover</strong><br>
+							State your willingness to finish existing projects and hand over your work smoothly.
+							</li>
+						</ul>
+					</div>
+
+					<div class="summary" aria-label="Summary with blanks">
+						<p>Complete the notes below.</p>
+						<p>Choose <em>ONE WORD ONLY</em> from the text for each answer.</p>
+						<p>Write your answers in boxes 1-6 on your answer sheet.</p>
+
+						<div class="summary-questions">
+							<h3>The best way to resign</h3>
+
+							<p>Avoid all 1 <span class="blank"><input id="r1" type="text" autocomplete="off"></span> to resign in an angry way. Instead follow this procedure:</p>
+
+							<p><b>Arrange a meeting with the boss to:</b></p>
+							<ul>
+								<li>mention any projects which are underway and give ideas for their 2 <span class="blank"><input id="r2" type="text" autocomplete="off"></span>.</li>
+								<li>discuss how much notice you need to give before you go.</li>
+								<li>request information on the type of 3 <span class="blank"><input id="r3" type="text" autocomplete="off"></span> you will receive.</li>
+							</ul>
+
+							<p><b></b>Steps you can take before you leave</b></p>
+							<ul>
+								<li>Work to cause as little 4 <span class="blank"><input id="r4" type="text" autocomplete="off"></span> as possible to the organisation.</li>
+								<li>Make sure your successor has adequate guidance on the organisation's systems</li>
+							</ul>
+
+							<p><b>In the resignation letter:</b></p>
+							<ul>
+								<li>avoid mentioning any 5 <span class="blank"><input id="r5" type="text" autocomplete="off"></span> in the organisation.</li>
+								<li>show appreciation for aspects of the job, e.g., the chance to improve your 6 <span class="blank"><input id="r6" type="text" autocomplete="off"></span>.</li>
+								<li>indicate your wish to leave everything in good order</li>
+							</ul>
+						</div>
+					</div>
+
+
+      				<div class="hint">Click "Next Section" to continue with the Writing test.</div>
+    			</div>
+  			</div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="goToSection(1)">← Previous</button>
+                <button class="btn btn-primary" onclick="goToSection(3)">Next Section →</button>
+            </div>
+        </div>
+
+        <!-- Section 3: Writing -->
+        <div id="section3" class="page">
+            <div class="progress-bar">
+                <div class="progress" style="width: 75%"></div>
+            </div>
+            <h2>Section 3: Writing</h2>
+            
+            <div class="wrap">
+                <div class="card" role="main">
+                    <h1>Writing Section</h1>
+                    <div class="subtitle">Writing Task 1 — You should spend about 20 minutes on this task.</div>
+                    
+                    <div class="writing-task">
+                        <div class="task-prompt">
+                            <h3>Task:</h3>
+                            <p>You recently bought a piece of equipment for your kitchen but it did not work. You phoned the shop but no action was taken.</p>
+                            <p><strong>Write a letter to the shop manager. In your letter:</strong></p>
+                            <ul>
+                                <li>describe the problem with the equipment</li>
+                                <li>explain what happened when you phoned the shop</li>
+                                <li>say what you would like the manager to do</li>
+                            </ul>
+                            <p><strong>Write at least 150 words.</strong></p>
+                            <p>You do NOT need to write any addresses.</p>
+                            <p>Begin your letter as follows:</p>
+                            <p><em>Dear Sir or Madam,</em></p>
+                        </div>
+                        
+                        <div class="writing-area">
+                            <div class="writing-box">
+                                <textarea 
+                                    id="writingResponse" 
+                                    class="writing-textarea" 
+                                    placeholder="Begin your letter here...&#10;&#10;Dear Sir or Madam,&#10;&#10;"
+                                    rows="20"
+                                    maxlength="2000"
+                                ></textarea>
+                                <div class="word-count">
+                                    Word count: <span id="wordCount">0</span> / 150 minimum
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="writing-tips">
+                            <h4>Tips:</h4>
+                            <ul>
+                                <li>Use formal language appropriate for a complaint letter</li>
+                                <li>Organize your letter with clear paragraphs</li>
+                                <li>Include all three bullet points in your response</li>
+                                <li>Aim for 150-200 words</li>
+                                <li>End with an appropriate closing (e.g., "Yours faithfully,")</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="goToSection(2)">← Previous</button>
+                <button class="btn btn-primary" onclick="goToSection(4)">Next Section →</button>
+            </div>
+        </div>
+
+        <!-- Section 4: Speaking -->
+        <div id="section4" class="page">
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+            <h2>Section 4: Speaking</h2>
+            
+            <div class="wrap">
+                <div class="card" role="main">
+                    <h1>Speaking Section</h1>
+                    <div class="subtitle">The Speaking test will be administered to you by the examiner.</div>
+                    
+                    <div class="speaking-info">
+                        <div class="speaking-overview">
+                            <h3>IELTS Speaking Test Overview</h3>
+                            <p>The IELTS Speaking test is a face-to-face interview with a certified examiner. It takes 11-14 minutes and consists of three parts:</p>
+                        </div>
+                        
+                        <div class="speaking-parts">
+                            <div class="speaking-part">
+                                <h4>Part 1: Introduction and Interview (4-5 minutes)</h4>
+                                <ul>
+                                    <li>General questions about yourself, your home, family, work, studies</li>
+                                    <li>Familiar topics such as hobbies, interests, daily routines</li>
+                                    <li>Example: "Tell me about your hometown" or "What do you like to do in your free time?"</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="speaking-part">
+                                <h4>Part 2: Long Turn (3-4 minutes)</h4>
+                                <ul>
+                                    <li>You receive a task card with a topic and points to cover</li>
+                                    <li>1 minute preparation time to make notes</li>
+                                    <li>Speak for 1-2 minutes on the topic</li>
+                                    <li>Examiner may ask 1-2 follow-up questions</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="speaking-part">
+                                <h4>Part 3: Discussion (4-5 minutes)</h4>
+                                <ul>
+                                    <li>Abstract discussion related to Part 2 topic</li>
+                                    <li>More complex questions requiring detailed answers</li>
+                                    <li>Opportunity to express opinions and ideas</li>
+                                    <li>Questions about society, future predictions, comparisons</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="speaking-assessment">
+                            <h3>Assessment Criteria</h3>
+                            <p>Your speaking will be assessed on four criteria:</p>
+                            <div class="criteria-grid">
+                                <div class="criterion">
+                                    <h5>Fluency and Coherence</h5>
+                                    <p>How smoothly you speak and organize your ideas</p>
+                                </div>
+                                <div class="criterion">
+                                    <h5>Lexical Resource</h5>
+                                    <p>Range and accuracy of vocabulary</p>
+                                </div>
+                                <div class="criterion">
+                                    <h5>Grammatical Range</h5>
+                                    <p>Variety and accuracy of grammar structures</p>
+                                </div>
+                                <div class="criterion">
+                                    <h5>Pronunciation</h5>
+                                    <p>Clarity and natural rhythm of speech</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="speaking-tips">
+                            <h3>Speaking Test Tips</h3>
+                            <ul>
+                                <li>Speak clearly and at a natural pace</li>
+                                <li>Don't worry about your accent - focus on clear pronunciation</li>
+                                <li>Give full answers, not just yes/no responses</li>
+                                <li>Use a range of vocabulary and grammar structures</li>
+                                <li>Ask for clarification if you don't understand a question</li>
+                                <li>Stay calm and be yourself</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="examiner-note">
+                            <h3>Note for Test Day</h3>
+                            <p><strong>The Speaking test is conducted separately from the other three skills and may be scheduled on a different day.</strong> You will be notified of your Speaking test time when you register for the IELTS exam.</p>
+                            <p>The test is recorded for monitoring and remarking purposes. The examiner will take notes during your test, but this is normal procedure and not a cause for concern.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="goToSection(3)">← Previous</button>
+                <button class="btn btn-primary" onclick="finishQuiz()">Finish Test & See Results →</button>
+            </div>
+        </div>
+
+        <!-- Results Page -->
+		<div id="results" class="page">
+			<div class="download-buttons">
+				<button class="btn btn-download" id="downloadSummaryPDF">📄 Download Summary PDF</button>
+				<button class="btn btn-download" id="downloadFullPDF">📑 Download Full Results PDF</button>
+			</div>
+			
+			<div class="results-section" id="quiz-results">
+				<div class="wrap">
+					<div class="card">
+						<h1>IELTS Mock Test Results</h1>
+						<div id="summary" class="scoreRow" aria-live="polite">
+							<!-- populated by script -->
+						</div>
+						<div class="total" id="totalArea"></div>
+						<div class="details" id="detailsArea">
+							<!-- detailed per-question breakdowns -->
+						</div>
+						<div class="controls">
+							<button class="btn btn-restart" id="restartBtn">Take Test Again</button>
+						</div>
+						<div class="ielts-info">
+							<p><strong>Note:</strong> This is a practice test. Your actual IELTS score may vary.</p>
+							<p>For official IELTS testing, visit <a href="https://ielts.org" target="_blank">ielts.org</a></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </div>
+
+	<script src="scripts/script.js" defer></script>
+</body>
+</html>

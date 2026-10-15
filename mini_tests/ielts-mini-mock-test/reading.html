@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reading Section — IELTS Mini Mock Test</title>
+  <style>
+    :root{--pink:#ff5a8a; --blue:#0077cc; --muted:#666; --bg:#f6f7f9}
+    body{font-family:Inter, "Arial", sans-serif;margin:0;background:var(--bg);color:#222}
+    .wrap{max-width:920px;margin:26px auto;padding:20px}
+    .card{background:#fff;border-radius:10px;padding:24px;box-shadow:0 6px 18px rgba(12,18,30,0.06)}
+    h1{text-align:center;color:var(--blue);margin:0 0 6px}
+    .subtitle{text-align:center;color:var(--muted);font-size:14px;margin-bottom:14px}
+    .passage{font-size:14px;color:#222;line-height:1.6;margin-bottom:10px}
+    .summary{background:#fbfbfb;border:1px dashed #eee;padding:12px;border-radius:8px}
+    ol{padding-left:18px}
+    .blank input{padding:6px 8px;border:1px solid #cfcfcf;border-radius:6px;min-width:110px}
+    .controls{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+    .btn{padding:10px 14px;border-radius:8px;border:none;color:#fff;font-weight:700;cursor:pointer}
+    .btn-results{background:linear-gradient(90deg,var(--pink),var(--blue))}
+    .btn-back{background:#efefef;color:#222;border:1px solid #e2e2e2}
+    .hint{font-size:13px;color:var(--muted);text-align:center;margin-top:8px}
+    @media (max-width:640px){ .blank input{min-width:72px} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main">
+      <h1>Reading Section</h1>
+      <div class="subtitle">Questions 1–6 — Complete the notes. <strong>Write ONE WORD ONLY</strong> for each answer.</div>
+
+      <!-- (short passage header for context) -->
+      <div class="passage">
+        <strong>Passage:</strong> Resigning from a job in a professional manner — short guidance on letting your manager know, preparation, and what to include in your resignation letter.
+      </div>
+
+      <div class="summary" aria-label="Summary with blanks">
+        <ol>
+          <li>Avoid all <span class="blank"><input id="r1" type="text" autocomplete="off"></span> when you resign in an angry way.</li>
+          <li>Arrange a meeting with the boss to mention any projects underway and give ideas for their <span class="blank"><input id="r2" type="text" autocomplete="off"></span>.</li>
+          <li>Request information on the type of <span class="blank"><input id="r3" type="text" autocomplete="off"></span> you will receive.</li>
+          <li>Work to cause as little <span class="blank"><input id="r4" type="text" autocomplete="off"></span> as possible to the organisation.</li>
+          <li>In the resignation letter: avoid mentioning any <span class="blank"><input id="r5" type="text" autocomplete="off"></span> in the organisation.</li>
+          <li>Show appreciation for aspects of the job, e.g., the chance to improve your <span class="blank"><input id="r6" type="text" autocomplete="off"></span>.</li>
+        </ol>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-results" id="seeResults">See Results</button>
+        <button class="btn btn-back" id="backListening">Back to Listening</button>
+      </div>
+
+      <div class="hint">Your Listening answers (if any) are stored locally. Click "See Results" to finish and view both section scores.</div>
+    </div>
+  </div>
+
+  <script>
+    function norm(v){ return (v||'').trim(); }
+
+    // Prefill reading answers if present
+    function loadReading(){
+      try {
+        const raw = localStorage.getItem('readingAnswers');
+        if(!raw) return;
+        const arr = JSON.parse(raw);
+        if(!Array.isArray(arr)) return;
+        for(let i=0;i<6;i++){
+          const el = document.getElementById('r'+(i+1));
+          if(el) el.value = arr[i] || '';
+        }
+      } catch(e){}
+    }
+
+    // Save reading answers and go to results page
+    function goToResults(){
+      const arr = [];
+      for(let i=0;i<6;i++) arr.push(norm(document.getElementById('r'+(i+1)).value));
+      localStorage.setItem('readingAnswers', JSON.stringify(arr));
+      window.location.href = 'results.html';
+    }
+
+    function backToListening(){
+      // Simply go back to the listening page so the user can edit
+      window.location.href = 'listening.html';
+    }
+
+    document.getElementById('seeResults').addEventListener('click', goToResults);
+    document.getElementById('backListening').addEventListener('click', backToListening);
+    document.addEventListener('DOMContentLoaded', loadReading);
+  </script>
+</body>
+</html>
