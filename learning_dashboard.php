@@ -89,6 +89,31 @@ $mockSessionsStmt = executeQuery($db, "
     WHERE ms.student_id = ? ORDER BY ms.created_at DESC LIMIT 1", [$user_id]);
 $mockSessions = $mockSessionsStmt ? $mockSessionsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
 
+// Upcoming: the next not-yet-completed assignment(s), ordered by each student's own
+// real due date (course_pacing_items -> assignments, computed from enrollment date —
+// see includes/course_pacing.php). Same completion check assignments.php itself uses,
+// so this can never show something that page would already call done. Full mock tests
+// are assignment rows too (test_code matching *_FULL_MOCK_*, see assignment_helpers.php's
+// assignmentUrl()), so one query covers both regular classes/quizzes and mock tests —
+// no separate "next mock" lookup needed.
+require_once INCLUDES_PATH . '/assignment_helpers.php';
+$upcomingStmt = executeQuery($db, "
+    SELECT a.id, a.type, a.title, a.due_date, a.test_id, t.code AS test_code
+    FROM assignments a
+    LEFT JOIN tests t ON t.id = a.test_id
+    LEFT JOIN (
+        SELECT ta1.test_id, ta1.status
+        FROM test_attempts ta1
+        JOIN (SELECT test_id, MAX(id) AS max_id FROM test_attempts WHERE student_id = ? GROUP BY test_id) ta2
+            ON ta1.id = ta2.max_id
+    ) latest ON latest.test_id = a.test_id
+    WHERE (a.student_id IS NULL OR a.student_id = ?)
+      AND (latest.status IS NULL OR latest.status != 'completed')
+    ORDER BY CASE WHEN a.due_date IS NULL THEN 1 ELSE 0 END, a.due_date ASC
+    LIMIT 2
+", [$user_id, $user_id]);
+$upcoming = $upcomingStmt ? $upcomingStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
 // Daily vocabulary word
 $vocabWords = $db->query(
     "SELECT id, headword, phonetic, word_class, cefr_level, is_awl, definition
@@ -223,6 +248,24 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                         </div>
                     </div>
                 </div>
+
+                <!-- Upcoming: next not-yet-completed assignment(s), real due dates -->
+                <?php if (!empty($upcoming)): ?>
+                <div class="small-card mb-4">
+                    <h5 class="mb-3">Upcoming</h5>
+                    <?php foreach ($upcoming as $u):
+                        $dueLabel = $u['due_date'] ? date('D, M j', strtotime($u['due_date'])) : 'No due date';
+                    ?>
+                    <div class="d-flex justify-content-between align-items-center py-2" style="border-bottom:1px solid #f1f5f9;">
+                        <div class="d-flex align-items-center gap-2" style="min-width:0;">
+                            <?= typeBadge($u['type']) ?>
+                            <span style="font-size:.85rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?= htmlspecialchars($u['title']) ?></span>
+                        </div>
+                        <span style="font-size:.78rem;color:#6b7280;flex-shrink:0;margin-left:.75rem;"><?= htmlspecialchars($dueLabel) ?></span>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
 
                 <!-- Ongoing / Registered Courses -->
                 <?php if (!empty($enrolled_courses)): ?>
