@@ -9,11 +9,11 @@
 
 /* Content */
 .content {
-	margin-left: 220px;
+	margin-left: var(--sidebar-w);
 	margin-top: var(--topbar-h);
 	padding: 1.5rem;
 	transition: margin-left 0.3s ease;
-	max-width: calc(100vw - 220px);
+	max-width: calc(100vw - var(--sidebar-w));
 	box-sizing: border-box;
 	overflow-x: hidden;
 }
