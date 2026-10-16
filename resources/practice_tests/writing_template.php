@@ -132,7 +132,6 @@ if (!$test) {
 		/* Question Text */
 		.question-text {
 			background: #e7f3ff;
-			border-left: 4px solid #0d6efd;
 			padding: 1.5rem;
 			border-radius: 8px;
 			line-height: 1.8;

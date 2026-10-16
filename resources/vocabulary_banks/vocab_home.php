@@ -109,7 +109,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             padding: 0.85rem 1rem;
             box-shadow: 0 1px 5px rgba(15,23,42,0.06);
             text-decoration: none; color: inherit;
-            border-left: 3px solid #0b77ff;
+            border: 1px solid #e2e8f0;
             display: block;
             transition: box-shadow 0.2s, border-color 0.2s;
         }

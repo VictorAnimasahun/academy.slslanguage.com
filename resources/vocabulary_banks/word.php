@@ -126,7 +126,7 @@ $wordFamily  = splitComma($word['word_family']);
         }
         .usage-item {
             background: #f8fafc; border-radius: 8px; padding: 0.8rem 1rem;
-            margin-bottom: 0.5rem; border-left: 3px solid #0b77ff;
+            margin-bottom: 0.5rem;
         }
         .usage-item .sub { font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.25rem; }
         .usage-item .sentence { font-size: 0.93rem; color: #1e293b; line-height: 1.55; }

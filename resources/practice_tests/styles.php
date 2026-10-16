@@ -166,7 +166,6 @@
 /* ==================== QUESTION DISPLAY ==================== */
 .question-box {
     background: #f0f9ff;
-    border-left: 4px solid #3b82f6;
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 2rem;
@@ -256,7 +255,7 @@
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1rem;
-    border-left: 4px solid #3b82f6;
+    border: 1px solid #e2e8f0;
 }
 
 .question-number {
@@ -379,7 +378,6 @@
 /* ==================== INSTRUCTIONS ==================== */
 .instructions-box {
     background: #eff6ff;
-    border-left: 4px solid #3b82f6;
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 2rem;

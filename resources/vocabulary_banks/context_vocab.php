@@ -204,7 +204,6 @@ renderTopic(contextTopics[0].slug);
     .topic-word-card {
         background: #fff;
         border: 1px solid #e2e8f0;
-        border-left: 4px solid #0b77ff;
         border-radius: 10px;
         padding: 0.8rem 0.9rem;
     }

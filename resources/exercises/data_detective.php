@@ -91,7 +91,7 @@
 		
 		.score-display { text-align: center; font-size: 2rem; font-weight: 800; color: #667eea; margin: 20px 0; }
 		
-		.level-info { background: #f0f4ff; border-left: 4px solid #667eea; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
+		.level-info { background: #f0f4ff; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
 		.level-info strong { color: #667eea; }
 		
 		@media (max-width: 768px) {

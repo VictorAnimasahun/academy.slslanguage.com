@@ -179,7 +179,6 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
         padding: 1.5rem;
         border-radius: 12px;
-        border-left: 4px solid #0ea5e9;
         margin-bottom: 2rem;
     }
     
@@ -359,7 +358,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         background: #f8fafc;
         padding: 1.5rem;
         border-radius: 12px;
-        border-left: 4px solid #3b82f6;
+        border: 1px solid #e2e8f0;
     }
     
     .transcription-text {

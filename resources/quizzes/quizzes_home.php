@@ -205,7 +205,6 @@ $exercises = [
 			border-radius: 16px;
 			padding: 1.5rem;
 			box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-			border-left: 5px solid #0b77ff;
 			transition: box-shadow 0.2s ease;
 			text-decoration: none;
 			color: inherit;

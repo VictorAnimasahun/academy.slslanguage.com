@@ -264,7 +264,6 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     padding: 1.5rem;
     background: #f8f9fa;
     border-radius: 12px;
-    border-left: 4px solid #667eea;
 }
 
 .modal-section h3 {

@@ -19,7 +19,7 @@ if (!isset($_SESSION['user_id'])) {
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         .task-title { font-size:1.15rem; font-weight:700; margin:2.25rem 0 .75rem; padding-bottom:.4rem; border-bottom:2px solid #0b77ff; }
-        .prompt-card { background:#f0f7ff; border-left:4px solid #0b77ff; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1rem; }
+        .prompt-card { background:#f0f7ff; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1rem; }
         .script-card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:1.25rem; margin-bottom:1.25rem; }
         .script-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem; }
         .script-name { font-weight:700; }

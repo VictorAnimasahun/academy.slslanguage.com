@@ -117,7 +117,6 @@ if (!isset($_SESSION['user_id'])) {
         }
 
         .task-header {
-            border-left: 5px solid #667eea;
             padding-left: 20px;
             margin-bottom: 30px;
         }
@@ -200,7 +199,6 @@ if (!isset($_SESSION['user_id'])) {
             background: #f8f9fa;
             padding: 25px;
             border-radius: 15px;
-            border-left: 5px solid #667eea;
         }
 
         .speaking-part h4 {

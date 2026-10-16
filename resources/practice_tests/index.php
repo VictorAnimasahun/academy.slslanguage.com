@@ -75,7 +75,6 @@ $sections = [
             background: white; border-radius: 14px;
             padding: 1.4rem 1.6rem;
             box-shadow: 0 3px 14px rgba(0,0,0,0.07);
-            border-left: 4px solid var(--accent);
             cursor: pointer; transition: box-shadow 0.25s;
             text-decoration: none; color: inherit; display: block;
         }

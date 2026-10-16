@@ -161,7 +161,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             <div class="alert alert-<?= $selarFlash['ok'] ? 'success' : 'danger' ?> mt-3"><?= htmlspecialchars($selarFlash['msg']) ?></div>
         <?php endif; ?>
         <?php foreach ($selarPurchases as $sp): ?>
-            <div class="card border-0 shadow-sm mt-3" style="border-left:4px solid #0b77ff !important;">
+            <div class="card border shadow-sm mt-3">
                 <div class="card-body">
                     <h5 class="fw-bold mb-1"><i class="bi bi-bag-check me-2 text-primary"></i>Choose your course</h5>
                     <p class="text-muted mb-3" style="font-size:.9rem;">

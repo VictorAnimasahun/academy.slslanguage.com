@@ -100,7 +100,7 @@ if (!isset($_SESSION['user_id'])) {
 			border-radius: 12px;
 			padding: 1.5rem;
 			margin-bottom: 1rem;
-			border-left: 4px solid #3b82f6;
+			border: 1px solid #e5e7eb;
 			transition: all 0.3s;
 		}
 

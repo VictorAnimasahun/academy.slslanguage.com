@@ -256,7 +256,7 @@ if (!$sessionId && !$attemptId) {
         .pill-c { background:var(--blue-light); color:var(--blue-dark); padding:.12rem .45rem; border-radius:999px; font-size:.68rem; font-weight:700; white-space:nowrap; }
         .pill-w { background:var(--pink-light);  color:var(--pink-dark);  padding:.12rem .45rem; border-radius:999px; font-size:.68rem; font-weight:700; white-space:nowrap; }
         .correct-val { color:var(--blue-dark); font-weight:600; font-size:.82rem; }
-        .passage-block { background:#f8fafc; border-left:4px solid var(--blue); border-radius:0 10px 10px 0; padding:.9rem 1.1rem; margin-bottom:1rem; font-size:.84rem; line-height:1.8; color:#1e293b; white-space:pre-wrap; }
+        .passage-block { background:#f8fafc; border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1rem; font-size:.84rem; line-height:1.8; color:#1e293b; white-space:pre-wrap; }
         .passage-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--blue-dark); margin-bottom:.4rem; }
 
         /* ── Writing ─────────────────────────────────── */
@@ -264,7 +264,7 @@ if (!$sessionId && !$attemptId) {
         .task-head  { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--pink-dark); margin-bottom:.4rem; }
         .prompt-box { background:var(--blue-light); border-radius:10px; padding:.9rem 1.1rem; font-size:.86rem; line-height:1.75; color:#0f172a; margin-bottom:.65rem; white-space:pre-wrap; }
         .essay-box  { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:.9rem 1.1rem; font-size:.86rem; line-height:1.8; color:#374151; white-space:pre-wrap; }
-        .ai-box     { background:var(--blue-light); border-left:3px solid var(--blue); border-radius:6px; padding:.9rem 1rem; font-size:.82rem; white-space:pre-wrap; color:#0f172a; margin-top:1.25rem; }
+        .ai-box     { background:var(--blue-light); border-radius:6px; padding:.9rem 1rem; font-size:.82rem; white-space:pre-wrap; color:#0f172a; margin-top:1.25rem; }
 
         /* ── Speaking notes ──────────────────────────── */
         .speaking-panel { background:linear-gradient(135deg,var(--blue-light),var(--pink-light)); border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:1.25rem; }

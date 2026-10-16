@@ -46,7 +46,6 @@ $base_url = "../../";
 
         .section-box {
             background: #f8faff;
-            border-left: 4px solid #0b77ff;
             padding: 1.2rem;
             margin: 1.5rem 0;
             border-radius: 8px;
@@ -54,7 +53,6 @@ $base_url = "../../";
 
         .activity {
             background: #f0f7ff;
-            border-left: 4px solid #0b77ff;
             padding: 1.5rem;
             margin: 1.5rem 0;
             border-radius: 8px;

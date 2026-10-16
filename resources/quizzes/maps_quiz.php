@@ -150,7 +150,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			margin-bottom: 2rem;
 			padding: 1.5rem;
 			background: #f8f9fa;
-			border-left: 4px solid #667eea;
 			border-radius: 8px;
 		}
 

@@ -52,7 +52,8 @@ function render_notif_group($group, $tintBg, $tintFg) {
         @media(min-width:1400px){.content{max-width:calc(100vw - 500px);}}
         .notif-row { display:flex; align-items:center; gap:1rem; background:#fff; border-radius:14px; padding:.9rem 1.1rem; margin-bottom:.5rem; text-decoration:none; color:inherit; }
         body.dark .notif-row { background:#1f1f1f; }
-        .notif-row.unread { border-left:3px solid #2f6fe0; }
+        .notif-row.unread { background:#eef5ff; }
+        body.dark .notif-row.unread { background:rgba(47,111,224,.12); }
         .notif-icon { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
         .notif-dot { width:8px; height:8px; border-radius:50%; background:#2f6fe0; flex-shrink:0; }
         .notif-group-label { font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:#9ca3af; font-weight:700; margin:1rem 0 .5rem; }

@@ -36,10 +36,10 @@ $ielts_tests = [
             padding: 1rem 1.2rem; margin-bottom: 0.6rem;
             box-shadow: 0 1px 6px rgba(15,23,42,0.06);
             text-decoration: none; color: inherit;
-            border-left: 4px solid #0b77ff;
+            border: 1px solid #e2e8f0;
             transition: box-shadow 0.2s, border-color 0.2s;
         }
-        .test-row:hover { box-shadow: 0 4px 16px rgba(11,119,255,0.14); color: inherit; }
+        .test-row:hover { box-shadow: 0 4px 16px rgba(11,119,255,0.14); border-color: #0b77ff; color: inherit; }
         .test-num {
             width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
             background: #0b77ff; color: #fff;
