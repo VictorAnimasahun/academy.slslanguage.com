@@ -2010,6 +2010,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 150 — Leads & email queue: leads, lead_events, newsletter_issues, email_queue
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-16 | Local DB backed up first. Ran twice on local 8.0 (second run a clean no-op); all four tables confirmed `InnoDB` / `utf8mb4_unicode_ci`. Also run twice on a throwaway MySQL 5.7.44 instance (minimal `students` shape): same. Foreign keys checked there with throwaway rows: deleting a student nulls `leads.student_id`; deleting a lead removes its `lead_events` and nulls `email_queue.lead_id`. Instance removed afterward. |
+| Live  | [ ] | | **Needed**: back up, then run. Creates tables only, no data changes. |
+
+**What it does:** foundation for the marketing/lead-generation plan (Item 1). `leads` is one shared, de-duplicated list (one row per email) that every public form will write to, tagged by audience (exam/professional/teacher/general), goal, level, source and UTM, with the NDPR consent record (exact wording, time, IP) and a random `unsubscribe_token` for one-click unsubscribe links. `lead_events` is each lead's history. `newsletter_issues` holds the weekly blog-built newsletter as a draft until an admin approves it. `email_queue` holds every outgoing marketing email, sent in small batches by a cron job because live sends through PHP `mail()` with cPanel's hourly cap. Follow-up email sequences are deliberately left for Item 2's own migration.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.
