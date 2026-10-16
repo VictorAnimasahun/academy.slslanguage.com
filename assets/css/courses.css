@@ -1,9 +1,7 @@
-:root {
-	--sidebar-bg: #f8fafc;
-	--accent: #0b77ff;
-	--muted: #6b7280;
-	--card-radius: 14px;
-}
+/* --sidebar-bg/--accent/--muted/--card-radius come from includes/navbar_styles.php,
+   always loaded alongside this file -- removed the duplicate :root here 2026-10-16
+   because it silently overrode the sidebar's dark-theme color on any page where
+   this file happened to load after navbar_styles.php in the <head>. */
 
 body {
 	background: #f1f6fb;
