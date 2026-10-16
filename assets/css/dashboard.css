@@ -21,8 +21,8 @@
 .stat-card, .course-card, .small-card {
 	border-radius: var(--card-radius);
 	background: #fff;
-	box-shadow: 0 6px 18px rgba(15,23,42,0.04);
-	transition: all 0.3s ease;
+	border: 1px solid rgba(15,23,42,0.08);
+	transition: border-color 0.2s ease;
 }
 
 .stat-card {
@@ -31,12 +31,11 @@
 
 .course-card {
 	padding: 1rem;
-	transition: transform .15s ease, box-shadow .15s ease;
+	transition: border-color .15s ease;
 }
 
 .course-card:hover {
-	transform: translateY(-6px);
-	box-shadow: 0 14px 30px rgba(15,23,42,0.06);
+	border-color: var(--accent);
 }
 
 .small-card {
@@ -98,12 +97,12 @@
 	background: white;
 	border-radius: 12px;
 	padding: 20px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-	transition: box-shadow 0.3s ease;
+	border: 1px solid rgba(0,0,0,0.08);
+	transition: border-color 0.2s ease;
 }
 
 .small-card:hover {
-	box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+	border-color: var(--accent, #0b77ff);
 }
 
 /* Loading state */
@@ -176,7 +175,7 @@
 @media (max-width: 1199px) {
 	.sidebar {
 		transform: translateX(-100%);
-		box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+		border-right: 1px solid rgba(0,0,0,0.08);
 	}
 
 	.sidebar.active {

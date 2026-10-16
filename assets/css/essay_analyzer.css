@@ -6,7 +6,7 @@
 .analyzer-card {
     background: white;
     border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
     padding: 2.5rem;
     margin-bottom: 2rem;
 }
@@ -90,7 +90,7 @@ textarea.essay-input:focus {
 }
 
 .analyze-btn:hover {
-    box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);
+    opacity: 0.92;
 }
 
 .analyze-btn:disabled {

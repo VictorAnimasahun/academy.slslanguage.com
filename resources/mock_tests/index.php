@@ -54,13 +54,12 @@ foreach ($mockExams as $mock) {
             border-radius: 16px;
             padding: 1.75rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            border-left: 5px solid #10b981;
-            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+            transition: border-color 0.2s ease;
             cursor: pointer;
         }
         .mock-card:hover {
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-color: #10b981;
         }
         .mock-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
         .mock-badge {
@@ -68,7 +67,7 @@ foreach ($mockExams as $mock) {
             border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
-            background: linear-gradient(135deg, #10b981, #34d399);
+            background: #10b981;
             color: white;
         }
         .section-title {

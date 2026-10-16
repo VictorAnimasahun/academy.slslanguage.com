@@ -39,7 +39,7 @@
 	body.dark .course-card,
 	body.dark .small-card {
 		background: #1f1f1f;
-		box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+		border: 1px solid rgba(255,255,255,0.08);
 	}
 
 	body.dark .calendar {
@@ -109,7 +109,6 @@
 		padding: 0 1rem;
 		align-items: center;
 		justify-content: space-between;
-		box-shadow: 0 2px 8px rgba(15,23,42,0.05);
 	}
 
 	.mobile-menu-toggle {
@@ -256,7 +255,7 @@
 		background: #fff;
 		border-radius: var(--card-radius);
 		padding: 2rem;
-		box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+		border: 1px solid rgba(15,23,42,0.08);
 		margin-bottom: 1.5rem;
 	}
 
@@ -313,7 +312,7 @@
 		border-radius: var(--card-radius);
 		padding: 1rem;
 		margin-bottom: 1rem;
-		box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+		border: 1px solid rgba(15,23,42,0.08);
 		min-height: 250px;
 		display: flex;
 		align-items: center;
@@ -342,7 +341,7 @@
 
 		.sidebar {
 			transform: translateX(-100%);
-			box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+			border-right: 1px solid rgba(0,0,0,0.08);
 		}
 
 		.sidebar.active {

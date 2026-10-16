@@ -26,7 +26,7 @@ body {
 /* Header */
 header {
 	background: white;
-	box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+	border-bottom: 1px solid #e5e7eb;
 	position: sticky;
 	top: 0;
 	z-index: 1000;
@@ -90,7 +90,7 @@ nav {
 	left: 0;
 	background: white;
 	min-width: 200px;
-	box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+	border: 1px solid #e5e7eb;
 	border-radius: 8px;
 	opacity: 0;
 	visibility: hidden;
@@ -142,7 +142,6 @@ nav {
 }
 
 .btn-primary:hover {
-	box-shadow: 0 4px 15px rgba(56, 182, 255, 0.3);
 	background: #1599e5;
 }
 
@@ -163,7 +162,6 @@ nav {
 }
 
 .btn-pink:hover {
-	box-shadow: 0 4px 15px rgba(255, 102, 196, 0.3);
 	background: #e055b0;
 }
 
@@ -208,7 +206,8 @@ nav {
 	left: 0;
 	right: 0;
 	background: white;
-	box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+	border: 1px solid #e5e7eb;
+	border-top: none;
 	border-radius: 0 0 10px 10px;
 }
 
@@ -329,7 +328,7 @@ nav {
 	background: white;
 	padding: 2rem;
 	border-radius: 15px;
-	box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+	border: 1px solid #e5e7eb;
 	text-align: center;
 	transition: transform 0.3s ease;
 }
@@ -420,13 +419,11 @@ nav {
 
 /* Card Base */
 .course-card {
-  background-color: #004a55;
-  height: 350px;
+  min-height: 350px;
   margin: 15px; /* keep spacing */
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 12px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
 
@@ -441,6 +438,7 @@ nav {
   transform: translateY(20px); /* slides down a bit as it fades */
   pointer-events: none;
   height: 0;       /* collapse vertical space */
+  min-height: 0;   /* the base rule's min-height would otherwise block the collapse */
   margin: 0;       /* remove spacing when hidden */
   border: none;    /* prevents borders showing during collapse */
 }
@@ -856,7 +854,7 @@ footer {
     }
 
     .course-card {
-        height: 320px;
+        min-height: 320px;
         margin: 10px;
         border-radius: 10px;
     }

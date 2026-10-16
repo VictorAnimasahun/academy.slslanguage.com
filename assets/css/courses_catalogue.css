@@ -22,20 +22,19 @@ body {
 	background: #fff;
 	padding: 1.5rem;
 	border: 1px solid rgba(15,23,42,0.06);
-	transition: box-shadow 0.2s ease, border-color 0.2s ease;
+	transition: border-color 0.2s ease;
 	height: 100%;
 }
 
 .course-card:hover {
-	border-color: transparent;
-	box-shadow: 0 12px 24px rgba(15,23,42,0.08);
+	border-color: var(--accent);
 }
 
 .filter-card {
 	background: #fff;
 	border-radius: var(--card-radius);
 	padding: 1.25rem;
-	box-shadow: 0 4px 12px rgba(15,23,42,0.03);
+	border: 1px solid rgba(15,23,42,0.08);
 	margin-bottom: 1.5rem;
 }
 
