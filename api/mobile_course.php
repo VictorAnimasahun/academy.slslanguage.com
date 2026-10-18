@@ -4,6 +4,7 @@
 
 require_once dirname(__DIR__) . '/bootstrap.php';
 require_once __DIR__ . '/mobile_auth.php';
+require_once INCLUDES_PATH . '/admin_check.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -40,6 +41,7 @@ try {
     $rows = $db->prepare(
         "SELECT m.module_order, m.module_title, l.id AS lesson_id, l.lesson_order, l.title AS class_title,
                 lp.id AS part_id, lp.part_order, lp.title AS part_title, lp.kind, lp.status, lp.file_path,
+                l.file_path AS class_file_path,
                 (prog.completed = 1) AS class_completed
            FROM modules m
            JOIN lessons l ON l.module_id = m.id
@@ -64,12 +66,19 @@ try {
             'pieces' => [],
         ];
         if ($r['part_id'] !== null) {
+            // Older courses (IELTS GT, CELPIP) keep the page on the class, not the piece. The website
+            // opens the class page in that case (includes/course_progress_path.php), so the app does too.
+            $filePath = $r['file_path'];
+            if (($filePath === null || $filePath === '') && $r['status'] === 'ready'
+                && in_array($r['kind'], ['lesson', 'resource'], true)) {
+                $filePath = $r['class_file_path'] ?: null;
+            }
             $weeks[$w]['classes'][$r['lesson_id']]['pieces'][] = [
                 'id' => (int) $r['part_id'],
                 'title' => $r['part_title'],
                 'kind' => $r['kind'],
                 'comingSoon' => $r['status'] === 'coming_soon',
-                'filePath' => $r['file_path'],
+                'filePath' => $filePath,
             ];
         }
     }
@@ -93,6 +102,8 @@ try {
             'freePreviewClasses' => (int) $course['free_preview_classes'],
             'buyUrl' => $course['buy_url'],
             'enrolled' => (bool) $course['enrolled'],
+            // Staff/admin and testers open every class on the website (includes/admin_check.php); same here.
+            'fullAccess' => is_platform_admin((int) $student['id']),
             'progress' => $course['progress'] !== null ? (int) $course['progress'] : 0,
             'weeks' => array_values($weeks),
         ],

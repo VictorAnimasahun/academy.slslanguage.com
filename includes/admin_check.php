@@ -17,14 +17,15 @@
  * only). Everything fails CLOSED: missing table/column or DB error = no bypass.
  */
 
-function is_platform_admin(): bool {
-    return is_staff_account() || is_access_tester();
+// $studentId: check that student instead of the session's (the mobile API has no web session).
+function is_platform_admin(?int $studentId = null): bool {
+    return is_staff_account($studentId) || is_access_tester($studentId);
 }
 
 /** Staff/admin: a staff_accounts row for this student, and a verified email. */
-function is_staff_account(): bool {
+function is_staff_account(?int $studentId = null): bool {
     static $cache = [];
-    $uid = (int) ($_SESSION['user_id'] ?? 0);
+    $uid = $studentId ?? (int) ($_SESSION['user_id'] ?? 0);
     if ($uid <= 0) return false;
     if (array_key_exists($uid, $cache)) return $cache[$uid];
 
@@ -53,9 +54,9 @@ function is_staff_account(): bool {
  * Cached per request. Fails CLOSED -- if the column doesn't exist yet (migration
  * not run) or the lookup errors, nobody is treated as a tester.
  */
-function is_access_tester(): bool {
+function is_access_tester(?int $studentId = null): bool {
     static $cache = [];
-    $uid = (int) ($_SESSION['user_id'] ?? 0);
+    $uid = $studentId ?? (int) ($_SESSION['user_id'] ?? 0);
     if ($uid <= 0) return false;
     if (array_key_exists($uid, $cache)) return $cache[$uid];
 
