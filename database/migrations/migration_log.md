@@ -2065,7 +2065,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-19 | Ran twice on local 8.0 and twice on MySQL 5.7.44 (copy of course tables); all 192 classes' titles still split into exactly their items. 177 page loads (every shared lesson page under every course, both intro views, every course page, dashboard): no errors. |
-| Live  | [ ] | | Needs 152 + 153 (done). Run, then sync the files from the same commit. |
+| Live  | [x] | 2026-10-19 | Run by the founder; files from commit 9deee3a confirmed identical on live (rsync checksum dry-run). |
 
 **What it does:** founder, 2026-10-19 -- Class 1 introduces the course, Class 2 the exam (lesson, quiz to lock it in, then the Diagnostic Test); band descriptors are exam information; from Class 3 every class is an actual section. CELPIP 2/3-Month Class 2: CELPIP Introduction (new outline page `CELPIP_Gen/lessons/exam_introduction.php`, Coming Soon) + CELPIP Introduction Quiz (Coming Soon) + CELPIP Diagnostic Test. IELTS General 3/2-Month: Class 1 = Course Introduction (`intro.php?part=course`) + Foundational English Assessment; Class 2 = IELTS General Introduction (`intro.php?part=exam`) + Band Descriptor Review + IELTS Format Knowledge Quiz + Band Descriptor Matching Quiz + Diagnostic Test; course 9's two quiz schedule entries moved to Class 2 with the same names. 1-month crash courses unchanged. IELTS Academic and PTE pending the founder's call.
 
