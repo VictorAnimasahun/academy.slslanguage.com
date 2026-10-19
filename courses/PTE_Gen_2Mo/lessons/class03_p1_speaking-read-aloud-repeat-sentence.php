@@ -1,5 +1,5 @@
 <?php
-// Speaking — Read Aloud & Repeat Sentence — PTE Academic Masterclass — 3 Months, Class 2, piece 1 (lesson).
+// Speaking — Read Aloud & Repeat Sentence — PTE Academic — 2-Month Plan, Class 3, piece 1 (lesson).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -40,4 +40,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Read in phrases, keep moving after a slip, and repeat by meaning. Smooth and clear scores better than fast.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'PTE_Gen_3Mo', 2, 1, ob_get_clean());
+render_lesson_shell($db, 'PTE_Gen_2Mo', 3, 1, ob_get_clean());

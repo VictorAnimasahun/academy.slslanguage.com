@@ -1,5 +1,5 @@
 <?php
-// Introduction & PTE Academic Overview — PTE Academic — 2-Month Plan, Class 1, piece 1 (lesson).
+// PTE Academic Introduction — PTE Academic — 2-Month Plan, Class 2, piece 1 (lesson). Introduces the EXAM (Class 1 introduces the course).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -40,4 +40,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Learn the tasks, know what the AI rewards, and practise under real timings from the first week.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'PTE_Gen_2Mo', 1, 1, ob_get_clean());
+render_lesson_shell($db, 'PTE_Gen_2Mo', 2, 1, ob_get_clean());

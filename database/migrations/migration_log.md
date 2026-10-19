@@ -2071,6 +2071,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 155 — IELTS Academic & PTE 2/3-month: Class 1 = course, Class 2 = exam, Class 3 = sections
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-19 | First local run hit a collation error AFTER its DELETE (classes 1-3 briefly empty locally); fixed with explicit COLLATE and the whole migration is now ONE TRANSACTION, so a failure commits nothing. Then ran twice on 8.0 and twice on MySQL 5.7.44: clean. 192 classes' titles match their items; every item's file exists; every IELTS Academic/PTE lesson page and course page loads without errors. |
+| Live  | [ ] | | Run, then sync the files from the same commit (it includes renamed pages). |
+
+**What it does:** founder-approved 2026-10-19. IELTS Academic 2/3-Month: Class 1 = Course Introduction (new, built from the course's data by `includes/course_introduction.php`) + Foundational English Assessment; Class 2 = IELTS Academic Introduction (old "Orientation" page) + Writing Task Overview + Introduction Quiz (Coming Soon) + Diagnostic Test; Class 3 = Listening Test 1 (from Class 2) + Reading Test 1 + Trend Vocabulary & Paraphrasing. PTE 2/3-Month: Class 1 = Course Introduction (new) + Foundational English Assessment; Class 2 = PTE Academic Introduction (old Class 1 page) + Introduction Quiz (Coming Soon) + PTE Academic Diagnostic Test (Coming Soon); Class 3 = Read Aloud & Repeat Sentence (from Class 2) + Describe Image & Re-tell Lecture. Moved pages renamed (classNN_pN_...) and re-pointed (render_lesson_shell class/position).
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

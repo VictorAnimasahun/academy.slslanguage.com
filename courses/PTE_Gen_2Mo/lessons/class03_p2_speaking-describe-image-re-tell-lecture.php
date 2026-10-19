@@ -1,5 +1,5 @@
 <?php
-// Speaking — Describe Image & Re-tell Lecture — PTE Academic Masterclass — 3 Months, Class 3, piece 1 (lesson).
+// Speaking — Describe Image & Re-tell Lecture — PTE Academic — 2-Month Plan, Class 3, piece 2 (lesson).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -41,4 +41,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Have a frame, find the numbers in the preparation time, and speak for the whole 40 seconds.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'PTE_Gen_3Mo', 3, 1, ob_get_clean());
+render_lesson_shell($db, 'PTE_Gen_2Mo', 3, 2, ob_get_clean());
