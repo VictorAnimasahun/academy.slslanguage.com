@@ -6,6 +6,7 @@
  * never tied together with a "+".
  */
 require_once __DIR__ . '/coming_soon.php';
+require_once __DIR__ . '/content_types.php';
 
 if (!function_exists('lesson_title_lines')) {
     /** @return string[] one entry per piece of content */
@@ -67,7 +68,7 @@ if (!function_exists('lesson_piece_kind')) {
     }
 
     function lesson_kind_label(string $kind): string {
-        return ['lesson' => 'Lesson', 'resource' => 'Resource', 'practice_test' => 'Practice test', 'mock_test' => 'Mock test'][$kind] ?? 'Lesson';
+        return content_type_info($kind)['label'];
     }
 
     /** Stored kinds for a whole course: [lesson_id => [piece title => kind]]. Empty if migration 126 hasn't run. */
@@ -120,7 +121,7 @@ if (!function_exists('lesson_piece_kind')) {
             $ids = array_map('intval', $st->fetchAll(PDO::FETCH_COLUMN));
             $lid = $ids[$classNum - 1] ?? 0;
             if (!$lid) return [];
-            $st = $db->prepare("SELECT title, kind, file_path FROM lesson_parts WHERE lesson_id = ? ORDER BY part_order");
+            $st = $db->prepare("SELECT title, kind, status, file_path FROM lesson_parts WHERE lesson_id = ? ORDER BY part_order");
             $st->execute([$lid]);
             return $st->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Throwable $e) { return []; }
@@ -145,8 +146,9 @@ if (!function_exists('lesson_piece_kind')) {
     function lesson_part_button(PDO $db, string $folder, int $classNum, string $pieceTitle): string {
         $pieceTitle = html_entity_decode($pieceTitle, ENT_QUOTES, 'UTF-8');
         foreach (lesson_class_parts($db, $folder, $classNum) as $p) {
-            if ($p['title'] === $pieceTitle && !empty($p['file_path']) && ($p['kind'] === 'lesson' || $p['kind'] === 'resource')) {
-                return '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-outline-primary mt-2"><i class="bi bi-journal-text me-2"></i>Open Lesson</a>';
+            if ($p['title'] === $pieceTitle && !empty($p['file_path']) && !content_type_is_test($p['kind'])) {
+                $t = content_type_info($p['kind']);
+                return '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-outline-primary mt-2"><i class="bi ' . $t['icon'] . ' me-2"></i>' . $t['button'] . '</a>';
             }
         }
         return '';
@@ -164,9 +166,10 @@ if (!function_exists('lesson_piece_kind')) {
             $title = htmlspecialchars($p['title']);
             $badge = lesson_kind_badge($db, $folder, $classNum, $p['title']);
             $o .= '<div class="lesson-item"><h5>' . $title . ' ' . $badge . '</h5>';
-            if (!empty($p['file_path']) && ($p['kind'] === 'lesson' || $p['kind'] === 'resource')) {
-                $o .= '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-outline-primary"><i class="bi bi-journal-text me-2"></i>Open Lesson</a>';
-            } elseif (!empty($p['file_path']) && ($p['kind'] === 'practice_test' || $p['kind'] === 'mock_test')) {
+            $t = content_type_info($p['kind']);
+            if (!empty($p['file_path']) && ($p['status'] ?? 'ready') === 'ready' && !content_type_is_test($p['kind'])) {
+                $o .= '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-outline-primary"><i class="bi ' . $t['icon'] . ' me-2"></i>' . $t['button'] . '</a>';
+            } elseif (!empty($p['file_path']) && ($p['status'] ?? 'ready') === 'ready' && content_type_is_test($p['kind'])) {
                 // a test that has a real page opens it (same button the hand-written class pages use)
                 $o .= '<a href="' . htmlspecialchars(ACADEMY_URL . $p['file_path']) . '" class="btn btn-primary btn-lg" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-2"></i>Open Test</a>';
             } else {
@@ -240,8 +243,7 @@ if (!function_exists('lesson_piece_kind')) {
         }
         $lid = $lessonIds[$folder]['ids'][$classNum - 1] ?? 0;
         $kind = lesson_piece_kind_stored(lesson_part_kinds_for_course($db, $lessonIds[$folder]['course']), $lid, $pieceTitle);
-        $colours = ['lesson' => ['#e0f2fe', '#075985'], 'resource' => ['#f1f5f9', '#475569'], 'practice_test' => ['#fef3c7', '#92400e'], 'mock_test' => ['#fee2e2', '#991b1b']];
-        [$bg, $fg] = $colours[$kind] ?? $colours['lesson'];
+        ['bg' => $bg, 'fg' => $fg] = content_type_info($kind);
         return '<span style="display:inline-block;vertical-align:middle;margin-left:.5rem;padding:.12rem .55rem;border-radius:999px;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:' . $bg . ';color:' . $fg . ';">' . lesson_kind_label($kind) . '</span>';
     }
 }

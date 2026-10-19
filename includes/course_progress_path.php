@@ -199,7 +199,12 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
                             'href' => !empty($stored['file_path']) ? ACADEMY_URL . $stored['file_path'] : null,
                             'soon' => $stored ? lesson_piece_coming_soon($stored) : false];
             }
-            foreach ($partsByLesson[$lid] ?? [] as $pt) $parts[] = $pt + ['meta' => '', 'lesson' => false];
+            // Scheduled quizzes/tests (course_pacing_items) are added unless the class already lists that item
+            // itself (migration 153 gave both the same name), so nothing shows twice.
+            $listed = array_flip(array_column($parts, 'title'));
+            foreach ($partsByLesson[$lid] ?? [] as $pt) {
+                if (!isset($listed[$pt['title']])) $parts[] = $pt + ['meta' => '', 'lesson' => false];
+            }
             $partsDone = count(array_filter($parts, fn($p) => $p['done']));
             $classSoon = $parts && count(array_filter($parts, fn($p) => !empty($p['soon']))) === count($parts);   // every piece is Coming Soon
             $cid2 = 'pp-class-' . $lid;

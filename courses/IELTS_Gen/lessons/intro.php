@@ -10,7 +10,7 @@ foreach ($schedule as $w) foreach ($w['classes'] as $c) foreach ($c['items'] as 
     if ($i['kind'] === 'mock_test' && stripos($i['title'], 'diagnostic') === false) $mockClasses[] = $c['number'];
 }
 $mockClasses = array_values(array_unique($mockClasses));
-$isTest = fn (array $i) => in_array($i['kind'], ['practice_test', 'mock_test'], true);
+$isTest = fn (array $i) => content_type_is_test($i['kind']);
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course");

@@ -2038,6 +2038,28 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 152 — Content types (every item and file says what it is)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-19 | Ran 3x on local 8.0 (clean re-runs); run twice on a throwaway MySQL 5.7.44 copy of the course tables, no errors. |
+| Live  | [ ] | | Founder running 2026-10-19. Deploy the files from the same commit right after: until then live code doesn't know the new types. |
+
+**What it does:** founder, 2026-10-19 -- tag every item and file with its type and write behaviour against the type. `lesson_parts.kind` gains quiz, exercise, diagnostic_test, placement_test. New `content_kinds` (each type's label, category -- every practice test and mock is category `test` -- and web_only) and `content_types` (type of every content file by exact path or folder prefix; longest match wins). Re-tags: Foundational English Assessment -> placement_test; the three diagnostics -> diagnostic_test; Listening Formats -> quiz. Definitions (founder): test = an exam section under exam conditions; quiz = a topic / question-type check; exercise = a skill game (Letter Builder). `includes/content_types.php` + `api/v1/content_types.php` read it.
+
+---
+
+## 153 — Foundational English Assessment opens every course; IELTS General quizzes/tests as items
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-19 | Needs 152. Ran 3x on local 8.0; twice on MySQL 5.7.44. All 192 classes with items: title splits into exactly its items. Course pages checked for doubles (3-Month, with schedule entries, matches 1/2-Month without). |
+| Live  | [ ] | | Founder running 2026-10-19, with 152. |
+
+**What it does:** Class 1 of every paid course gets the Foundational English Assessment (placement_test) after its opening lesson (IELTS Academic: Orientation, assessment, Diagnostic Test). IELTS General 1/2/3-Month Classes 1-7: the quizzes and practice tests their lesson pages linked from inside become their own items (only ones that exist). Course 9's schedule entries renamed to the same names; the course page skips a scheduled entry the class already lists. Note: lessons.title is utf8mb4_general_ci, the rest utf8mb4_unicode_ci -- explicit COLLATE where they meet.
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

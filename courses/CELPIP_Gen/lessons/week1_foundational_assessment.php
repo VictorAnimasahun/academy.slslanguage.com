@@ -44,7 +44,7 @@ if (!can_access('intermediate')) {
 <?php
 $schedule = course_schedule($db, $ctxCourse['id']);
 $next = next_course_item($db, $ctxCourse, 'courses/CELPIP_Gen/lessons/week1_foundational_assessment.php');
-$isTest = fn (array $i) => in_array($i['kind'], ['practice_test', 'mock_test'], true);
+$isTest = fn (array $i) => content_type_is_test($i['kind']);
 // Only talk about the opening tests this course actually has.
 $has = ['fea' => false, 'diag' => false];
 foreach ($schedule as $w) foreach ($w['classes'] as $c) foreach ($c['items'] as $i) {

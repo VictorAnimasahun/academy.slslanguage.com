@@ -132,7 +132,7 @@ if (!function_exists('render_lesson_shell')) {
                     <div class="class-chips">
                         <span class="class-chip">Week <?= (int)$lesson['module_order'] ?></span>
                         <span class="class-chip">Class <?= (int)$classNum ?> of <?= count($lessons) ?></span>
-                        <span class="class-chip kind <?= $h($kind) ?>"><?= $h(lesson_kind_label($kind)) ?></span>
+                        <?php $kt = content_type_info($kind); ?><span class="class-chip kind" style="background:<?= $h($kt['bg']) ?>;color:<?= $h($kt['fg']) ?>;"><?= $h($kt['label']) ?></span>
                     </div>
                     <h1 class="class-title"><?= $h($title) ?></h1>
                 </div>

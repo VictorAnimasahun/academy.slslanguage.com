@@ -5,6 +5,7 @@
 require_once dirname(__DIR__) . '/bootstrap.php';
 require_once __DIR__ . '/mobile_auth.php';
 require_once INCLUDES_PATH . '/admin_check.php';
+require_once INCLUDES_PATH . '/content_types.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -66,11 +67,12 @@ try {
             'pieces' => [],
         ];
         if ($r['part_id'] !== null) {
+            $type = content_type_info($r['kind']);
             // Older courses (IELTS GT, CELPIP) keep the page on the class, not the piece. The website
             // opens the class page in that case (includes/course_progress_path.php), so the app does too.
             $filePath = $r['file_path'];
             if (($filePath === null || $filePath === '') && $r['status'] === 'ready'
-                && in_array($r['kind'], ['lesson', 'resource'], true)) {
+                && !content_type_is_test($r['kind'])) {
                 $filePath = $r['class_file_path'] ?: null;
             }
             // Lesson pages shared by several course lengths learn which course this is from ?from=<folder>
@@ -81,7 +83,13 @@ try {
             $weeks[$w]['classes'][$r['lesson_id']]['pieces'][] = [
                 'id' => (int) $r['part_id'],
                 'title' => $r['part_title'],
-                'kind' => $r['kind'],
+                // `kind` stays in the four values installed apps know (they refuse practice_test/mock_test and open
+                // the rest); `type`, `category` and `webOnly` are the real content type (migration 152).
+                'kind' => $type['group'] === 'test' ? ($r['kind'] === 'mock_test' ? 'mock_test' : 'practice_test') : ($r['kind'] === 'lesson' ? 'lesson' : 'resource'),
+                'type' => $r['kind'],
+                'typeLabel' => $type['label'],
+                'category' => $type['group'],
+                'webOnly' => $type['web_only'],
                 'comingSoon' => $r['status'] === 'coming_soon',
                 'filePath' => $filePath,
             ];
