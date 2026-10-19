@@ -283,7 +283,8 @@ if ($__pacingBlockers) {
             </div>
 
             <!-- Quiz -->
-            <div class="content-section">
+            <?php /* Now its own item in this class (migration 153): a quiz/test is never folded into a lesson page. */ if (false): ?>
+<div class="content-section">
                 <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class 2 Quiz</h2>
                 <div class="highlight-box" style="border-left-color: #16a34a; background: #f0fdf4;">
                     <h5 style="color: #16a34a;"><i class="bi bi-check2-square me-2"></i>Band Descriptor Matching Quiz</h5>
@@ -296,6 +297,7 @@ if ($__pacingBlockers) {
                     <a href="<?= ACADEMY_URL ?>resources/quizzes/class_quiz.php?test_code=IELTS_GM_C2_QUIZ&return=<?= urlencode('../../courses/IELTS_Gen/lessons/class02.php') ?>" class="btn btn-success btn-sm"><i class="bi bi-play-fill me-1"></i>Start Quiz</a>
                 </div>
             </div>
+<?php endif; ?>
 
             <!-- Take-Home -->
             <div class="content-section">
@@ -317,15 +319,15 @@ if ($__pacingBlockers) {
             </div>
 
             <!-- Navigation -->
+            <?php $nextItem = next_course_item($db, $ctxCourse, 'courses/IELTS_Gen/lessons/class02.php'); ?>
             <div class="action-buttons">
-                <a href="intro.php" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Previous: Class 1
+                <?php if ($nextItem): ?>
+                <a href="<?= htmlspecialchars($nextItem['url']) ?>" class="btn btn-primary" style="background-color: #0b77ff; border-color: #0b77ff;">
+                    Next: <?= htmlspecialchars($nextItem['title']) ?> <i class="bi bi-arrow-right ms-1"></i>
                 </a>
-                <a href="class03.php" class="btn btn-primary" style="background-color: #0b77ff; border-color: #0b77ff;">
-                    Next: Class 3 <i class="bi bi-arrow-right ms-1"></i>
-                </a>
+                <?php endif; ?>
                 <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-primary">
-                    <i class="bi bi-grid me-1"></i> Course Overview
+                    <i class="bi bi-grid me-1"></i> Back to course
                 </a>
             </div>
 

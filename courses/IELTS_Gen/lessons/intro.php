@@ -11,6 +11,14 @@ foreach ($schedule as $w) foreach ($w['classes'] as $c) foreach ($c['items'] as 
 }
 $mockClasses = array_values(array_unique($mockClasses));
 $isTest = fn (array $i) => content_type_is_test($i['kind']);
+// 2- and 3-month courses (founder, 2026-10-19): Class 1 introduces the COURSE, Class 2 introduces the EXAM.
+// ?part=course / ?part=exam show one half each; without it (the 1-month crash course) both show.
+$part = in_array($_GET['part'] ?? '', ['course', 'exam'], true) ? $_GET['part'] : 'both';
+$showCourse = $part !== 'exam';
+$showExam = $part !== 'course';
+$heading = ['course' => 'Course Introduction', 'exam' => 'IELTS General Introduction', 'both' => 'Class 1: Course Orientation & IELTS General Overview'][$part];
+$selfPath = 'courses/IELTS_Gen/lessons/intro.php' . ($part !== 'both' ? '?part=' . $part : '');
+$nextItem = $part !== 'both' ? next_course_item($db, $ctxCourse, $selfPath) : null;
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course");
@@ -21,7 +29,7 @@ if (!isset($_SESSION['user_id'])) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Class 1: Course Orientation</title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — <?= htmlspecialchars($heading) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -44,41 +52,52 @@ if (!isset($_SESSION['user_id'])) {
                     <li class="breadcrumb-item">
                         <a href="<?= htmlspecialchars($back['url']) ?>" class="text-decoration-none"><?= htmlspecialchars($back['name']) ?></a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Class 1: Course Orientation</li>
+                    <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($heading) ?></li>
                 </ol>
             </nav>
 
             <h1 class="mb-3">
                 <i class="bi bi-mortarboard-fill me-2" style="color: #0b77ff;"></i>
-                Class 1: Course Orientation &amp; IELTS General Overview
+                <?= htmlspecialchars($heading) ?>
             </h1>
 
+            <?php if ($part === 'exam'): ?>
+            <p class="lead">
+                Before any skill teaching starts, this class shows you the exam itself: how IELTS General Training
+                differs from Academic, what each of the four tests looks like, and how band scores work.
+            </p>
+            <?php else: ?>
             <p class="lead">
                 Welcome to the <?= htmlspecialchars($ctxCourse['title']) ?>. Today we cover how the programme works,
                 what IELTS General tests across all four skills, and how to get the most from every class
                 over the next <?= (int) $ctxCourse['weeks'] ?> weeks.
             </p>
 
+            <?php endif; ?>
+
+            <?php if ($showCourse): ?>
             <div class="highlight-box">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                     <div>
                         <h4 class="mb-2" style="color: var(--accent);">Programme at a Glance</h4>
                         <p class="mb-0">
-                            <strong>Duration:</strong> 12 Weeks &nbsp;|&nbsp;
-                            <strong>Classes:</strong> 24 Sessions &nbsp;|&nbsp;
+                            <strong>Duration:</strong> <?= (int) $ctxCourse['weeks'] ?> Weeks &nbsp;|&nbsp;
+                            <strong>Classes:</strong> <?= (int) $ctxCourse['classes'] ?> Sessions &nbsp;|&nbsp;
                             <strong>Schedule:</strong> 2 per Week &nbsp;|&nbsp;
                             <strong>Skills:</strong> All 4 IELTS Skills
                         </p>
                     </div>
                     <div class="d-flex flex-wrap gap-2">
-                        <span class="badge-custom">24 Classes</span>
-                        <span class="badge-custom">90 min each</span>
-                        <span class="badge-custom">3 Mock Exams</span>
-                        <span class="badge-custom">4 Practice Test Sets</span>
+                        <span class="badge-custom"><?= (int) $ctxCourse['classes'] ?> Classes</span>
+                        <span class="badge-custom">2 hours each</span>
+                        <?php if ($mockClasses): ?><span class="badge-custom"><?= count($mockClasses) ?> Mock <?= count($mockClasses) === 1 ? 'Exam' : 'Exams' ?></span><?php endif; ?>
                     </div>
                 </div>
             </div>
 
+            <?php endif; ?>
+
+            <?php if ($showExam): ?>
             <!-- IELTS General vs Academic -->
             <div class="content-section">
                 <h2>IELTS General Training vs IELTS Academic</h2>
@@ -158,6 +177,9 @@ if (!isset($_SESSION['user_id'])) {
                 </p>
             </div>
 
+            <?php endif; ?>
+
+            <?php if ($showCourse): ?>
             <!-- How the Programme Works -->
             <div class="content-section">
                 <h2>How This Programme Works</h2>
@@ -165,7 +187,7 @@ if (!isset($_SESSION['user_id'])) {
                 <h3>Class Structure</h3>
                 <ul class="custom-list">
                     <li><strong><?= (int) $ctxCourse['classes'] ?> classes</strong> over <?= (int) $ctxCourse['weeks'] ?> weeks — twice per week</li>
-                    <li><strong>Regular classes:</strong> 90 minutes — two complementary skills per session</li>
+                    <li><strong>Every class:</strong> 2 hours</li>
                     <?php if ($mockClasses): ?><li><strong>Mock test <?= count($mockClasses) === 1 ? 'class' : 'classes' ?> (<?= implode(', ', $mockClasses) ?>):</strong> 3 hours — full timed exam under real conditions</li><?php endif; ?>
                 </ul>
 
@@ -227,12 +249,15 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </div>
 
+            <?php endif; ?>
+
             <!-- Class 1 Videos -->
             <div class="content-section">
                 <h2><i class="bi bi-play-circle me-2"></i>Class 1 Videos</h2>
-                <p>Three orientation videos to watch as part of today's session:</p>
+                <p>Videos to watch as part of today's session:</p>
 
                 <div class="info-grid">
+                    <?php if ($showCourse): ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Alessandra — Welcome &amp; Introduction</h4>
                         <p class="text-muted mb-2">Programme introduction from your lead tutor — what to expect over the next <?= (int) $ctxCourse['weeks'] ?> weeks.</p>
@@ -249,6 +274,8 @@ if (!isset($_SESSION['user_id'])) {
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
                     </div>
+                    <?php endif; ?>
+                    <?php if ($showExam): ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Speaking Test — Three Candidates</h4>
                         <p class="text-muted mb-2">Watch three real speaking test extracts and learn exactly what the examiner is assessing.</p>
@@ -257,9 +284,12 @@ if (!isset($_SESSION['user_id'])) {
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
+            <!-- The IELTS Format Knowledge quiz is its own item in the class now (migration 153/154), not part of this page. -->
+            <?php if (false): ?>
             <!-- Quiz -->
             <div class="content-section">
                 <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class 1 Quiz</h2>
@@ -274,6 +304,9 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </div>
 
+            <?php endif; ?>
+
+            <?php if ($showCourse): ?>
             <!-- Take-Home -->
             <div class="content-section">
                 <h2><i class="bi bi-house-heart me-2"></i>Take-Home Exercise</h2>
@@ -297,8 +330,14 @@ if (!isset($_SESSION['user_id'])) {
                 </div>
             </div>
 
+            <?php endif; ?>
+
             <!-- Action Buttons -->
             <div class="action-buttons">
+                <?php if ($part !== 'both'): ?>
+                <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-circle me-2"></i>Back to course</a>
+                <?php if ($nextItem): ?><a href="<?= htmlspecialchars($nextItem['url']) ?>" class="btn btn-primary btn-lg"><i class="bi bi-play-circle me-2"></i>Next: <?= htmlspecialchars($nextItem['title']) ?></a><?php endif; ?>
+                <?php else: ?>
                 <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left-circle me-2"></i>Back to Course Overview
                 </a>
@@ -308,6 +347,7 @@ if (!isset($_SESSION['user_id'])) {
                 <a href="../../../learning_dashboard.php" class="btn btn-outline-secondary">
                     <i class="bi bi-speedometer2 me-2"></i>Dashboard
                 </a>
+                <?php endif; ?>
             </div>
 
         </div>

@@ -128,7 +128,8 @@ if ($__pacingBlockers) { ?>
                 <p class="mt-3"><strong>Formal vocabulary to know:</strong> "I am writing to...", "I would be grateful if you could...", "I would appreciate it if...", "I look forward to hearing from you."</p>
             </div>
 
-            <div class="content-section">
+            <?php /* Now its own item in this class (migration 153): a quiz/test is never folded into a lesson page. */ if (false): ?>
+<div class="content-section">
                 <h2><i class="bi bi-clipboard-check me-2"></i>Practice Test — Timed Section</h2>
                 <div class="highlight-box" style="background:#eff6ff;border-color:#3b82f6;">
                     <p class="mb-1"><strong>Practice Test Set 1 — Speaking Part 1</strong> (timed, 4–5 min)</p>
@@ -139,6 +140,7 @@ if ($__pacingBlockers) { ?>
                     <i class="bi bi-play-circle me-2"></i>Start Speaking Practice Test 1
                 </a>
             </div>
+<?php endif; ?>
 
             <div class="content-section">
                 <h2><i class="bi bi-play-circle me-2"></i>Class 6 Videos</h2>
@@ -151,7 +153,8 @@ if ($__pacingBlockers) { ?>
                 </div>
             </div>
 
-            <div class="content-section">
+            <?php /* Now its own item in this class (migration 153): a quiz/test is never folded into a lesson page. */ if (false): ?>
+<div class="content-section">
                 <h2><i class="bi bi-question-circle me-2"></i>Class Quiz</h2>
                 <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                     <h4 style="color:#15803d;margin-top:0;">TFNG vs YNNG Decision Drill</h4>
@@ -159,6 +162,7 @@ if ($__pacingBlockers) { ?>
                     <a href="<?= ACADEMY_URL ?>resources/quizzes/class_quiz.php?test_code=IELTS_GM_C6_QUIZ&return=<?= urlencode('../../courses/IELTS_Gen/lessons/class06.php') ?>" class="btn btn-success btn-sm"><i class="bi bi-play-fill me-1"></i>Start Quiz</a>
                 </div>
             </div>
+<?php endif; ?>
 
             <div class="content-section">
                 <h2><i class="bi bi-house-heart me-2"></i>Take-Home Exercise</h2>

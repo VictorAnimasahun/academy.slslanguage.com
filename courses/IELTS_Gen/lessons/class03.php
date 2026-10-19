@@ -125,7 +125,8 @@ if ($__pacingBlockers) {
             </div>
 
             <!-- Practice Test -->
-            <div class="content-section">
+            <?php /* Now its own item in this class (migration 153): a quiz/test is never folded into a lesson page. */ if (false): ?>
+<div class="content-section">
                 <h2><i class="bi bi-stopwatch me-2" style="color: #0b77ff;"></i>Practice Test</h2>
                 <div class="highlight-box" style="border-left-color: #0b77ff; background: #eff6ff;">
                     <h5 style="color: #0b77ff;"><i class="bi bi-journal-text me-2"></i>Practice Test Set 1 — Listening Section</h5>
@@ -137,6 +138,7 @@ if ($__pacingBlockers) {
                     </a>
                 </div>
             </div>
+<?php endif; ?>
 
             <!-- Section 1: Form Completion -->
             <div class="content-section">
@@ -317,7 +319,8 @@ if ($__pacingBlockers) {
             </div>
 
             <!-- Quiz -->
-            <div class="content-section">
+            <?php /* Now its own item in this class (migration 153): a quiz/test is never folded into a lesson page. */ if (false): ?>
+<div class="content-section">
                 <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class 3 Quiz</h2>
                 <div class="highlight-box" style="border-left-color: #16a34a; background: #f0fdf4;">
                     <h5 style="color: #16a34a;"><i class="bi bi-check2-square me-2"></i>Gap-fill Prediction Strategies Quiz</h5>
@@ -329,6 +332,7 @@ if ($__pacingBlockers) {
                     <a href="<?= ACADEMY_URL ?>resources/quizzes/class_quiz.php?test_code=IELTS_GM_C3_QUIZ&return=<?= urlencode('../../courses/IELTS_Gen/lessons/class03.php') ?>" class="btn btn-success btn-sm"><i class="bi bi-play-fill me-1"></i>Start Quiz</a>
                 </div>
             </div>
+<?php endif; ?>
 
             <!-- Take-Home -->
             <div class="content-section">
