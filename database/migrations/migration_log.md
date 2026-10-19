@@ -2021,6 +2021,23 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 151 — Week 1 tests are their own items; CELPIP class days split into test + lesson
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-19 | Ran 3x on local 8.0 (re-runs are clean no-ops; every class title checked equal to its items joined with " + "). Also on a throwaway MySQL 5.7.44 instance loaded with copies of `courses`/`modules`/`lessons`/`lesson_parts`, first rolled back to the pre-fix shape (the 8 new rows removed, class-day item paths cleared): run 1 added the 8 rows and set all 56 class-day item paths, run 2 changed nothing. Instance removed afterward. Pages checked at phone width against local data. |
+| Live  | [ ] | | Needs: back up, run this file in phpMyAdmin, and the matching files deployed (see the commit). |
+
+**What it does:** founder, 2026-10-19 -- a class is a day of separate items, and a test is never folded into a lesson. Two different tests open the courses: the **Foundational English Assessment** (general English level; the placement test in `mini_tests/english-placement-test`) and the **<Exam> Diagnostic Test** (exam level; "Mini Mock" is only its informal name).
+- CELPIP 2/3-Month Class 1: one mislabelled item ("Foundational English Assessment", really the course intro, no test) -> Course Introduction + Foundational English Assessment. Class 2: "Mini Diagnostic -- All 4 Skills" filed as a lesson -> CELPIP Diagnostic Test (mock_test).
+- CELPIP 1-Month Class 1: opened the free intro course's Module 0 (its buttons led into the free course) -> the CELPIP Course Introduction.
+- IELTS General 1/2/3-Month Class 2: one lesson "Diagnostic Mini Mock & Band Descriptor Review" (the diagnostic itself wasn't linked) -> IELTS General Training Diagnostic Test + Band Descriptor Review.
+- IELTS Academic 1/2/3-Month Class 1: "Orientation & Diagnostic Assessment" (test inside the lesson) -> Orientation + IELTS Academic Diagnostic Test.
+- CELPIP 3-Month Week 12 Class 2: title now names its second item, Mock Test 3.
+- CELPIP class days: each test and lesson item points at its own view of `class_day.php` (`&part=test` / `&part=lesson`).
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

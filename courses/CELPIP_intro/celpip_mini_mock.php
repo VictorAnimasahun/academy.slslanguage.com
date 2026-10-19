@@ -5,13 +5,20 @@ if (!isset($_SESSION['user_id'])) {
 	header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+this+course");
 	exit();
 }
+// Shared by the free Introduction to CELPIP course and Class 2 of the paid CELPIP courses. ?from=<folder>
+// (sent by the course pages and the app) says which, so the breadcrumb leads back to the right course.
+require_once INCLUDES_PATH . '/course_shape.php';
+$_from = preg_replace('/[^a-zA-Z0-9_]/', '', $_GET['from'] ?? '');
+$ctxCourse = in_array($_from, ['CELPIP_Gen_1Mo', 'CELPIP_Gen_2Mo', 'CELPIP_Gen_3Mo'], true) ? course_by_folder($db, $_from) : null;
+$backName = $ctxCourse['title'] ?? 'Introduction to CELPIP';
+$backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/course_overview.php' : 'course_overview.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CELPIP Mini Mock Test | EduHub</title>
+    <title>CELPIP Diagnostic Test | EduHub</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -36,13 +43,13 @@ if (!isset($_SESSION['user_id'])) {
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../courses_catalogue.php">Courses</a></li>
-                    <li class="breadcrumb-item"><a href="course_overview.php">CELPIP Foundations</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Mini Mock Test</li>
+                    <li class="breadcrumb-item"><a href="<?= htmlspecialchars($backUrl) ?>"><?= htmlspecialchars($backName) ?></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">CELPIP Diagnostic Test</li>
                 </ol>
             </nav>
 
             <div class="mock-header">
-                <span class="celpip-badge"><i class="bi bi-award-fill"></i> CELPIP Mini Mock</span>
+                <span class="celpip-badge"><i class="bi bi-award-fill"></i> CELPIP Diagnostic Test</span>
                 <div id="quiz-timer"><i class="bi bi-clock-history"></i> Time Left: <span id="time">60:00</span></div>
             </div>
 
@@ -50,9 +57,9 @@ if (!isset($_SESSION['user_id'])) {
             <div id="intro" class="page active">
                 <div class="wrap">
                     <div class="card">
-                        <h1>CELPIP Mini Mock Test</h1>
+                        <h1>CELPIP Diagnostic Test</h1>
                         <div class="intro-text">
-                            <p>Welcome to the CELPIP Mini Mock Test. This test simulates parts of the CELPIP exam so you can practice under timed conditions. The full CELPIP exam has four sections (Listening, Reading, Writing, and Speaking). This Mock Test will also evaluate the same sections.</p>
+                            <p>Welcome to the CELPIP Diagnostic Test (also called the Mini Mock). It shows your CELPIP level today. It simulates parts of the CELPIP exam so you can practice under timed conditions. The full CELPIP exam has four sections (Listening, Reading, Writing, and Speaking). This test covers the same four sections.</p>
                             <p>You have a total of 1 hour to complete all four sections. The timer will begin counting down as soon as you click the button below:</p>
                             <ul>
                                 <li>Listening (10 questions)</li>

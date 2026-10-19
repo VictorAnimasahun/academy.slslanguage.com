@@ -99,7 +99,7 @@ function weekBriefHasContent(array $b): bool {
 
 function weekBriefRender(array $b, string $color = '#0b77ff'): string {
     $h = fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
-    $out = '<div class="week-brief" style="border-left:4px solid ' . $h($color) . ';background:#f8fafc;padding:1rem 1.1rem;margin:0;">';
+    $out = '<div class="week-brief" style="border:1px solid #e2e8f0;background:#f8fafc;padding:1rem 1.1rem;margin:0;">';
     $out .= '<div class="fw-bold mb-2" style="color:' . $h($color) . ';"><i class="bi bi-journal-text me-1"></i>This week at a glance</div>';
 
     if ($b['summary'] !== '') {

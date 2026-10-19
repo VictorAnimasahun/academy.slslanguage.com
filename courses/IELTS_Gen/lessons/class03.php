@@ -14,7 +14,7 @@ if (!can_access('intermediate')) {
     <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>IELTS General Masterclass — Class 3: Listening — Form Completion & Gap-fill · Speaking — Introduction & Fluency</title>
+        <title><?= htmlspecialchars($ctxCourse['title']) ?> — Class 3: Listening — Form Completion & Gap-fill · Speaking — Introduction & Fluency</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -74,7 +74,7 @@ if ($__pacingBlockers) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>IELTS General Masterclass — Class 3: Listening — Form Completion & Gap-fill · Speaking — Introduction & Fluency</title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Class 3: Listening — Form Completion & Gap-fill · Speaking — Introduction & Fluency</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -112,7 +112,7 @@ if ($__pacingBlockers) {
                         <h4 class="mb-2" style="color: var(--accent);">Class Overview</h4>
                         <p class="mb-0">
                             <strong>Module:</strong> Month 1 — Foundations &nbsp;|&nbsp;
-                            <strong>Class:</strong> 3 of 24 &nbsp;|&nbsp;
+                            <strong>Class:</strong> 3 of <?= (int) $ctxCourse['classes'] ?> &nbsp;|&nbsp;
                             <strong>Duration:</strong> 90 min
                         </p>
                     </div>

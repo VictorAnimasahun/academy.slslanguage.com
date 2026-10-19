@@ -158,7 +158,7 @@ body {
 
 .highlight-box {
 	background: linear-gradient(135deg, #e6f0ff 0%, #f0f7ff 100%);
-	border-left: 4px solid var(--accent);
+	border: 1px solid #cfe0fb;
 	padding: 1.5rem;
 	margin: 1.5rem 0;
 	border-radius: 8px;
@@ -166,7 +166,7 @@ body {
 
 .pink-highlight {
 	background: linear-gradient(135deg, #fce7f3 0%, #fff1f5 100%);
-	border-left: 4px solid #ec4899;
+	border: 1px solid #f9c9de;
 }
 
 .info-grid {
@@ -526,3 +526,10 @@ ul.custom-list li:before {
 		width: 100%;
 	}
 }
+
+/* No coloured strip down the left of any box (founder, 2026-10-18/19): a box is a soft tint with a thin
+   border all round, as in the app prototype. The lesson pages built from includes/lesson_shell.php carry
+   their own <style> with left strips (.lc-aim / .lc-tip / .lc-warn), hence !important here. */
+.lc .lc-aim  { border: 1px solid #cfe0fb !important; }
+.lc .lc-tip  { border: 1px solid #bbe5c8 !important; }
+.lc .lc-warn { border: 1px solid #f5c2c2 !important; }

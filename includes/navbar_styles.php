@@ -285,7 +285,7 @@
 
 	.tips {
 		background: linear-gradient(135deg, #e6f0ff 0%, #f0f7ff 100%);
-		border-left: 4px solid var(--accent);
+		border: 1px solid #cfe0fb;
 		padding: 1.5rem;
 		margin: 1.5rem 0;
 		border-radius: 8px;

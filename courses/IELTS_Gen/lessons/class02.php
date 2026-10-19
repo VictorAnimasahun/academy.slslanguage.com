@@ -14,7 +14,7 @@ if (!can_access('intermediate')) {
     <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>IELTS General Masterclass — Class 2: Diagnostic Mini Mock & Band Descriptor Review</title>
+        <title><?= htmlspecialchars($ctxCourse['title']) ?> — Class 2: Band Descriptor Review</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -27,7 +27,7 @@ if (!can_access('intermediate')) {
         <?php include INCLUDES_PATH . '/navbar.php'; ?>
         <main class="main-wrapper">
             <div class="course-card">
-                <?php render_upgrade_prompt('intermediate', 'Class 2: Diagnostic Mini Mock & Band Descriptor Review'); ?>
+                <?php render_upgrade_prompt('intermediate', 'Class 2: Band Descriptor Review'); ?>
             </div>
         </main>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -74,7 +74,7 @@ if ($__pacingBlockers) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>IELTS General Masterclass — Class 2: Diagnostic Mini Mock & Band Descriptor Review</title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Class 2: Band Descriptor Review</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -97,13 +97,13 @@ if ($__pacingBlockers) {
                     <li class="breadcrumb-item">
                         <a href="<?= htmlspecialchars($back['url']) ?>" class="text-decoration-none"><?= htmlspecialchars($back['name']) ?></a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Class 2: Diagnostic Mini Mock &amp; Band Descriptor Review</li>
+                    <li class="breadcrumb-item active" aria-current="page">Class 2: Band Descriptor Review</li>
                 </ol>
             </nav>
 
             <h1 class="mb-3">
                 <i class="bi bi-clipboard-check me-2" style="color: #0b77ff;"></i>
-                Class 2: Diagnostic Mini Mock &amp; Band Descriptor Review
+                Class 2: Band Descriptor Review
             </h1>
 
             <div class="highlight-box">
@@ -112,29 +112,29 @@ if ($__pacingBlockers) {
                         <h4 class="mb-2" style="color: var(--accent);">Class Overview</h4>
                         <p class="mb-0">
                             <strong>Module:</strong> Month 1 — Foundations &nbsp;|&nbsp;
-                            <strong>Class:</strong> 2 of 24 &nbsp;|&nbsp;
+                            <strong>Class:</strong> 2 of <?= (int) $ctxCourse['classes'] ?> &nbsp;|&nbsp;
                             <strong>Duration:</strong> 90 min
                         </p>
                     </div>
                     <div class="d-flex flex-wrap gap-2">
-                        <span class="badge-custom">Diagnostic Mock</span>
+                        <span class="badge-custom">Diagnostic Test</span>
                         <span class="badge-custom">Band Descriptors</span>
                         <span class="badge-custom">Self-Assessment</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Section 1: What is a Diagnostic Mock? -->
+            <!-- Section 1: the IELTS General Training Diagnostic Test (its own item, before this lesson) -->
             <div class="content-section">
-                <h2><i class="bi bi-clipboard-check me-2" style="color: #0b77ff;"></i>What is a Diagnostic Mock?</h2>
+                <h2><i class="bi bi-clipboard-check me-2" style="color: #0b77ff;"></i>What the IELTS General Training Diagnostic Test Is For</h2>
                 <p>
-                    A diagnostic mock is not about scoring well — it is about establishing a clear, honest baseline
+                    The diagnostic test is not about scoring well — it is about establishing a clear, honest baseline
                     across all four IELTS skills before any targeted teaching begins. Without a baseline, it is
                     impossible to know where your time and effort should go. With one, every subsequent class
                     has a purpose.
                 </p>
                 <p>
-                    The abridged diagnostic mock in this class covers a representative sample from each skill:
+                    The IELTS General Training Diagnostic Test (the item before this lesson, taken on a computer) covers a representative sample from each skill:
                 </p>
                 <div class="info-grid">
                     <div class="info-card" style="border-color: #0b77ff;">
@@ -232,7 +232,7 @@ if ($__pacingBlockers) {
             <div class="content-section">
                 <h2><i class="bi bi-person-check me-2" style="color: #0b77ff;"></i>Self-Assessment Framework</h2>
                 <p>
-                    Once you have completed the diagnostic mock and reviewed your answers, the next step is
+                    Once you have completed the IELTS General Training Diagnostic Test and reviewed your answers, the next step is
                     structured self-assessment. This is not about being harsh on yourself — it is about being
                     precise. Vague feedback ("my writing was bad") produces vague improvement. Precise feedback
                     ("I only addressed 2 of the 3 bullet points in Task 1 and my sign-off was wrong for the register")

@@ -2,6 +2,16 @@
 require_once (dirname(dirname(dirname(__DIR__)))) . '/bootstrap.php';
 require_once __DIR__ . '/course_context.php';
 
+// Shared by the IELTS General 1-, 2- and 3-month courses: name, length, mocks and timetable come from
+// the database for the course the student is in (founder, 2026-10-19), never typed in for one course.
+$schedule = course_schedule($db, $ctxCourse['id']);
+$mockClasses = [];
+foreach ($schedule as $w) foreach ($w['classes'] as $c) foreach ($c['items'] as $i) {
+    if ($i['kind'] === 'mock_test' && stripos($i['title'], 'diagnostic') === false) $mockClasses[] = $c['number'];
+}
+$mockClasses = array_values(array_unique($mockClasses));
+$isTest = fn (array $i) => in_array($i['kind'], ['practice_test', 'mock_test'], true);
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course");
     exit();
@@ -11,7 +21,7 @@ if (!isset($_SESSION['user_id'])) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>IELTS General 3-Month Masterclass — Class 1: Course Orientation</title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Class 1: Course Orientation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -44,9 +54,9 @@ if (!isset($_SESSION['user_id'])) {
             </h1>
 
             <p class="lead">
-                Welcome to the IELTS General 3-Month Masterclass. Today we cover how the programme works,
+                Welcome to the <?= htmlspecialchars($ctxCourse['title']) ?>. Today we cover how the programme works,
                 what IELTS General tests across all four skills, and how to get the most from every class
-                over the next 12 weeks.
+                over the next <?= (int) $ctxCourse['weeks'] ?> weeks.
             </p>
 
             <div class="highlight-box">
@@ -154,9 +164,9 @@ if (!isset($_SESSION['user_id'])) {
 
                 <h3>Class Structure</h3>
                 <ul class="custom-list">
-                    <li><strong>24 classes</strong> over 12 weeks — twice per week</li>
+                    <li><strong><?= (int) $ctxCourse['classes'] ?> classes</strong> over <?= (int) $ctxCourse['weeks'] ?> weeks — twice per week</li>
                     <li><strong>Regular classes:</strong> 90 minutes — two complementary skills per session</li>
-                    <li><strong>Mock test classes (8, 16, 24):</strong> 3 hours — full timed exam under real conditions</li>
+                    <?php if ($mockClasses): ?><li><strong>Mock test <?= count($mockClasses) === 1 ? 'class' : 'classes' ?> (<?= implode(', ', $mockClasses) ?>):</strong> 3 hours — full timed exam under real conditions</li><?php endif; ?>
                 </ul>
 
                 <h3>What You Receive Each Class</h3>
@@ -175,95 +185,46 @@ if (!isset($_SESSION['user_id'])) {
                     </div>
                     <div class="info-card">
                         <h4><i class="bi bi-clipboard-check me-2"></i>Practice Test Sections</h4>
-                        <p class="mb-0">16 of the 24 classes include a timed practice test section — 4 complete sets spread across the programme (4 sets × 4 sections = 16 total).</p>
+                        <p class="mb-0">Many classes include a timed practice test, taken on a computer. Your timetable below marks each one.</p>
                     </div>
                 </div>
 
-                <h3 class="mt-4">Three Full Mock Exams</h3>
+                <?php if ($mockClasses): ?>
+                <h3 class="mt-4"><?= count($mockClasses) === 1 ? 'A Full Mock Exam' : count($mockClasses) . ' Full Mock Exams' ?></h3>
                 <p>
-                    At the end of each month (Classes 8, 16, and 24), you sit a complete timed mock exam
+                    At the end of each month (<?= count($mockClasses) === 1 ? 'Class' : 'Classes' ?> <?= implode(', ', $mockClasses) ?>), you sit a complete timed mock exam
                     covering all four skills under real exam conditions. Written feedback and band score
                     estimates are provided after each mock — along with a targeted improvement plan for
                     the following month.
                 </p>
+                <?php endif; ?>
             </div>
 
-            <!-- 24-Class Programme Schedule -->
+            <!-- Timetable: read from the database for this course -->
             <div class="content-section">
-                <h2>24-Class Programme Schedule</h2>
-
-                <h3 class="mb-3" style="color: #0b77ff;">
-                    <i class="bi bi-calendar3 me-2"></i>Month 1 — Foundations
-                </h3>
-                <table class="table table-bordered table-sm mb-4">
-                    <thead class="table-primary">
-                        <tr><th width="40">#</th><th>Class</th><th width="90">Duration</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr class="table-light">
-                            <td>1</td>
-                            <td>Course Orientation &amp; IELTS General Overview <span class="badge bg-success ms-1">Free</span></td>
-                            <td>90 min</td>
-                        </tr>
-                        <tr><td>2</td><td>Diagnostic Mini Mock &amp; Band Descriptor Review</td><td>90 min</td></tr>
-                        <tr><td>3</td><td>Listening: Form Completion &amp; Gap-fill &nbsp;·&nbsp; Speaking: Introduction &amp; Fluency</td><td>90 min</td></tr>
-                        <tr><td>4</td><td>Reading: Skimming &amp; Scanning &nbsp;·&nbsp; Writing Task 1: Vocabulary &amp; Registers</td><td>90 min</td></tr>
-                        <tr><td>5</td><td>Listening: Multiple Choice &nbsp;·&nbsp; Speaking Part 1: Common Topics</td><td>90 min</td></tr>
-                        <tr><td>6</td><td>Reading: True/False/Not Given &nbsp;·&nbsp; Writing Task 1: Formal Letters</td><td>90 min</td></tr>
-                        <tr><td>7</td><td>Listening: Map Listening &nbsp;·&nbsp; Speaking Part 2: Topic Development</td><td>90 min</td></tr>
-                        <tr class="table-warning fw-bold">
-                            <td>8</td>
-                            <td><i class="bi bi-journal-richtext me-1"></i>MOCK TEST 1 — Full Timed Exam (End of Month 1)</td>
-                            <td>3 hrs</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3 class="mb-3" style="color: #6366f1;">
-                    <i class="bi bi-calendar3 me-2"></i>Month 2 — Skill Development
-                </h3>
-                <table class="table table-bordered table-sm mb-4">
-                    <thead style="background-color: #6366f1; color: white;">
-                        <tr><th width="40">#</th><th>Class</th><th width="90">Duration</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>9</td><td>Reading: Matching Headings &nbsp;·&nbsp; Listening: Plan Labelling Parts 3 &amp; 4</td><td>90 min</td></tr>
-                        <tr><td>10</td><td>Speaking Part 2: Long Turn &nbsp;·&nbsp; Writing Task 1: Informal Letters</td><td>90 min</td></tr>
-                        <tr><td>11</td><td>Reading: Multiple Choice &nbsp;·&nbsp; Writing Task 1: Semi-Formal Letters</td><td>90 min</td></tr>
-                        <tr><td>12</td><td>Listening: Note Completion, Table &amp; Flowchart</td><td>90 min</td></tr>
-                        <tr><td>13</td><td>Speaking Part 3: A Complete Guide &nbsp;·&nbsp; Critical Thinking &amp; Extended Responses</td><td>90 min</td></tr>
-                        <tr><td>14</td><td>Reading: Sentence Completion &nbsp;·&nbsp; Writing Task 2: Effective Introduction</td><td>90 min</td></tr>
-                        <tr><td>15</td><td>Listening: Distractors &amp; Synonyms &nbsp;·&nbsp; Cohesive Devices in Letters</td><td>90 min</td></tr>
-                        <tr class="table-warning fw-bold">
-                            <td>16</td>
-                            <td><i class="bi bi-journal-richtext me-1"></i>MOCK TEST 2 — Full Timed Exam (End of Month 2)</td>
-                            <td>3 hrs</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3 class="mb-3" style="color: #16a34a;">
-                    <i class="bi bi-calendar3 me-2"></i>Month 3 — Mastery
-                </h3>
-                <table class="table table-bordered table-sm mb-4">
-                    <thead class="table-success">
-                        <tr><th width="40">#</th><th>Class</th><th width="90">Duration</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>17</td><td>Speaking Part 3: Opinions &amp; Abstract Topics &nbsp;·&nbsp; Reading: Summary/Note/Table Completion</td><td>90 min</td></tr>
-                        <tr><td>18</td><td>Writing Task 2: Body Paragraphs &nbsp;·&nbsp; Opinion Essays</td><td>90 min</td></tr>
-                        <tr><td>19</td><td>Writing Task 2: Balanced Conclusions &nbsp;·&nbsp; Discussion Essays</td><td>90 min</td></tr>
-                        <tr><td>20</td><td>Writing Task 2 Masterclass — All Five Essay Types</td><td>90 min</td></tr>
-                        <tr><td>21</td><td>Reading Mastery — All Question Types Rapid Review</td><td>90 min</td></tr>
-                        <tr><td>22</td><td>Speaking Mastery — Parts 1, 2 &amp; 3 End-to-End</td><td>90 min</td></tr>
-                        <tr><td>23</td><td>Final Preparation — Listening Masterclass &amp; Test-Day Strategy</td><td>90 min</td></tr>
-                        <tr class="table-warning fw-bold">
-                            <td>24</td>
-                            <td><i class="bi bi-journal-richtext me-1"></i>MOCK TEST 3 — Final Full Exam Simulation (End of Month 3)</td>
-                            <td>3 hrs</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2><?= (int) $ctxCourse['classes'] ?>-Class Programme Schedule</h2>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead><tr><th style="width:5.5rem">Week</th><th style="width:4.5rem">Class</th><th>What's in it</th></tr></thead>
+                        <tbody>
+                        <?php foreach ($schedule as $week): foreach ($week['classes'] as $ci => $cls): ?>
+                            <tr>
+                                <td><?= $ci === 0 ? 'Week ' . (int) $week['number'] : '' ?></td>
+                                <td><?= (int) $cls['number'] ?></td>
+                                <td>
+                                    <?php foreach ($cls['items'] as $ii => $item): ?>
+                                        <div class="<?= $ii ? 'border-top pt-1 mt-1' : '' ?>">
+                                            <?= htmlspecialchars($item['title']) ?>
+                                            <?php if ($isTest($item)): ?><span class="badge text-bg-light border ms-1">Test</span><?php endif; ?>
+                                            <?php if (!$item['ready']): ?><span class="badge text-bg-light border ms-1">Coming Soon</span><?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Class 1 Videos -->
@@ -274,7 +235,7 @@ if (!isset($_SESSION['user_id'])) {
                 <div class="info-grid">
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Alessandra — Welcome &amp; Introduction</h4>
-                        <p class="text-muted mb-2">Programme introduction from your lead tutor — what to expect over 12 weeks.</p>
+                        <p class="text-muted mb-2">Programme introduction from your lead tutor — what to expect over the next <?= (int) $ctxCourse['weeks'] ?> weeks.</p>
                         <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>

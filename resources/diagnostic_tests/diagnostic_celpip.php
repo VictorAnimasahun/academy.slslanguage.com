@@ -18,7 +18,7 @@ $sections = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CELPIP Mini Mock Test | EduHub</title>
+    <title>CELPIP Diagnostic Test | EduHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
@@ -42,15 +42,15 @@ $sections = [
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../resources_home.php">Resources</a></li>
                     <li class="breadcrumb-item"><a href="diagnostic_tests_home.php">Diagnostic Tests</a></li>
-                    <li class="breadcrumb-item active">CELPIP Mini Mock</li>
+                    <li class="breadcrumb-item active">CELPIP Diagnostic Test</li>
                 </ol>
             </nav>
 
             <div class="mock-overview">
                 <div class="text-center mb-5">
                     <span class="mock-badge">CELPIP DIAGNOSTIC</span>
-                    <h1 class="mt-4 mb-3">CELPIP Mini Mock Test</h1>
-                    <p class="lead text-muted">A short, four-skill assessment to establish your starting point.</p>
+                    <h1 class="mt-4 mb-3">CELPIP Diagnostic Test</h1>
+                    <p class="lead text-muted">A short, four-skill test (the "Mini Mock") that shows your CELPIP level today.</p>
                 </div>
 
                 <div class="row text-center mb-5">
@@ -89,7 +89,7 @@ $sections = [
 
                 <div class="text-center mt-5 pt-4 border-top">
                     <button class="btn btn-primary btn-lg px-5" type="button" disabled>
-                        <i class="bi bi-play-circle me-2"></i>Start Mini Mock
+                        <i class="bi bi-play-circle me-2"></i>Start Diagnostic Test
                     </button>
                 </div>
             </div>

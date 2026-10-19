@@ -34,7 +34,7 @@ if ($__pacingBlockers) { ?>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>IELTS General Masterclass — Class 16: Mock Test 2</title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Class 16: Mock Test 2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -61,7 +61,7 @@ if ($__pacingBlockers) { ?>
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div>
                         <span class="badge-custom">Month 2 — Skill Development</span>
-                        <span class="badge-custom">Class 16 of 24</span>
+                        <span class="badge-custom">Class 16 of <?= (int) $ctxCourse['classes'] ?></span>
                         <span class="badge-custom"><i class="bi bi-clock me-1"></i>3 Hours</span>
                     </div>
                     <span class="badge bg-warning text-dark fw-bold px-3 py-2 fs-6">
@@ -131,8 +131,8 @@ if ($__pacingBlockers) { ?>
                 <ul class="mb-0">
                     <li>Written feedback on all four skills will be provided by your tutor.</li>
                     <li>Band score estimates will be compared with Mock Test 1 results — measure your progress.</li>
-                    <li>Your Month 3 targeted improvement plan will prioritise the skills where the gap between current band and target is largest.</li>
-                    <li>If your Writing score has not improved, your tutor will focus Month 3 on Task 2 structure and lexical range.</li>
+                    <?php if ($ctxCourse['classes'] > 16): ?><li>Your Month 3 targeted improvement plan will prioritise the skills where the gap between current band and target is largest.</li><?php endif; ?>
+                    <?php if ($ctxCourse['classes'] > 16): ?><li>If your Writing score has not improved, your tutor will focus Month 3 on Task 2 structure and lexical range.</li><?php endif; ?>
                 </ul>
             </div>
 
@@ -150,7 +150,7 @@ if ($__pacingBlockers) { ?>
 
             <div class="action-buttons">
                 <a href="class15.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-circle me-2"></i>Class 15</a>
-                <a href="class17.php" class="btn btn-primary btn-lg"><i class="bi bi-play-circle me-2"></i>Start Month 3 — Class 17</a>
+                <?php if ($ctxCourse['classes'] > 16): ?><a href="class17.php" class="btn btn-primary btn-lg"><i class="bi bi-play-circle me-2"></i>Start Month 3 — Class 17</a><?php else: ?><a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-primary btn-lg"><i class="bi bi-flag me-2"></i>Finish: back to course</a><?php endif; ?>
                 <a href="../../../learning_dashboard.php" class="btn btn-outline-secondary"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
             </div>
         </div>
@@ -162,7 +162,7 @@ if ($__pacingBlockers) { ?>
             <div class="d-grid gap-1">
                 <a href="class15.php" class="btn btn-outline-light btn-sm">← Class 15</a>
                 <span class="btn btn-warning btn-sm disabled fw-bold text-dark">Mock Test 2 — Here</span>
-                <a href="class17.php" class="btn btn-outline-light btn-sm">Month 3: Class 17 →</a>
+                <?php if ($ctxCourse['classes'] > 16): ?><a href="class17.php" class="btn btn-outline-light btn-sm">Month 3: Class 17 →</a><?php endif; ?>
                 <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-light btn-sm">Course Overview</a>
             </div>
         </div>

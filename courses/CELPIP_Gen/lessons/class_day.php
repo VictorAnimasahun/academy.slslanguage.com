@@ -37,7 +37,7 @@ $SLOTS = [
                     <li><strong>Match the register.</strong> A blank in a formal business letter needs a different word choice than the same grammatical slot in a casual note to a friend.</li>
                     <li><strong>Watch for grammar signals around the blank</strong> — a preposition, verb tense, or connector is often determined by the word immediately before or after it, not by meaning alone.</li>
                 </ul>'],
-        'prev' => ACADEMY_URL . 'courses/CELPIP_intro/celpip_mini_mock.php', 'prev_label' => 'Previous: Mini Diagnostic',
+        'prev' => ACADEMY_URL . 'courses/CELPIP_intro/celpip_mini_mock.php', 'prev_label' => 'Previous: CELPIP Diagnostic Test',
         'next' => 'class_day.php?slot=c4', 'next_label' => 'Next Class'],
 
     'c4' => ['week' => 'Week 2', 'class_num' => 4,
@@ -240,7 +240,19 @@ $title_lesson = $cfg['lesson']['skill'] . ': ' . $cfg['lesson']['topic'];
 $page_title   = $title_test . ' · ' . $title_lesson; // single-line contexts only (tab title, breadcrumb)
 // Course this class is being taken in (set by course_context.php from ?from=). Class numbers are
 // shared; only the length of the course differs.
-$class_total = ($_SESSION['celpip_gen_from'] ?? 'CELPIP_Gen_3Mo') === 'CELPIP_Gen_2Mo' ? 16 : 24;
+$class_total = (int) $ctxCourse['classes'];
+// A class day holds two items -- the test and the lesson -- and each item opens on its own
+// (founder, 2026-10-19: a test is never folded into a lesson's page). ?part=test|lesson picks one;
+// without it (old links) both show, as before.
+$part = in_array($_GET['part'] ?? '', ['test', 'lesson'], true) ? $_GET['part'] : 'both';
+$showTest = $part !== 'lesson';
+$showLesson = $part !== 'test';
+$selfPath = 'courses/CELPIP_Gen/lessons/class_day.php?slot=' . $slot . ($part !== 'both' ? '&part=' . $part : '');
+$nextItem = $part !== 'both' ? next_course_item($db, $ctxCourse, $selfPath) : null;
+if ($part === 'test') $page_title = $title_test;
+if ($part === 'lesson') $page_title = $title_lesson;
+// Links into the shared diagnostic page carry the course, so its breadcrumb leads back here.
+if (str_contains($cfg['prev'], 'celpip_mini_mock.php')) $cfg['prev'] = course_item_url('courses/CELPIP_intro/celpip_mini_mock.php', $ctxCourse['folder']);
 
 if (!can_access('intermediate')) {
     ?>
@@ -248,7 +260,7 @@ if (!can_access('intermediate')) {
     <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>CELPIP Masterclass — <?= htmlspecialchars($page_title) ?></title>
+        <title><?= htmlspecialchars($ctxCourse['title']) ?> — <?= htmlspecialchars($page_title) ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -275,7 +287,7 @@ if (!can_access('intermediate')) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>CELPIP Masterclass — <?= htmlspecialchars($page_title) ?></title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — <?= htmlspecialchars($page_title) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -316,13 +328,14 @@ if (!can_access('intermediate')) {
                     <div class="class-chips">
                         <span class="class-chip"><?= htmlspecialchars($cfg['week']) ?></span>
                         <span class="class-chip">Class <?= (int) $cfg['class_num'] ?> of <?= (int) $class_total ?></span>
-                        <span class="class-chip"><?= htmlspecialchars($cfg['test']['skill']) ?> test</span>
-                        <span class="class-chip"><?= htmlspecialchars($cfg['lesson']['skill']) ?> lesson</span>
+                        <?php if ($showTest): ?><span class="class-chip"><?= htmlspecialchars($cfg['test']['skill']) ?> test</span><?php endif; ?>
+                        <?php if ($showLesson): ?><span class="class-chip"><?= htmlspecialchars($cfg['lesson']['skill']) ?> lesson</span><?php endif; ?>
                     </div>
-                    <h1 class="class-title"><span class="class-title-line"><?= htmlspecialchars($title_test) ?></span><span class="class-title-line"><?= htmlspecialchars($title_lesson) ?></span></h1>
+                    <h1 class="class-title"><?php if ($showTest): ?><span class="class-title-line"><?= htmlspecialchars($title_test) ?></span><?php endif; ?><?php if ($showLesson): ?><span class="class-title-line"><?= htmlspecialchars($title_lesson) ?></span><?php endif; ?></h1>
                 </div>
             </div>
 
+            <?php if ($showTest): ?>
             <h2 class="mb-2"><i class="bi bi-flag-fill me-2" style="color:#0b77ff;"></i>Today's Complete Test: <?= htmlspecialchars($cfg['test']['skill']) ?></h2>
             <div class="test-block">
                 <p class="text-muted mb-3"><?= htmlspecialchars($cfg['test']['sub']) ?></p>
@@ -342,16 +355,23 @@ if (!can_access('intermediate')) {
                     <div class="test-not-built"><i class="bi bi-hourglass-split me-2"></i><strong>Coming Soon</strong> — this <?= htmlspecialchars($cfg['test']['skill']) ?> test isn't ready yet. Check back soon.</div>
                 <?php endif; ?>
             </div>
+            <?php endif; ?>
 
+            <?php if ($showLesson): ?>
             <div class="content-section">
                 <h2><i class="bi <?= htmlspecialchars($cfg['lesson']['icon']) ?> me-2" style="color:#0b77ff;"></i><?= htmlspecialchars($cfg['lesson']['skill']) ?>: <?= htmlspecialchars($cfg['lesson']['topic']) ?></h2>
                 <?= $cfg['lesson']['body'] ?>
             </div>
+            <?php endif; ?>
 
             <div class="action-buttons">
                 <a href="<?= htmlspecialchars($cfg['prev']) ?>" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> <?= htmlspecialchars($cfg['prev_label']) ?></a>
+                <?php if ($part === 'both'): ?>
                 <a href="<?= htmlspecialchars($cfg['next']) ?>" class="btn btn-primary" style="background-color:#0b77ff;border-color:#0b77ff;"><?= htmlspecialchars($cfg['next_label']) ?> <i class="bi bi-arrow-right ms-1"></i></a>
-                <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-primary"><i class="bi bi-grid me-1"></i> Course Overview</a>
+                <?php elseif ($nextItem): ?>
+                <a href="<?= htmlspecialchars($nextItem['url']) ?>" class="btn btn-primary" style="background-color:#0b77ff;border-color:#0b77ff;">Next: <?= htmlspecialchars($nextItem['title']) ?> <i class="bi bi-arrow-right ms-1"></i></a>
+                <?php endif; ?>
+                <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-primary"><i class="bi bi-grid me-1"></i> Back to course</a>
             </div>
 
         </div>

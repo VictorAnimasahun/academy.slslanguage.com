@@ -4,7 +4,7 @@ require_once INCLUDES_PATH . '/tier_access.php';
 require_once __DIR__ . '/course_context.php';
 if (!isset($_SESSION['user_id'])) { header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course"); exit(); }
 if (!can_access('intermediate')) {
-    ?><!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>CELPIP Masterclass — Final Speaking Simulation &amp; Listening Sprints</title><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"><link href="../../../assets/css/courses.css" rel="stylesheet"><?php include INCLUDES_PATH . '/navbar_styles.php'; ?></head><body>
+    ?><!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title><?= htmlspecialchars($ctxCourse['title']) ?> — Final Speaking Simulation &amp; Listening Sprints</title><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"><link href="../../../assets/css/courses.css" rel="stylesheet"><?php include INCLUDES_PATH . '/navbar_styles.php'; ?></head><body>
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?><div class="mobile-overlay" id="mobileOverlay"></div><?php include INCLUDES_PATH . '/navbar.php'; ?>
     <main class="main-wrapper"><div class="course-card"><?php render_upgrade_prompt('intermediate', 'Final Speaking Simulation & Listening Sprints'); ?></div></main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script></body></html><?php exit();
@@ -14,7 +14,7 @@ if (!can_access('intermediate')) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>CELPIP Masterclass — Final Speaking Simulation &amp; Listening Sprints</title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Final Speaking Simulation &amp; Listening Sprints</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">

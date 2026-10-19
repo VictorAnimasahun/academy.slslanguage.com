@@ -23,7 +23,7 @@ if ($id <= 0) {
 
 try {
     $c = $db->prepare(
-        "SELECT c.id, c.title, c.exam_variant, c.length_months, c.availability, c.description, c.instructor_name,
+        "SELECT c.id, c.title, c.folder_name, c.exam_variant, c.length_months, c.availability, c.description, c.instructor_name,
                 c.total_lessons, c.is_free, c.free_preview_classes, c.buy_url,
                 e.progress_percentage AS progress, (e.id IS NOT NULL) AS enrolled
            FROM courses c
@@ -72,6 +72,11 @@ try {
             if (($filePath === null || $filePath === '') && $r['status'] === 'ready'
                 && in_array($r['kind'], ['lesson', 'resource'], true)) {
                 $filePath = $r['class_file_path'] ?: null;
+            }
+            // Lesson pages shared by several course lengths learn which course this is from ?from=<folder>
+            // (as on the website); without it they fell back to the 3-month course.
+            if ($filePath !== null && $filePath !== '' && strncmp($filePath, 'courses/', 8) === 0) {
+                $filePath .= (strpos($filePath, '?') === false ? '?' : '&') . 'from=' . rawurlencode($course['folder_name']);
             }
             $weeks[$w]['classes'][$r['lesson_id']]['pieces'][] = [
                 'id' => (int) $r['part_id'],

@@ -34,7 +34,7 @@ if ($__pacingBlockers) { ?>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>IELTS General Masterclass — Class 11: Reading MCQ &amp; Semi-Formal Letters</title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Class 11: Reading MCQ &amp; Semi-Formal Letters</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -59,7 +59,7 @@ if ($__pacingBlockers) { ?>
             </h1>
             <div class="highlight-box">
                 <span class="badge-custom">Month 2 — Skill Development</span>
-                <span class="badge-custom">Class 11 of 24</span>
+                <span class="badge-custom">Class 11 of <?= (int) $ctxCourse['classes'] ?></span>
                 <span class="badge-custom"><i class="bi bi-clock me-1"></i>90 min</span>
                 <span class="badge-custom" style="background:#eff6ff;color:#1d4ed8;border-color:#3b82f6;"><i class="bi bi-clipboard-check me-1"></i>Practice Test Set 2 — Speaking</span>
             </div>

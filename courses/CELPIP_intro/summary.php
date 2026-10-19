@@ -149,10 +149,10 @@ $base_url = "../../";
             </div>
 
             <div class="activity">
-                <h3>🧠 Mini Mock Test / Integrated Review Activity</h3>
+                <h3>🧠 CELPIP Diagnostic Test / Integrated Review Activity</h3>
                 <p>
                     This short integrated activity will allow you to apply all four CELPIP skills together — Listening, Reading, Writing, and Speaking.  
-                    (Coming soon: this section will include your interactive <strong>Mini Mock Test</strong>.)
+                    (Coming soon: this section will include your interactive <strong>CELPIP Diagnostic Test</strong>.)
                 </p>
             </div>
 
@@ -166,7 +166,7 @@ $base_url = "../../";
 
             <div class="nav-links">
                 <a href="module4.php">⬅ Back to Module 4 – Speaking Skills</a>
-                <a href="celpip_mini_mock.php">🏁 Finish Course & Take Mini Mock ➡</a>
+                <a href="celpip_mini_mock.php">🏁 Finish Course & Take the CELPIP Diagnostic Test ➡</a>
             </div>
         </div>
     </main>
