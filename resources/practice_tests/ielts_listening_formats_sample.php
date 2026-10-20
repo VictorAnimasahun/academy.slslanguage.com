@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment([16, 17], 'this IELTS Listening practice set');
+require_course_enrollment(course_ids_for_folders(['IELTS_Aca_1Mo', 'IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Listening practice set');
 
 $img = ACADEMY_URL . 'assets/images/ielts_listening_samples/';
 $tapescripts = json_decode(<<<'JSON'

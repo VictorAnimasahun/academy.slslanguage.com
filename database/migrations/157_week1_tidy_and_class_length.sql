@@ -10,6 +10,7 @@
 --    work ("... & Listening Start", "Introduction & Read Aloud"). All become "Week 1 — Course & Exam Introduction".
 --  * Every class is two hours: classes stored as 0, 60 or 90 minutes become 120. Mock classes keep their longer
 --    stored length; CELPIP's (stored as 0) become 180.
+--  * CELPIP class-day tests that are a single page open it directly (no launcher screen in between).
 --  * The Foundational English Assessment opens the platform's own page (resources/placement/...), not the old
 --    public quiz (different look, start screen, saves nothing). The founder writes its questions; until then its
 --    items are Coming Soon.
@@ -69,5 +70,17 @@ UPDATE lesson_parts SET file_path = 'resources/placement/foundational_english_as
 INSERT INTO content_types (path, kind, note) VALUES
   ('resources/placement/', 'placement_test', 'the platform''s Foundational English Assessment')
 ON DUPLICATE KEY UPDATE kind = VALUES(kind), note = VALUES(note);
+
+-- ---------- CELPIP class days: a single test opens directly (founder, 2026-10-21) ----------
+-- "If I open it from outside, it should open immediately, not bring me to this screen that again takes me to
+-- another screen." Test items whose test is ONE page now point at it, not at class_day.php's launcher. The writing
+-- days (Task 1 and Task 2 are separate pages) keep their small page listing both.
+UPDATE lesson_parts SET file_path = 'courses/CELPIP_Gen/lessons/celpip_listening_001.php' WHERE file_path = 'courses/CELPIP_Gen/lessons/class_day.php?slot=c3&part=test';
+UPDATE lesson_parts SET file_path = 'resources/practice_tests/celpip_reading_001.php' WHERE file_path = 'courses/CELPIP_Gen/lessons/class_day.php?slot=c4&part=test';
+UPDATE lesson_parts SET file_path = 'resources/practice_tests/celpip_speaking_001.php' WHERE file_path = 'courses/CELPIP_Gen/lessons/class_day.php?slot=c5&part=test';
+UPDATE lesson_parts SET file_path = 'resources/practice_tests/celpip_reading_002.php' WHERE file_path = 'courses/CELPIP_Gen/lessons/class_day.php?slot=c8&part=test';
+UPDATE lesson_parts SET file_path = 'resources/practice_tests/celpip_speaking_002.php' WHERE file_path = 'courses/CELPIP_Gen/lessons/class_day.php?slot=c9&part=test';
+UPDATE lesson_parts SET file_path = 'resources/practice_tests/celpip_reading_003.php' WHERE file_path = 'courses/CELPIP_Gen/lessons/class_day.php?slot=c12&part=test';
+UPDATE lesson_parts SET file_path = 'resources/practice_tests/celpip_speaking_003.php' WHERE file_path = 'courses/CELPIP_Gen/lessons/class_day.php?slot=c13&part=test';
 
 COMMIT;

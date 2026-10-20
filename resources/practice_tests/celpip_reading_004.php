@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment([14], 'this CELPIP Reading practice test');
+require_course_enrollment(course_ids_for_folders(['CELPIP_Gen_1Mo', 'CELPIP_Gen_2Mo', 'CELPIP_Gen_3Mo']), 'this CELPIP Reading practice test');
 ?>
 <!DOCTYPE html>
 <html lang="en">

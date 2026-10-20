@@ -2097,10 +2097,10 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [x] | 2026-10-21 | One transaction. Ran twice on local 8.0 (re-run clean); all 192 classes' titles still split into exactly their items. 162 page loads clean (every course page, every IELTS Academic/PTE/shared lesson page, week pages, dashboard, course detail, the new assessment page). |
+| Local | [x] | 2026-10-21 | One transaction. Ran twice on local 8.0 and twice on MySQL 5.7.44 (copy with rows rolled back: direct links, durations, Week 1 title all re-applied); re-run clean; all 192 classes' titles still split into exactly their items. 162 page loads clean (every course page, every IELTS Academic/PTE/shared lesson page, week pages, dashboard, course detail, the new assessment page). |
 | Live  | [ ] | | Run, then sync the files from the same commit (it includes renamed pages and the 48 class-hub redirects). |
 
-**What it does:** founder, 2026-10-21. IELTS Academic 2/3-Month: Writing Task Overview moves from Class 2 (Week 1) to Class 5, before Writing Test 1. Week 1 of every 2/3-month course titled "Course & Exam Introduction" (old titles promised section work). Classes stored as 0/60/90 minutes become 120 (every class is two hours); CELPIP mock classes with no length become 180. The Foundational English Assessment items open the platform's own page `resources/placement/foundational_english_assessment.php` (outline; the founder writes the questions) and are Coming Soon until then; the old public quiz stays for the marketing site.
+**What it does:** founder, 2026-10-21. CELPIP class-day tests that are one page open it directly (no launcher screen; writing days keep their two-task page). IELTS Academic 2/3-Month: Writing Task Overview moves from Class 2 (Week 1) to Class 5, before Writing Test 1. Week 1 of every 2/3-month course titled "Course & Exam Introduction" (old titles promised section work). Classes stored as 0/60/90 minutes become 120 (every class is two hours); CELPIP mock classes with no length become 180. The Foundational English Assessment items open the platform's own page `resources/placement/foundational_english_assessment.php` (outline; the founder writes the questions) and are Coming Soon until then; the old public quiz stays for the marketing site.
 
 ---
 
