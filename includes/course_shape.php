@@ -96,6 +96,48 @@ if (!function_exists('course_by_folder')) {
         return $cache[$courseId] = array_values($weeks);
     }
 
+    /**
+     * The course plan in one paragraph (founder, 2026-10-21: the full class-by-class table was "too long"), written from
+     * the real schedule so it can't drift: length, Week 1, practice tests, mock weeks and how the course ends.
+     */
+    function course_plan_paragraph(PDO $db, array $course): string {
+        require_once __DIR__ . '/content_types.php';
+        $exam = trim(preg_replace('/\s+(Masterclass|Crash Course).*$/u', '', $course['title']));
+        $practice = [];
+        $mocks = [];
+        $mockWeeks = [];
+        $schedule = course_schedule($db, $course['id']);
+        foreach ($schedule as $week) {
+            foreach ($week['classes'] as $cls) {
+                foreach ($cls['items'] as $item) {
+                    if ($item['kind'] === 'practice_test') $practice[$item['title']] = true;
+                    if ($item['kind'] === 'mock_test') { $mocks[$item['title']] = true; $mockWeeks[$week['number']] = true; }
+                }
+            }
+        }
+        $mockWeeks = array_keys($mockWeeks);
+        $list = function (array $nums): string {
+            if (count($nums) === 1) return 'Week ' . $nums[0];
+            $last = array_pop($nums);
+            return 'Weeks ' . implode(', ', $nums) . ' and ' . $last;
+        };
+        $last = end($schedule);
+        $ending = $last ? trim(preg_replace('/^Week\s+\d+\s*[—–-]\s*/u', '', $last['title'])) : '';
+
+        $crash = (int) $course['weeks'] <= 4;   // a crash course doesn't spend a whole week on introductions
+        $s = sprintf('Over %d weeks you have %d two-hour classes, two a week.', (int) $course['weeks'], (int) $course['classes']);
+        $s .= $crash
+            ? sprintf(' It starts with the course introduction and finds your starting point, then goes straight into the %s exam', $exam)
+            : sprintf(' Week 1 introduces the course and the %s exam and finds your starting point. From Week 2, every class works on the exam itself, one section at a time', $exam);
+        $s .= $practice ? sprintf(', with %d practice tests along the way', count($practice)) : '';
+        $s .= '.';
+        if ($mockWeeks) {
+            $s .= sprintf(' You sit %s in %s.', count($mocks) === 1 ? 'a full mock exam' : count($mocks) . ' full mock exams', $list($mockWeeks));
+        }
+        if ($ending !== '') $s .= sprintf(' The last week: %s.', $ending);
+        return $s;
+    }
+
     /** The item that comes after the page at $path in this course: the next item in its class, else the next class's first. */
     function next_course_item(PDO $db, array $course, string $path): ?array {
         $flat = [];

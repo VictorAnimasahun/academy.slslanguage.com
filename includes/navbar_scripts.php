@@ -1,4 +1,8 @@
 <?php
+// Loaded once per page: includes/navbar.php brings it in for every page (2026-10-21 -- many lesson pages had
+// no menu script, so the phone menu button did nothing). A page that also includes it later gets nothing twice.
+if (defined('NAVBAR_SCRIPTS_LOADED')) return;
+define('NAVBAR_SCRIPTS_LOADED', true);
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -25,14 +29,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
         // ── Theme toggle ────────────────────────────────────────────
         const toggleBtn = document.getElementById('themeToggle');
         if (toggleBtn) {
-            toggleBtn.addEventListener('click', function() {
+            // Capture phase + stopImmediatePropagation: the only handler, even where a page has its own old copy
+            // (two handlers would switch to dark and straight back).
+            toggleBtn.addEventListener('click', function(e) {
+                e.stopImmediatePropagation();
                 const isDark = document.body.classList.contains('dark');
                 const newTheme = isDark ? 'light' : 'dark';
                 document.body.classList.remove('light', 'dark');
                 document.body.classList.add(newTheme);
                 toggleBtn.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
                 localStorage.setItem('eduhub-theme', newTheme);
-            });
+            }, true);
         }
 
         // ── Sidebar toggles ─────────────────────────────────────────
@@ -54,8 +61,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
             localStorage.setItem('eduhub-sidebar-collapsed', collapsed);
         }
 
+        // Capture phase + stopImmediatePropagation: this runs first and is the only handler. Many older pages
+        // carry their own copy of a menu toggle; letting both run would open the menu and shut it again.
+        const onlyHandler = (fn) => function (e) { e.stopImmediatePropagation(); fn(); };
         if (menuToggle) {
-            menuToggle.addEventListener('click', toggleMobile);
+            menuToggle.addEventListener('click', onlyHandler(toggleMobile), true);
         }
 
         if (sidebarToggle) {
@@ -69,7 +79,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         }
 
         if (overlay) {
-            overlay.addEventListener('click', toggleMobile);
+            overlay.addEventListener('click', onlyHandler(toggleMobile), true);
         }
 
         // Close mobile sidebar when a nav link is clicked

@@ -48,7 +48,7 @@ if (!function_exists('render_lesson_shell')) {
 
         $part = false;
         try {   // lesson_parts (migration 126) may not exist yet on a server that has the code but not the migration
-            $st = $db->prepare("SELECT title, kind FROM lesson_parts WHERE lesson_id = ? AND part_order = ?");
+            $st = $db->prepare("SELECT title, kind, file_path FROM lesson_parts WHERE lesson_id = ? AND part_order = ?");
             $st->execute([(int)$lesson['id'], $partOrder]);
             $part = $st->fetch(PDO::FETCH_ASSOC);
         } catch (\Throwable $e) { /* fall back to the title and the title rule */ }
@@ -56,15 +56,19 @@ if (!function_exists('render_lesson_shell')) {
         $title  = $part['title'] ?? ($pieces[$partOrder - 1] ?? $lesson['title']);
 
         $minTier = $lesson['min_tier'] ?: 'beginner';
-        $classPageFs = dirname(__DIR__) . '/courses/' . $folder . '/class' . $classNum . '.php';
-        $hasClassPage = is_file($classPageFs);
+        // "Next:" is the next item in the class, else the next class's first (includes/course_shape.php).
+        require_once INCLUDES_PATH . '/course_shape.php';
+        $shape = course_by_folder($db, $folder);
+        $next  = ($shape && !empty($part['file_path'])) ? next_course_item($db, $shape, $part['file_path']) : null;
         return [
             'course' => $course, 'lesson' => $lesson, 'lessons' => $lessons, 'folder' => $folder,
             'title' => $title, 'kind' => $part['kind'] ?? lesson_piece_kind($title),
             'week' => (int)$lesson['module_order'], 'class' => $classNum, 'class_total' => count($lessons),
             'min_tier' => $minTier, 'can_access' => can_access($minTier),
-            'back_url' => ACADEMY_URL . 'courses/' . $folder . '/' . ($hasClassPage ? 'class' . $classNum . '.php' : 'course_overview.php'),
-            'back_label' => $hasClassPage ? 'Back to Class ' . $classNum : 'Back to course',
+            // Back goes to the course page: the old per-class hub pages are gone (founder, 2026-10-21).
+            'back_url' => ACADEMY_URL . 'courses/' . $folder . '/course_overview.php',
+            'back_label' => 'Back to course',
+            'next' => $next,
         ];
     }
 
@@ -152,6 +156,9 @@ if (!function_exists('render_lesson_shell')) {
 
             <div class="lesson-nav">
                 <a href="<?= $h($backUrl) ?>" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i><?= $h($backLabel) ?></a>
+                <?php if (!empty($ctx['next'])): ?>
+                    <a href="<?= $h($ctx['next']['url']) ?>" class="btn btn-primary" style="background-color:#0b77ff;border-color:#0b77ff;">Next: <?= $h($ctx['next']['title']) ?> <i class="bi bi-arrow-right ms-1"></i></a>
+                <?php endif; ?>
             </div>
         </div>
     </main>

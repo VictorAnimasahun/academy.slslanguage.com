@@ -222,31 +222,10 @@ if (!isset($_SESSION['user_id'])) {
                 <?php endif; ?>
             </div>
 
-            <!-- Timetable: read from the database for this course -->
+            <!-- The plan in one paragraph, written from the course's real schedule (founder, 2026-10-21) -->
             <div class="content-section">
-                <h2><?= (int) $ctxCourse['classes'] ?>-Class Programme Schedule</h2>
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                        <thead><tr><th style="width:5.5rem">Week</th><th style="width:4.5rem">Class</th><th>What's in it</th></tr></thead>
-                        <tbody>
-                        <?php foreach ($schedule as $week): foreach ($week['classes'] as $ci => $cls): ?>
-                            <tr>
-                                <td><?= $ci === 0 ? 'Week ' . (int) $week['number'] : '' ?></td>
-                                <td><?= (int) $cls['number'] ?></td>
-                                <td>
-                                    <?php foreach ($cls['items'] as $ii => $item): ?>
-                                        <div class="<?= $ii ? 'border-top pt-1 mt-1' : '' ?>">
-                                            <?= htmlspecialchars($item['title']) ?>
-                                            <?php if ($isTest($item)): ?><span class="badge text-bg-light border ms-1">Test</span><?php endif; ?>
-                                            <?php if (!$item['ready']): ?><span class="badge text-bg-light border ms-1">Coming Soon</span><?php endif; ?>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                <h2>Your Plan</h2>
+                <p class="mb-0"><?= htmlspecialchars(course_plan_paragraph($db, $ctxCourse)) ?> <a href="<?= htmlspecialchars($back['url']) ?>">See every class on the course page</a>.</p>
             </div>
 
             <?php endif; ?>

@@ -105,7 +105,6 @@ $month_colors = [1 => '#0b77ff', 2 => '#6366f1'];
                     'folder'       => 'IELTS_Aca_2Mo',
                     'tier_level'   => $student_tier_level,
                     'mock_classes' => [8, 16],
-                    'class_url'    => fn($num, $lesson) => 'class' . $num . '.php',
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
                 ]) ?>

@@ -45,6 +45,7 @@ const PP_PALETTE = [
  * same pattern course_pacing.php uses -- avoids collation mismatches.
  */
 require_once __DIR__ . '/lesson_title.php';
+require_once __DIR__ . '/course_shape.php';
 
 function progressPathLoadParts(PDO $db, int $courseId, int $studentId): array {
     // Tick any class whose items are all done (a quiz or test finished since the last visit) before the page
@@ -128,13 +129,19 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             $n++;
             $lid = (int) ($lesson['lesson_id'] ?? $lesson['id'] ?? 0);
             $num = $numFn ? (int) $numFn($weekNum, $lesson, $n) : $n;
+            // A class opens on its first item that has a page (never an in-between "class hub" page: founder,
+            // 2026-10-21 -- "if I open it, it should open immediately"). Locking is the plan level alone.
+            $firstItem = null;
+            foreach ($partsStored[$lid] ?? [] as $sp) { if (!empty($sp['file_path']) && !lesson_piece_coming_soon($sp)) { $firstItem = $sp['file_path']; break; } }
             if ($urlFn)                              $url = $urlFn($num, $lesson);
-            elseif (!empty($lesson['file_path']))    $url = ACADEMY_URL . $lesson['file_path'] . (str_contains($lesson['file_path'], '?') ? '&' : '?') . 'from=' . $folder;
+            elseif ($firstItem !== null)             $url = course_item_url($firstItem, $folder);
+            elseif (!empty($lesson['file_path']))    $url = course_item_url($lesson['file_path'], $folder);
             else                                     $url = null;
-            $url    = ($url && ($levels[$lesson['min_tier']] ?? 1) <= $tierLevel) ? $url : null; // null = locked
+            $tierOk = ($levels[$lesson['min_tier']] ?? 1) <= $tierLevel;
+            $url    = ($url && $tierOk) ? $url : null; // null = no page / locked
             $isDone = isset($doneSet[$lid]);
             if ($isDone) $done++;
-            $classes[] = ['num' => $num, 'lesson' => $lesson, 'lid' => $lid, 'url' => $url, 'done' => $isDone];
+            $classes[] = ['num' => $num, 'lesson' => $lesson, 'lid' => $lid, 'url' => $url, 'tierOk' => $tierOk, 'done' => $isDone];
             if (!$isDone && $next === null) $next = ['num' => $num, 'lesson' => $lesson, 'week' => $weekNum, 'url' => $url];
         }
         $weeks[$weekNum] = ['mod' => $mod, 'classes' => $classes, 'done' => $done, 'count' => count($classes)];
@@ -185,7 +192,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             $lesson   = $c['lesson'];
             $lid      = $c['lid'];
             $required = $levels[$lesson['min_tier']] ?? 1;
-            $can      = $c['url'] !== null;
+            $can      = $c['tierOk'];
             // A mock class is one that holds a piece of kind mock_test (stored data). The typed 'mock_classes' list is only a
             // fallback for a course that has no stored pieces, so the schedule in the database is the one source of truth.
             $storedMock = false;
@@ -202,7 +209,7 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
                 $stored   = $partsStored[(int) $lid][$piece] ?? null;
                 $kindLabel = lesson_kind_label($stored['kind'] ?? lesson_piece_kind($piece));
                 $parts[] = ['title' => $piece, 'kind' => $kindLabel, 'meta' => '', 'done' => $c['done'], 'lesson' => true,
-                            'href' => !empty($stored['file_path']) ? ACADEMY_URL . $stored['file_path'] : null,
+                            'href' => !empty($stored['file_path']) ? course_item_url($stored['file_path'], $folder) : null,
                             'soon' => $stored ? lesson_piece_coming_soon($stored) : false];
             }
             // Scheduled quizzes/tests (course_pacing_items) are added unless the class already lists that item
@@ -232,8 +239,9 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
                 $text = '<span class="pp-part-text"><span class="pp-part-title' . ($pt['done'] ? ' is-done' : '') . '">' . $h($pt['title']) . '</span>'
                       . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '') . (!empty($pt['soon']) ? ' · Coming Soon' : '')) . '</span></span>';
                 $inner = $ico . $text;
-                $out  .= '<li>' . (($pt['lesson'] && $can)
-                    ? '<a class="pp-part" href="' . $h($pt['href'] ?? $c['url']) . '">' . $inner . '</a>'
+                $href  = $pt['href'] ?? $c['url'];
+                $out  .= '<li>' . (($pt['lesson'] && $can && $href && empty($pt['soon']))
+                    ? '<a class="pp-part" href="' . $h($href) . '">' . $inner . '</a>'
                     : '<span class="pp-part">' . $inner . '</span>') . '</li>';
             }
             $out .= '</ul></div></div>';

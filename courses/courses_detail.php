@@ -120,6 +120,14 @@ try {
 }
 
 $learningPoints = json_decode($course['learning_points'] ?? '[]', true) ?: [];
+
+// The real size of the course, from its classes (there is no total_hours column: the page used to fall back to "8 hours").
+require_once INCLUDES_PATH . '/lesson_title.php';
+require_once INCLUDES_PATH . '/course_shape.php';
+$classCount = 0; $minutes = 0;
+foreach ($modules as $m) foreach ($m['lessons'] as $l) { $classCount++; $minutes += (int) ($l['duration_minutes'] ?? 0); }
+$hoursTotal = (int) round($minutes / 60);
+$fmtLen = fn (int $min) => $min <= 0 ? '' : ($min % 60 === 0 ? ($min / 60) . ($min === 60 ? ' hour' : ' hours') : $min . ' min');
 $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['user_firstname']) : 'Learner';
 ?>
 <!DOCTYPE html>
@@ -138,10 +146,11 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             color: #fff;
             padding: 2.5rem 2rem 2rem;
         }
-        /* Pull the hero flush to sidebar (220px), topbar, and advert panel.
-           main-wrapper has margin-left:260px but sidebar is 220px → 40px extra gap on left. */
+        /* Pull the hero flush to the sidebar, topbar and advert panel: cancel main-wrapper's own 2rem padding.
+           (It used to pull 40px further left for an old 220px sidebar with a gap; the sidebar is now exactly the
+           main area's margin, so those 40px slid the hero's text under the sidebar.) */
         @media (min-width: 1200px) {
-            .course-hero { margin: -2rem -2rem 0 calc(-2rem - 40px); }
+            .course-hero { margin: -2rem -2rem 0 -2rem; }
         }
         .course-hero .breadcrumb-item a { color: rgba(255,255,255,.65); text-decoration: none; }
         .course-hero .breadcrumb-item a:hover { color: #fff; }
@@ -223,8 +232,8 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         </div>
 
         <div class="d-flex flex-wrap gap-4">
-            <span class="hero-stat"><i class="bi bi-play-circle me-1"></i><strong><?= (int)($course['total_lessons'] ?? 12) ?></strong> lessons</span>
-            <span class="hero-stat"><i class="bi bi-clock me-1"></i><strong><?= (int)($course['total_hours'] ?? 8) ?></strong> hours</span>
+            <span class="hero-stat"><i class="bi bi-play-circle me-1"></i><strong><?= $classCount ?: (int)($course['total_lessons'] ?? 0) ?></strong> classes</span>
+            <?php if ($hoursTotal > 0): ?><span class="hero-stat"><i class="bi bi-clock me-1"></i><strong><?= $hoursTotal ?></strong> hours</span><?php endif; ?>
             <span class="hero-stat"><i class="bi bi-person me-1"></i><strong><?= htmlspecialchars($course['instructor_name'] ?? 'EduHub Team') ?></strong></span>
             <?php if ($ratingCount > 0): ?>
                 <span class="hero-stat"><i class="bi bi-star-fill me-1"></i><strong><?= number_format((float)$ratingAvg, 1) ?></strong> (<?= $ratingCount ?> rating<?= $ratingCount === 1 ? '' : 's' ?>)</span>
@@ -293,7 +302,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                     <i class="bi bi-folder2 me-2 text-primary"></i>
                                     <?= htmlspecialchars($mod['module_title'] ?? 'Module ' . ($i+1)) ?>
                                     <span class="badge bg-light text-dark ms-auto me-2" style="font-size:.73rem;">
-                                        <?= count($mod['lessons']) ?> lessons
+                                        <?= count($mod['lessons']) ?> <?= count($mod['lessons']) === 1 ? 'class' : 'classes' ?>
                                     </span>
                                 </button>
                             </h2>
@@ -306,22 +315,22 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                             <div class="d-flex align-items-center gap-2" style="min-width:0;">
                                                 <?php if ($course['is_enrolled']): ?>
                                                     <?php
-                                                    $lPath = ltrim($lesson['file_path'] ?? '', '/');
-                                                    $lUrl  = ACADEMY_URL . $lPath . '?id=' . $course['id'];
+                                                    // The class opens on its first page (with ?from= for shared pages); each item on its own line.
+                                                    $lUrl = !empty($lesson['file_path']) ? course_item_url($lesson['file_path'], $course['folder_name']) : null;
                                                     ?>
                                                     <i class="bi bi-<?= htmlspecialchars($lesson['icon'] ?? 'play-circle') ?> text-primary flex-shrink-0"></i>
-                                                    <a href="<?= $lUrl ?>" class="text-decoration-none text-dark text-truncate" style="font-size:.88rem;">
-                                                        <?= htmlspecialchars($lesson['title'] ?? 'Untitled Lesson') ?>
-                                                    </a>
+                                                    <?php if ($lUrl): ?><a href="<?= htmlspecialchars($lUrl) ?>" class="text-decoration-none text-dark" style="font-size:.88rem;min-width:0;"><?php else: ?><span class="text-dark" style="font-size:.88rem;min-width:0;"><?php endif; ?>
+                                                        <?= lesson_title_html($lesson['title'] ?? '', 'htmlspecialchars') ?>
+                                                    <?php if ($lUrl): ?></a><?php else: ?></span><?php endif; ?>
                                                 <?php else: ?>
                                                     <i class="bi bi-lock-fill text-muted flex-shrink-0"></i>
-                                                    <span class="text-muted text-truncate" style="font-size:.88rem;">
-                                                        <?= htmlspecialchars($lesson['title'] ?? 'Untitled Lesson') ?>
+                                                    <span class="text-muted" style="font-size:.88rem;min-width:0;">
+                                                        <?= lesson_title_html($lesson['title'] ?? '', 'htmlspecialchars') ?>
                                                     </span>
                                                 <?php endif; ?>
                                             </div>
                                             <span class="text-muted flex-shrink-0 ms-3" style="font-size:.78rem;">
-                                                <?= (int)($lesson['duration_minutes'] ?? 0) ?> min
+                                                <?= htmlspecialchars($fmtLen((int)($lesson['duration_minutes'] ?? 0))) ?>
                                             </span>
                                         </li>
                                         <?php endforeach; ?>
@@ -422,8 +431,8 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                             </form>
                             <?php endif; ?>
                             <ul class="list-unstyled mb-0" style="font-size:.85rem;">
-                                <li class="d-flex gap-2 mb-2"><i class="bi bi-check-circle-fill text-success mt-1"></i><?= (int)($course['total_lessons'] ?? 12) ?> lessons</li>
-                                <li class="d-flex gap-2 mb-2"><i class="bi bi-check-circle-fill text-success mt-1"></i><?= (int)($course['total_hours'] ?? 8) ?> hours of content</li>
+                                <li class="d-flex gap-2 mb-2"><i class="bi bi-check-circle-fill text-success mt-1"></i><?= $classCount ?: (int)($course['total_lessons'] ?? 0) ?> classes</li>
+                                <?php if ($hoursTotal > 0): ?><li class="d-flex gap-2 mb-2"><i class="bi bi-check-circle-fill text-success mt-1"></i><?= $hoursTotal ?> hours of classes</li><?php endif; ?>
                                 <li class="d-flex gap-2 mb-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>Lifetime access</li>
                                 <li class="d-flex gap-2 mb-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>Certificate of completion</li>
                                 <li class="d-flex gap-2 mb-0"><i class="bi bi-check-circle-fill text-success mt-1"></i>Mobile &amp; desktop access</li>

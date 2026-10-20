@@ -1,4 +1,9 @@
-<?php $current_page = basename($_SERVER['PHP_SELF']); ?>
+<?php
+// Rendered once per page: includes/navbar.php brings it in for every page (2026-10-21 -- most course and
+// lesson pages never included it, so on a computer they had no logo, dark-mode switch or menu button).
+if (defined('TOPBAR_RENDERED')) return;
+define('TOPBAR_RENDERED', true);
+$current_page = basename($_SERVER['PHP_SELF']); ?>
 <style>
 /* Shift the sidebar/advert-sidebar/main-wrapper below this fixed topbar on
    desktop. Scoped by this partial's own presence in the page (not

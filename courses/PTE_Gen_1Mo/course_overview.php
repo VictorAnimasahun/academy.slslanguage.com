@@ -106,7 +106,6 @@ $month_colors = [1 => '#0b77ff'];
                     'folder'       => 'PTE_Gen_1Mo',
                     'tier_level'   => $student_tier_level,
                     'mock_classes' => [8],
-                    'class_url'    => fn($num, $lesson) => null, // content not built yet
                     'parts'        => progressPathLoadParts($db, $course_id, $student_id),
                     'week_brief'   => fn($week, $color) => weekBriefButton($db, $course_id, $week, $color),
                 ]) ?>

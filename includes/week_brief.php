@@ -74,6 +74,22 @@ function weekBriefLoad(PDO $db, int $moduleId): ?array {
             $tests[] = ['item_type' => $p['item_type'], 'title' => $p['title'], 'test_code' => $p['test_code'],
                         'url' => null, 'status' => 'ready', 'source' => 'pacing'];
         }
+
+        // The quizzes and tests that are items of this week's classes (content types, migration 152) -- the panel
+        // used to miss these and told students "no tests this week" in a week with two. Once each, by name.
+        require_once __DIR__ . '/content_types.php';
+        require_once __DIR__ . '/course_shape.php';
+        $folder = (string) $db->query("SELECT folder_name FROM courses WHERE id = " . (int) $module['course_id'])->fetchColumn();
+        $seen = array_flip(array_column($tests, 'title'));
+        $stmt = $db->prepare("SELECT p.title, p.kind, p.status, p.file_path FROM lesson_parts p JOIN lessons l ON l.id = p.lesson_id
+                               WHERE p.lesson_id IN ($in) ORDER BY l.lesson_order, p.part_order");
+        $stmt->execute($ids);
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $p) {
+            if (isset($seen[$p['title']]) || !($p['kind'] === 'quiz' || content_type_is_test($p['kind']))) continue;
+            $seen[$p['title']] = true;
+            $tests[] = ['item_type' => $p['kind'], 'title' => $p['title'], 'test_code' => null, 'status' => $p['status'],
+                        'url' => $p['file_path'] ? course_item_url($p['file_path'], $folder) : null, 'source' => 'class'];
+        }
     }
 
     return [
@@ -112,8 +128,10 @@ function weekBriefRender(array $b, string $color = '#0b77ff'): string {
     if ($b['tests']) {
         $out .= '<ul class="mb-0 ps-3">';
         foreach ($b['tests'] as $t) {
-            $label = WEEK_BRIEF_TYPE_LABELS[$t['item_type']] ?? 'Test';
-            $out .= '<li>' . $h($t['title']) . ' <span class="text-muted small">(' . $h($label) . ')</span></li>';
+            $label = WEEK_BRIEF_TYPE_LABELS[$t['item_type']] ?? content_type_info($t['item_type'])['label'];
+            $soon  = ($t['status'] ?? 'ready') === 'coming_soon';
+            $name  = (!$soon && !empty($t['url'])) ? '<a href="' . $h($t['url']) . '">' . $h($t['title']) . '</a>' : $h($t['title']);
+            $out .= '<li>' . $name . ' <span class="text-muted small">(' . $h($label) . ($soon ? ', Coming Soon' : '') . ')</span></li>';
         }
         $out .= '</ul>';
     }

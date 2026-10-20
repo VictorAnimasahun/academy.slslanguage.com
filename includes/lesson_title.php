@@ -186,8 +186,8 @@ if (!function_exists('lesson_piece_kind')) {
         if (!$lessonIds) return [];
         $out = [];
         $ph = implode(',', array_fill(0, count($lessonIds), '?'));
-        foreach (["SELECT lesson_id, title, kind, status, file_path FROM lesson_parts WHERE lesson_id IN ($ph)",
-                  "SELECT lesson_id, title, kind, 'ready' AS status, file_path FROM lesson_parts WHERE lesson_id IN ($ph)"] as $sql) {   // second form: before migration 128
+        foreach (["SELECT lesson_id, title, kind, status, file_path FROM lesson_parts WHERE lesson_id IN ($ph) ORDER BY lesson_id, part_order",
+                  "SELECT lesson_id, title, kind, 'ready' AS status, file_path FROM lesson_parts WHERE lesson_id IN ($ph) ORDER BY lesson_id, part_order"] as $sql) {   // second form: before migration 128
             try {
                 $st = $db->prepare($sql); $st->execute($lessonIds);
                 foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $r) $out[(int)$r['lesson_id']][$r['title']] = ['kind' => $r['kind'], 'status' => $r['status'], 'file_path' => $r['file_path'] ?: null];
@@ -218,6 +218,7 @@ if (!function_exists('lesson_piece_kind')) {
      * any other page = ready); a piece without a page follows its stored status.
      */
     function lesson_piece_coming_soon(array $part): bool {
+        if (($part['status'] ?? 'ready') === 'coming_soon') return true;   // marked so in the data (e.g. an outline page)
         $f = $part['file_path'] ?? null;
         if ($f) return lesson_file_is_shell($f) ? lesson_shell_is_empty($f) : false;
         return ($part['status'] ?? 'ready') === 'coming_soon';

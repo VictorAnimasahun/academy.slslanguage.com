@@ -75,3 +75,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </a>
     </nav>
 </aside>
+<?php
+// Every page that has the sidebar also gets the top bar (logo, dark mode, notifications) and the menu script,
+// once each (both files guard against being included twice).
+include __DIR__ . '/topbar.php';
+include __DIR__ . '/navbar_scripts.php';
+?>

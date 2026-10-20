@@ -106,30 +106,8 @@ foreach ($schedule as $w) foreach ($w['classes'] as $c) foreach ($c['items'] as 
             </div>
 
             <div class="content-section">
-                <h2><i class="bi bi-clipboard-data me-2" style="color:#0b77ff;"></i>Your <?= (int) $ctxCourse['weeks'] ?>-Week Plan</h2>
-                <p>Two classes a week. Each class is a day, and it can hold more than one item: lessons, and sometimes a test.</p>
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                        <thead><tr><th style="width:5.5rem">Week</th><th style="width:4.5rem">Class</th><th>What's in it</th></tr></thead>
-                        <tbody>
-                        <?php foreach ($schedule as $week): foreach ($week['classes'] as $ci => $cls): ?>
-                            <tr>
-                                <td><?= $ci === 0 ? 'Week ' . (int) $week['number'] : '' ?></td>
-                                <td><?= (int) $cls['number'] ?></td>
-                                <td>
-                                    <?php foreach ($cls['items'] as $ii => $item): ?>
-                                        <div class="<?= $ii ? 'border-top pt-1 mt-1' : '' ?>">
-                                            <?= htmlspecialchars($item['title']) ?>
-                                            <?php if ($isTest($item)): ?><span class="badge text-bg-light border ms-1">Test</span><?php endif; ?>
-                                            <?php if (!$item['ready']): ?><span class="badge text-bg-light border ms-1">Coming Soon</span><?php endif; ?>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                <h2><i class="bi bi-clipboard-data me-2" style="color:#0b77ff;"></i>Your Plan</h2>
+                <p class="mb-0"><?= htmlspecialchars(course_plan_paragraph($db, $ctxCourse)) ?> <a href="<?= htmlspecialchars($back['url']) ?>">See every class on the course page</a>.</p>
             </div>
 
             <div class="content-section">

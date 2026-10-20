@@ -14,20 +14,6 @@ if (!function_exists('course_introduction_body')) {
         $course = course_by_folder($db, $folder);
         if (!$course) return '';
         $h = fn ($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
-        $schedule = course_schedule($db, $course['id']);
-
-        $rows = '';
-        foreach ($schedule as $week) {
-            foreach ($week['classes'] as $ci => $cls) {
-                $items = '';
-                foreach ($cls['items'] as $ii => $item) {
-                    $badge = content_type_is_test($item['kind']) ? ' <span class="badge text-bg-light border ms-1">Test</span>' : '';
-                    $soon = !$item['ready'] ? ' <span class="badge text-bg-light border ms-1">Coming Soon</span>' : '';
-                    $items .= '<div class="' . ($ii ? 'border-top pt-1 mt-1' : '') . '">' . $h($item['title']) . $badge . $soon . '</div>';
-                }
-                $rows .= '<tr><td>' . ($ci === 0 ? 'Week ' . (int) $week['number'] : '') . '</td><td>' . (int) $cls['number'] . '</td><td>' . $items . '</td></tr>';
-            }
-        }
 
         return '
 <div class="content-section">
@@ -46,13 +32,8 @@ if (!function_exists('course_introduction_body')) {
 </div>
 
 <div class="content-section">
-  <h2>Your ' . (int) $course['weeks'] . '-Week Plan</h2>
-  <div class="table-responsive">
-    <table class="table table-sm align-middle">
-      <thead><tr><th style="width:5.5rem">Week</th><th style="width:4.5rem">Class</th><th>What\'s in it</th></tr></thead>
-      <tbody>' . $rows . '</tbody>
-    </table>
-  </div>
+  <h2>Your Plan</h2>
+  <p class="mb-0">' . $h(course_plan_paragraph($db, $course)) . ' <a href="' . $h(ACADEMY_URL . 'courses/' . $course['folder'] . '/course_overview.php') . '">See every class on the course page</a>.</p>
 </div>
 
 <div class="content-section">
