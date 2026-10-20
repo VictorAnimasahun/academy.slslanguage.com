@@ -47,6 +47,12 @@ const PP_PALETTE = [
 require_once __DIR__ . '/lesson_title.php';
 
 function progressPathLoadParts(PDO $db, int $courseId, int $studentId): array {
+    // Tick any class whose items are all done (a quiz or test finished since the last visit) before the page
+    // reads lesson_progress (includes/item_progress.php; migration 156).
+    if ($studentId > 0) {
+        require_once __DIR__ . '/item_progress.php';
+        try { item_progress_sync_course($db, $studentId, $courseId); } catch (PDOException $e) { error_log('item_progress_sync_course: ' . $e->getMessage()); }
+    }
     $stmt = $db->prepare("SELECT lesson_id, title, item_type, test_code FROM course_pacing_items WHERE course_id = ? AND lesson_id IS NOT NULL ORDER BY display_order");
     $stmt->execute([$courseId]);
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -6,6 +6,7 @@ require_once dirname(__DIR__) . '/bootstrap.php';
 require_once __DIR__ . '/mobile_auth.php';
 require_once INCLUDES_PATH . '/admin_check.php';
 require_once INCLUDES_PATH . '/content_types.php';
+require_once INCLUDES_PATH . '/item_progress.php';
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -39,6 +40,10 @@ try {
         exit();
     }
 
+    // Tick any class whose items are now all done (a quiz/test finished on the web since last time).
+    item_progress_sync_course($db, (int) $student['id'], (int) $course['id']);
+    $course['progress'] = executeQuery($db, "SELECT progress_percentage FROM enrollments WHERE student_id = ? AND course_id = ?", [$student['id'], $course['id']])->fetchColumn() ?: $course['progress'];
+
     $rows = $db->prepare(
         "SELECT m.module_order, m.module_title, l.id AS lesson_id, l.lesson_order, l.title AS class_title,
                 lp.id AS part_id, lp.part_order, lp.title AS part_title, lp.kind, lp.status, lp.file_path,
@@ -54,11 +59,13 @@ try {
     $rows->execute([$student['id'], $id]);
 
     $weeks = [];
+    $states = [];
     foreach ($rows->fetchAll(PDO::FETCH_ASSOC) as $r) {
         $w = (int) $r['module_order'];
         $weeks[$w] ??= ['number' => $w, 'title' => $r['module_title'], 'classes' => []];
 
         $classNumber = ($w - 1) * 2 + (int) $r['lesson_order'];
+        $states[$r['lesson_id']] ??= item_states($db, (int) $student['id'], (int) $r['lesson_id']);
         $weeks[$w]['classes'][$r['lesson_id']] ??= [
             'id' => (int) $r['lesson_id'],
             'number' => $classNumber,
@@ -90,6 +97,8 @@ try {
                 'typeLabel' => $type['label'],
                 'category' => $type['group'],
                 'webOnly' => $type['web_only'],
+                // done / todo / untracked (the platform records nothing for it yet) / soon
+                'state' => $states[$r['lesson_id']][(int) $r['part_order']]['state'] ?? 'untracked',
                 'comingSoon' => $r['status'] === 'coming_soon',
                 'filePath' => $filePath,
             ];
