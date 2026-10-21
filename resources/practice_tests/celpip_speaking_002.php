@@ -541,7 +541,7 @@ async function submitAllTasks() {
         const res = await fetch('../../api/api_handler.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'analyze_speaking_batch', exam_type: 'CELPIP', tasks }),
+            body: JSON.stringify({ action: 'analyze_speaking_batch', exam_type: 'CELPIP', test_code: TEST_CODE, tasks }),
         });
         const data = await res.json();
         document.getElementById('loadingSection').classList.add('d-none');

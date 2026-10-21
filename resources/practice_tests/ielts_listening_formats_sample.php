@@ -638,6 +638,7 @@ ls_task_open('short', 'Short-answer questions', 'Section 2 · Questions 11–16'
         }
     }
 
+    const quizScore = { right: 0, total: 0 };
     document.querySelectorAll('.ls-check').forEach(btn => btn.addEventListener('click', () => {
         const task = document.getElementById('task-' + btn.dataset.task);
         let right = 0;
@@ -687,6 +688,17 @@ ls_task_open('short', 'Short-answer questions', 'Section 2 · Questions 11–16'
         out.style.color = right === total ? '#059669' : '#374151';
         btn.disabled = true;
         document.getElementById('script-' + btn.dataset.task).classList.remove('d-none');
+
+        // Once every section is checked, the quiz is saved as one attempt (it used to exist only on screen), so it
+        // counts towards the student's class.
+        quizScore.right += right; quizScore.total += total;
+        if (![...document.querySelectorAll('.ls-check')].some(b => !b.disabled)) {
+            fetch('save_attempt.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ test_code: 'IELTS_QUIZ_L_FORMATS', score: quizScore.right, max_score: quizScore.total, answers: {} })
+            }).catch(err => console.error('Saving the quiz result failed:', err));
+        }
     }));
 
     // Computer-voice read-through of the tapescript (no official recording supplied).

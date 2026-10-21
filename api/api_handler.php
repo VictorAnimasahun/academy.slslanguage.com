@@ -137,6 +137,14 @@ function handleEssayAnalysis($input, $userId, $rateLimiter) {
     if ($response['success']) {
         // Log the request
         $rateLimiter->logRequest($userId, 'essay_analysis', 'analyze');
+
+        // A practice test's essay (saved by essay_analyzer.php): the AI's score becomes part of the student's record.
+        if (!empty($input['attempt_id'])) {
+            global $db;
+            require_once INCLUDES_PATH . '/practice_attempts.php';
+            practice_attempt_ai($db, (int) $userId, (int) $input['attempt_id'], $response['content'],
+                practice_band_from_feedback($response['content'], $examType));
+        }
         
         // JSON_INVALID_UTF8_SUBSTITUTE: an AI response occasionally contains
         // a malformed byte sequence; without this flag json_encode() silently
@@ -297,6 +305,18 @@ function handleSpeakingBatchAnalysis($input, $userId, $rateLimiter) {
         return;
     }
 
+    // A practice test (the page sends its test_code): the transcript is saved first, so the test counts as done
+    // even if the AI fails; the AI's score is added below.
+    $attemptId = null;
+    if (!empty($input['test_code'])) {
+        global $db;
+        require_once INCLUDES_PATH . '/practice_attempts.php';
+        $transcript = implode("\n\n", array_map(
+            fn ($i, $t) => ($t['title'] ?? ('Part ' . ($t['part'] ?? $i + 1))) . "\n" . trim((string) ($t['transcription'] ?? '')),
+            array_keys($tasks), $tasks));
+        $attemptId = practice_attempt_save($db, (int) $userId, preg_replace('/[^A-Z0-9_]/', '', strtoupper($input['test_code'])), $transcript);
+    }
+
     // Process all tasks
     $results = [];
     $batchId = uniqid('speaking_batch_', true);
@@ -350,8 +370,26 @@ function handleSpeakingBatchAnalysis($input, $userId, $rateLimiter) {
         );
     }
     
+    if ($attemptId) {
+        // One overall score: the parts' average -- IELTS to the nearest half band, CELPIP to a whole CLB level.
+        $bands = [];
+        $feedback = [];
+        foreach ($results as $r) {
+            if (empty($r['success'])) continue;
+            $feedback[] = ($r['task_title'] ?? ('Task ' . $r['task_number'])) . "\n" . $r['feedback'];
+            $b = practice_band_from_feedback($r['feedback'], $examType);
+            if ($b !== null) $bands[] = $b;
+        }
+        if ($feedback) {
+            $avg = $bands ? array_sum($bands) / count($bands) : null;
+            $band = $avg === null ? null : (strtoupper($examType) === 'CELPIP' ? round($avg) : round($avg * 2) / 2);
+            practice_attempt_ai($db, (int) $userId, $attemptId, implode("\n\n", $feedback), $band);
+        }
+    }
+
     echo json_encode([
         'success' => true,
+        'attempt_id' => $attemptId,
         'results' => $results,
         'batch_info' => [
             'batch_id' => $batchId,

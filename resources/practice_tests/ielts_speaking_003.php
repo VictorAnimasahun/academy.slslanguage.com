@@ -296,6 +296,7 @@ $parts = [
                 body: JSON.stringify({
                     action:    'analyze_speaking_batch',
                     exam_type: 'IELTS',
+                    test_code: <?= json_encode($testCode) ?>,
                     tasks:     tasks,
                 }),
             });
@@ -303,10 +304,15 @@ $parts = [
             document.getElementById('loadingSection').classList.add('d-none');
             document.getElementById('resultsSection').classList.remove('d-none');
 
-            if (data.success) {
-                document.getElementById('feedbackContent').innerHTML =
-                    '<pre style="white-space:pre-wrap;font-family:inherit;line-height:1.7;">' +
-                    data.feedback.replace(/</g,'&lt;') + '</pre>';
+            // The analyser returns one result per part (it never sent a single 'feedback' field, so this page
+            // used to fail here on every submission).
+            if (data.success && Array.isArray(data.results)) {
+                document.getElementById('feedbackContent').innerHTML = data.results.map(r => {
+                    const body = r.success
+                        ? '<pre style="white-space:pre-wrap;font-family:inherit;line-height:1.7;margin:0;">' + r.feedback.replace(/</g,'&lt;') + '</pre>'
+                        : '<div class="alert alert-danger mb-0">' + (r.error || 'Analysis failed for this part') + '</div>';
+                    return '<div class="mb-4"><h6 class="fw-bold">Part ' + r.task_number + '</h6>' + body + '</div>';
+                }).join('<hr>');
                 document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
             } else {
                 document.getElementById('feedbackContent').innerHTML =

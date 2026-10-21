@@ -21,7 +21,7 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
 
 | Content | Test code(s) | Source | Used by |
 |---|---|---|---|
-| CELPIP Diagnostic Test — `courses/CELPIP_intro/celpip_mini_mock.php` | none yet (scored in the browser, not saved) | Original SLS content | Crash c1; 2Mo c2; 3Mo c2 |
+| CELPIP Diagnostic Test — `courses/CELPIP_intro/celpip_mini_mock.php` | `CELPIP_DIAGNOSTIC` (Listening + Reading score and writing saved; recordings in `speaking_recordings`) | Original SLS content | Crash c1; 2Mo c2; 3Mo c2 |
 | Listening Practice Test 1 — `courses/CELPIP_Gen/lessons/celpip_listening_001.php` | `CELPIP_PT_L_001` | CELPIP Practice Test C transcripts (migration 084) | Crash c2; 2Mo c3; 3Mo c3 |
 | Listening Practice Tests 2-4 | `CELPIP_PT_L_002`.. (0 questions) | — | Coming Soon (2Mo c7, c12; 3Mo c7, c13, c19) |
 | Reading Practice Test 1 — `celpip_reading_001.php` | `CELPIP_PT_R_001` | Instructor's CELPIP TASKS, Reading Test 1 (055) | Crash c6; 2Mo c4; 3Mo c4 |
@@ -57,7 +57,7 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
 | Content | Test code(s) | Source | Used by |
 |---|---|---|---|
 | Academic Diagnostic — `resources/mock_tests/ielts_aca_diagnostic.php` | `IELTS_ACA_DIAGNOSTIC` (`IELTS_ACA_DIAG_*`) | Listening Part 1 is the same recording as Full Mock 1's (GT); Reading/Writing original (063-065) | Crash c1; 2Mo c2; 3Mo c2 |
-| Listening question formats quiz — `ielts_listening_formats_sample.php` | none yet (scored in the browser, not saved) | Original SLS content | Crash c5; 2Mo c5; 3Mo c5 |
+| Listening question formats quiz — `ielts_listening_formats_sample.php` | `IELTS_QUIZ_L_FORMATS` | Original SLS content | Crash c5; 2Mo c5; 3Mo c5 |
 | Listening Practice Tests 1-2 | `IELTS_PT_L_001`, `_002` | Shared with General Training (above) | PT1: Crash c2, 2Mo c3, 3Mo c3 · PT2: 2Mo c6, 3Mo c6 |
 | Listening Practice Tests 3-4 — `ielts_listening_003/004.php` | `IELTS_PT_L_003`, `_004` | Cambridge IELTS 17 Academic, Tests 1-2 Listening (140) | Not wired yet (the "Listening Test 3/4" items are Coming Soon) |
 | Reading Test 1 — `ielts_reading_academic_c17_t1.php` | `IELTS_PT_R_ACA_C17T1` | Cambridge IELTS 17 Academic, Test 1 (135) | Set 1: Crash c3; 2Mo c3; 3Mo c3 |
@@ -67,7 +67,7 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
 | `ielts_reading_academic_001.php` | `IELTS_PT_R_ACA_001` | "Cambridge-style" (089) | Not used by any course |
 | Writing Test 1 — `ielts_writing_academic_001.php` (Task 1 + Task 2 pages) | `IELTS_PT_W1_ACA_001`, `IELTS_PT_W2_ACA_001` | Official IELTS.org Academic samples 1A/2A (110) | Set 1: Crash c5; 2Mo c5; 3Mo c5 |
 | Writing Tests 2-4 — `ielts_writing_academic_002..004.php` | `IELTS_PT_W1_ACA_00n`, `IELTS_PT_W2_ACA_00n` | Cambridge IELTS 17 Academic, Tests 2-4 (136) | WT2: 2Mo c11, 3Mo c11 · WT3: 2Mo c15, 3Mo c15 · WT4: 3Mo c21 |
-| Speaking Tests — `ielts_speaking_001..004.php` | not saved yet | Original SLS prompts (011, 047-049) | ST1 (`_002`): Crash c4, 2Mo c4, 3Mo c4 · ST2 (`_003`): 2Mo c10, 3Mo c10 · ST3 (`_004`): 2Mo c14, 3Mo c14 · ST4 (`_001`): 3Mo c20 |
+| Speaking Tests — `ielts_speaking_001..004.php` | `IELTS_PT_S_001..004` (transcript saved, no audio) | Original SLS prompts (011, 047-049) | ST1 (`_002`): Crash c4, 2Mo c4, 3Mo c4 · ST2 (`_003`): 2Mo c10, 3Mo c10 · ST3 (`_004`): 2Mo c14, 3Mo c14 · ST4 (`_001`): 3Mo c20 |
 | Mock Tests 1-3 | — | **No IELTS Academic full mock exists yet** (all four Full Mocks are GT) | Coming Soon everywhere |
 
 IELTS Speaking is the same for both modules: General Training's Set 1 Speaking is `ielts_speaking_001.php`, which is
@@ -86,6 +86,14 @@ No tests exist yet. Every PTE diagnostic, practice test and mock item is Coming 
 3. **Test rows with no content** (safe to ignore; nothing points at them): `IELTS_GT_MOCK01..04_*` (the slots the
    Cambridge IELTS 15 GT bank was first meant for — it went into Reading Practice Tests 2-5 instead), `IELTS_MOCK01_*`,
    `IAW001`, `IELTS-A-001`, `CELPIP_PT_L_002/003`.
+
+## How results are saved (migration 162)
+
+Every test, quiz and diagnostic above saves a completed `test_attempts` row under its test code, which is what makes it
+count towards its class. Writing and speaking practice keep the student's response (`response_text`), the AI's
+feedback and score, and a tutor's grade (`graded_by = 'tutor'`, which replaces the AI's). Tutors grade writing and
+IELTS Speaking under SLS Admin → Practice Grading, CELPIP Speaking and the CELPIP Diagnostic's recordings under
+Practice Sessions.
 
 ## Check query
 

@@ -617,6 +617,6 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
-<script src="scripts/script.js" defer></script>
+<script src="scripts/script.js?v=162" defer></script>
 </body>
 </html>

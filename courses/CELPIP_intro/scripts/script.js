@@ -45,64 +45,6 @@ let audioStarted = false;
 let audioUpdateInterval = null;
 
 // ==================
-// Database Functions (New Integration)
-// ==================
-
-// Generate unique test ID
-function generateTestId() {
-    return 'test_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-
-// Database submission function
-async function submitWritingToDatabase(writingContent, testId = null) {
-    try {
-        const response = await fetch('/api/submit-writing', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                content: writingContent,
-                testId: testId || generateTestId(),
-                timestamp: new Date().toISOString(),
-                wordCount: writingContent.trim().split(/\s+/).length
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to submit writing');
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error('Error submitting writing:', error);
-        // Still allow test to continue even if database fails
-        return { success: false, error: error.message };
-    }
-}
-
-// Submit audio to database
-async function submitAudioToDatabase(audioBlob) {
-    const formData = new FormData();
-    formData.append('audio', audioBlob, 'speaking_response.wav');
-    formData.append('testId', generateTestId());
-    formData.append('timestamp', new Date().toISOString());
-    
-    try {
-        const response = await fetch('/api/submit-audio', {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (response.ok) {
-            console.log('Audio submitted successfully');
-        }
-    } catch (error) {
-        console.error('Error submitting audio:', error);
-    }
-}
-
-// ==================
 // Audio Recording Functions
 // ==================
 
@@ -204,24 +146,34 @@ function updateRecordingTimer(taskNum) {
     }
 }
 
+// Each recording goes to the platform's speaking store (as CELPIP Speaking practice does), where it is transcribed
+// and a tutor can listen and grade it. It used to be sent to /api/submit-audio, which doesn't exist on this server.
 async function submitAudioToDatabase(audioBlob, taskNum) {
     const formData = new FormData();
-    formData.append('audio', audioBlob, `speaking_task_${taskNum}.wav`);
-    formData.append('testId', generateTestId());
-    formData.append('taskNumber', taskNum);
-    formData.append('timestamp', new Date().toISOString());
-    
+    formData.append('audio', audioBlob, `speaking_task_${taskNum}.webm`);
+    formData.append('test_code', 'CELPIP_DIAGNOSTIC');
+    formData.append('task_number', taskNum);
+    formData.append('task_title', `Speaking Task ${taskNum}`);
+
     try {
-        const response = await fetch('/api/submit-audio', {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (response.ok) {
-            console.log(`Audio for task ${taskNum} submitted successfully`);
-        }
+        const response = await fetch('../../api/speaking_upload.php', { method: 'POST', body: formData });
+        if (!response.ok) console.error(`Saving the recording for task ${taskNum} failed (${response.status})`);
     } catch (error) {
-        console.error(`Error submitting audio for task ${taskNum}:`, error);
+        console.error(`Error saving the recording for task ${taskNum}:`, error);
+    }
+}
+
+// The finished test is saved as one attempt (Listening + Reading score, and the writing response for a tutor), so
+// the platform knows it was done. It used to exist only on the results screen.
+async function saveDiagnosticAttempt(score, maxScore, writing) {
+    try {
+        await fetch('../../resources/practice_tests/save_attempt.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ test_code: 'CELPIP_DIAGNOSTIC', score, max_score: maxScore, answers: {}, response_text: writing })
+        });
+    } catch (error) {
+        console.error('Error saving the diagnostic result:', error);
     }
 }
 
@@ -414,18 +366,6 @@ function finishQuiz() {
     clearInterval(timerInterval);
     saveCurrentAnswers();
     
-    // Submit writing to database (New Integration)
-    if (savedAnswers.writing && savedAnswers.writing.trim()) {
-        submitWritingToDatabase(savedAnswers.writing)
-            .then(result => {
-                if (result.success) {
-                    console.log('Writing submitted successfully:', result);
-                } else {
-                    console.warn('Writing submission failed:', result.error);
-                }
-            });
-    }
-    
     gradeAndShowResults();
     showPage('results');
 }
@@ -537,6 +477,8 @@ function gradeAndShowResults() {
   const writingText = savedAnswers.writing || '';
   const wordCount = writingText.trim() === '' ? 0 : writingText.trim().split(/\s+/).length;
   const writingScore = wordCount >= 150 ? 'Complete' : 'Incomplete';
+
+  saveDiagnosticAttempt(listenScore + readScore, LISTENING_KEY.length + READING_KEY.length, writingText);
 
   // Display results
   displayResults(listenScore, readScore, writingScore, wordCount, listenRows, readRows);

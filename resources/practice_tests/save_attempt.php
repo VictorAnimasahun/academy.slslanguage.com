@@ -26,9 +26,11 @@ $test_code  = preg_replace('/[^A-Z0-9_]/', '', strtoupper($input['test_code'] ??
 $student_id = (int)$_SESSION['user_id'];
 $score      = (float)($input['score']      ?? 0);
 $max_score  = (float)($input['max_score']  ?? 40);
-$band_score = (float)($input['band_score'] ?? 0);
+$band_score = isset($input['band_score']) && $input['band_score'] !== '' ? (float)$input['band_score'] : null; // none for a quiz or the CELPIP Diagnostic
 $time_spent = max(0, (int)($input['time_spent'] ?? 0)); // seconds
 $answers    = is_array($input['answers']) ? $input['answers'] : [];
+// Written work that goes with an auto-scored test (the CELPIP Diagnostic's writing), kept for a tutor.
+$response_text = isset($input['response_text']) && is_string($input['response_text']) ? $input['response_text'] : null;
 
 if (!$test_code) {
     http_response_code(400);
@@ -61,10 +63,10 @@ try {
     // Insert attempt
     $stmt = $db->prepare("
         INSERT INTO test_attempts
-            (student_id, test_id, attempt_number, mode, started_at, completed_at, score, max_score, band_score, time_spent, status)
-        VALUES (?, ?, ?, 'practice', ?, NOW(), ?, ?, ?, ?, 'completed')
+            (student_id, test_id, attempt_number, mode, started_at, completed_at, score, max_score, band_score, time_spent, status, response_text)
+        VALUES (?, ?, ?, 'practice', ?, NOW(), ?, ?, ?, ?, 'completed', ?)
     ");
-    $stmt->execute([$student_id, $test_id, $attempt_number, $started_at, $score, $max_score, $band_score, $time_spent]);
+    $stmt->execute([$student_id, $test_id, $attempt_number, $started_at, $score, $max_score, $band_score, $time_spent, $response_text]);
     $attempt_id = (int)$db->lastInsertId();
 
     // Load all questions for this test

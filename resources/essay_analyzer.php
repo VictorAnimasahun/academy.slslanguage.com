@@ -32,6 +32,16 @@ if (isset($_GET['type']) && isset($_GET['question'])) {
     ];
 }
 
+// A practice test's essay is saved the moment it arrives (it used to exist only on this screen), so the platform
+// knows the test was done; the AI's score is stored against it when the student analyses it (api_handler.php).
+$practiceAttemptId = null;
+if ($practiceMode && !empty($_GET['test_code'])) {
+    require_once INCLUDES_PATH . '/practice_attempts.php';
+    $practiceAttemptId = practice_attempt_save($db, (int) $_SESSION['user_id'],
+        preg_replace('/[^A-Z0-9_]/', '', strtoupper($_GET['test_code'])), (string) ($_GET['response'] ?? ''),
+        ['time_spent' => max(0, (int) ($_GET['time'] ?? 0))]);
+}
+
 // Get rate limit stats
 require_once INCLUDES_PATH . '/rate_limiter.php';
 $rateLimiter = new RateLimiter($db);
@@ -852,7 +862,8 @@ document.getElementById('analyzerForm').addEventListener('submit', async functio
                 essay: essay,
                 exam_type: selectedExam,
                 task_type: selectedExam === 'CELPIP' ? document.getElementById('celpipTaskType').value : 'writing_task2',
-                word_count: parseInt(document.getElementById('wordCount').textContent, 10) || 0
+                word_count: parseInt(document.getElementById('wordCount').textContent, 10) || 0,
+                attempt_id: <?= json_encode($practiceAttemptId) ?>
             })
         });
 

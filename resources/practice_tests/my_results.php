@@ -113,7 +113,8 @@ $practiceAnswers = [];
 if ($attemptId) {
     $st = $db->prepare("
         SELECT ta.id, ta.score, ta.max_score, ta.band_score, ta.completed_at,
-               t.title, t.category
+               ta.response_text, ta.ai_feedback, ta.graded_by, ta.tutor_notes,
+               t.title, t.category, t.code
         FROM test_attempts ta
         JOIN tests t ON t.id = ta.test_id
         WHERE ta.id = ? AND ta.student_id = ?
@@ -534,16 +535,37 @@ if (!$sessionId && !$attemptId) {
                 <span class="text-muted small ms-2"><?= date('d M Y', strtotime($practiceDetail['completed_at'])) ?></span>
             </div>
             <div class="d-flex gap-2">
+                <?php $isCelpip = str_starts_with((string)$practiceDetail['code'], 'CELPIP'); ?>
+                <?php if ($practiceDetail['max_score'] > 0): ?>
                 <div class="stat-box"><div class="val"><?= (int)$practiceDetail['score'] ?>/<?= (int)$practiceDetail['max_score'] ?></div><div class="lbl">Score</div></div>
-                <div class="stat-box"><div class="val"><?= $practiceDetail['band_score'] ? number_format((float)$practiceDetail['band_score'],1) : '–' ?></div><div class="lbl">Band</div></div>
-                <div class="stat-box"><div class="val"><?= $practiceDetail['max_score'] > 0 ? round(($practiceDetail['score']/$practiceDetail['max_score'])*100) : 0 ?>%</div><div class="lbl">Accuracy</div></div>
+                <?php endif; ?>
+                <div class="stat-box"><div class="val"><?= (float)$practiceDetail['band_score'] > 0 ? ($isCelpip ? (int)$practiceDetail['band_score'] : number_format((float)$practiceDetail['band_score'],1)) : '–' ?></div><div class="lbl"><?= $isCelpip ? 'CLB' : 'Band' ?></div></div>
+                <?php if ($practiceDetail['max_score'] > 0): ?>
+                <div class="stat-box"><div class="val"><?= round(($practiceDetail['score']/$practiceDetail['max_score'])*100) ?>%</div><div class="lbl">Accuracy</div></div>
+                <?php endif; ?>
             </div>
         </div>
 
         <?php if (attempt_total_adjusted($db, (int)$practiceDetail['id'], (float)$practiceDetail['score'], $practiceAnswers)): ?>
             <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
         <?php endif; ?>
-        <?php if (empty($practiceAnswers)): ?>
+        <?php if ($practiceDetail['response_text'] !== null): /* writing / speaking practice (migration 162) */ ?>
+            <p class="small mb-3" style="color:#475569;">
+                <?php if ($practiceDetail['graded_by'] === 'tutor'): ?><i class="bi bi-person-check me-1"></i>Graded by your tutor.
+                <?php elseif ($practiceDetail['graded_by'] === 'ai'): ?><i class="bi bi-cpu me-1"></i>AI score. Your tutor may review it and replace it with their own grade.
+                <?php else: ?><i class="bi bi-hourglass-split me-1"></i>Not graded yet.<?php endif; ?>
+            </p>
+            <?php if ($practiceDetail['tutor_notes']): ?>
+                <div class="fw-semibold mb-1" style="font-size:.88rem;">Your tutor's notes</div>
+                <div class="mb-3" style="white-space:pre-wrap;font-size:.88rem;line-height:1.7;"><?= e($practiceDetail['tutor_notes']) ?></div>
+            <?php endif; ?>
+            <div class="fw-semibold mb-1" style="font-size:.88rem;">Your response</div>
+            <div class="mb-3" style="white-space:pre-wrap;font-size:.88rem;line-height:1.7;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.8rem 1rem;"><?= trim((string)$practiceDetail['response_text']) !== '' ? e($practiceDetail['response_text']) : '<em class="text-muted">Submitted empty.</em>' ?></div>
+            <?php if ($practiceDetail['ai_feedback']): ?>
+                <div class="fw-semibold mb-1" style="font-size:.88rem;">AI feedback</div>
+                <div style="white-space:pre-wrap;font-size:.88rem;line-height:1.7;"><?= e($practiceDetail['ai_feedback']) ?></div>
+            <?php endif; ?>
+        <?php elseif (empty($practiceAnswers)): ?>
             <p class="text-muted">No answer breakdown available.</p>
         <?php else: ?>
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -650,13 +672,14 @@ if (!$sessionId && !$attemptId) {
     <?php else: ?>
         <?php foreach ($practiceAttempts as $a):
             $pct    = $a['max_score'] > 0 ? round(($a['score']/$a['max_score'])*100) : 0;
-            $band   = $a['band_score'] ? number_format((float)$a['band_score'],1) : '–';
+            $isCelpip = str_starts_with((string)$a['code'], 'CELPIP');
+            $band   = (float)$a['band_score'] > 0 ? ($isCelpip ? (string)(int)$a['band_score'] : number_format((float)$a['band_score'],1)) : '–';
             $barCol = $pct >= 70 ? '#10b981' : ($pct >= 50 ? '#f59e0b' : '#ef4444');
         ?>
         <a href="my_results.php?attempt_id=<?= $a['id'] ?>" class="result-card text-decoration-none">
             <div class="band-circle">
                 <div class="bval"><?= $band ?></div>
-                <div class="blbl">Band</div>
+                <div class="blbl"><?= $isCelpip ? 'CLB' : 'Band' ?></div>
             </div>
             <div style="flex:1;min-width:0;">
                 <div class="fw-semibold text-dark mb-1" style="font-size:.9rem;"><?= e($a['title']) ?></div>
@@ -665,10 +688,12 @@ if (!$sessionId && !$attemptId) {
                 </div>
                 <div class="text-muted" style="font-size:.75rem;"><?= date('d M Y, g:i a', strtotime($a['completed_at'])) ?></div>
             </div>
+            <?php if ($a['max_score'] > 0): ?>
             <div class="text-end" style="flex-shrink:0;">
                 <div class="fw-bold" style="color:var(--blue);"><?= (int)$a['score'] ?>/<?= (int)$a['max_score'] ?></div>
                 <div class="text-muted small"><?= $pct ?>%</div>
             </div>
+            <?php endif; ?>
             <i class="bi bi-chevron-right text-muted"></i>
         </a>
         <?php endforeach; ?>
