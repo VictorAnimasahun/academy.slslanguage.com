@@ -1,5 +1,5 @@
 <?php
-// Introduction & PTE Academic Overview — PTE Academic — 1-Month Plan, Class 1, piece 1 (lesson).
+// PTE Academic Introduction — PTE Academic Crash Course — 1 Month, Class 1, piece 2 (lesson). Introduces the EXAM; a crash course compresses the whole introduction into Class 1 (founder, 2026-10-21).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -40,4 +40,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Learn the tasks, know what the AI rewards, and practise under real timings from the first week.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'PTE_Gen_1Mo', 1, 1, ob_get_clean());
+render_lesson_shell($db, 'PTE_Gen_1Mo', 1, 2, ob_get_clean());

@@ -13,6 +13,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $next = next_course_item($db, $ctxCourse, 'courses/CELPIP_Gen/lessons/exam_introduction.php');
+// Class 2 of the 2/3-month courses, Class 1 of the crash course: read from the course, not typed in.
+$pos = course_item_position($db, $ctxCourse, 'courses/CELPIP_Gen/lessons/exam_introduction.php') ?? ['week' => 1, 'class' => 2];
 $sections = [
     ['bi-patch-question', 'What CELPIP Is', 'Who accepts CELPIP General, what it is used for, and how it differs from other English tests.'],
     ['bi-headphones', 'The Listening Test', 'Its parts, timing and question types.'],
@@ -52,7 +54,7 @@ $sections = [
             <h1 class="mb-3"><i class="bi bi-compass me-2" style="color:#0b77ff;"></i>CELPIP Introduction</h1>
 
             <div class="highlight-box">
-                <p class="mb-0"><strong>Week:</strong> 1 &nbsp;|&nbsp; <strong>Class:</strong> 2 of <?= (int) $ctxCourse['classes'] ?></p>
+                <p class="mb-0"><strong>Week:</strong> <?= (int) $pos['week'] ?> &nbsp;|&nbsp; <strong>Class:</strong> <?= (int) $pos['class'] ?> of <?= (int) $ctxCourse['classes'] ?></p>
             </div>
 
             <p class="lead">This lesson introduces the CELPIP exam itself. A short quiz follows to lock it in, and then the CELPIP Diagnostic Test.</p>

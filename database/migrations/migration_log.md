@@ -2104,6 +2104,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 ---
 
+## 158 — Crash courses compress their introduction into Class 1; 2-month mocks at each month's end
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-21 | Needs 157. One transaction. Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 loaded from the real pre-158 state: classes moved once (the move only runs while each mock is still in its old class), second run a no-op; 192 classes' titles match their items; 265 page/API loads clean (every course page, course detail page, IELTS Academic/PTE/CELPIP/IELTS General lesson page in each course length, week pages, dashboard, app course data). |
+| Live  | [ ] | | Run 157 first, then this, then sync the files from the same commits. |
+
+**What it does:** founder, 2026-10-21. Crash courses (IELTS General, CELPIP, PTE, IELTS Academic 1-Month): Class 1 holds the whole introduction (Course Introduction, exam introduction, introduction quiz, Foundational English Assessment, diagnostic); Class 2 onward is sections; Week 1 titled "Introduction & First Steps". 2-month courses get Mock Test 1 at the end of Month 1: CELPIP 2-Month Classes 8-15 rotate (Mock 1 to Class 8, the rest one class later, in order; its schedule entry follows); IELTS Academic 2-Month Classes 8-10 rotate (Mock 1 to 8, its review to 9, the old 8 to 10; pages renamed). Each class keeps its plan level; only contents move; week titles follow. Shared CELPIP pages now read their class position from the course (includes/course_shape.php course_item_position()).
+
+---
+
 ## Rules
 
 - Never run a migration on LIVE without running it on LOCAL first.

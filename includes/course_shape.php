@@ -138,6 +138,37 @@ if (!function_exists('course_by_folder')) {
         return $s;
     }
 
+    /**
+     * Where the item whose page is $path sits in this course: ['week' => n, 'class' => n] or null. Pages shared by
+     * several courses (or moved between classes) read their position from here instead of typing it in.
+     * $match 'prefix' also finds e.g. class_day.php?slot=c8&part=lesson when given class_day.php?slot=c8.
+     */
+    function course_item_position(PDO $db, array $course, string $path, string $match = 'exact'): ?array {
+        // [file, params] without ?from=; 'prefix' matches when the item has at least the wanted params
+        // (class_day.php?slot=c8 finds class_day.php?slot=c8&part=lesson, whatever order the params are in).
+        $split = function ($p) {
+            $parts = explode('?', ltrim((string) $p, '/'), 2);
+            parse_str($parts[1] ?? '', $q);
+            unset($q['from']);
+            return [$parts[0], $q];
+        };
+        [$wantFile, $wantQ] = $split($path);
+        foreach (course_schedule($db, $course['id']) as $week) {
+            foreach ($week['classes'] as $cls) {
+                foreach ($cls['items'] as $item) {
+                    if (empty($item['path'])) continue;
+                    [$haveFile, $haveQ] = $split($item['path']);
+                    if ($haveFile !== $wantFile) continue;
+                    $same = $match === 'prefix' ? array_intersect_assoc($wantQ, $haveQ) === $wantQ : $haveQ == $wantQ;
+                    if ($same) {
+                        return ['week' => (int) $week['number'], 'class' => (int) $cls['number']];
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     /** The item that comes after the page at $path in this course: the next item in its class, else the next class's first. */
     function next_course_item(PDO $db, array $course, string $path): ?array {
         $flat = [];

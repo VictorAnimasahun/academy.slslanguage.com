@@ -1,5 +1,5 @@
 <?php
-// Task 1 Report Structuring — IELTS Academic — 2-Month Plan, Class 8, piece 2 (lesson).
+// Task 1 Report Structuring — IELTS Academic — 2-Month Plan, Class 10, piece 2 (lesson).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -41,4 +41,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Introduction, overview, two detail paragraphs. Spend your best effort on the overview: it shows the examiner you understand the whole picture.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'IELTS_Aca_2Mo', 8, 2, ob_get_clean());
+render_lesson_shell($db, 'IELTS_Aca_2Mo', 10, 2, ob_get_clean());

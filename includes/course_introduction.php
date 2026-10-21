@@ -19,7 +19,7 @@ if (!function_exists('course_introduction_body')) {
 <div class="content-section">
   <h2>Welcome to the ' . $h($course['title']) . '</h2>
   <p>This class sets you up for the next ' . (int) $course['weeks'] . ' weeks: how the course runs, where you are starting from,
-     and the ' . $h($scoreWord) . ' you are aiming for. Next class introduces the ' . $h($exam) . ' exam itself.</p>
+     and the ' . $h($scoreWord) . ' you are aiming for. The next lesson introduces the ' . $h($exam) . ' exam itself.</p>
 </div>
 
 <div class="content-section">

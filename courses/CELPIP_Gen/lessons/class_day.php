@@ -241,6 +241,11 @@ $page_title   = $title_test . ' · ' . $title_lesson; // single-line contexts on
 // Course this class is being taken in (set by course_context.php from ?from=). Class numbers are
 // shared; only the length of the course differs.
 $class_total = (int) $ctxCourse['classes'];
+// Where this class day sits in THIS course, from the database: the same slot is a different class number in different
+// CELPIP lengths once their schedules differ (e.g. the 2-Month course's Mock 1 sits in Week 4). Typed values are only a
+// fallback for a slot the course doesn't use.
+$pos = course_item_position($db, $ctxCourse, 'courses/CELPIP_Gen/lessons/class_day.php?slot=' . $slot, 'prefix');
+if ($pos) { $cfg['class_num'] = $pos['class']; $cfg['week'] = 'Week ' . $pos['week']; }
 // A class day holds two items -- the test and the lesson -- and each item opens on its own
 // (founder, 2026-10-19: a test is never folded into a lesson's page). ?part=test|lesson picks one;
 // without it (old links) both show, as before.

@@ -115,6 +115,9 @@ try {
         $lStmt->execute([$course_id, $mod['id']]);
         $mod['lessons'] = $lStmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // Break the reference: the page loops over $modules again with `as $i => $mod`, which otherwise overwrites the
+    // LAST week with each week in turn -- live showed "Week 11" twice and no Week 12 (2026-10-21).
+    unset($mod);
 } catch (PDOException $e) {
     error_log("Modules/lessons error: " . $e->getMessage());
 }
