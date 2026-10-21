@@ -182,6 +182,30 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
     <main class="content container-fluid">
+        <?php
+        // Orientation (migration 165): until it is done -- and a class plan exists for every course -- it is the first thing here.
+        $needsOrientation = false;
+        try {
+            $st = $db->prepare("SELECT (SELECT COUNT(*) FROM enrollments WHERE student_id = ?) AS courses,
+                                       (SELECT COUNT(*) FROM student_class_plans p JOIN enrollments e ON e.student_id = p.student_id AND e.course_id = p.course_id WHERE p.student_id = ?) AS plans,
+                                       (SELECT COUNT(*) FROM student_orientation WHERE student_id = ?) AS done");
+            $st->execute([$user_id, $user_id, $user_id]);
+            $o = $st->fetch(PDO::FETCH_ASSOC);
+            $needsOrientation = $o['courses'] > 0 && (!$o['done'] || $o['plans'] < $o['courses']);
+        } catch (PDOException $e) { /* before migration 165 */ }
+        ?>
+        <?php if ($needsOrientation): ?>
+            <div class="card border mt-3" style="border-color:#bfdbfe !important;background:#eff6ff;">
+                <div class="card-body d-flex flex-wrap align-items-center gap-3">
+                    <i class="bi bi-compass" style="font-size:1.8rem;color:#0b77ff;"></i>
+                    <div style="flex:1;min-width:220px;">
+                        <div class="fw-bold">Start here: your orientation</div>
+                        <div class="text-muted" style="font-size:.9rem;">Ten minutes: see how the platform works, meet your tutor and set your class plan.</div>
+                    </div>
+                    <a href="orientation/index.php" class="btn" style="background:#0b77ff;border-color:#0b77ff;color:#fff;font-weight:600;">Start orientation</a>
+                </div>
+            </div>
+        <?php endif; ?>
         <?php if ($selarFlash): ?>
             <div class="alert alert-<?= $selarFlash['ok'] ? 'success' : 'danger' ?> mt-3"><?= htmlspecialchars($selarFlash['msg']) ?></div>
         <?php endif; ?>

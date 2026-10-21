@@ -37,6 +37,18 @@ if (!function_exists('course_by_folder')) {
         ] : null;
     }
 
+    /** The course's designated tutor (migration 165): ['name'] or null. Shown to students on the course page. */
+    function course_tutor(PDO $db, string $folder): ?array {
+        try {
+            $st = $db->prepare("SELECT e.name FROM courses c JOIN employees e ON e.id = c.tutor_employee_id WHERE c.folder_name = ? LIMIT 1");
+            $st->execute([$folder]);
+            $name = $st->fetchColumn();
+        } catch (PDOException $e) {
+            return null;   // before migration 165
+        }
+        return $name !== false ? ['name' => $name] : null;
+    }
+
     /** Absolute URL for an item. Shared lesson pages (and the slide viewer) need ?from=<folder> to know which course they're in. */
     function course_item_url(string $path, string $folder): string {
         $path = ltrim($path, '/');

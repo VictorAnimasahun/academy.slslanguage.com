@@ -4,6 +4,8 @@
 if (defined('NAVBAR_SCRIPTS_LOADED')) return;
 define('NAVBAR_SCRIPTS_LOADED', true);
 $current_page = basename($_SERVER['PHP_SELF']);
+// On a lesson item of the student's course: the "Mark complete" bar (it does nothing on any other page).
+include INCLUDES_PATH . '/lesson_complete_bar.php';
 ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

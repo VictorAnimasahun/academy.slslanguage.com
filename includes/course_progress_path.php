@@ -153,6 +153,13 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
     $unit = stripos((string) (reset($modules)['title'] ?? ''), 'month') === 0 ? 'month' : 'week';
     $pct = $totalClasses ? round($totalDone / $totalClasses * 100) : 0;
     $out  = '<div class="pp-summary"><div class="pp-summary-title">' . $totalDone . ' of ' . $totalClasses . ' classes complete</div>';
+    // The course's designated tutor (migration 165).
+    if ($folder !== '' && isset($GLOBALS['db']) && $GLOBALS['db'] instanceof PDO) {
+        require_once __DIR__ . '/course_shape.php';
+        if ($tutor = course_tutor($GLOBALS['db'], $folder)) {
+            $out .= '<div class="pp-tutor" style="font-size:.85rem;color:#475569;margin:.15rem 0 .35rem;"><i class="bi bi-person-video3 me-1"></i>Your tutor: <strong>' . $h($tutor['name']) . '</strong></div>';
+        }
+    }
     $out .= '<div class="pp-bar" role="progressbar" aria-valuenow="' . $pct . '" aria-valuemin="0" aria-valuemax="100"><span style="width:' . $pct . '%"></span></div>';
     if ($next) {
         $label = lesson_title_html($next['lesson']['title'], $h);

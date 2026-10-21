@@ -198,8 +198,7 @@ if (!$sessionId && !$attemptId) {
         }
 
         /* ── List cards ─────────────────────────────── */
-        .result-card { background:#fff; border-radius:14px; padding:1.1rem 1.4rem; margin-bottom:.75rem; box-shadow:0 2px 8px rgba(0,0,0,.06); display:flex; align-items:center; gap:1.1rem; border-left:4px solid var(--blue); }
-        .result-card.mock-card { border-left-color: var(--pink); }
+        .result-card { background:#fff; border-radius:14px; padding:1.1rem 1.4rem; margin-bottom:.75rem; box-shadow:0 2px 8px rgba(0,0,0,.06); display:flex; align-items:center; gap:1.1rem; border:1px solid #e5e7eb; }
         .result-card:hover { box-shadow:0 4px 18px rgba(0,0,0,.1); }
         .band-circle { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,var(--blue),#38bdf8); display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; color:#fff; }
         .band-circle.pink { background:linear-gradient(135deg,var(--pink),#f472b6); }
@@ -269,7 +268,7 @@ if (!$sessionId && !$attemptId) {
 
         /* ── Speaking notes ──────────────────────────── */
         .speaking-panel { background:linear-gradient(135deg,var(--blue-light),var(--pink-light)); border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
-        .speaking-panel .snotes { background:var(--pink-light); border-left:3px solid var(--pink); border-radius:6px; padding:.8rem 1rem; font-size:.86rem; color:#0f172a; margin-top:.5rem; }
+        .speaking-panel .snotes { background:var(--pink-light); border:1px solid #fbcfe8; border-radius:6px; padding:.8rem 1rem; font-size:.86rem; color:#0f172a; margin-top:.5rem; }
 
         /* ── Practice detail ─────────────────────────── */
         .detail-card { background:#fff; border-radius:14px; padding:1.4rem; box-shadow:0 2px 10px rgba(0,0,0,.06); }
@@ -509,7 +508,7 @@ if (!$sessionId && !$attemptId) {
                 <?php endif; ?>
                 <?php if (trim((string)($mockSession['writing_notes'] ?? '')) !== ''): ?>
                 <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pink-dark);margin:1.25rem 0 .4rem;">Instructor Comments</div>
-                <div class="ai-box" style="background:var(--pink-light);border-left-color:var(--pink);margin-top:0;"><?= e($mockSession['writing_notes']) ?></div>
+                <div class="ai-box" style="background:var(--pink-light);border-color:#fbcfe8;margin-top:0;"><?= e($mockSession['writing_notes']) ?></div>
                 <?php endif; ?>
                 <?php if (!empty($mockSession['writing_ai_feedback']) && !mock_ai_feedback_failed($mockSession['writing_ai_feedback'])): ?>
                 <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--blue-dark);margin:1.25rem 0 .4rem;"><?= ($mockSession['writing_graded_by'] ?? 'ai') === 'instructor' ? 'Automated Feedback (for reference)' : 'AI Feedback' ?></div>
