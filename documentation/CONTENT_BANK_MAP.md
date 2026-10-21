@@ -42,9 +42,10 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
 | GT Diagnostic — `resources/mock_tests/ielts_gt_diagnostic.php` | `IELTS_GT_DIAGNOSTIC` (`IELTS_GT_DIAG_*`) | Abridged from Full Mock 3 (068) | Crash c1; 2Mo c2; 3Mo c2 |
 | Class quizzes 1-7 — `resources/quizzes/class_quiz.php` | `IELTS_GM_C1_QUIZ`..`C7` | Original SLS content (071) | Crash c1-c7; 2Mo/3Mo c2-c7 |
 | Listening Practice Test 1 — `ielts_listening_001.php` | `IELTS_PT_L_001` | Cambridge IELTS 15 GT, Test 1 Listening | Set 1: Crash c3; 2Mo c3; 3Mo c3 |
-| Listening Practice Test 2 — `ielts_listening_002.php` | `IELTS_PT_L_002` | Cambridge IELTS 15 GT, Test 2 Listening | 2Mo c7; 3Mo c7 **and** c23 (see Known clashes) |
+| Listening Practice Test 2 — `ielts_listening_002.php` | `IELTS_PT_L_002` | Cambridge IELTS 15 GT, Test 2 Listening | 2Mo c7; 3Mo c7 |
+| Listening Practice Test 3 — `ielts_listening_003.php` | `IELTS_PT_L_003` | Cambridge IELTS 17 Academic, Test 1 Listening (140; Listening is the same exam for both modules) | 3Mo c23 (migration 163) |
 | Reading Practice Test 1 — `ielts_reading_001.php` | `IELTS_PT_R_001` | Cambridge IELTS 15 GT, Test 1 Reading | Set 1: Crash c4; 2Mo c4; 3Mo c4 |
-| Reading Practice Tests 2-5 — `ielts_reading_002..005.php` | `IELTS_PT_R_002..005` | Cambridge IELTS 15 GT, Tests 1-4 Reading (137) | PT2: 3Mo c21 (see Known clashes) |
+| Reading Practice Tests 2-5 — `ielts_reading_002..005.php` | `IELTS_PT_R_002..005` | Cambridge IELTS 15 GT, Tests 1-4 Reading (137) | PT3: 3Mo c21 (migration 163). **PT2 is the same passages as PT1 — never give one student both.** PT4-5 unused |
 | Writing Task 1 Practice Test 1 — `ielts_writing_t1_001.php` | `IELTS_PT_W1_001` | Original SLS prompt (011) | Set 1: Crash c5; 2Mo c5; 3Mo c5 |
 | Writing Task 2 Practice Test 2 — `ielts_writing_t2_002.php` | `IELTS_PT_W2_002` | — | 3Mo c20 |
 | Full Mock Test 1 — `resources/mock_tests/ielts_full_mock_001.php` | `IELTS_FULL_MOCK_001` (`IELTS_FM1_*`) | Cambridge IELTS General Training, Test 1 (a different book from IELTS 15) (015-020) | Mock Test 1: Crash c8; 2Mo c8; 3Mo c8 |
@@ -59,7 +60,7 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
 | Academic Diagnostic — `resources/mock_tests/ielts_aca_diagnostic.php` | `IELTS_ACA_DIAGNOSTIC` (`IELTS_ACA_DIAG_*`) | Listening Part 1 is the same recording as Full Mock 1's (GT); Reading/Writing original (063-065) | Crash c1; 2Mo c2; 3Mo c2 |
 | Listening question formats quiz — `ielts_listening_formats_sample.php` | `IELTS_QUIZ_L_FORMATS` | Original SLS content | Crash c5; 2Mo c5; 3Mo c5 |
 | Listening Practice Tests 1-2 | `IELTS_PT_L_001`, `_002` | Shared with General Training (above) | PT1: Crash c2, 2Mo c3, 3Mo c3 · PT2: 2Mo c6, 3Mo c6 |
-| Listening Practice Tests 3-4 — `ielts_listening_003/004.php` | `IELTS_PT_L_003`, `_004` | Cambridge IELTS 17 Academic, Tests 1-2 Listening (140) | Not wired yet (the "Listening Test 3/4" items are Coming Soon) |
+| Listening Practice Tests 3-4 — `ielts_listening_003/004.php` | `IELTS_PT_L_003`, `_004` | Cambridge IELTS 17 Academic, Tests 1-2 Listening (140) | PT3: IELTS General 3Mo c23. Academic's "Listening Test 3/4" items are still Coming Soon; wiring them to these is safe (different students) |
 | Reading Test 1 — `ielts_reading_academic_c17_t1.php` | `IELTS_PT_R_ACA_C17T1` | Cambridge IELTS 17 Academic, Test 1 (135) | Set 1: Crash c3; 2Mo c3; 3Mo c3 |
 | Reading Test 2 — `ielts_reading_academic_002.php` | `IELTS_PT_R_ACA_002` | Cambridge IELTS 17 Academic, Test 2 (133) | 2Mo c7; 3Mo c7 |
 | Reading Test 3 — `ielts_reading_academic_c17_t3.php` | `IELTS_PT_R_ACA_C17T3` | Cambridge IELTS 17 Academic, Test 3 (135) | 2Mo c13; 3Mo c13 |
@@ -79,11 +80,9 @@ No tests exist yet. Every PTE diagnostic, practice test and mock item is Coming 
 
 ## Known clashes (to fix)
 
-1. **IELTS General 3-Month, Classes 4 and 21:** Reading Practice Test 1 (`IELTS_PT_R_001`) and Reading Practice Test 2
-   (`IELTS_PT_R_002`) are both Cambridge IELTS 15 GT Test 1 — the same passages. Class 21 should use Reading Practice
-   Test 3 (`_003`, Cambridge 15 GT Test 2) or later.
-2. **IELTS General 3-Month, Classes 7 and 23:** Listening Practice Test 2 is set twice.
-3. **Test rows with no content** (safe to ignore; nothing points at them): `IELTS_GT_MOCK01..04_*` (the slots the
+1. ~~IELTS General 3-Month, Classes 4 and 21~~ and ~~Classes 7 and 23~~: fixed by migration 163 (Class 21 → Reading
+   Practice Test 3, Class 23 → Listening Practice Test 3).
+2. **Test rows with no content** (safe to ignore; nothing points at them): `IELTS_GT_MOCK01..04_*` (the slots the
    Cambridge IELTS 15 GT bank was first meant for — it went into Reading Practice Tests 2-5 instead), `IELTS_MOCK01_*`,
    `IAW001`, `IELTS-A-001`, `CELPIP_PT_L_002/003`.
 

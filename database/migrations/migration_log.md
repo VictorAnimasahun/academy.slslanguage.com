@@ -2151,7 +2151,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-21 | One transaction (re-run safe). Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 from the real pre-161 state: identical result across all 376 item rows. 192 classes' titles match their items. Four temporary students (CELPIP, IELTS General and IELTS Academic crash courses, IELTS General 2-Month; deleted afterwards): 24/24 access checks right (Set 1 and Mock 1 open, Set 2+ and later mocks locked) and 89 page loads clean (every ready item, course pages, dashboard); app course data shows the new CELPIP tests. |
-| Live  | [ ] | | Sync the files first (page locks and IELTS General pages), then run this. |
+| Live  | [x] | 2026-10-21 | Founder synced the files and ran it. |
 
 **What it does:** founder, 2026-10-21: crash courses use only their Masterclasses' Practice Test Set 1 and Mock Test 1. CELPIP Crash Course gains Set 1 (Listening c2, Reading c6, Writing + Speaking c7); IELTS Academic Crash Course loses Listening/Reading Test 2; IELTS General Crash Course loses Set 2 Listening; each crash course's one mock drops its number. Set 2+ test pages and Mock 2+ no longer admit crash-course students; the CELPIP and IELTS General full mocks are now locked to the courses that use them. IELTS General Mock Tests 1/2/3 open IELTS Full Mock Tests 1/2/4 (Full Mock 3's content is in the GT Diagnostic) and carry their test codes; the old briefing pages get a Start Mock Test button and the "Next: Mock Test" links open the mock directly. Content-to-course map: documentation/CONTENT_BANK_MAP.md.
 
@@ -2162,6 +2162,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-21 | Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 from the real pre-162 state: columns added once (second run skips), identical tests rows (157) and item codes (376). Every ready item now has a test code (was 44 without) and every code resolves. A temporary CELPIP Crash Course student (deleted afterwards, with its recording file) submitted both writing tasks (saved once despite a refresh), a speaking task, the Diagnostic (in a real browser) and the formats quiz (in a real browser): all saved; a real AI analysis stored CLB 4 on the essay; a tutor grade replaced it and survived a later AI run; a released CELPIP Speaking score landed on the attempt and came off on recall; Class 7's writing and speaking tests and Class 1's Diagnostic counted as done. 18 student pages and 5 admin pages load clean. |
-| Live  | [ ] | | Run this FIRST (the new code writes to the columns it adds; syncing first would break every practice-test save), then sync the academy files and pull slslanguage.com. |
+| Live  | [x] | 2026-10-21 | Founder ran it, then synced the academy files and pulled slslanguage.com. |
 
 **What it does:** founder, 2026-10-21: writing and speaking practice tests, the CELPIP Diagnostic and the IELTS Listening formats quiz now save. test_attempts gains response_text, ai_feedback, graded_by, tutor_notes, graded_at; tests rows for codes the pages already used; course items get the codes they save under (a two-task writing test needs both tasks). Code: includes/practice_attempts.php; the essay checker saves the essay on arrival and the server stores the AI score; the speaking analyser saves the transcript and the AI score (IELTS Speaking pages also fixed: they showed an error instead of feedback on every submission); the Diagnostic uploads its recordings to the real speaking store and saves its score and writing (it used to post to addresses that don't exist); the formats quiz saves once every section is checked. SLS Admin: new Practice Grading page; releasing a CELPIP Speaking score sets the attempt's grade. My Results shows the response, who graded it, tutor notes and AI feedback.
+
+---
+
+## 163 — IELTS General 3-Month: no test sat twice
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-21 | One transaction, re-run safe. Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 from the real pre-163 state: identical (376 item rows). 192 classes' titles match their items; every item test code resolves. A temporary 3-Month student (deleted afterwards) opened both new tests unlocked; the course page links them; Listening 3's audio serves. |
+| Live  | [ ] | | Database only: run it (no files to sync). |
+
+**What it does:** founder, 2026-10-21 ("Known clashes" in documentation/CONTENT_BANK_MAP.md). Class 21's Reading Practice Test 2 had the same passages as Class 4's Reading Practice Test 1 (both Cambridge IELTS 15 GT Test 1): now Reading Practice Test 3. Class 23 repeated Class 7's Listening Practice Test 2: now Listening Practice Test 3. Item and class titles follow.
