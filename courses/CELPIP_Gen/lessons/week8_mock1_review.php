@@ -38,7 +38,7 @@ if (!can_access('intermediate')) {
             <div class="highlight-box">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                     <div><h4 class="mb-2" style="color:var(--accent);">Class Overview</h4>
-                        <p class="mb-0"><strong>Week:</strong> 8 — Mock 1 &nbsp;|&nbsp; <strong>Class:</strong> 16 of 24 &nbsp;|&nbsp; <strong>Duration:</strong> 75 min</p></div>
+                        <?php $pos = course_item_position($db, $ctxCourse, 'courses/CELPIP_Gen/lessons/week8_mock1_review.php'); ?><p class="mb-0"><?php if ($pos): ?><strong>Week:</strong> <?= (int) $pos['week'] ?> &nbsp;|&nbsp; <strong>Class:</strong> <?= (int) $pos['class'] ?> of <?= (int) $ctxCourse['classes'] ?> &nbsp;|&nbsp; <?php endif; ?><strong>Duration:</strong> 2 hours</p></div>
                     <div class="d-flex flex-wrap gap-2"><span class="badge-custom">Full 4-Skill Review</span></div>
                 </div>
             </div>
@@ -68,12 +68,12 @@ if (!can_access('intermediate')) {
 
             <div class="content-section">
                 <h2><i class="bi bi-bullseye me-2" style="color:#0b77ff;"></i>Setting a Realistic Band Estimate</h2>
-                <p>Using Mock 1's results, write down a realistic current CLB estimate per skill and compare it honestly against your Week 1 target. Your 4th practice sitting per skill (Weeks 9-10) and one full mock remain to close any gap.</p>
+                <p>Using Mock 1's results, write down a realistic current CLB estimate per skill and compare it honestly against your Week 1 target. Your remaining practice tests and mocks are where you close any gap.</p>
             </div>
 
             <div class="content-section">
-                <h2><i class="bi bi-house-heart me-2" style="color:#0b77ff;"></i>Before Week 9</h2>
-                <div class="highlight-box"><p class="mb-0">Finalize your comparison table and identify one specific priority per skill to focus on across Weeks 9-10.</p></div>
+                <h2><i class="bi bi-house-heart me-2" style="color:#0b77ff;"></i>Before Your Next Class</h2>
+                <div class="highlight-box"><p class="mb-0">Finalize your comparison table and identify one specific priority per skill to focus on over the coming weeks.</p></div>
             </div>
 
             <div class="action-buttons">

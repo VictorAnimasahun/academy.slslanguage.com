@@ -1,5 +1,5 @@
 <?php
-// Mock 1 Review — IELTS Academic Masterclass — 3 Months, Class 10, piece 1 (lesson).
+// Mock 1 Review — IELTS Academic Masterclass — 3 Months, Class 9, piece 1 (lesson).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -43,4 +43,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Sort mistakes by cause, fix the cause, and turn the results into three specific goals.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'IELTS_Aca_3Mo', 10, 1, ob_get_clean());
+render_lesson_shell($db, 'IELTS_Aca_3Mo', 9, 1, ob_get_clean());

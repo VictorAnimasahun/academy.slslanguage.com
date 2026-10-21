@@ -1,5 +1,5 @@
 <?php
-// Reading Time-Management — IELTS Academic Masterclass — 3 Months, Class 10, piece 2 (lesson).
+// Reading Time-Management — IELTS Academic Masterclass — 3 Months, Class 9, piece 2 (lesson).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -40,4 +40,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Three passages, twenty minutes each. Skim first, answer the quick marks first, and never leave a blank.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'IELTS_Aca_3Mo', 10, 2, ob_get_clean());
+render_lesson_shell($db, 'IELTS_Aca_3Mo', 9, 2, ob_get_clean());

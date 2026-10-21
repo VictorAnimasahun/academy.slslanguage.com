@@ -2098,7 +2098,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-21 | One transaction. Ran twice on local 8.0 and twice on MySQL 5.7.44 (copy with rows rolled back: direct links, durations, Week 1 title all re-applied); re-run clean; all 192 classes' titles still split into exactly their items. 162 page loads clean (every course page, every IELTS Academic/PTE/shared lesson page, week pages, dashboard, course detail, the new assessment page). |
-| Live  | [ ] | | Run, then sync the files from the same commit (it includes renamed pages and the 48 class-hub redirects). |
+| Live  | [x] | 2026-10-21 | Founder ran it in phpMyAdmin and synced the files (rsync checksum dry-run against live: files identical). |
 
 **What it does:** founder, 2026-10-21. CELPIP class-day tests that are one page open it directly (no launcher screen; writing days keep their two-task page). IELTS Academic 2/3-Month: Writing Task Overview moves from Class 2 (Week 1) to Class 5, before Writing Test 1. Week 1 of every 2/3-month course titled "Course & Exam Introduction" (old titles promised section work). Classes stored as 0/60/90 minutes become 120 (every class is two hours); CELPIP mock classes with no length become 180. The Foundational English Assessment items open the platform's own page `resources/placement/foundational_english_assessment.php` (outline; the founder writes the questions) and are Coming Soon until then; the old public quiz stays for the marketing site.
 
@@ -2109,7 +2109,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-21 | Needs 157. One transaction. Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 loaded from the real pre-158 state: classes moved once (the move only runs while each mock is still in its old class), second run a no-op; 192 classes' titles match their items; 265 page/API loads clean (every course page, course detail page, IELTS Academic/PTE/CELPIP/IELTS General lesson page in each course length, week pages, dashboard, app course data). |
-| Live  | [ ] | | Run 157 first, then this, then sync the files from the same commits. |
+| Live  | [x] | 2026-10-21 | Founder ran it after 157 and synced the files (rsync checksum dry-run against live: files identical). |
 
 **What it does:** founder, 2026-10-21. Crash courses (IELTS General, CELPIP, PTE, IELTS Academic 1-Month): Class 1 holds the whole introduction (Course Introduction, exam introduction, introduction quiz, Foundational English Assessment, diagnostic); Class 2 onward is sections; Week 1 titled "Introduction & First Steps". 2-month courses get Mock Test 1 at the end of Month 1: CELPIP 2-Month Classes 8-15 rotate (Mock 1 to Class 8, the rest one class later, in order; its schedule entry follows); IELTS Academic 2-Month Classes 8-10 rotate (Mock 1 to 8, its review to 9, the old 8 to 10; pages renamed). Each class keeps its plan level; only contents move; week titles follow. Shared CELPIP pages now read their class position from the course (includes/course_shape.php course_item_position()).
 
@@ -2121,3 +2121,14 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 - Always take a DB backup on LIVE before running any migration.
 - If a migration fails halfway on LIVE, run the rollback SQL, then restore from backup.
 - Mark the checkbox and date immediately after running — don't do it later from memory.
+
+---
+
+## 159 — 3-month courses: a mock at the end of each month (Weeks 4, 8 and 12)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-21 | Needs 158. One transaction. Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 loaded from the real pre-159 state: the moves ran once, the second run was a no-op, and the 5.7 result matches local row for row (92 item rows in courses 14 and 17). 192 classes' titles match their items; all 73 item pages in both courses open clean; app course data shows the new order. |
+| Live  | [ ] | | Run, then sync the files from the same commit (it includes three renamed IELTS Academic 3-Month pages). |
+
+**What it does:** founder, 2026-10-21: 3-month courses follow the 2-month rule, one mock at the end of each month. IELTS General and PTE 3-Month already had Weeks 4, 8 and 12. IELTS Academic 3-Month: Mock Test 1 moves from Class 9 to Class 8 (Week 4), its review to Class 9, the old Class 8 to Class 10 (pages renamed, as in the 2-Month course). CELPIP 3-Month: Mock Test 1 and its review move from Classes 15-16 to 8-9 (Weeks 4-5), Mock Test 2 and its review from Classes 21-22 to 16-17 (Weeks 8-9); every other class keeps its order around them; Mock 2 is renamed "Mock Test 2 — Full-Length, All 4 Sections" and its review "Mock 2 Review & Performance Trend", since Mock 3 is the final one. Each class keeps its plan level; week titles follow the contents. The CELPIP review pages read their week and class from the course.

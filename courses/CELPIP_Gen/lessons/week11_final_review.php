@@ -4,9 +4,9 @@ require_once INCLUDES_PATH . '/tier_access.php';
 require_once __DIR__ . '/course_context.php';
 if (!isset($_SESSION['user_id'])) { header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course"); exit(); }
 if (!can_access('intermediate')) {
-    ?><!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title><?= htmlspecialchars($ctxCourse['title']) ?> — Final Performance Review</title><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"><link href="../../../assets/css/courses.css" rel="stylesheet"><?php include INCLUDES_PATH . '/navbar_styles.php'; ?></head><body>
+    ?><!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title><?= htmlspecialchars($ctxCourse['title']) ?> — Mock 2 Review &amp; Performance Trend</title><meta name="viewport" content="width=device-width, initial-scale=1"><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"><link href="../../../assets/css/courses.css" rel="stylesheet"><?php include INCLUDES_PATH . '/navbar_styles.php'; ?></head><body>
     <?php include INCLUDES_PATH . '/mobile_header.php'; ?><div class="mobile-overlay" id="mobileOverlay"></div><?php include INCLUDES_PATH . '/navbar.php'; ?>
-    <main class="main-wrapper"><div class="course-card"><?php render_upgrade_prompt('intermediate', 'Final Performance Review'); ?></div></main>
+    <main class="main-wrapper"><div class="course-card"><?php render_upgrade_prompt('intermediate', 'Mock 2 Review & Performance Trend'); ?></div></main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script></body></html><?php exit();
 }
 ?>
@@ -14,7 +14,7 @@ if (!can_access('intermediate')) {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Final Performance Review</title>
+    <title><?= htmlspecialchars($ctxCourse['title']) ?> — Mock 2 Review &amp; Performance Trend</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -31,14 +31,14 @@ if (!can_access('intermediate')) {
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../../courses_catalogue.php" class="text-decoration-none">Courses</a></li>
                     <li class="breadcrumb-item"><a href="<?= htmlspecialchars($back['url']) ?>" class="text-decoration-none"><?= htmlspecialchars($back['name']) ?></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Final Performance Review</li>
+                    <li class="breadcrumb-item active" aria-current="page">Mock 2 Review &amp; Performance Trend</li>
                 </ol>
             </nav>
-            <h1 class="mb-3"><i class="bi bi-graph-up-arrow me-2" style="color:#0b77ff;"></i>Final Performance Review</h1>
+            <h1 class="mb-3"><i class="bi bi-graph-up-arrow me-2" style="color:#0b77ff;"></i>Mock 2 Review &amp; Performance Trend</h1>
             <div class="highlight-box">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                     <div><h4 class="mb-2" style="color:var(--accent);">Class Overview</h4>
-                        <p class="mb-0"><strong>Week:</strong> 11 — Mock 2 &nbsp;|&nbsp; <strong>Class:</strong> 22 of 24 &nbsp;|&nbsp; <strong>Duration:</strong> 75 min</p></div>
+                        <?php $pos = course_item_position($db, $ctxCourse, 'courses/CELPIP_Gen/lessons/week11_final_review.php'); ?><p class="mb-0"><?php if ($pos): ?><strong>Week:</strong> <?= (int) $pos['week'] ?> &nbsp;|&nbsp; <strong>Class:</strong> <?= (int) $pos['class'] ?> of <?= (int) $ctxCourse['classes'] ?> &nbsp;|&nbsp; <?php endif; ?><strong>Duration:</strong> 2 hours</p></div>
                     <div class="d-flex flex-wrap gap-2"><span class="badge-custom">vs. Mock 1 + All Checkpoints</span></div>
                 </div>
             </div>
@@ -60,8 +60,8 @@ if (!can_access('intermediate')) {
             <div class="content-section">
                 <h2><i class="bi bi-flag-fill me-2" style="color:#0b77ff;"></i>Reading the Trend Correctly</h2>
                 <div class="info-grid">
-                    <div class="info-card"><h4>Steadily improving</h4><p class="mb-0">Needs maintenance in Week 12, not new intervention — don't over-drill a skill that's already working.</p></div>
-                    <div class="info-card"><h4>Plateaued or dropped</h4><p class="mb-0">This is where Week 12's limited remaining time should go, even if its absolute score is higher than another skill's.</p></div>
+                    <div class="info-card"><h4>Steadily improving</h4><p class="mb-0">Needs maintenance in the final weeks, not new intervention — don't over-drill a skill that's already working.</p></div>
+                    <div class="info-card"><h4>Plateaued or dropped</h4><p class="mb-0">This is where your limited remaining time should go, even if its absolute score is higher than another skill's.</p></div>
                 </div>
             </div>
 
