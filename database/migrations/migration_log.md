@@ -2173,6 +2173,6 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-21 | One transaction, re-run safe. Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 from the real pre-163 state: identical (376 item rows). 192 classes' titles match their items; every item test code resolves. A temporary 3-Month student (deleted afterwards) opened both new tests unlocked; the course page links them; Listening 3's audio serves. |
-| Live  | [ ] | | Database only: run it (no files to sync). |
+| Live  | [x] | 2026-10-21 | Founder ran it. |
 
 **What it does:** founder, 2026-10-21 ("Known clashes" in documentation/CONTENT_BANK_MAP.md). Class 21's Reading Practice Test 2 had the same passages as Class 4's Reading Practice Test 1 (both Cambridge IELTS 15 GT Test 1): now Reading Practice Test 3. Class 23 repeated Class 7's Listening Practice Test 2: now Listening Practice Test 3. Item and class titles follow.
