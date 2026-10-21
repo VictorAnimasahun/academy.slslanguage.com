@@ -25,16 +25,13 @@ if (!isset(PROTECTED_READING_RESOURCES[$part])) {
 }
 $resource = PROTECTED_READING_RESOURCES[$part];
 
-if (!can_access($resource['min_tier'])) {
-    require_once INCLUDES_PATH . '/mobile_header.php';
-    require_once INCLUDES_PATH . '/navbar.php';
-    echo '<main class="main-wrapper" style="padding:3rem 1.5rem;display:flex;justify-content:center;">';
-    render_upgrade_prompt($resource['min_tier'], $resource['title']);
-    echo '</main>';
-    require_once INCLUDES_PATH . '/navbar_scripts.php';
-    exit;
+if (!protected_reading_unlocked($part)) {
+    require_once INCLUDES_PATH . '/course_lock.php';
+    require_course_enrollment(course_ids_for_folders($resource['courses']), $resource['title']);
 }
-
+// Opened from a CELPIP course (?from=, or the course the student was last in): back to it, and on to the next item.
+require_once ACADEMY_ROOT . '/courses/CELPIP_Gen/lessons/course_context.php';
+$nextItem = next_course_item($db, $ctxCourse, 'resources/protected_viewer/celpip_reading.php?part=' . $part);
 $manifestPath = ACADEMY_ROOT . '/protected_resources/' . $part . '/manifest.json';
 $manifest = file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : ['slides' => []];
 $totalSlides = count($manifest['slides']);
@@ -147,6 +144,13 @@ $studentEmail = $_SESSION['user_email'] ?? '';
             <button class="nav-btn" id="prevBtn"><i class="bi bi-chevron-left"></i> Previous</button>
             <span class="slide-counter" id="slideCounter">Slide 1 of <?= (int)$totalSlides ?></span>
             <button class="nav-btn" id="nextBtn">Next <i class="bi bi-chevron-right"></i></button>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 justify-content-center mb-3">
+            <?php if ($nextItem): ?>
+                <a href="<?= htmlspecialchars($nextItem['url']) ?>" class="btn btn-primary" style="background-color:#0b77ff;border-color:#0b77ff;">Next: <?= htmlspecialchars($nextItem['title']) ?> <i class="bi bi-arrow-right ms-1"></i></a>
+            <?php endif; ?>
+            <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-primary"><i class="bi bi-grid me-1"></i> Back to course</a>
         </div>
 
         <p class="protect-notice">

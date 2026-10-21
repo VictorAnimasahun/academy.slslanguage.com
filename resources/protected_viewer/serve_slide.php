@@ -23,7 +23,7 @@ if (!isset(PROTECTED_READING_RESOURCES[$part])) {
 }
 
 $resource = PROTECTED_READING_RESOURCES[$part];
-if (!can_access($resource['min_tier'])) {
+if (!protected_reading_unlocked($part)) {
     http_response_code(403);
     exit;
 }

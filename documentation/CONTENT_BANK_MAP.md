@@ -35,6 +35,22 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
 | Full Mock Test B — `celpip_full_mock_b.php` | `CELPIP_FULL_MOCK_B` (`CELPIP_FMB_*`) | Official CELPIP General Practice Test (Paragon) (073) | Mock Test 2: 2Mo c16; 3Mo c16 |
 | Mock Test 3 | — | — | Coming Soon (3Mo c24) |
 
+### CELPIP Reading lesson slides (the instructor's decks, migration 164)
+
+Shown in the protected viewer `resources/protected_viewer/celpip_reading.php?part=<key>` (watermarked, no download).
+Open to anyone enrolled in a CELPIP course (`includes/protected_reading_resources.php`). Source PowerPoints:
+`~/Downloads/Reading/` (copies in `~/Documents/CELPIP/Materials/Reading/`).
+
+| Deck (key) | What it teaches | Used by |
+|---|---|---|
+| Overview (`celpip_reading_overview`, 7 slides) | The four parts, timings, question types, score-to-CLB table | Crash c3; 2Mo c3; 3Mo c3 |
+| Part 1 (`celpip_reading_pt1`, 46) | Reading Correspondence: format, strategy, a real passage worked through | Crash c3; 2Mo c3; 3Mo c3 |
+| Part 2 (`celpip_reading_pt2`, 42) | Reading to Apply a Diagram | Crash c3; 2Mo c7; 3Mo c7 |
+| Part 3 (`celpip_reading_pt3`, 45) | Reading for Information | Crash c6; 2Mo c12; 3Mo c13 |
+| Part 4 (`celpip_reading_pt4`, 51) | Reading for Viewpoints | Crash c6; 2Mo c12; 3Mo c19 |
+| Identifying Paraphrases (`celpip_reading_paraphrases`, 32) | Questions never repeat the passage's words | Crash c3; 2Mo c3; 3Mo c3 |
+| Identifying Summaries (`celpip_reading_summaries`, 33) | Reduce to the key ideas, then reword | Crash c6; 2Mo c12; 3Mo c13 |
+
 ## IELTS General Training
 
 | Content | Test code(s) | Source | Used by |

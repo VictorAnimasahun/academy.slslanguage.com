@@ -186,14 +186,13 @@ if (!can_access('intermediate')) {
                 </div>
             </div>
 
-            <!-- Navigation -->
+            <!-- Navigation: the next item comes from the course, so it follows the class order (these buttons used to be
+                 typed in, and pointed backwards once the Reading classes moved) -->
+            <?php $nextItem = next_course_item($db, $ctxCourse, 'courses/CELPIP_Gen/lessons/month1_speaking_1to4.php'); ?>
             <div class="action-buttons">
-                <a href="<?= ACADEMY_URL ?>resources/protected_viewer/celpip_reading.php?part=celpip_reading_pt1" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Previous: Reading
-                </a>
-                <a href="<?= ACADEMY_URL ?>resources/protected_viewer/celpip_reading.php?part=celpip_reading_pt2" class="btn btn-primary" style="background-color: #0b77ff; border-color: #0b77ff;">
-                    Next: Reading — Extended Passage <i class="bi bi-arrow-right ms-1"></i>
-                </a>
+                <?php if ($nextItem): ?>
+                    <a href="<?= htmlspecialchars($nextItem['url']) ?>" class="btn btn-primary" style="background-color: #0b77ff; border-color: #0b77ff;">Next: <?= htmlspecialchars($nextItem['title']) ?> <i class="bi bi-arrow-right ms-1"></i></a>
+                <?php endif; ?>
                 <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-primary">
                     <i class="bi bi-grid me-1"></i> Course Overview
                 </a>

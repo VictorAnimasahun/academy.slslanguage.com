@@ -2176,3 +2176,14 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Live  | [x] | 2026-10-21 | Founder ran it. |
 
 **What it does:** founder, 2026-10-21 ("Known clashes" in documentation/CONTENT_BANK_MAP.md). Class 21's Reading Practice Test 2 had the same passages as Class 4's Reading Practice Test 1 (both Cambridge IELTS 15 GT Test 1): now Reading Practice Test 3. Class 23 repeated Class 7's Listening Practice Test 2: now Listening Practice Test 3. Item and class titles follow.
+
+---
+
+## 164 — The instructor's CELPIP Reading slide decks are the Reading lessons
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-21 | One transaction, re-run safe. Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 from the real pre-164 state: identical (388 item rows). 192 classes' titles match their items. A temporary CELPIP Crash Course student (deleted afterwards) opened all seven decks (Parts 3-4 included, previously tier-locked), each slide served, each viewer's Next led to the following item; an IELTS-only student was locked out of the page and the slide images (403); a real browser rendered the Paraphrases deck with its watermark. CELPIP course pages, the edited Crash Course pages and the dashboard load clean. |
+| Live  | [ ] | | Sync the files first (three new slide folders, viewer and access code), then run this. |
+
+**What it does:** founder, 2026-10-21 ("I sent you PowerPoints for four CELPIP reading classes and I can't find them"). The Part 1-4 decks had been imported on 2026-09-08 but no Masterclass item opened them (their Reading lessons opened ~150-word text pages); the Overview and Paraphrases & Summaries decks were never imported. Decks read slide by slide and placed by content: Overview + Part 1 + Paraphrases in the first Reading class; Part 2; Part 3 + Summaries; Part 4 (2-Month had no Part 4 lesson: now after Part 3 in Class 12). Crash Course: Class 3 = Overview, Parts 1-2, Paraphrases; Class 6 = Parts 3-4, Summaries, then the Reading test. Access by CELPIP enrollment instead of subscription tier. The slide viewer gets Next / Back to course; the Crash Course's typed-in Previous/Next buttons (pointing backwards after the class moves) now follow the course. Map: documentation/CONTENT_BANK_MAP.md.

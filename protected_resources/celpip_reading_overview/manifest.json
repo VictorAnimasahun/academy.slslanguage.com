@@ -1,0 +1,39 @@
+{
+    "slides": [
+        {
+            "n": 1,
+            "type": "text",
+            "file": "01.json"
+        },
+        {
+            "n": 2,
+            "type": "image",
+            "file": "02.jpg"
+        },
+        {
+            "n": 3,
+            "type": "image",
+            "file": "03.jpg"
+        },
+        {
+            "n": 4,
+            "type": "image",
+            "file": "04.jpg"
+        },
+        {
+            "n": 5,
+            "type": "image",
+            "file": "05.jpg"
+        },
+        {
+            "n": 6,
+            "type": "image",
+            "file": "06.jpg"
+        },
+        {
+            "n": 7,
+            "type": "image",
+            "file": "07.jpg"
+        }
+    ]
+}

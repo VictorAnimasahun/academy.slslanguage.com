@@ -37,10 +37,10 @@ if (!function_exists('course_by_folder')) {
         ] : null;
     }
 
-    /** Absolute URL for an item. Shared lesson pages need ?from=<folder> to know which course they're in. */
+    /** Absolute URL for an item. Shared lesson pages (and the slide viewer) need ?from=<folder> to know which course they're in. */
     function course_item_url(string $path, string $folder): string {
         $path = ltrim($path, '/');
-        if (str_starts_with($path, 'courses/')) {
+        if (str_starts_with($path, 'courses/') || str_starts_with($path, 'resources/protected_viewer/')) {
             $path .= (str_contains($path, '?') ? '&' : '?') . 'from=' . rawurlencode($folder);
         }
         return ACADEMY_URL . $path;

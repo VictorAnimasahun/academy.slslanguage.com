@@ -57,7 +57,7 @@ foreach ($partKeys as $key) {
         <p style="color:#6b7280;font-size:.9rem;margin-bottom:1.5rem;">This class covers more than one reading part — open each one below.</p>
 
         <?php foreach ($items as $key => $resource):
-            $unlocked = can_access($resource['min_tier']);
+            $unlocked = protected_reading_unlocked($key);
         ?>
         <div class="hub-item <?= $unlocked ? '' : 'locked' ?>">
             <span class="hub-item-title">
