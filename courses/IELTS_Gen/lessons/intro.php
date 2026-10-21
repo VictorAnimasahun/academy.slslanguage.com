@@ -343,7 +343,7 @@ if (!isset($_SESSION['user_id'])) {
                 <a href="class05.php" class="btn btn-outline-light btn-sm">Class 5</a>
                 <a href="class06.php" class="btn btn-outline-light btn-sm">Class 6</a>
                 <a href="class07.php" class="btn btn-outline-light btn-sm">Class 7</a>
-                <a href="class08.php" class="btn btn-outline-light btn-sm">Mock Test 1 (Class 8)</a>
+                <a href="../../../resources/mock_tests/ielts_full_mock_001.php" class="btn btn-outline-light btn-sm"><?= $ctxCourse['classes'] > 8 ? 'Mock Test 1' : 'Mock Test' ?> (Class 8)</a>
             </div>
             <hr style="border-color: rgba(255,255,255,0.3);">
             <a href="../../courses_catalogue.php" class="btn btn-outline-light btn-sm w-100">All Courses</a>

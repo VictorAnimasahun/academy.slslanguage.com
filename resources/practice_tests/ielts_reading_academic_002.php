@@ -9,7 +9,7 @@ require_once INCLUDES_PATH . '/course_lock.php';
 // Source: documentation/test_bank/cambridge_ielts17_academic/test2.json. The passages and questions are drawn from the array below; the answer key
 // lives in the database (migration 133) and is read by loadTestAnswers(). Open to students enrolled in IELTS Academic 2-Month or 3-Month
 // (staff, admins and testers always pass); the course ids are looked up by folder, never typed.
-require_course_enrollment(course_ids_for_folders(['IELTS_Aca_1Mo', 'IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Reading practice test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Aca_2Mo', 'IELTS_Aca_3Mo']), 'this IELTS Academic Reading practice test');
 
 $testCode  = 'IELTS_PT_R_ACA_002';
 $timeLimit = 60 * 60;

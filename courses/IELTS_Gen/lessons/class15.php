@@ -230,7 +230,7 @@ if ($__pacingBlockers) { ?>
 
             <div class="action-buttons">
                 <a href="class14.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-circle me-2"></i>Class 14</a>
-                <a href="class16.php" class="btn btn-warning btn-lg"><i class="bi bi-journal-richtext me-2"></i>Next: Mock Test 2 (Class 16)</a>
+                <a href="../../../resources/mock_tests/ielts_full_mock_002.php" class="btn btn-warning btn-lg"><i class="bi bi-journal-richtext me-2"></i>Next: Mock Test 2 (Class 16)</a>
                 <a href="../../../learning_dashboard.php" class="btn btn-outline-secondary"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
             </div>
         </div>
@@ -241,7 +241,7 @@ if ($__pacingBlockers) { ?>
             <div class="d-grid gap-1">
                 <a href="class14.php" class="btn btn-outline-light btn-sm">← Class 14</a>
                 <span class="btn btn-light btn-sm disabled fw-bold">Class 15 — Here</span>
-                <a href="class16.php" class="btn btn-warning btn-sm text-dark">Mock Test 2 (Class 16) →</a>
+                <a href="../../../resources/mock_tests/ielts_full_mock_002.php" class="btn btn-warning btn-sm text-dark">Mock Test 2 (Class 16) →</a>
                 <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-light btn-sm">Course Overview</a>
             </div>
         </div>

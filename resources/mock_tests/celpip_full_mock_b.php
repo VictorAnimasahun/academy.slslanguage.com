@@ -10,6 +10,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+resources");
     exit();
 }
+require_once INCLUDES_PATH . '/course_lock.php';
+require_course_enrollment(course_ids_for_folders(['CELPIP_Gen_2Mo', 'CELPIP_Gen_3Mo']), 'this CELPIP mock test');
 
 $student_id = (int)$_SESSION['user_id'];
 $action     = $_GET['action'] ?? '';

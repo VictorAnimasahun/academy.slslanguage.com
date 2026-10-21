@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 require_once INCLUDES_PATH . '/course_lock.php';
-require_course_enrollment(course_ids_for_folders(['IELTS_Gen_Mst', 'IELTS_Gen_1Mo', 'IELTS_Gen_2Mo']), 'this IELTS Writing practice test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Gen_Mst', 'IELTS_Gen_2Mo']), 'this IELTS Writing practice test');
 
 $testCode   = 'IELTS_PT_W2_003';
 $timeLimit  = 40 * 60;

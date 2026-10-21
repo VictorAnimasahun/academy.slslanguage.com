@@ -149,6 +149,7 @@ if ($__pacingBlockers) { ?>
             </div>
 
             <div class="action-buttons">
+                <a href="../../../resources/mock_tests/ielts_full_mock_002.php" class="btn btn-warning btn-lg"><i class="bi bi-play-fill me-2"></i>Start Mock Test</a>
                 <a href="class15.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-circle me-2"></i>Class 15</a>
                 <?php if ($ctxCourse['classes'] > 16): ?><a href="class17.php" class="btn btn-primary btn-lg"><i class="bi bi-play-circle me-2"></i>Start Month 3 — Class 17</a><?php else: ?><a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-primary btn-lg"><i class="bi bi-flag me-2"></i>Finish: back to course</a><?php endif; ?>
                 <a href="../../../learning_dashboard.php" class="btn btn-outline-secondary"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>

@@ -11,6 +11,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: ../../edu_hub_registration.php?message=Please+login+to+access+resources");
     exit();
 }
+require_once INCLUDES_PATH . '/course_lock.php';
+require_course_enrollment(course_ids_for_folders(['IELTS_Gen_Mst']), 'this IELTS General Training mock test');
 
 $student_id = (int)$_SESSION['user_id'];
 

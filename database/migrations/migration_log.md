@@ -2140,6 +2140,17 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-21 | One transaction, plain updates (re-run safe). Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 loaded from the real pre-160 state; identical result (106 item rows in courses 12, 13, 14, 23). 192 classes' titles match their items. A temporary crash-course student (deleted afterwards) opened the mock straight into Listening and opened Reading Test 2; both course pages link to them. |
-| Live  | [ ] | | Sync the files first (Reading Test 2's course lock), then run this. |
+| Live  | [x] | 2026-10-21 | Founder synced the file and ran it. |
 
 **What it does:** founder, 2026-10-21. CELPIP Crash Course Class 8 opened the short CELPIP Diagnostic Test as its "Practice Mock Exam"; it now opens CELPIP Full Mock Test A, the same Mock Test 1 as the Masterclasses, titled "Mock Test — Full-Length, All 4 Sections", 3 hours. IELTS Academic Crash Course Class 7 "Reading Test 2" (was Coming Soon) opens the Masterclasses' Reading Test 2; that page's course lock now includes the crash course. CELPIP full mock items without a test code get one, so a submitted mock counts towards its class. IELTS Academic Mock Test 1 stays Coming Soon everywhere: there is no IELTS Academic full mock yet (IELTS Full Mocks 1-4 are General Training).
+
+---
+
+## 161 — Crash courses sit Practice Test Set 1 + one mock; IELTS General mocks open the real Full Mocks
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-21 | One transaction (re-run safe). Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 from the real pre-161 state: identical result across all 376 item rows. 192 classes' titles match their items. Four temporary students (CELPIP, IELTS General and IELTS Academic crash courses, IELTS General 2-Month; deleted afterwards): 24/24 access checks right (Set 1 and Mock 1 open, Set 2+ and later mocks locked) and 89 page loads clean (every ready item, course pages, dashboard); app course data shows the new CELPIP tests. |
+| Live  | [ ] | | Sync the files first (page locks and IELTS General pages), then run this. |
+
+**What it does:** founder, 2026-10-21: crash courses use only their Masterclasses' Practice Test Set 1 and Mock Test 1. CELPIP Crash Course gains Set 1 (Listening c2, Reading c6, Writing + Speaking c7); IELTS Academic Crash Course loses Listening/Reading Test 2; IELTS General Crash Course loses Set 2 Listening; each crash course's one mock drops its number. Set 2+ test pages and Mock 2+ no longer admit crash-course students; the CELPIP and IELTS General full mocks are now locked to the courses that use them. IELTS General Mock Tests 1/2/3 open IELTS Full Mock Tests 1/2/4 (Full Mock 3's content is in the GT Diagnostic) and carry their test codes; the old briefing pages get a Start Mock Test button and the "Next: Mock Test" links open the mock directly. Content-to-course map: documentation/CONTENT_BANK_MAP.md.

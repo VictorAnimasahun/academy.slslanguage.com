@@ -185,6 +185,7 @@ if ($__pacingBlockers) { ?>
             </div>
 
             <div class="action-buttons">
+                <a href="../../../resources/mock_tests/ielts_full_mock_004.php" class="btn btn-warning btn-lg"><i class="bi bi-play-fill me-2"></i>Start Mock Test</a>
                 <a href="class23.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-circle me-2"></i>Class 23</a>
                 <span class="btn btn-success btn-lg disabled"><i class="bi bi-check-circle me-2"></i>Course Complete</span>
                 <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-secondary"><i class="bi bi-mortarboard me-2"></i>Course Overview</a>

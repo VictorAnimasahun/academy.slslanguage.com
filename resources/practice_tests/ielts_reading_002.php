@@ -8,7 +8,7 @@ require_once INCLUDES_PATH . '/course_lock.php';
 // IELTS General Training Reading Practice Test 2 = Cambridge IELTS 15 General Training, Test 1, Reading: three sections, 40 questions, 60 minutes.
 // Source: documentation/test_bank/cambridge_ielts15_gt/test1.json. Generated from the bank so the page and the answer key (migration 137) agree.
 // Open to students enrolled in the IELTS General courses (staff, admins and testers always pass); course ids are looked up by folder, never typed.
-require_course_enrollment(course_ids_for_folders(['IELTS_Gen_Mst', 'IELTS_Gen_1Mo', 'IELTS_Gen_2Mo']), 'this IELTS Reading practice test');
+require_course_enrollment(course_ids_for_folders(['IELTS_Gen_Mst', 'IELTS_Gen_2Mo']), 'this IELTS Reading practice test');
 
 $testCode  = 'IELTS_PT_R_002';
 $timeLimit = 60 * 60;

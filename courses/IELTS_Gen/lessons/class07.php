@@ -61,7 +61,7 @@ if ($__pacingBlockers) { ?>
                 <span class="badge-custom">Month 1 — Foundations</span>
                 <span class="badge-custom">Class 7 of <?= (int) $ctxCourse['classes'] ?></span>
                 <span class="badge-custom"><i class="bi bi-clock me-1"></i>90 min</span>
-                <span class="badge-custom" style="background:#eff6ff;color:#1d4ed8;border-color:#3b82f6;"><i class="bi bi-clipboard-check me-1"></i>Practice Test Set 2 — Listening</span>
+                <?php if ($ctxCourse['classes'] > 8): /* the crash course sits Set 1 only (migration 161) */ ?><span class="badge-custom" style="background:#eff6ff;color:#1d4ed8;border-color:#3b82f6;"><i class="bi bi-clipboard-check me-1"></i>Practice Test Set 2 — Listening</span><?php endif; ?>
             </div>
 
             <div class="content-section">
@@ -153,14 +153,14 @@ if ($__pacingBlockers) { ?>
             <div class="content-section">
                 <h2><i class="bi bi-house-heart me-2"></i>Take-Home Exercise</h2>
                 <div class="highlight-box">
-                    <h4 style="color:var(--accent);margin-top:0;">Complete Before Mock Test 1 (Class 8)</h4>
+                    <h4 style="color:var(--accent);margin-top:0;">Complete Before <?= $ctxCourse['classes'] > 8 ? 'Mock Test 1' : 'Mock Test' ?> (Class 8)</h4>
                     <p class="mb-0">Prepare keyword outlines (not full answers) for 3 Part 2 cue cards: (1) Describe a person who has influenced you. (2) Describe a memorable journey or trip. (3) Describe a skill you would like to learn and why. Practice speaking from your keyword notes for 2 minutes each — do not write full scripts.</p>
                 </div>
             </div>
 
             <div class="action-buttons">
                 <a href="class06.php" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-circle me-2"></i>Class 6</a>
-                <a href="class08.php" class="btn btn-warning btn-lg"><i class="bi bi-journal-richtext me-2"></i>Next: Mock Test 1 (Class 8)</a>
+                <a href="../../../resources/mock_tests/ielts_full_mock_001.php" class="btn btn-warning btn-lg"><i class="bi bi-journal-richtext me-2"></i>Next: <?= $ctxCourse['classes'] > 8 ? 'Mock Test 1' : 'Mock Test' ?> (Class 8)</a>
                 <a href="../../../learning_dashboard.php" class="btn btn-outline-secondary"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
             </div>
         </div>
@@ -172,7 +172,7 @@ if ($__pacingBlockers) { ?>
             <div class="d-grid gap-1">
                 <a href="class06.php" class="btn btn-outline-light btn-sm">← Class 6</a>
                 <span class="btn btn-light btn-sm disabled fw-bold">Class 7 — Here</span>
-                <a href="class08.php" class="btn btn-warning btn-sm text-dark">Mock Test 1 (Class 8) →</a>
+                <a href="../../../resources/mock_tests/ielts_full_mock_001.php" class="btn btn-warning btn-sm text-dark"><?= $ctxCourse['classes'] > 8 ? 'Mock Test 1' : 'Mock Test' ?> (Class 8) →</a>
                 <a href="<?= htmlspecialchars($back['url']) ?>" class="btn btn-outline-light btn-sm">Course Overview</a>
             </div>
         </div>
