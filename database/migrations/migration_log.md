@@ -2132,3 +2132,14 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Live  | [x] | 2026-10-21 | Founder synced the files and ran it. |
 
 **What it does:** founder, 2026-10-21: 3-month courses follow the 2-month rule, one mock at the end of each month. IELTS General and PTE 3-Month already had Weeks 4, 8 and 12. IELTS Academic 3-Month: Mock Test 1 moves from Class 9 to Class 8 (Week 4), its review to Class 9, the old Class 8 to Class 10 (pages renamed, as in the 2-Month course). CELPIP 3-Month: Mock Test 1 and its review move from Classes 15-16 to 8-9 (Weeks 4-5), Mock Test 2 and its review from Classes 21-22 to 16-17 (Weeks 8-9); every other class keeps its order around them; Mock 2 is renamed "Mock Test 2 — Full-Length, All 4 Sections" and its review "Mock 2 Review & Performance Trend", since Mock 3 is the final one. Each class keeps its plan level; week titles follow the contents. The CELPIP review pages read their week and class from the course.
+
+---
+
+## 160 — CELPIP Crash Course sits the real Mock Test; IELTS Academic Crash Course gets Reading Test 2
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-21 | One transaction, plain updates (re-run safe). Local tables backed up first. Ran twice on 8.0 and twice on MySQL 5.7.44 loaded from the real pre-160 state; identical result (106 item rows in courses 12, 13, 14, 23). 192 classes' titles match their items. A temporary crash-course student (deleted afterwards) opened the mock straight into Listening and opened Reading Test 2; both course pages link to them. |
+| Live  | [ ] | | Sync the files first (Reading Test 2's course lock), then run this. |
+
+**What it does:** founder, 2026-10-21. CELPIP Crash Course Class 8 opened the short CELPIP Diagnostic Test as its "Practice Mock Exam"; it now opens CELPIP Full Mock Test A, the same Mock Test 1 as the Masterclasses, titled "Mock Test — Full-Length, All 4 Sections", 3 hours. IELTS Academic Crash Course Class 7 "Reading Test 2" (was Coming Soon) opens the Masterclasses' Reading Test 2; that page's course lock now includes the crash course. CELPIP full mock items without a test code get one, so a submitted mock counts towards its class. IELTS Academic Mock Test 1 stays Coming Soon everywhere: there is no IELTS Academic full mock yet (IELTS Full Mocks 1-4 are General Training).
