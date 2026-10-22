@@ -181,7 +181,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
-    <main class="content container-fluid">
+    <main class="content container-fluid" style="width:auto;max-width:none;"><?php /* width:auto = the space beside the menu; Bootstrap's 100% plus the menu margin ran the page off the right edge */ ?>
         <?php
         // Orientation (migration 165): until it is done -- and a class plan exists for every course -- it is the first thing here.
         $needsOrientation = false;
@@ -194,18 +194,6 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             $needsOrientation = $o['courses'] > 0 && (!$o['done'] || $o['plans'] < $o['courses']);
         } catch (PDOException $e) { /* before migration 165 */ }
         ?>
-        <?php if ($needsOrientation): ?>
-            <div class="card border mt-3 mb-3" style="border-color:#bfdbfe !important;background:#eff6ff;">
-                <div class="card-body d-flex flex-wrap align-items-center gap-3">
-                    <i class="bi bi-compass" style="font-size:1.8rem;color:#0b77ff;"></i>
-                    <div style="flex:1;min-width:220px;">
-                        <div class="fw-bold">Start here: your orientation</div>
-                        <div class="text-muted" style="font-size:.9rem;">Ten minutes: see how the platform works, meet your tutor and set your class plan.</div>
-                    </div>
-                    <a href="orientation/index.php" class="btn" style="background:#0b77ff;border-color:#0b77ff;color:#fff;font-weight:600;">Start orientation</a>
-                </div>
-            </div>
-        <?php endif; ?>
         <?php if ($selarFlash): ?>
             <div class="alert alert-<?= $selarFlash['ok'] ? 'success' : 'danger' ?> mt-3"><?= htmlspecialchars($selarFlash['msg']) ?></div>
         <?php endif; ?>
@@ -238,6 +226,21 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             </div>
         <?php endforeach; ?>
         <div class="row align-items-start">
+            <?php /* Inside the grid, as wide as its two columns together (750px + a third), so the button never runs off the edge. */ ?>
+            <?php if ($needsOrientation): ?>
+            <div class="col-12" style="max-width:calc(750px + 33.333%);padding-right:1.5rem;">
+            <div class="card border mb-3" style="border-color:#bfdbfe !important;background:#eff6ff;">
+                <div class="card-body d-flex flex-wrap align-items-center gap-3">
+                    <i class="bi bi-compass" style="font-size:1.8rem;color:#0b77ff;"></i>
+                    <div style="flex:1;min-width:220px;">
+                        <div class="fw-bold">Start here: your orientation</div>
+                        <div class="text-muted" style="font-size:.9rem;">Ten minutes: see how the platform works, meet your tutor and set your class plan.</div>
+                    </div>
+                    <a href="orientation/index.php" class="btn" style="background:#0b77ff;border-color:#0b77ff;color:#fff;font-weight:600;">Start orientation</a>
+                </div>
+            </div>
+            </div>
+            <?php endif; ?>
 
             <!-- Left column -->
             <div class="col-lg-8" style="max-width:750px;">

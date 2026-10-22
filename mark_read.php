@@ -204,7 +204,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
     <!-- Main Content -->
-    <main class="content container-fluid">
+    <main class="content container-fluid" style="width:auto;max-width:none;">
         <div class="row">
             <div class="col-lg-9 mx-auto">
                 <a href="messages.php" class="back-link">
