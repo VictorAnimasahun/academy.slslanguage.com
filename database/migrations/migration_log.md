@@ -2206,6 +2206,6 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-22 | Ran twice on 8.0 and twice on MySQL 5.7.44: 35 garbled en dashes fixed (assignments.title, questions.instructions, tests.title, tests.description); a rescan of every text column finds none left. |
-| Live  | [ ] | | Database only: run it. |
+| Live  | [x] | 2026-10-22 | Founder ran it. |
 
 **What it does:** text saved through the wrong character set showed an en dash as "â€“" (e.g. the student dashboard's "CELPIP Reading â€“ Practice Test 1"). Puts the real characters back, for the en dash and the other common cases (em dash, curly quotes and apostrophe, ellipsis), in the columns titles and instructions come from. Only rows containing the garbled text are touched.
