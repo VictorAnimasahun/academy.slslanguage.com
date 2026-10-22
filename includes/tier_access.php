@@ -141,7 +141,7 @@ function render_upgrade_prompt(string $required_tier, string $content_label = 't
         margin: 1.5rem 0;
         max-width: 560px;
     ">
-        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
+        <div style="font-size: 2.5rem; margin-bottom: 1rem; color: #64748b;"><i class="bi bi-lock"></i></div>
         <h4 style="color: #1e293b; margin-bottom: 0.5rem;">
             This content is part of a paid course
         </h4>

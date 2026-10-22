@@ -52,7 +52,7 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
         <?php if (isset($userName)): ?>
         <span class="d-none d-xl-block text-muted exam-fs-hide" style="font-size:.85rem;">
             <?php if (isset($_GET['status']) && $_GET['status'] === 'registration_success'): ?>
-                Welcome, <?= htmlspecialchars($userName) ?>! 🎉
+                Welcome, <?= htmlspecialchars($userName) ?>
             <?php else: ?>
                 Welcome back, <?= htmlspecialchars($userName) ?>
             <?php endif; ?>
@@ -60,7 +60,7 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
         <?php endif; ?>
 
         <button id="themeToggle" class="btn btn-sm btn-outline-secondary exam-fs-hide" aria-label="Toggle dark mode">
-            🌙 Dark Mode
+            Dark Mode
         </button>
 
         <!-- Only shown on test/mock pages — see navbar_scripts.php, which

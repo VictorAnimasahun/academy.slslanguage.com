@@ -107,7 +107,7 @@ function require_course_enrollment(array $course_ids, string $content_label = 't
             <main class="content p-4">
                 <div class="container">
                     <div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:16px;padding:2.5rem 2rem;text-align:center;margin:1.5rem auto;max-width:560px;">
-                        <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+                        <div style="font-size:2.5rem;margin-bottom:1rem;color:#64748b;"><i class="bi bi-lock"></i></div>
                         <h4 style="color:#1e293b;margin-bottom:.5rem;">
                             Enroll to unlock <?= htmlspecialchars($content_label) ?>
                         </h4>

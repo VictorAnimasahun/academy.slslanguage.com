@@ -2198,3 +2198,14 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Live  | [ ] | | Run this first (the new pages read its tables), then sync the academy files and pull slslanguage.com. |
 
 **What it does:** founder, 2026-10-21 ("I want to organise my classes and students ... no missing classes or struggling to find resources for a class"). courses.tutor_employee_id (set under SLS Admin → Courses → Edit; students see "Your tutor"); student_orientation (orientation/index.php: platform tour with real screenshots, quiz, then the class plan and signed commitment); student_class_plans (one-to-one or group, days, time + time zone, hours per class, start date, weekly study hours, target, exam date); class_slot_log (SLS Admin → Class Planner: each class day held or cancelled; a cancelled day does not use up a class). Also in this release: lessons can be marked complete on the website (includes/lesson_complete_bar.php, api/lesson_complete_web.php -- until now only the app could).
+
+---
+
+## 166 — Garbled punctuation in titles and instructions
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-22 | Ran twice on 8.0 and twice on MySQL 5.7.44: 35 garbled en dashes fixed (assignments.title, questions.instructions, tests.title, tests.description); a rescan of every text column finds none left. |
+| Live  | [ ] | | Database only: run it. |
+
+**What it does:** text saved through the wrong character set showed an en dash as "â€“" (e.g. the student dashboard's "CELPIP Reading â€“ Practice Test 1"). Puts the real characters back, for the en dash and the other common cases (em dash, curly quotes and apostrophe, ellipsis), in the columns titles and instructions come from. Only rows containing the garbled text are touched.

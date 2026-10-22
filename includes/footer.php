@@ -7,7 +7,7 @@
     border-left:1px solid #e2e8f0;">
     <div style="padding:1.25rem 1.5rem; border-bottom:1px solid #e2e8f0;
                 display:flex; align-items:center; justify-content:space-between;">
-        <strong style="font-size:1rem;">📨 Messages</strong>
+        <strong style="font-size:1rem;">Messages</strong>
         <button id="msgDrawerClose" style="background:none;border:none;font-size:1.4rem;
             cursor:pointer;color:#64748b;line-height:1;">&times;</button>
     </div>

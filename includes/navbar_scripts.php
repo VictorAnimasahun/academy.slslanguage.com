@@ -16,7 +16,7 @@ include INCLUDES_PATH . '/lesson_complete_bar.php';
         document.body.classList.remove('light', 'dark');
         document.body.classList.add(saved);
         const btn = document.getElementById('themeToggle');
-        if (btn) btn.textContent = saved === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        if (btn) btn.textContent = saved === 'dark' ? 'Light Mode' : 'Dark Mode';
     })();
 
     // Restore sidebar-collapsed state before first paint (desktop only)
@@ -39,7 +39,7 @@ include INCLUDES_PATH . '/lesson_complete_bar.php';
                 const newTheme = isDark ? 'light' : 'dark';
                 document.body.classList.remove('light', 'dark');
                 document.body.classList.add(newTheme);
-                toggleBtn.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                toggleBtn.textContent = newTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
                 localStorage.setItem('eduhub-theme', newTheme);
             }, true);
         }

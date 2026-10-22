@@ -195,7 +195,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
         } catch (PDOException $e) { /* before migration 165 */ }
         ?>
         <?php if ($needsOrientation): ?>
-            <div class="card border mt-3" style="border-color:#bfdbfe !important;background:#eff6ff;">
+            <div class="card border mt-3 mb-3" style="border-color:#bfdbfe !important;background:#eff6ff;">
                 <div class="card-body d-flex flex-wrap align-items-center gap-3">
                     <i class="bi bi-compass" style="font-size:1.8rem;color:#0b77ff;"></i>
                     <div style="flex:1;min-width:220px;">
@@ -545,7 +545,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             document.body.classList.remove('light', 'dark');
             document.body.classList.add(saved);
             const btn = document.getElementById('themeToggle');
-            if (btn) btn.textContent = saved === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+            if (btn) btn.textContent = saved === 'dark' ? 'Light Mode' : 'Dark Mode';
         })();
 
         // Mobile menu
@@ -591,7 +591,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                 const newTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
                 document.body.classList.remove('light', 'dark');
                 document.body.classList.add(newTheme);
-                themeToggle.textContent = newTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                themeToggle.textContent = newTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
                 localStorage.setItem('eduhub-theme', newTheme);
             });
         }

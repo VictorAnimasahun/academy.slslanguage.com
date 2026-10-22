@@ -118,7 +118,7 @@ function render_pacing_gate(array $incompleteTitles, string $scheduleUrl): void 
         margin: 1.5rem 0;
         max-width: 560px;
     ">
-        <div style="font-size: 2.5rem; margin-bottom: 1rem;">📋</div>
+        <div style="font-size: 2.5rem; margin-bottom: 1rem; color: #64748b;"><i class="bi bi-list-check"></i></div>
         <h3 style="font-weight: 700; margin-bottom: .5rem;">Finish earlier tasks first</h3>
         <p style="color: #64748b; margin-bottom: 1.25rem;">
             Complete <?= count($incompleteTitles) === 1 ? 'this item' : 'these ' . count($incompleteTitles) . ' items' ?> from earlier classes before moving on:

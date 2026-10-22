@@ -328,7 +328,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             body.classList.add(theme);
             
             if (toggleBtn) {
-                toggleBtn.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+                toggleBtn.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
                 toggleBtn.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
             }
         }
