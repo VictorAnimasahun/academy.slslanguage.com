@@ -19,12 +19,9 @@ include INCLUDES_PATH . '/lesson_complete_bar.php';
         if (btn) btn.textContent = saved === 'dark' ? 'Light Mode' : 'Dark Mode';
     })();
 
-    // Restore sidebar-collapsed state before first paint (desktop only)
-    (function() {
-        if (window.innerWidth >= 1200 && localStorage.getItem('eduhub-sidebar-collapsed') === 'true') {
-            document.body.classList.add('sidebar-collapsed');
-        }
-    })();
+    // The menu used to have a "minimise" button that hid it; it is a slim icon rail now with no such button, so
+    // forget any saved hidden state (otherwise those visitors would have no way to bring the menu back).
+    try { localStorage.removeItem('eduhub-sidebar-collapsed'); } catch (e) {}
 
     document.addEventListener('DOMContentLoaded', function() {
 

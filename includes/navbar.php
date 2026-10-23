@@ -1,75 +1,45 @@
 <?php
 $current_page = basename($_SERVER['PHP_SELF']);
+require_once __DIR__ . '/nav_icons.php';
+
+// The left menu: a slim rail of icons; each shows its name on hover (founder, 2026-10-23, after Canvas's menu).
+// On phones it opens from the header's menu button and shows each name beside its icon (there is no hover there).
+$navItems = [
+    ['dashboard',     'Dashboard',     'learning_dashboard.php',                     $current_page == 'learning_dashboard.php'],
+    ['courses',       'Courses',       'courses/courses_catalogue.php',              strpos($current_page, 'courses') !== false],
+    ['students',      'Students',      'students.php',                               $current_page == 'students.php'],
+    ['assignments',   'Assignments',   'assignments.php',                            $current_page == 'assignments.php'],
+    ['mentors',       'Mentors',       'mentors.php',                                $current_page == 'mentors.php'],
+    ['results',       'My Results',    'resources/practice_tests/my_results.php',    $current_page == 'my_results.php'],
+    ['resources',     'Resources',     'resources/resources_home.php',               strpos($_SERVER['PHP_SELF'], '/resources/') !== false && $current_page !== 'my_results.php'],
+    ['messages',      'Messages',      'threads.php',                                in_array($current_page, ['threads.php', 'thread_view.php'])],
+    // notifications.php is a unified feed (announcements + unread messages + assignment-due + event reminders);
+    // get_unread_count.php counts across both sources and fills the badge.
+    ['notifications', 'Notifications', 'notifications.php',                          in_array($current_page, ['notifications.php', 'messages.php', 'message_view.php'])],
+    ['analytics',     'Analytics',     'analytics.php',                              $current_page == 'analytics.php'],
+    ['events',        'Events',        'events.php',                                 $current_page == 'events.php'],
+];
 ?>
 
-<aside class="sidebar d-flex flex-column" role="navigation">
+<aside class="sidebar d-flex flex-column" role="navigation" aria-label="Main menu">
 
     <nav class="nav flex-column gap-1">
-        <a class="nav-link <?php echo ($current_page == 'learning_dashboard.php') ? 'active' : ''; ?>" 
-           href="<?php echo ACADEMY_URL; ?>learning_dashboard.php">
-            Dashboard
-        </a>
+        <?php foreach ($navItems as [$icon, $label, $href, $active]): ?>
+            <a class="nav-link <?= $active ? 'active' : '' ?>" href="<?= ACADEMY_URL . $href ?>" aria-label="<?= $label ?>"
+               <?= $icon === 'notifications' ? 'id="msgNavLink"' : '' ?>>
+                <?= nav_icon($icon) ?>
+                <span class="nav-label"><?= $label ?></span>
+                <?php if ($icon === 'notifications'): ?>
+                    <span class="navbar-badge-unread badge bg-danger" style="display:none;">0</span>
+                <?php endif; ?>
+            </a>
+        <?php endforeach; ?>
+    </nav>
 
-        <a class="nav-link <?php echo (strpos($current_page, 'courses') !== false) ? 'active' : ''; ?>" 
-           href="<?php echo ACADEMY_URL; ?>courses/courses_catalogue.php">
-            Courses
-        </a>
-
-        <a class="nav-link <?php echo ($current_page == 'students.php') ? 'active' : ''; ?>"
-           href="<?php echo ACADEMY_URL; ?>students.php">
-            Students
-        </a>
-        <a class="nav-link <?php echo ($current_page == 'assignments.php') ? 'active' : ''; ?>"
-           href="<?php echo ACADEMY_URL; ?>assignments.php">
-            Assignments
-        </a>
-        <a class="nav-link <?php echo ($current_page == 'mentors.php') ? 'active' : ''; ?>"
-           href="<?php echo ACADEMY_URL; ?>mentors.php">
-            Mentors
-        </a>
-
-        <a class="nav-link <?php echo ($current_page == 'my_results.php') ? 'active' : ''; ?>"
-           href="<?php echo ACADEMY_URL; ?>resources/practice_tests/my_results.php">
-            My Results
-        </a>
-
-        <a class="nav-link <?php echo (strpos($_SERVER['PHP_SELF'], '/resources/') !== false && $current_page !== 'my_results.php') ? 'active' : ''; ?>"
-           href="<?php echo ACADEMY_URL; ?>resources/resources_home.php">
-            Resources
-        </a>
-
-
-		<a class="nav-link <?php echo (in_array($current_page, ['threads.php', 'thread_view.php'])) ? 'active' : ''; ?>"
-		   href="<?php echo ACADEMY_URL; ?>threads.php">
-            Messages
-		</a>
-
-		<!-- notifications.php is a unified feed (announcements + unread messages + assignment-due +
-		     event reminders); this used to point straight at messages.php (the broadcast
-		     announcement list), which is still where an announcement row itself opens
-		     (message_view.php). get_unread_count.php now counts across both sources. -->
-		<a class="nav-link <?php echo (in_array($current_page, ['notifications.php', 'messages.php', 'message_view.php'])) ? 'active' : ''; ?>"
-		   href="<?php echo ACADEMY_URL; ?>notifications.php"
-		   id="msgNavLink" style="display:flex;align-items:center;white-space:nowrap;">
-            Notifications
-				<span class="navbar-badge-unread badge bg-danger ms-1"
-					style="font-size:0.7rem; animation:pulse 1.8s infinite; display:none;">
-					0
-				</span>
-		</a>
-
-	
-        <a class="nav-link <?php echo ($current_page == 'analytics.php') ? 'active' : ''; ?>"
-           href="<?php echo ACADEMY_URL; ?>analytics.php">
-            Analytics
-        </a>
-        <a class="nav-link <?php echo ($current_page == 'events.php') ? 'active' : ''; ?>"
-           href="<?php echo ACADEMY_URL; ?>events.php">
-            Events
-        </a>
-
-        <a class="nav-link mt-2" href="<?php echo ACADEMY_URL; ?>edu_hub_logout.php">
-            Logout
+    <nav class="nav flex-column mt-auto">
+        <a class="nav-link" href="<?= ACADEMY_URL ?>edu_hub_logout.php" aria-label="Log out">
+            <?= nav_icon('logout') ?>
+            <span class="nav-label">Log out</span>
         </a>
     </nav>
 </aside>

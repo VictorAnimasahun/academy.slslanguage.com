@@ -1,16 +1,17 @@
 <style>
 	:root {
-		--sidebar-bg: #0e1526;
-		--sidebar-ink: #c7cedd;
-		--sidebar-ink-active: #ffffff;
-		--sidebar-hover-bg: rgba(255,255,255,0.06);
-		--sidebar-active-bg: #18213a;
+		/* White menu and right column (founder, 2026-10-23: "change those black backgrounds back to white"). */
+		--sidebar-bg: #ffffff;
+		--sidebar-ink: #475569;
+		--sidebar-ink-active: #0b77ff;
+		--sidebar-hover-bg: #f1f5f9;
+		--sidebar-active-bg: #eff6ff;
 		--accent: #0b77ff;
 		--muted: #6b7280;
 		--card-radius: 14px;
 		--soft: #eef6ff;
 		--topbar-h: 60px;
-		--sidebar-w: 180px;
+		--sidebar-w: 72px;   /* a slim rail of icons; names show on hover */
 		--advert-w: 220px;
 	}
 
@@ -149,54 +150,92 @@
 		z-index: 999;
 	}
 
-	/* ── Sidebar ──────────────────────────────────────────────────── */
+	/* ── Sidebar: a slim rail of icons, each name shown on hover (founder, 2026-10-23, after Canvas) ── */
 	.sidebar {
 		width: var(--sidebar-w);
 		background: var(--sidebar-bg);
 		min-height: 100vh;
-		border-right: 1px solid rgba(255,255,255,0.06);
+		border-right: 1px solid #e2e8f0;
 		position: fixed;
 		top: 0;
 		left: 0;
-		padding: 1.25rem;
+		padding: .75rem 0;
+		align-items: center;
 		z-index: 1000;
 		transition: transform 0.3s ease;
 	}
 
-	.sidebar .brand {
-		font-weight: 700;
-		font-size: 1.125rem;
-		display: flex;
-		align-items: center;
-		gap: .75rem;
-		color: #fff;
-	}
+	.sidebar .nav { align-items: center; }
 
 	.sidebar .nav-link {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		padding: 0;
 		color: var(--sidebar-ink);
-		border-radius: .75rem;
-		padding: .6rem .8rem;
-		transition: all 0.2s ease;
+		border-radius: 12px;
+		transition: background .15s ease, color .15s ease;
 	}
 
 	.sidebar .nav-link:hover {
 		background: var(--sidebar-hover-bg);
-		color: var(--sidebar-ink-active);
+		color: #0f172a;
 	}
 
 	.sidebar .nav-link.active {
 		background: var(--sidebar-active-bg);
 		color: var(--sidebar-ink-active);
-		font-weight: 600;
 	}
 
-	/* ── Desktop sidebar collapse ─────────────────────────────────── */
-	body.sidebar-collapsed .sidebar {
-		transform: translateX(-100%);
+	/* The name: a dark label to the right of the icon, on hover or keyboard focus. */
+	.sidebar .nav-label {
+		position: absolute;
+		left: calc(100% + 12px);
+		top: 50%;
+		transform: translate(-4px, -50%);
+		background: #0f172a;
+		color: #fff;
+		font-size: .82rem;
+		font-weight: 600;
+		white-space: nowrap;
+		padding: .4rem .65rem;
+		border-radius: 6px;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity .12s ease, transform .12s ease;
+		z-index: 1100;
 	}
-	body.sidebar-collapsed .main-wrapper {
-		margin-left: 0 !important;
+	.sidebar .nav-label::before {
+		content: '';
+		position: absolute;
+		right: 100%;
+		top: 50%;
+		transform: translateY(-50%);
+		border: 6px solid transparent;
+		border-right-color: #0f172a;
 	}
+	.sidebar .nav-link:hover .nav-label,
+	.sidebar .nav-link:focus-visible .nav-label {
+		opacity: 1;
+		transform: translate(0, -50%);
+	}
+
+	/* Unread count: a small badge on the bell. */
+	.sidebar .navbar-badge-unread {
+		position: absolute;
+		top: 4px;
+		right: 2px;
+		font-size: .62rem;
+		padding: .2em .4em;
+		border-radius: 999px;
+	}
+
+	/* The old "minimise menu" state has no button any more: never hide the rail on a computer. */
+	body.sidebar-collapsed .sidebar { transform: none; }
+	body.sidebar-collapsed .main-wrapper { margin-left: var(--sidebar-w) !important; }
 
 	/* ── Shared pill/logo ─────────────────────────────────────────── */
 	.blue-pill {
@@ -255,13 +294,13 @@
 		right: 0;
 		height: 100vh;
 		background: var(--sidebar-bg);
-		border-left: 1px solid rgba(255,255,255,0.06);
+		border-left: 1px solid #e2e8f0;
 		padding: 1.25rem;
 		overflow-y: auto;
 	}
 
 	.advert-sidebar .text-muted {
-		color: #94a3b8 !important;
+		color: #64748b !important;
 	}
 
 	/* ── Content card styles ──────────────────────────────────────── */
@@ -353,10 +392,23 @@
 		/* Hide desktop topbar — mobile-header takes over */
 		.topbar { display: none; }
 
+		/* Phones open the menu as a drawer with each name beside its icon (no hover on a touch screen). */
 		.sidebar {
 			transform: translateX(-100%);
-			border-right: 1px solid rgba(255,255,255,0.08);
+			width: 240px;
+			padding: calc(70px + 1rem) .75rem 1rem;   /* starts below the phone header, so the first item shows */
+			align-items: stretch;
 		}
+		.sidebar .nav { align-items: stretch; }
+		.sidebar .nav-link { width: auto; justify-content: flex-start; gap: .85rem; padding: 0 .85rem; }
+		.sidebar .nav-label {
+			position: static; transform: none; opacity: 1; background: none; color: inherit;
+			padding: 0; font-size: .95rem; font-weight: 500;
+		}
+		.sidebar .nav-label::before { display: none; }
+		.sidebar .navbar-badge-unread { position: static; margin-left: auto; }
+		body.sidebar-collapsed .sidebar { transform: translateX(-100%); }
+		body.sidebar-collapsed .sidebar.active { transform: translateX(0); }
 
 		.sidebar.active {
 			transform: translateX(0);

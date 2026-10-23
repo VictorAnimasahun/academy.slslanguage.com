@@ -14,6 +14,7 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
     .sidebar {
         top: var(--topbar-h);
         height: calc(100vh - var(--topbar-h));
+        min-height: 0;   /* or the rail runs past the bottom of the screen and Log out is hidden */
     }
     .advert-sidebar {
         top: var(--topbar-h);
@@ -26,13 +27,8 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
 </style>
 <header class="topbar">
 
-    <!-- Left: toggle + brand -->
+    <!-- Left: brand (the menu is a slim icon rail now, so there is nothing to minimise) -->
     <div class="d-flex align-items-center gap-2 exam-fs-hide">
-        <button id="sidebarToggle" class="btn btn-link p-1"
-                aria-label="Toggle sidebar"
-                style="color:#334155;font-size:1.45rem;line-height:1;text-decoration:none;">
-            <i class="bi bi-list"></i>
-        </button>
         <a href="<?php echo ACADEMY_URL; ?>learning_dashboard.php"
            class="text-decoration-none d-flex align-items-center gap-2">
             <div class="blue-pill"><i class="bi bi-mortarboard-fill"></i></div>

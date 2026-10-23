@@ -285,41 +285,28 @@ function renderWeekPanel(PDO $db, int $courseId, int $studentId, ?int $moduleId 
     $stmt->execute([$moduleId]);
     $lessons = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Flat, quiet: white box, hairline border, plain text with a link under each line.
-    $sec = 'font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:#5b6673;margin:.8rem 0 .2rem;';
-    $a   = 'font-size:.78rem;';
-    $o  = '<div class="week-panel" style="background:#fff;border:1px solid #d7dce0;border-top:3px solid #1e3a5f;padding:.8rem .9rem;color:#1f2937;font-size:.84rem;line-height:1.4;">';
-    $o .= '<div style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:#5b6673;">This week &middot; ' . $pos . ' of ' . count($mods) . '</div>';
-    $o .= '<div style="font-weight:700;font-size:.95rem;margin:.15rem 0 .4rem;">' . $h($b['module']['module_title']) . '</div>';
+    // Headings only (founder, 2026-10-23: "reduce the text in the quick links on the right. The headings should be
+    // good enough"): each line is a link into the class or the matching part of the full week page.
+    $row  = 'display:block;padding:.4rem 0;border-bottom:1px solid #eef1f4;text-decoration:none;font-weight:600;color:#0f172a;';
+    $o  = '<div class="week-panel" style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:.8rem .9rem;color:#1f2937;font-size:.88rem;line-height:1.4;">';
+    $o .= '<div style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:#64748b;">This week &middot; ' . $pos . ' of ' . count($mods) . '</div>';
+    $o .= '<div style="font-weight:700;font-size:.95rem;margin:.15rem 0 .45rem;">' . $h($b['module']['module_title']) . '</div>';
 
-    // Classes
-    if (!$lessons) $o .= '<div style="color:#5b6673;">Classes for this week are still being prepared.</div>';
-    foreach ($lessons as $l) {
+    foreach ($lessons as $i => $l) {
         $need = ['beginner'=>1,'intermediate'=>2,'advanced'=>3,'fluent'=>4][$l['min_tier']] ?? 1;
         $locked = $tier < $need;
         $fp = (string)$l['file_path'];
         if ($locked) $href = ACADEMY_URL . 'courses/courses_catalogue.php';
         elseif ($fp === '') $href = weekIntroUrl($moduleId, 'classes');
         else $href = ACADEMY_URL . $fp . (str_contains($fp, '?') ? '&' : '?') . 'from=' . urlencode($courseFolder);
-        $mark = isset($done[(int)$l['id']]) ? '&#10003; ' : ($locked ? '&#128274; ' : '');
-        $o .= '<div style="padding:.25rem 0;border-bottom:1px solid #eef1f4;"><a href="' . $h($href) . '" style="text-decoration:none;">' . $mark . lesson_title_html($l['title'], $h) . '</a></div>';
+        $state = isset($done[(int)$l['id']]) ? ' <span style="color:#16a34a;font-weight:500;">&middot; done</span>'
+               : ($locked ? ' <span style="color:#94a3b8;font-weight:500;">&middot; locked</span>' : '');
+        $o .= '<a href="' . $h($href) . '" style="' . $row . '">Class ' . ($i + 1) . $state . '</a>';
     }
-
-    if ($b['summary'] !== '') {
-        $short = mb_strlen($b['summary']) > 100 ? mb_substr($b['summary'], 0, 97) . '…' : $b['summary'];
-        $o .= '<div style="' . $sec . '">Summary</div><div>' . $h($short) . '</div><a href="' . $h(weekIntroUrl($moduleId, 'summary')) . '" style="' . $a . '">Read the summary</a>';
-    }
-    $o .= '<div style="' . $sec . '">Tests</div><div>' . $h($b['tests_message']) . '</div><a href="' . $h(weekIntroUrl($moduleId, 'tests')) . '" style="' . $a . '">See tests &amp; quizzes</a>';
-    if ($b['vocab']) {
-        $words = array_slice(array_column($b['vocab'], 'headword'), 0, 5);
-        $o .= '<div style="' . $sec . '">Vocabulary</div><div>' . count($b['vocab']) . ' words: ' . $h(implode(', ', $words)) . (count($b['vocab']) > 5 ? '…' : '') . '</div>'
-            . '<a href="' . $h(weekIntroUrl($moduleId, 'vocab')) . '" style="' . $a . '">Open the vocabulary sheet</a>';
-    }
-    if ($b['resources']) {
-        $o .= '<div style="' . $sec . '">Resources</div><div>' . count($b['resources']) . ' item' . (count($b['resources']) === 1 ? '' : 's') . '</div>'
-            . '<a href="' . $h(weekIntroUrl($moduleId, 'resources')) . '" style="' . $a . '">See resources</a>';
-    }
-    $o .= '<div style="margin-top:.9rem;padding-top:.6rem;border-top:1px solid #d7dce0;"><a href="' . $h(weekIntroUrl($moduleId)) . '" style="font-weight:600;">Full week introduction &rarr;</a></div>';
+    $o .= '<a href="' . $h(weekIntroUrl($moduleId, 'tests')) . '" style="' . $row . '">Tests &amp; quizzes</a>';
+    if ($b['vocab'])     $o .= '<a href="' . $h(weekIntroUrl($moduleId, 'vocab')) . '" style="' . $row . '">Vocabulary</a>';
+    if ($b['resources']) $o .= '<a href="' . $h(weekIntroUrl($moduleId, 'resources')) . '" style="' . $row . '">Resources</a>';
+    $o .= '<a href="' . $h(weekIntroUrl($moduleId)) . '" style="display:block;padding-top:.55rem;font-weight:600;color:#0b77ff;text-decoration:none;">Full week introduction &rarr;</a>';
     $o .= '</div>';
     return $o;
 }
