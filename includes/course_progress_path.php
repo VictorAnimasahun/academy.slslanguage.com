@@ -1,8 +1,7 @@
 <?php
 /**
- * Course "Progress path" accordion -- one week open at a time, completion
- * shown on every week, mock weeks/classes tinted. Replaces the per-course
- * copies of the Bootstrap accordion on course_overview.php pages.
+ * Course content on the course_overview.php pages: a one-line progress summary, then a list of weeks on the left
+ * and the chosen week's classes on the right, each class opening to its pieces (Coursera-style, 2026-10-23).
  *
  * Needs assets/css/progress_path.css and Bootstrap's JS (collapse) on the page.
  *
@@ -27,14 +26,6 @@
 
 if (defined('COURSE_PROGRESS_PATH_LOADED')) return;
 define('COURSE_PROGRESS_PATH_LOADED', true);
-
-// Week colours: number/ring colour and, for mock weeks, the soft band tint.
-const PP_PALETTE = [
-    ['accent' => '#3d7a5a', 'tint' => '#e3f0e6'], // green
-    ['accent' => '#3b5ba5', 'tint' => '#e4e9f5'], // blue
-    ['accent' => '#2f7480', 'tint' => '#dcedf0'], // teal
-    ['accent' => '#6a4c9c', 'tint' => '#ebe5f4'], // purple
-];
 
 /**
  * What sits inside each class: the class lesson itself is added by the
@@ -152,49 +143,51 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
 
     $unit = stripos((string) (reset($modules)['title'] ?? ''), 'month') === 0 ? 'month' : 'week';
     $pct = $totalClasses ? round($totalDone / $totalClasses * 100) : 0;
-    $out  = '<div class="pp-summary"><div class="pp-summary-title">' . $totalDone . ' of ' . $totalClasses . ' classes complete</div>';
+
+    // Summary: progress and where to go next, in one line (founder, 2026-10-23: "Up next: Class 1" is enough, not
+    // every piece of the class).
+    $out  = '<div class="pp-summary"><div class="pp-summary-row"><span class="pp-summary-title">' . $totalDone . ' of ' . $totalClasses . ' classes complete</span>';
+    if ($next) {
+        $label = 'Class ' . (int) $next['num'] . ', ' . $unit . ' ' . (int) $next['week'];
+        $out .= '<span class="pp-next">Up next: ' . ($next['url'] ? '<a href="' . $h($next['url']) . '">' . $label . ' <i class="bi bi-arrow-right"></i></a>' : $label) . '</span>';
+    } else {
+        $out .= '<span class="pp-next">All classes complete. Well done!</span>';
+    }
+    $out .= '</div><div class="pp-bar" role="progressbar" aria-label="Course progress" aria-valuenow="' . $pct . '" aria-valuemin="0" aria-valuemax="100"><span style="width:' . $pct . '%"></span></div>';
     // The course's designated tutor (migration 165).
     if ($folder !== '' && isset($GLOBALS['db']) && $GLOBALS['db'] instanceof PDO) {
         require_once __DIR__ . '/course_shape.php';
         if ($tutor = course_tutor($GLOBALS['db'], $folder)) {
-            $out .= '<div class="pp-tutor" style="font-size:.85rem;color:#475569;margin:.15rem 0 .35rem;"><i class="bi bi-person-video3 me-1"></i>Your tutor: <strong>' . $h($tutor['name']) . '</strong></div>';
+            $out .= '<div class="pp-tutor">Your tutor: <strong>' . $h($tutor['name']) . '</strong></div>';
         }
     }
-    $out .= '<div class="pp-bar" role="progressbar" aria-valuenow="' . $pct . '" aria-valuemin="0" aria-valuemax="100"><span style="width:' . $pct . '%"></span></div>';
-    if ($next) {
-        $label = lesson_title_html($next['lesson']['title'], $h);
-        if ($next['url']) $label = '<a href="' . $h($next['url']) . '">' . $label . '</a>';
-        $out .= '<div class="pp-next">Up next: Class ' . (int) $next['num'] . ', ' . $unit . ' ' . (int) $next['week'] . $label . '</div>';
-    } else {
-        $out .= '<div class="pp-next">All classes complete. Well done!</div>';
-    }
-    $out .= '</div><div id="progressPath">';
+    $out .= '</div>';
 
-    // Pass 2: render each week.
-    $i = 0;
+    // Pass 2: a list of weeks on the left (Coursera-style, founder 2026-10-23) and the chosen week's classes on the
+    // right. The week the student is in is shown first; each class opens to its pieces.
+    $nav = ''; $panels = '';
     foreach ($weeks as $weekNum => $w) {
-        $palette  = PP_PALETTE[$i % count(PP_PALETTE)]; $i++;
         $isMock   = in_array($weekNum, $mockWeeks, true);
         $isOpen   = ($weekNum === $currentWeek);
         $complete = $w['count'] > 0 && $w['done'] === $w['count'];
-        $ringPct  = $w['count'] ? round($w['done'] / $w['count'] * 100) : 0;
-        $cid      = 'pp-week-' . (int) $weekNum;
-        $style    = '--accent:' . $palette['accent'] . ';--tint:' . $palette['tint'] . ';--accent-week:' . $palette['accent'] . ';';
+        $locked   = $w['count'] > 0 && !array_filter($w['classes'], fn($c) => $c['tierOk']);
+        $pid      = 'pp-week-' . (int) $weekNum;
+        $ico      = $complete ? '<i class="bi bi-check-circle-fill pp-wk-ico is-done"></i>'
+                  : ($locked ? '<i class="bi bi-lock pp-wk-ico"></i>' : '<span class="pp-wk-ico is-todo"></span>');
+        $nav .= '<button type="button" class="pp-wk' . ($isOpen ? ' is-active' : '') . '" role="tab" id="' . $pid . '-tab" aria-controls="' . $pid
+              . '" aria-selected="' . ($isOpen ? 'true' : 'false') . '" data-pp-week="' . $pid . '">' . $ico
+              . '<span>' . ucfirst($unit) . ' ' . (int) $weekNum . '</span>' . ($isMock ? '<span class="pp-pill mock">Mock</span>' : '') . '</button>';
 
-        $out .= '<div class="pp-week' . ($isOpen ? ' is-open' : '') . ($isMock ? ' is-mock' : '') . '" style="' . $style . '">';
-        $out .= '<button class="pp-toggle' . ($isOpen ? '' : ' collapsed') . '" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cid . '" aria-expanded="' . ($isOpen ? 'true' : 'false') . '" aria-controls="' . $cid . '">';
-        $out .= '<div class="pp-ring' . ($complete ? ' is-done' : '') . '" style="--p:' . $ringPct . ';--c:' . ($complete ? '#3d7a5a' : $palette['accent']) . ';"><span>'
-              . ($complete ? '<i class="bi bi-check-lg"></i>' : (int) $weekNum) . '</span></div>';
-        $out .= '<div class="pp-head"><div class="pp-head-title">' . $h($w['mod']['title'])
-              . ($isMock ? '<span class="pp-mock-tag">Mock exam ' . $unit . '</span>' : '') . '</div>';
-        $out .= '<div class="pp-head-sub">' . $w['done'] . ' of ' . $w['count'] . ' classes done</div></div>';
-        $out .= '<i class="bi bi-chevron-down pp-chev"></i></button>';
-
-        $out .= '<div id="' . $cid . '" class="collapse' . ($isOpen ? ' show' : '') . '" data-bs-parent="#progressPath"><div class="pp-body">';
-        if (is_callable($briefFn)) $out .= '<div class="pp-brief">' . $briefFn((int) $weekNum, $palette['accent']) . '</div>';
+        // "Week 1 — Introduction & First Steps": the heading keeps the part after the dash when there is one.
+        $title = $w['mod']['title'];
+        $panels .= '<section class="pp-panel" role="tabpanel" id="' . $pid . '" aria-labelledby="' . $pid . '-tab"' . ($isOpen ? '' : ' hidden') . '>';
+        $panels .= '<h3 class="pp-panel-title">' . $h($title) . '</h3>';
+        $panels .= '<div class="pp-panel-sub"><span>' . $w['done'] . ' of ' . $w['count'] . ' classes done</span>';
+        if (is_callable($briefFn) && ($brief = $briefFn((int) $weekNum, ''))) $panels .= '<span class="pp-dot">&bull;</span>' . $brief;
+        $panels .= '</div>';
 
         $bodyId = 'pp-classes-' . (int) $weekNum;
-        $out .= '<div id="' . $bodyId . '">';
+        $panels .= '<div id="' . $bodyId . '" class="pp-classes">';
         foreach ($w['classes'] as $ci => $c) {
             $lesson   = $c['lesson'];
             $lid      = $c['lid'];
@@ -229,32 +222,37 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
             $classSoon = $parts && count(array_filter($parts, fn($p) => !empty($p['soon']))) === count($parts);   // every piece is Coming Soon
             $cid2 = 'pp-class-' . $lid;
 
-            $out .= '<div class="pp-class' . ($can ? '' : ' is-locked') . ($isMockCl ? ' is-mock' : '') . '">';
-            $out .= '<button class="pp-class-toggle' . ($isCurCl ? '' : ' collapsed') . '" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cid2 . '" aria-expanded="' . ($isCurCl ? 'true' : 'false') . '" aria-controls="' . $cid2 . '">';
-            $out .= '<span class="pp-class-title">Class ' . $c['num'] . '</span>';
-            $out .= '<span class="pp-class-meta">';
-            if ($classSoon) $out .= coming_soon_pill();
-            elseif ($isMockCl) $out .= '<span class="pp-pill mock">Mock exam</span>';
-            elseif ($required === 1) $out .= '<span class="pp-pill free">Free</span>';
-            if (!$can) $out .= '<i class="bi bi-lock-fill"></i>';
-            $out .= (int) $lesson['duration_minutes'] > 0 ? '<span>' . (int) $lesson['duration_minutes'] . ' min</span>' : '';
-            $out .= '<span>' . $partsDone . ' of ' . count($parts) . ' done</span><i class="bi bi-chevron-down pp-chev"></i></span></button>';
+            $panels .= '<div class="pp-class' . ($can ? '' : ' is-locked') . ($isMockCl ? ' is-mock' : '') . '">';
+            $panels .= '<button class="pp-class-toggle' . ($isCurCl ? '' : ' collapsed') . '" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cid2 . '" aria-expanded="' . ($isCurCl ? 'true' : 'false') . '" aria-controls="' . $cid2 . '">';
+            $panels .= '<span class="pp-class-title">' . (!$can ? '<i class="bi bi-lock me-2"></i>' : '') . 'Class ' . $c['num'] . '</span>';
+            $panels .= '<span class="pp-class-meta">';
+            if ($c['done'])        $panels .= '<span class="pp-pill done">Complete</span>';
+            elseif ($classSoon)    $panels .= coming_soon_pill();
+            elseif ($isMockCl)     $panels .= '<span class="pp-pill mock">Mock exam</span>';
+            elseif ($required === 1) $panels .= '<span class="pp-pill free">Free</span>';
+            $panels .= '<span class="pp-count">' . $partsDone . ' of ' . count($parts) . ' done</span><i class="bi bi-chevron-down pp-chev"></i></span></button>';
 
-            $out .= '<div id="' . $cid2 . '" class="collapse' . ($isCurCl ? ' show' : '') . '" data-bs-parent="#' . $bodyId . '"><ul class="pp-parts">';
+            $panels .= '<div id="' . $cid2 . '" class="collapse' . ($isCurCl ? ' show' : '') . '" data-bs-parent="#' . $bodyId . '"><ul class="pp-parts">';
             foreach ($parts as $pt) {
                 $ico  = $pt['done'] ? '<i class="bi bi-check-circle-fill pp-part-ico is-done"></i>' : '<span class="pp-part-ico is-todo"></span>';
                 $text = '<span class="pp-part-text"><span class="pp-part-title' . ($pt['done'] ? ' is-done' : '') . '">' . $h($pt['title']) . '</span>'
                       . '<span class="pp-part-sub">' . $h($pt['kind'] . ($pt['meta'] !== '' ? ', ' . $pt['meta'] : '') . (!empty($pt['soon']) ? ' · Coming Soon' : '')) . '</span></span>';
                 $inner = $ico . $text;
                 $href  = $pt['href'] ?? $c['url'];
-                $out  .= '<li>' . (($pt['lesson'] && $can && $href && empty($pt['soon']))
+                $panels .= '<li>' . (($pt['lesson'] && $can && $href && empty($pt['soon']))
                     ? '<a class="pp-part" href="' . $h($href) . '">' . $inner . '</a>'
                     : '<span class="pp-part">' . $inner . '</span>') . '</li>';
             }
-            $out .= '</ul></div></div>';
+            $panels .= '</ul></div></div>';
         }
-        $out .= '</div>';
-        $out .= '</div></div></div>';
+        $panels .= '</div></section>';
     }
-    return $out . '</div>';
+
+    $out .= '<div class="pp-layout"><nav class="pp-weeks" role="tablist" aria-label="' . ucfirst($unit) . 's">' . $nav . '</nav>'
+          . '<div class="pp-main">' . $panels . '</div></div>';
+    // Week switching (no Bootstrap needed for this part).
+    $out .= '<script>(function(){var r=document.currentScript.previousElementSibling;r.querySelectorAll("[data-pp-week]").forEach(function(b){'
+          . 'b.addEventListener("click",function(){r.querySelectorAll("[data-pp-week]").forEach(function(x){var on=x===b;x.classList.toggle("is-active",on);'
+          . 'x.setAttribute("aria-selected",on?"true":"false");document.getElementById(x.dataset.ppWeek).hidden=!on;});});});})();</script>';
+    return $out;
 }

@@ -256,8 +256,7 @@ function weekIsUnlocked(PDO $db, int $courseId, int $studentId, int $moduleId): 
 function weekBriefButton(PDO $db, int $courseId, int $moduleOrder, string $color = ''): string {
     $id = weekModuleIdByOrder($db, $courseId, $moduleOrder);
     if (!$id) return '';
-    return '<div class="px-3 py-2 border-bottom small"><a href="' . htmlspecialchars(weekIntroUrl($id)) . '">Week introduction &rarr;</a>'
-         . ' <span class="text-muted">— summary, vocabulary, resources &amp; tests</span></div>';
+    return '<a class="pp-brief-link" href="' . htmlspecialchars(weekIntroUrl($id)) . '">Week introduction</a>';
 }
 
 /**
