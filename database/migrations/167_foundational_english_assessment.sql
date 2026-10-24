@@ -11,10 +11,31 @@
 -- on results. The Language in Use keys are the founder's.
 -- Last: the Class 1 'Foundational English Assessment' pieces stop being Coming Soon and count when Form A is done.
 --
--- Re-run safe (tests upserted by code, questions added only where missing, options INSERT IGNORE). MySQL 5.7-safe.
+-- Re-run safe (tests upserted by code, questions added only where missing, options INSERT IGNORE), including after a run
+-- that stopped part-way. MySQL 5.7-safe.
 -- ============================================================
 
 SET NAMES utf8mb4;
+
+-- Schema the forms need. Local databases have these from the original schema, live does not (found when the first
+-- run on live stopped at #1054 Unknown column 'section_id'). Each step is skipped where it already exists. No foreign
+-- key on sections, so it works whatever the table engine.
+CREATE TABLE IF NOT EXISTS sections (
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  test_id int unsigned NOT NULL,
+  name varchar(80) NOT NULL,
+  order_num smallint unsigned NOT NULL,
+  time_limit_minutes smallint unsigned DEFAULT NULL,
+  created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_test_section (test_id, order_num)
+) DEFAULT CHARSET=utf8mb4;
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'questions' AND COLUMN_NAME = 'section_id');
+SET @s := IF(@c = 0, 'ALTER TABLE questions ADD COLUMN section_id int unsigned NULL, ADD KEY idx_questions_section (section_id)', 'SELECT 1');
+PREPARE st FROM @s; EXECUTE st; DEALLOCATE PREPARE st;
+SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'questions' AND COLUMN_NAME = 'part_number');
+SET @s := IF(@c = 0, 'ALTER TABLE questions ADD COLUMN part_number tinyint unsigned NULL', 'SELECT 1');
+PREPARE st FROM @s; EXECUTE st; DEALLOCATE PREPARE st;
 
 -- FEA_BANK_A2: Placement bank: A2 grammar and vocabulary
 INSERT INTO tests (code, title, description, test_type, duration_minutes, total_questions, is_active) VALUES ('FEA_BANK_A2', 'Placement bank: A2 grammar and vocabulary', 'Question bank (A2). Not opened by students: the assessment forms are built from it.', 'Placement_Bank', NULL, 8, 0) ON DUPLICATE KEY UPDATE title = VALUES(title), description = VALUES(description), test_type = VALUES(test_type), duration_minutes = VALUES(duration_minutes), total_questions = VALUES(total_questions), is_active = VALUES(is_active);
