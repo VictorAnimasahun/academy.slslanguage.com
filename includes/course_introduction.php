@@ -102,6 +102,22 @@ if (!function_exists('crash_course_introduction_body')) {
             ['practice_test',   'One part of the real exam (Listening, Reading, Writing or Speaking) under exam conditions: timed, and in one sitting.'],
             ['mock_test',       'The whole exam, all four parts, timed, in Week ' . $weeks . '. Your best measure of where you will land on test day.'],
         ];
+        // The rest of Class 1, by the course's own item names, with a line on what each is for.
+        $why = [
+            'placement_test'  => 'your general English level (50 questions, one hour, on a computer).',
+            'lesson'          => 'the exam itself, part by part, and how it is scored.',
+            'quiz'            => 'a check on what you have just learned about the exam.',
+            'diagnostic_test' => 'your starting ' . $scoreWord . ', to measure every later result against.',
+        ];
+        $st = $db->prepare("SELECT p.title, p.kind FROM lesson_parts p JOIN lessons l ON l.id = p.lesson_id JOIN modules m ON m.id = l.module_id
+                             JOIN courses c ON c.id = l.course_id
+                            WHERE c.folder_name = ? AND m.module_order = 1 AND l.lesson_order = 1 AND p.part_order > 1 ORDER BY p.part_order");
+        $st->execute([$folder]);
+        $nextRows = '';
+        foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $it) {
+            $nextRows .= '<li><strong>' . $h($it['title']) . '</strong>' . (isset($why[$it['kind']]) ? ': ' . $h($why[$it['kind']]) : '') . '</li>';
+        }
+
         $formatRows = '';
         foreach ($formats as [$kind, $text]) {
             $formatRows .= '<tr><td style="padding:.55rem .75rem .55rem 0;vertical-align:top;white-space:nowrap;">' . $chip($kind) . '</td>'
@@ -155,12 +171,7 @@ if (!function_exists('crash_course_introduction_body')) {
 
 <div class="content-section">
   <h2>Next in This Class</h2>
-  <ol class="mb-0">
-    <li><strong>Foundational English Assessment</strong>: your general English level (50 questions, one hour, on a computer).</li>
-    <li><strong>' . $h($exam) . ' Introduction</strong>: the exam itself, part by part, and how it is scored.</li>
-    <li><strong>' . $h($exam) . ' Introduction Quiz</strong>: a check on what you have just learned about the exam.</li>
-    <li><strong>' . $h($exam) . ' Diagnostic Test</strong>: your starting ' . $h($scoreWord) . ', to measure every later result against.</li>
-  </ol>
+  <ol class="mb-0">' . $nextRows . '</ol>
 </div>';
     }
 }

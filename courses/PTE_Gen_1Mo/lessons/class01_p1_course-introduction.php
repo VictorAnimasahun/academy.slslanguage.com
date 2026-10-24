@@ -7,4 +7,4 @@ require_once dirname(__DIR__, 3) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/lesson_shell.php';
 require_once INCLUDES_PATH . '/course_introduction.php';
 
-render_lesson_shell($db, 'PTE_Gen_1Mo', 1, 1, course_introduction_body($db, 'PTE_Gen_1Mo', 'PTE Academic', 'PTE score'));
+render_lesson_shell($db, 'PTE_Gen_1Mo', 1, 1, crash_course_introduction_body($db, 'PTE_Gen_1Mo', 'PTE Academic', 'PTE score'));

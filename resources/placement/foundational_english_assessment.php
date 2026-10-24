@@ -146,9 +146,11 @@ if ($view) {
         foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $o) $optsByQ[(int) $o['question_id']][] = $o;
         foreach ($optsByQ as &$list) shuffle($list);   // options in a new order each time (founder's bank)
         unset($list);
-        // The clock starts when the test is first opened and keeps running through a reload.
-        $_SESSION['fea_started'][$code] ??= time();
-        $secondsLeft = max(0, FEA_SECONDS - (time() - (int) $_SESSION['fea_started'][$code]));
+        // The full hour from when the test is opened. It used to keep running from the FIRST opening, so coming back
+        // later showed 30 minutes left, or handed in a blank test (founder, 2026-10-24). Answers are not kept across a
+        // reload, so opening it again gains nothing.
+        $_SESSION['fea_started'][$code] = time();
+        $secondsLeft = FEA_SECONDS;
     }
 }
 
