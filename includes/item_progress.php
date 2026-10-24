@@ -46,9 +46,14 @@ if (!function_exists('item_progress_key')) {
         if ($r && (int) $r['n'] > 0) {
             return $cache[$k] = $passPercent === null || (float) $r['best'] >= $passPercent;
         }
-        $st = $db->prepare("SELECT 1 FROM mock_exams me JOIN mock_sessions ms ON ms.mock_test_id = me.id
-                             WHERE me.code = ? AND ms.student_id = ? AND ms.status <> 'in_progress' LIMIT 1");
-        $st->execute([$code, $studentId]);
+        // A full mock or diagnostic is done once its session leaves 'in_progress'. mock_sessions.mock_test_id holds the
+        // TESTS row of the mock (every launcher writes tests.id); this used to join mock_exams, so no mock or diagnostic
+        // ever counted (found 2026-10-25). mock_exams is still accepted for any row written that way.
+        $st = $db->prepare("SELECT 1 FROM mock_sessions ms
+                             WHERE ms.student_id = ? AND ms.status <> 'in_progress'
+                               AND (ms.mock_test_id IN (SELECT t.id FROM tests t WHERE t.code = ?)
+                                 OR ms.mock_test_id IN (SELECT me.id FROM mock_exams me WHERE me.code = ?)) LIMIT 1");
+        $st->execute([$studentId, $code, $code]);
         return $cache[$k] = (bool) $st->fetchColumn();
     }
 
