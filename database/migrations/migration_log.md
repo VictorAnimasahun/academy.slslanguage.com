@@ -2253,7 +2253,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
 | Local | [x] | 2026-10-24 | FEA50_A / FEA50_B: duration 20, description says 20 minutes. Page checked as student 122: 20:00 clock (1200 seconds), "50 questions, 20 minutes". |
-| Live  | [ ] | | Plain UPDATE of two rows. Sync the assessment page first (its clock is in the page). |
+| Live  | [x] | 2026-10-24 | Founder ran it in phpMyAdmin: 2 rows affected; FEA50_A and FEA50_B show duration 20, 50 questions. |
 
 **What it does:** founder, 2026-10-24 ("It's been 5 minutes and someone's finished like half already ... make it 20 minutes"). The page's clock (FEA_SECONDS) is 1200; this keeps the tests' recorded duration and description in step. build_migration.py now writes 20 minutes too; 168 is left as it was run.
 
