@@ -92,7 +92,8 @@ Open to anyone enrolled in a CELPIP course (`includes/protected_reading_resource
 | Writing Test 1 — `ielts_writing_academic_001.php` (Task 1 + Task 2 pages) | `IELTS_PT_W1_ACA_001`, `IELTS_PT_W2_ACA_001` | Official IELTS.org Academic samples 1A/2A (110) | Set 1: Crash c5; 2Mo c5; 3Mo c5 |
 | Writing Tests 2-4 — `ielts_writing_academic_002..004.php` | `IELTS_PT_W1_ACA_00n`, `IELTS_PT_W2_ACA_00n` | Cambridge IELTS 17 Academic, Tests 2-4 (136) | WT2: 2Mo c11, 3Mo c11 · WT3: 2Mo c15, 3Mo c15 · WT4: 3Mo c21 |
 | Speaking Tests — `ielts_speaking_001..004.php` | `IELTS_PT_S_001..004` (transcript saved, no audio) | Original SLS prompts (011, 047-049) | ST1 (`_002`): Crash c4, 2Mo c4, 3Mo c4 · ST2 (`_003`): 2Mo c10, 3Mo c10 · ST3 (`_004`): 2Mo c14, 3Mo c14 · ST4 (`_001`): 3Mo c20 |
-| Mock Tests 1-3 | — | **No IELTS Academic full mock exists yet** (all four Full Mocks are GT) | Coming Soon everywhere |
+| Mock Test 1 — `resources/mock_tests/ielts_aca_full_mock_001.php` | `IELTS_ACA_FULL_MOCK_001` (`IELTS_AFM1_L/R/W`) | Cambridge IELTS 13 Academic, Test 1 (172; audio = CD1 tracks 1-4) | Crash c8; 2Mo c8; 3Mo c8 |
+| Mock Tests 2-3 | — | Not built yet. Planned: Cambridge IELTS 13 Academic Tests 2-3 (need CD1 tracks 5-8 and CD2 audio) | 2Mo c16; 3Mo c16, c23: Coming Soon |
 
 IELTS Speaking is the same for both modules: General Training's Set 1 Speaking is `ielts_speaking_001.php`, which is
 Academic's Speaking Test 4; Academic's Speaking Test 1 (`_002`) is General Training 3-Month's Class 22 test.
