@@ -2248,3 +2248,12 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 **What it does:** founder, 2026-10-24 ("the exam quiz: make it 20 questions, don't make it dumb please and don't use the same letter as the right answer"). New quizzes IELTS_ACA_C1_QUIZ, IELTS_GT_C1_QUIZ, CELPIP_C1_QUIZ, PTE_C1_QUIZ check the exam introduction by applying it: overall-band rounding, per-part requirements, Task 2 weighting, tone, question types, integrated scoring. Pass mark 70%. The IELTS General Masterclass keeps its 10-question IELTS_GM_C1_QUIZ (the crash course no longer uses it).
 
+## 171 — Foundational English Assessment: 20 minutes, not 60
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-24 | FEA50_A / FEA50_B: duration 20, description says 20 minutes. Page checked as student 122: 20:00 clock (1200 seconds), "50 questions, 20 minutes". |
+| Live  | [ ] | | Plain UPDATE of two rows. Sync the assessment page first (its clock is in the page). |
+
+**What it does:** founder, 2026-10-24 ("It's been 5 minutes and someone's finished like half already ... make it 20 minutes"). The page's clock (FEA_SECONDS) is 1200; this keeps the tests' recorded duration and description in step. build_migration.py now writes 20 minutes too; 168 is left as it was run.
+

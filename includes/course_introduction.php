@@ -104,7 +104,7 @@ if (!function_exists('crash_course_introduction_body')) {
         ];
         // The rest of Class 1, by the course's own item names, with a line on what each is for.
         $why = [
-            'placement_test'  => 'your general English level (50 questions, one hour, on a computer).',
+            'placement_test'  => 'your general English level (50 questions, 20 minutes, on a computer).',
             'lesson'          => 'the exam itself, part by part, and how it is scored.',
             'quiz'            => 'a check on what you have just learned about the exam.',
             'diagnostic_test' => 'your starting ' . $scoreWord . ', to measure every later result against.',

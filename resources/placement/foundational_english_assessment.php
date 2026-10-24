@@ -4,7 +4,7 @@
 // screen). The old public quiz at mini_tests/english-placement-test stays for the marketing site.
 //
 // Two forms built from the question bank (migration 167; database/placement/): Form A first, Form B on a retake, so a
-// retake never repeats a question. 50 questions, 60 minutes, three parts (migration 168; 167's 30-question forms are
+// retake never repeats a question. 50 questions, 20 minutes (founder, 2026-10-24: an hour was far too long), three parts (migration 168; 167's 30-question forms are
 // off but their attempts still show). Each question belongs to a level (the sections table: Basic = A1-A2, B1, B2, C1, C2). The result is the highest level passed with every level below it
 // passed too. Students see their level and what to review, never the answers (founder's bank, 2026-10-24).
 require_once dirname(__DIR__, 2) . '/bootstrap.php';
@@ -17,7 +17,7 @@ $studentId = (int) $_SESSION['user_id'];
 
 const FEA_FORMS   = ['FEA50_A', 'FEA50_B'];
 const FEA_OLD     = ['FEA_FORM_A', 'FEA_FORM_B'];   // 30-question forms (migration 167): results only
-const FEA_SECONDS = 3600;
+const FEA_SECONDS = 1200;
 const FEA_LEVELS  = ['Basic', 'B1', 'B2', 'C1', 'C2'];
 // Pass mark per level: 70% of its questions, rounded up (7 of 10; on the old forms 4 of 5, 5 of 7, 3 of 4, as before).
 // Provisional: the founder's bank asks for a pilot with 10-20 students of known level before it is relied on.
@@ -285,7 +285,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
             <p class="fea-intro">This assessment isn't available right now. Please check back soon.</p>
 
 <?php else: ?>
-            <p class="fea-intro"><?= count($questions) ?> questions, one hour. Answer on your own, without a dictionary or translator. If you don't know an answer, choose the one you think is best. Your result shows your general English level and what to work on.</p>
+            <p class="fea-intro"><?= count($questions) ?> questions, 20 minutes. Answer on your own, without a dictionary or translator. If you don't know an answer, choose the one you think is best. Your result shows your general English level and what to work on.</p>
 
             <div class="fea-layout">
             <form method="post" id="feaForm">
@@ -310,7 +310,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
                 <button type="submit" class="fea-submit">Submit my answers</button>
             </form>
             <aside class="fea-side">
-                <div class="fea-timer" id="feaTimer"><span>Time left</span><strong data-left="<?= (int) $secondsLeft ?>">60:00</strong></div>
+                <div class="fea-timer" id="feaTimer"><span>Time left</span><strong data-left="<?= (int) $secondsLeft ?>">20:00</strong></div>
                 <div class="fea-count"><span id="feaAnswered">0</span> of <?= count($questions) ?> answered</div>
                 <div class="fea-nav">
                     <?php $part = 0; foreach ($questions as $i => $q): ?>
