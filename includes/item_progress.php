@@ -7,8 +7,9 @@
  * Each item of a class is in one of four states:
  *   done       -- finished (lesson marked complete; quiz/test result recorded, passed where required)
  *   todo       -- counts towards the class and isn't finished
- *   untracked  -- the platform records nothing for it yet (writing/speaking practice tests, the Foundational
- *                 English Assessment, the CELPIP Diagnostic Test, exercises): shown, but doesn't block the class
+ *   untracked  -- the platform records nothing for it yet (writing/speaking practice tests, the CELPIP Diagnostic
+ *                 Test, exercises): shown, but doesn't block the class. (The Foundational English Assessment counts
+ *                 since migration 167: test_code FEA_FORM_A.)
  *   soon       -- Coming Soon: nothing to do yet
  * A class is done when it has at least one counted item and every counted item is done. That is written to
  * lesson_progress (the class tick every page already reads) and the course's progress percentage.

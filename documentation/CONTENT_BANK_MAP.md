@@ -17,6 +17,13 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
   for both modules, so those tests are shared.
 - **Diagnostic content is not reused as a mock or practice test for the same exam** (the student has already seen it).
 
+## All courses: Foundational English Assessment (placement test)
+
+| Content | Test code(s) | Source | Used by |
+|---|---|---|---|
+| Foundational English Assessment — `resources/placement/foundational_english_assessment.php` | `FEA_FORM_A` (first sitting), `FEA_FORM_B` (retake): 30 questions, 60 min each, no item shared | Founder's Placement Test bank + Language in Use bank, 2026-10-24 (migration 167) | Class 1 of every paid course (the piece counts when Form A is done) |
+| The bank the forms are built from | `FEA_BANK_A2`, `FEA_BANK_{B1,B2,C1,C2}_S{1,2,3}`, `LIU_BANK_{A1..C2}` (inactive) | same; source file `database/placement/bank.txt`, forms picked in `database/placement/build_migration.py` | Form A uses Set 1 items, Form B Set 2. Set 3 and the unused Set 1/2 items are spare for a Form C or for replacing items after the pilot |
+
 ## CELPIP General
 
 | Content | Test code(s) | Source | Used by |

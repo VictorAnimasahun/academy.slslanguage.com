@@ -2209,3 +2209,14 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Live  | [x] | 2026-10-22 | Founder ran it. |
 
 **What it does:** text saved through the wrong character set showed an en dash as "â€“" (e.g. the student dashboard's "CELPIP Reading â€“ Practice Test 1"). Puts the real characters back, for the en dash and the other common cases (em dash, curly quotes and apostrophe, ellipsis), in the columns titles and instructions come from. Only rows containing the garbled text are touched.
+
+---
+
+## 167 — Foundational English Assessment: question bank + two one-hour forms
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-24 | Generated from database/placement/bank.txt by build_migration.py (checks every item has 4 options and a key, each form has 30, no item in both forms). Ran twice on 8.0 and twice on MySQL 5.7.44: 21 tests, 257 questions (197 bank + 2 × 30), one correct option each, 12 Class 1 pieces ready. Tested in a real browser with a temporary student (deleted afterwards): Form A all correct = C2, reopening shows the result, retake opens Form B, blank = Below A2, the Class 1 piece counts as done. |
+| Live  | [ ] | | Sync the academy files (the assessment page), then run this. |
+
+**What it does:** founder, 2026-10-24 ("Put them in our question bank, then set two tests for the English Placement Test ... one hour, maybe 30 questions each"). The whole bank goes in as inactive tests, one per level and set (FEA_BANK_*, LIU_BANK_*); students take FEA_FORM_A, then FEA_FORM_B on a retake. Each form: Part 1 grammar and vocabulary (15, three per level A2-C2), Part 2 language in use (6, A1-C2), Part 3 reading (9: the B1, B2 and C1 passages). Every question is tagged with its level (sections: Basic = A1-A2, B1, B2, C1, C2); the result is the highest level passed (about 70% of that level's questions) with every level below passed too. Students see their level and what to review, not the answers. The placement bank's answer keys were not in the document sent and were worked out item by item; the pass marks are provisional until the pilot the bank describes.

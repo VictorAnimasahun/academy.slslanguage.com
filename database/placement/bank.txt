@@ -1,0 +1,252 @@
+# Founder's Placement Test Question Bank + Language in Use bank (2026-10-24), as sent.
+# === CODE | title | level | part        part: grammar / language / reading
+# P: passage shared by the following items until the next P: or ===
+# Each item: N. text (A) .. (B) .. (C) .. (D) .. =KEY
+# Keys for the placement bank were not in the document sent; they are worked out here (flagged in the migration).
+# Language-in-use keys are the founder's. **word** = the bold word in synonym/antonym items.
+
+=== FEA_BANK_A2 | Placement bank: A2 grammar and vocabulary | A2 | grammar
+1. Maria ____ to work by bus every day. (A) go (B) goes (C) going (D) gone =B
+2. I’m tired because I ____ to bed very late last night. (A) went (B) go (C) going (D) was go =A
+3. Could you tell me where the station ____? (A) it is (B) does (C) is (D) is it =C
+4. My brother is ____ than me. (A) more tall (B) tallest (C) the tall (D) taller =D
+5. It’s freezing today. Don’t forget to wear your ____. (A) sandals (B) coat (C) sunglasses (D) swimsuit =B
+6. She ____ her keys, so she couldn’t open the door. (A) lost (B) lose (C) loses (D) losing =A
+7. “How long have you lived in this city?” “____” (A) Yesterday. (B) In the morning. (C) Since 2019. (D) At the moment. =C
+8. Look at those black clouds! It ____ rain soon. (A) going to (B) is going to (C) will to (D) goes =B
+
+=== FEA_BANK_B1_S1 | Placement bank: B1 Set 1 | B1 | grammar
+1. I haven’t seen David ____ last Friday. (A) for (B) since (C) from (D) during =B
+2. If I ____ more money, I would buy a bigger flat. (A) have (B) will have (C) would have (D) had =D
+3. The report ____ by the manager before the meeting. (A) wrote (B) has wrote (C) was written (D) is writing =C
+4. She asked me where ____. (A) I lived (B) did I live (C) do I live (D) I do live =A
+5. I’d like to ____ a table for four for Saturday evening. (A) borrow (B) rent (C) lend (D) book =D
+6. Could you ____ me a favour and carry this bag? (A) make (B) do (C) give (D) take =B
+7. You ____ wear a seat belt in the car; it’s the law. (A) must (B) might (C) may (D) could =A
+8. “Would you mind opening the window?” “____” (A) I did it yesterday. (B) It’s a nice window. (C) Not at all. (D) Yes, I’m opening. =C
+P: Last spring, residents of Maple Street turned an empty lot into a community garden. At first, only five families took part, but now more than thirty households grow vegetables there. Each family pays a small fee for a plot and promises to spend at least two hours a month helping with shared jobs, such as watering and removing weeds. Volunteers also run a weekend market, where neighbours can sell extra vegetables. The money from the market pays for tools and seeds. Organisers say the garden has helped neighbours who had never spoken to each other become friends.
+9. What happened to the number of families taking part? (A) It stayed the same. (B) It fell after the spring. (C) It grew from five to over thirty. (D) It doubled to ten. =C
+10. What must each family do? (A) Sell vegetables at the market (B) Provide their own tools (C) Live on Maple Street for a year (D) Pay a fee and help with shared jobs =D
+11. What is the market money used for? (A) Buying tools and seeds (B) Paying organisers (C) Renting the lot (D) Cleaning the street =A
+
+=== FEA_BANK_B1_S2 | Placement bank: B1 Set 2 | B1 | grammar
+1. We’ve lived in this town ____ ten years. (A) since (B) from (C) for (D) during =C
+2. If it ____ tomorrow, we’ll have the picnic indoors. (A) will rain (B) rained (C) would rain (D) rains =D
+3. The film was so ____ that I fell asleep halfway through. (A) bored (B) bore (C) boring (D) boredom =C
+4. “Do you know ____ the bank closes?” (A) what time (B) what time does (C) when does (D) what time it =A
+5. I’m not used ____ up so early. (A) to get (B) to getting (C) getting (D) for getting =B
+6. She’s the woman ____ car was stolen last week. (A) who (B) whose (C) which (D) whom =B
+7. He didn’t go to work yesterday ____ he was ill. (A) because (B) although (C) so (D) despite =A
+8. “I’ve just passed my driving test!” “____” (A) Well done! (B) Good luck! (C) Take care! (D) Never mind! =A
+P: The town library has opened a small café on its ground floor, and it is already popular. Until now, visitors had to leave the building if they wanted a drink or a snack, which many found annoying. The new café sells coffee, tea and sandwiches, and readers are allowed to take their drinks to the tables near the windows. The library hopes the café will attract people who do not usually visit. So far, the number of new members has risen by about a fifth. However, some older readers worry that the quiet reading room may become noisy.
+9. What problem did the café solve? (A) Visitors had to go outside for food and drink. (B) Visitors could not find a place to sit. (C) The library was too quiet. (D) The library had too few books. =A
+10. What has happened since the café opened? (A) The reading room has closed. (B) Older members have left. (C) Sandwiches are free for members. (D) More people have joined the library. =D
+11. What are some older readers worried about? (A) The price of coffee (B) Noise in the reading room (C) Fewer books (D) Longer opening hours =B
+
+=== FEA_BANK_B1_S3 | Placement bank: B1 Set 3 | B1 | grammar
+1. She’s afraid ____ flying, so she always takes the train. (A) from (B) of (C) to (D) about =B
+2. He’s the ____ person I’ve ever met. (A) more kind (B) kinder (C) kindest (D) as kind =C
+3. You ____ see a doctor if the pain doesn’t stop. (A) would better (B) had better (C) have better (D) should better =B
+4. “Excuse me, is anyone sitting here?” “____” (A) Yes, it’s a good seat. (B) No, I don’t. (C) No, it’s free. (D) Yes, I am here. =C
+5. The train was cancelled, ____ we had to take a taxi. (A) so (B) but (C) because (D) although =A
+6. I ____ my homework when the power went out. (A) did (B) was doing (C) have done (D) do =B
+7. She works as a ____; she designs buildings. (A) accountant (B) electrician (C) architect (D) plumber =C
+8. She always ____ her best to help new colleagues. (A) makes (B) gives (C) takes (D) does =D
+P: Maria used to drive to work every day, but last year she decided to cycle instead. The journey takes about the same time, because the roads near her office are always full of cars. She says she now feels more awake when she arrives and spends less on petrol and parking. The main problem is the weather: on rainy days she has to carry spare clothes in her bag. Her company has helped by building a shower room and a secure place to keep bikes. Several colleagues have followed her example, and the company is thinking of offering them a small bonus.
+9. Why does Maria’s journey take about the same time as before? (A) She cycles very fast. (B) She takes a shorter route. (C) Traffic slows the cars down. (D) She leaves earlier. =C
+10. What is the main disadvantage she mentions? (A) The cost of a bike (B) Bad weather (C) A long journey (D) Parking problems =B
+11. How has her company supported cycling? (A) By providing a shower room and bike storage (B) By paying for petrol (C) By giving staff free bikes (D) By changing working hours =A
+
+=== FEA_BANK_B2_S1 | Placement bank: B2 Set 1 | B2 | grammar
+1. By the time we arrived, the film ____. (A) already started (B) had already started (C) has already started (D) was already starting =B
+2. I wish I ____ more time to prepare for the interview yesterday. (A) have (B) had (C) had had (D) would have =C
+3. She is said ____ the best candidate for the job. (A) being (B) that is (C) be (D) to be =D
+4. Not only ____ late, but he also forgot the documents. (A) did he arrive (B) he arrived (C) arrived he (D) he did arrive =A
+5. The new policy will ____ a significant change in how we work. (A) bring up (B) bring about (C) bring out (D) bring on =B
+6. The manager turned ____ the proposal because it was too expensive. (A) up (B) over (C) down (D) in =C
+7. Despite ____ hard, she didn’t pass the exam. (A) she studied (B) to study (C) of studying (D) studying =D
+8. The more you practise, ____ you become. (A) the better (B) better (C) the best (D) more better =A
+P: When many companies moved to remote work, managers feared that productivity would drop. Early surveys, however, told a more complicated story. Employees reported getting more focused work done at home, free from the interruptions of an open-plan office. Yet the same workers also said they found it harder to learn from colleagues and to feel part of a team. Several firms have therefore adopted a hybrid model, in which staff spend part of the week at the office. Critics argue that this merely shifts the problem, since the days people choose to attend are rarely the same, leaving the office half-empty and collaboration no easier.
+9. What does the passage say about early surveys? (A) They showed productivity fell sharply. (B) They were ignored by managers. (C) They gave a mixed picture. (D) They covered only managers. =C
+10. Why do critics doubt the hybrid model? (A) It costs more. (B) Colleagues often attend on different days. (C) Employees dislike it. (D) It reduces focused work. =B
+11. The word “merely” suggests critics think hybrid working ____. (A) solves the problem completely (B) is worse than remote work (C) is popular with managers (D) moves the problem without solving it =D
+
+=== FEA_BANK_B2_S2 | Placement bank: B2 Set 2 | B2 | grammar
+1. If she ____ harder last year, she would be at university now. (A) studied (B) had studied (C) has studied (D) would study =B
+2. The film, ____ was shot in Iceland, won several awards. (A) that (B) who (C) which (D) what =C
+3. He suggested ____ the meeting until next week. (A) to postpone (B) postponing (C) to postponing (D) postpone =B
+4. She’s very ____ about her new job; she talks about it constantly. (A) enthusiastic (B) enthusiasm (C) enthusiastically (D) enthuse =A
+5. The plan fell ____ because nobody could agree on the budget. (A) down (B) through (C) over (D) off =B
+6. We’re running ____ milk; could you buy some? (A) off (B) short (C) out of (D) low =C
+7. Lack of sleep can seriously ____ your ability to concentrate. (A) affect (B) effect (C) infect (D) reflect =A
+8. “I’m sorry for the mix-up.” “____” (A) Don’t mention it. (B) You’re welcome. (C) It’s my pleasure. (D) That’s very kind. =A
+P: In recent years, beehives have appeared on the roofs of offices, hotels and even museums in many large cities. Supporters claim that urban bees often do better than their rural cousins, since cities offer a wide variety of flowers in parks and gardens through most of the year, while farmland may provide only one crop at a time. Some conservationists, however, warn that the trend can backfire. Honeybees are not endangered, and when too many hives are placed in one area, they compete with wild bees for the same food. The best help for pollinators, these experts say, is to plant more flowers rather than to add more hives.
+9. According to supporters, why do city bees often thrive? (A) Cities have fewer predators. (B) Cities offer a variety of flowers for much of the year. (C) Rooftops are warmer than fields. (D) Farmers protect them. =B
+10. What is the conservationists’ main concern? (A) Honeybees are close to extinction. (B) Hives are dangerous for office workers. (C) City honey is of poor quality. (D) Hives can take food from wild bees. =D
+11. What do the experts recommend? (A) Planting more flowers (B) Banning rooftop hives completely (C) Moving hives to farmland (D) Importing more honeybees =A
+
+=== FEA_BANK_B2_S3 | Placement bank: B2 Set 3 | B2 | grammar
+1. She ____ in the same company for twenty years when she retired. (A) has worked (B) worked (C) had been working (D) was working =C
+2. ____ the heavy traffic, we arrived on time. (A) Although (B) Despite (C) However (D) Because =B
+3. The new law will come ____ effect in January. (A) into (B) in (C) to (D) under =A
+4. She spoke so quietly that I could ____ hear her. (A) hard (B) harder (C) hardly (D) hardness =C
+5. It was ____ a good presentation that everyone applauded. (A) so (B) such (C) too (D) very =B
+6. If you ____ me yesterday, I would have helped you. (A) asked (B) ask (C) would ask (D) had asked =D
+7. The manager insisted ____ everyone attending the training. (A) on (B) to (C) for (D) at =A
+8. The two companies have decided to ____ forces on the project. (A) bring (B) make (C) join (D) take =C
+P: Several companies that tested a four-day working week reported surprising results. Employees worked fewer hours but, according to managers, the quality of their output did not fall. Many staff said they felt less stressed and took fewer sick days. Employers also noticed that workers wasted less time in meetings, because they knew that time was limited. Nevertheless, the idea is not suitable for every sector. Hospitals, for instance, cannot simply close for a day, and employees in customer-facing roles may need to cover longer shifts to keep services running. Supporters therefore suggest that each organisation should adapt the model to its own circumstances rather than copy a standard timetable.
+9. What did managers say about the quality of work during the trial? (A) It did not fall. (B) It improved dramatically. (C) It was hard to judge. (D) It fell slightly. =A
+10. Why might the four-day week be difficult in hospitals? (A) Staff dislike long shifts. (B) It costs too much. (C) Patients prefer weekday appointments. (D) They cannot close for a whole day. =D
+11. What do supporters recommend? (A) Copying a standard timetable (B) Adapting the model to each organisation (C) Limiting it to office jobs (D) Waiting for more research =B
+
+=== FEA_BANK_C1_S1 | Placement bank: C1 Set 1 | C1 | grammar
+1. By this time next year, I ____ in this company for a decade. (A) will have been working (B) will work (C) am working (D) have worked =A
+2. The committee reached a decision that was, ____, unpopular with most staff. (A) predictable (B) prediction (C) predictably (D) predicting =C
+3. It’s high time we ____ the problem seriously. (A) take (B) took (C) will take (D) have taken =B
+4. Her argument was so ____ that no one could find a flaw in it. (A) watertight (B) leaky (C) hollow (D) shallow =A
+5. Rarely ____ such a persuasive speech. (A) I have heard (B) have I heard (C) I heard (D) did I heard =B
+6. The findings are ____ with earlier research, which suggests the effect is real. (A) consisting (B) consequent (C) constant (D) consistent =D
+7. Under no circumstances ____ the building before the all-clear is given. (A) should you leave (B) you should leave (C) you leave (D) leave you =A
+8. The author’s tone is ____: it is hard to tell whether she approves or disapproves. (A) ambitious (B) ambiguous (C) amiable (D) abundant =B
+P: Public debate about artificial intelligence often assumes that technological change arrives suddenly and from outside, like weather. Historians of technology find this picture misleading. New tools are shaped by the people who fund, design and regulate them, and their effects depend as much on social choices as on engineering. The introduction of electricity, for instance, did not raise factory output until owners redesigned their workplaces around electric motors, a process that took decades. If the pattern holds, the most important question about any new technology is not what it can do, but who decides how it is used, and for whose benefit.
+9. What is the author’s main point? (A) Technology develops too fast for regulation. (B) Historians disagree about AI. (C) The effects of technology depend largely on human choices. (D) Electricity changed factories more than AI will. =C
+10. Why is electricity mentioned? (A) To show that new technology is dangerous (B) To illustrate that benefits came only after workplaces were redesigned (C) To compare the cost of old and new factories (D) To argue that change is always sudden =B
+11. Comparing technological change to “weather” suggests it is seen as ____. (A) predictable (B) seasonal (C) harmful (D) beyond human control =D
+
+=== FEA_BANK_C1_S2 | Placement bank: C1 Set 2 | C1 | grammar
+1. Not until the results were published ____ the scale of the problem. (A) did people realise (B) people realised (C) people did realise (D) realised people =A
+2. The project went ahead ____ the fact that several experts had warned against it. (A) owing to (B) in spite of (C) as a result of (D) on account of =B
+3. She refused to sign the contract, ____ she had not read all of its terms. (A) lest (B) in case (C) on the grounds that (D) provided =C
+4. Her research has shed new ____ on the causes of the disease. (A) lit (B) lighting (C) light (D) lights =C
+5. Little ____ she know that the decision would change her life. (A) had (B) does (C) did (D) was =C
+6. The company’s success is largely ____ to its willingness to take risks. (A) attributing (B) attributable (C) attributive (D) attribute =B
+7. I would have called you had I ____ your number. (A) had had (B) have (C) would have (D) having =A
+8. The speaker’s remarks were deliberately ____, leaving the audience unsure of her position. (A) emphatic (B) explicit (C) exhaustive (D) equivocal =D
+P: It is commonly assumed that more choice makes people happier, yet research suggests otherwise. In one well-known study, shoppers offered a large range of jams were far less likely to buy any than those offered a small selection. Psychologists explain this by noting that abundant options raise expectations and make it easier to regret the option not taken. The effect is not universal: people who know exactly what they want, or who delegate decisions to trusted advisers, seem largely immune. Critics also point out that the original findings have been hard to replicate consistently. The most defensible conclusion, then, is not that choice is harmful, but that its value depends on how much guidance people have in navigating it.
+9. What does the jam study suggest? (A) Shoppers prefer larger ranges. (B) Large ranges can reduce the likelihood of buying. (C) Jam sales depend on price. (D) Small selections lead to regret. =B
+10. According to the passage, who is largely unaffected by too many options? (A) People who shop frequently (B) People who like taking risks (C) People who know what they want or rely on advisers (D) People with higher incomes =C
+11. What is the author’s overall conclusion? (A) Choice should be restricted. (B) The original findings are false. (C) Most people dislike making decisions. (D) The benefits of choice depend on the guidance available. =D
+
+=== FEA_BANK_C1_S3 | Placement bank: C1 Set 3 | C1 | grammar
+1. Hardly had she sat down ____ the phone rang. (A) than (B) when (C) that (D) as =B
+2. The findings, ____ were published last month, have been widely disputed. (A) that (B) what (C) who (D) which =D
+3. Were the proposal to be approved, the changes ____ in the autumn. (A) would take effect (B) took effect (C) have taken effect (D) are taking effect =A
+4. The minister’s resignation came as no ____ to those who knew him well. (A) wonder (B) astonish (C) marvel (D) surprise =D
+5. The more complex the task, ____ the need for careful planning. (A) greater is (B) the greater (C) greater (D) is greater =B
+6. She would sooner resign than ____ in to such demands. (A) giving (B) gave (C) give (D) gives =C
+7. Her explanation, while plausible, fails to ____ for the discrepancy in the figures. (A) stand (B) make (C) account (D) fall =C
+8. The negotiations reached an ____ when neither side would compromise. (A) impulse (B) impasse (C) impetus (D) imprint =B
+P: Boredom is usually treated as a problem to be solved, preferably with a smartphone. Yet some researchers argue that moments of boredom serve a purpose. When the mind is not occupied by a task, it tends to wander, and this wandering has been linked to creative thinking and long-term planning. In one experiment, participants who first completed a deliberately dull task later produced more imaginative uses for everyday objects than those who had not. The researchers are careful to add that boredom is not enjoyable and that persistent boredom is associated with poorer well-being. Their claim is a modest one: occasional, unstructured downtime may help thinking, so filling every spare minute with stimulation may carry a hidden cost.
+9. What do the researchers suggest about mind-wandering? (A) It is linked to creativity and planning. (B) It reduces planning ability. (C) It is harmful if frequent. (D) It only occurs during dull tasks. =A
+10. What does the experiment indicate? (A) Dull tasks make people lazy. (B) Boredom improves well-being. (C) People who had been bored later thought more imaginatively. (D) Creative people avoid boredom. =C
+11. The author describes the researchers’ claim as “modest” because ____. (A) the effect was very small (B) they do not present boredom as enjoyable or always beneficial (C) the study had few participants (D) the results were ignored =B
+
+=== FEA_BANK_C2_S1 | Placement bank: C2 Set 1 | C2 | grammar
+1. The minister’s remarks were widely seen as an attempt to ____ the blame onto her predecessor. (A) reflect (B) inflect (C) deflect (D) deject =C
+2. No sooner had the lecture begun ____ the projector failed. (A) when (B) than (C) that (D) then =B
+3. Had it not been for her intervention, the project ____ collapsed. (A) would (B) will have (C) would have (D) had =C
+4. His apology sounded ____; I doubt he meant a word of it. (A) insincere (B) insistent (C) insensible (D) inscrutable =A
+
+=== FEA_BANK_C2_S2 | Placement bank: C2 Set 2 | C2 | grammar
+1. Seldom ____ so much attention as in the weeks leading up to the election. (A) politics has received (B) has politics received (C) politics received (D) did politics received =B
+2. The CEO’s promises rang ____ in light of the company’s record. (A) shallow (B) vain (C) hollow (D) bare =C
+3. Much to the ____ of her colleagues, she turned down the promotion. (A) charity (B) chagrin (C) charisma (D) chastity =B
+4. The treaty was signed ____ a backdrop of mounting distrust between the two nations. (A) over (B) beneath (C) behind (D) against =D
+P: Anyone who has tried to translate a poem knows that fidelity and fluency pull in opposite directions. A translator who clings to the literal sense risks producing awkward, lifeless prose; one who prizes elegance may quietly replace the author’s meaning with her own. Some theorists therefore reject the notion of a “faithful” translation altogether, arguing that every rendering is an interpretation and that the translator’s visibility should be acknowledged rather than concealed. Others counter that this view, taken to its conclusion, licenses carelessness: if no translation can be faithful, why labour to be accurate? The more persuasive position may be that perfect equivalence is unattainable, while relative fidelity remains a meaningful standard against which individual choices can be judged.
+5. What dilemma does the author describe? (A) Poems cannot be translated. (B) Staying close to the original and sounding natural often conflict. (C) Translators are paid poorly. (D) Readers prefer literal translations. =B
+6. What objection is raised to the view that every translation is an interpretation? (A) It ignores the role of the reader. (B) It overstates the translator’s visibility. (C) It may excuse carelessness. (D) It is impossible to test. =C
+7. The author’s own conclusion is that ____. (A) fidelity should be abandoned as a goal (B) literal translation is always best (C) translators should remain invisible (D) fidelity remains a useful standard even though perfect equivalence is impossible =D
+
+=== FEA_BANK_C2_S3 | Placement bank: C2 Set 3 | C2 | grammar
+1. Only after the investigation had concluded ____ the full extent of the fraud revealed. (A) it was (B) was (C) did (D) had =B
+2. The minister’s denial did little to ____ suspicions that the contract had been awarded unfairly. (A) alley (B) allay (C) alloy (D) ally =B
+3. The novel’s ending is deliberately ____, inviting readers to reach their own conclusions. (A) open-minded (B) open-handed (C) open-ended (D) open-mouthed =C
+4. Having failed to ____ the support of the board, the director had little choice but to resign. (A) master (B) mutter (C) mitigate (D) muster =D
+P: Nostalgia was once classified as a medical disorder, a malady of soldiers and exiles whose longing for home was thought to produce fever and despair. Today, researchers are more likely to describe it as a psychological resource. Reflecting on cherished memories seems to bolster self-esteem and strengthen a sense of belonging, particularly in periods of upheaval. Yet nostalgia is not invariably benign. Critics observe that it tends to flatten the past into a sequence of golden moments, editing out hardship and injustice, and that political movements have exploited this selective memory to promise a return to a time that never quite existed. The healthiest form, some suggest, is one that remains aware of what has been omitted.
+5. How has the scientific view of nostalgia changed? (A) It was once treated as a physical illness and is now seen as potentially beneficial. (B) It is now seen as a sign of weakness. (C) It was once thought to benefit soldiers but is now seen as dangerous. (D) It has been shown to cause fever. =A
+6. What is the criticism of nostalgia? (A) It prevents people from forming memories. (B) It encourages people to move abroad. (C) It simplifies the past and can be exploited politically. (D) It lowers self-esteem. =C
+7. The phrase “a time that never quite existed” suggests that ____. (A) historians disagree about when it happened (B) the idealised past was partly imagined (C) the period was shorter than people think (D) political leaders have forgotten it =B
+
+=== LIU_BANK_A1 | Language in use bank: A1 | A1 | language
+1. You meet your teacher in the morning. What do you say? (A) Good night! (B) Goodbye! (C) Good morning! (D) See you later! =C
+2. Someone says, “Thank you for your help.” What do you say? (A) Sorry. (B) You’re welcome. (C) Excuse me. (D) Hello. =B
+3. You want to ask a stranger the time. What do you say? (A) Excuse me, what’s your timezone? (B) Where are you from? (C) How long is the time? (D) Excuse me, what time is it? =D
+4. A friend says, “I’m ill today.” What do you say? (A) I’m sorry to hear that. (B) Congratulations! (C) Oh, yay! (D) Have a nice diagnosis. =A
+5. The house is **big**. (A) small (B) large (C) old (D) extra =B
+6. The class will **start** at nine. (A) finish (B) stop (C) wait (D) begin =D
+7. I am **glad** to see you. (A) happy (B) sad (C) angry (D) joyful =A
+8. The tea is **hot**. (A) warm (B) sweet (C) cold (D) dry =C
+9. Please **open** the door. (A) close (B) push (C) paint (D) break =A
+10. The train is **early**. (A) fast (B) slow (C) quiet (D) late =D
+11. “Good luck!” means ____. (A) I am angry with you. (B) I hope things go well for you. (C) I want your money. (D) I don’t like you. =B
+12. “It’s a piece of cake” means it is ____. (A) a kind of food (B) very expensive (C) very easy (D) very old =C
+
+=== LIU_BANK_A2 | Language in use bank: A2 | A2 | language
+1. Your friend invites you to a party, but you can’t go. What is the most polite reply? (A) No, I won’t. (B) I’d love to, but I’m busy that night. (C) That’s going to be boring. (D) Don’t ask me. =B
+2. You want to borrow a pen from a classmate. What do you say? (A) Give me your pen. (B) Pen! (C) Can I borrow your pen, please? (D) I take your pen. =C
+3. You are in a restaurant and want the bill. What is the best thing to say to the waiter? (A) Bill now! (B) I want to pay money. (C) Where is my food? (D) Could we have the bill, please? =D
+4. You arrive ten minutes late for a lesson. What do you say to your teacher? (A) Sorry I’m late. (B) Where were you? (C) What a long lesson! (D) I don’t care. =A
+5. She gave a **quick** answer. (A) slow (B) fast (C) long (D) quiet =B
+6. You can **choose** any colour. (A) pick (B) lose (C) paint (D) find =A
+7. She is **afraid** of dogs. (A) angry (B) proud (C) scared (D) kind =C
+8. The shoes were **cheap**. (A) small (B) expensive (C) new (D) clean =B
+9. The bus will **arrive** at six. (A) wait (B) stay (C) turn (D) leave =D
+10. The box is **empty**. (A) heavy (B) full (C) open (D) broken =B
+11. “It’s raining cats and dogs” means ____. (A) It will stop soon. (B) It is a little cloudy. (C) It is raining very heavily. (D) Animals are falling from the sky. =C
+12. Before a show, people say “Break a leg!” to wish you ____. (A) luck (B) pain (C) rest (D) money =A
+
+=== LIU_BANK_B1 | Language in use bank: B1 | B1 | language
+1. You want to ask your manager for a day off. Which request is most appropriate? (A) I’ll be taking Friday off. (B) Give me Friday off. (C) I was wondering if I could take Friday off. (D) You must let me have Friday. =C
+2. A colleague tells you she has failed her driving test. Which response is most suitable? (A) Don’t worry. You’ll pass next time. (B) That’s really hilarious! (C) Okay…Well done! (D) You should give up now. =A
+3. You didn’t hear what your teacher said. What is the most polite way to ask her to repeat it? (A) What? (B) Say it again. (C) I can’t hear you. (D) Could you repeat that, please? =D
+4. You are writing an email to a customer you have never met. Which opening is most appropriate? (A) Hey you! (B) Dear Mr Adams, (C) My dearest Adams, (D) Hello. What’s up? =B
+5. She didn’t **reply** to my message. (A) answer (B) read (C) delete (D) forget =A
+6. They live in an **enormous** house. (A) tiny (B) huge (C) ancient (D) modern =B
+7. He can **repair** bicycles. (A) ride (B) fix (C) design (D) steal =B
+8. Prices **increase** every year. (A) rise (B) continue (C) change (D) decrease =D
+9. He is a **generous** person. (A) friendly (B) clever (C) honest (D) mean =D
+10. That is an **ancient** building. (A) modern (B) beautiful (C) famous (D) empty =A
+11. “I’m feeling under the weather” means ____. (A) I’m standing outside. (B) I’m enjoying the sunshine. (C) I’m slightly ill. (D) I’m worried about the forecast. =C
+12. If something “costs an arm and a leg”, it is ____. (A) dangerous (B) very expensive (C) painful (D) badly made =B
+
+=== LIU_BANK_B2 | Language in use bank: B2 | B2 | language
+1. Your boss asks if you can finish a report by tomorrow, but you need more time. Which reply is most diplomatic? (A) No way. (B) That’s impossible. (C) I’m not doing that. (D) I’m afraid that might be tight; would Thursday be possible? =D
+2. You disagree with a colleague’s idea in a meeting. Which comment is most appropriate? (A) That’s a crazy idea. (B) You’re wrong. (C) I see your point, but I wonder whether there might be another way. (D) Nobody will like that. =C
+3. You are writing a formal letter of complaint. Which sentence is most suitable? (A) Your service was really bad. (B) I am writing to express my dissatisfaction with the service I received. (C) I’m really fed up with your issues. (D) This place is a joke. =B
+4. A friend has just received bad news. Which response sounds most sympathetic and natural? (A) I’m so sorry; is there anything I can do to help? (B) Oh well, that’s life. (C) You’ll get over it soon. (D) I can’t believe you’re making such a fuss. =A
+5. She was **reluctant** to speak in public. (A) keen (B) able (C) unwilling (D) ready =C
+6. There has been a **significant** improvement. (A) slight (B) considerable (C) recent (D) temporary =B
+7. They had to **postpone** the meeting. (A) cancel (B) attend (C) shorten (D) delay =D
+8. Water is **scarce** in the region. (A) plentiful (B) dirty (C) valuable (D) expensive =A
+9. She feels **optimistic** about the future. (A) cautious (B) realistic (C) pessimistic (D) curious =C
+10. He took a **permanent** job. (A) temporary (B) part-time (C) difficult (D) local =A
+11. She “let the cat out of the bag” means she ____. (A) lost her pet (B) revealed a secret by accident (C) went shopping (D) made a mistake in cooking =B
+12. If you “bite off more than you can chew”, you ____. (A) eat too fast (B) refuse to cooperate (C) take on a task that is too big (D) speak without thinking =C
+
+=== LIU_BANK_C1 | Language in use bank: C1 | C1 | language
+1. You want to decline a job offer while keeping a good relationship with the employer. Which sentence is most suitable? (A) I’m not interested. (B) Thank you very much for the offer; after careful consideration, I have decided to decline. (C) Your offer is too low. (D) Thanks for the offer, but no. =B
+2. In an academic essay, which phrase is most appropriate for introducing a counter-argument? (A) However, it could be argued that… (B) Yeah, but some people say… (C) But maybe, what about… (D) The thing about this, though… =A
+3. A colleague asks for feedback on a presentation that had several weaknesses. Which response is most tactful and constructive? (A) It was a mess. (B) I’ve seen better. (C) There were some strong points; I think it would be even stronger with a clearer structure. (D) You should work on your presentation or never do it again. =C
+4. At a formal dinner, a guest offers you more food, but you are full. Which reply is most appropriate? (A) No way, I’m stuffed. (B) That’s enough, thanks. (C) Not for me, mate. (D) It’s delicious, but I couldn’t manage another bite, thank you. =D
+5. Smartphones are now **ubiquitous**. (A) fashionable (B) widespread (C) unreliable (D) obsolete =B
+6. She is **meticulous** about detail. (A) careless (B) impatient (C) painstaking (D) forgetful =C
+7. Measures were introduced to **mitigate** the damage. (A) cause (B) hide (C) predict (D) reduce =D
+8. The process was **transparent**. (A) opaque (B) efficient (C) lengthy (D) fair =A
+9. The judge was **lenient**. (A) wise (B) harsh (C) fair (D) young =B
+10. His fame proved **ephemeral**. (A) deserved (B) sudden (C) enduring (D) global =C
+11. “The new policy is a double-edged sword” means it ____. (A) is unnecessarily complicated (B) will be abandoned soon (C) has both advantages and disadvantages (D) is aggressive in tone =C
+12. If a negotiator “plays devil’s advocate”, she ____. (A) argues against an idea to test it, even if she agrees with it (B) tries to cause trouble (C) refuses to take part (D) represents the other side legally =A
+
+=== LIU_BANK_C2 | Language in use bank: C2 | C2 | language
+1. A senior colleague’s proposal has serious flaws. Which comment would be most diplomatic in a board meeting? (A) That doesn’t look like it’ll work, boss. (B) With respect, I wonder whether the proposal might not fully address the risks involved. (C) That’s one of the worst plans I’ve ever heard. (D) You should take some time to think it through. =B
+2. Someone thanks you effusively for a minor favour. Which reply best conveys gracious understatement? (A) Yes, I am very helpful. (B) You owe me one. (C) Think nothing of it; it was no trouble at all. (D) It was a lot of work. =C
+3. A newspaper editorial wants to criticise a minister’s decision in restrained, formal language. Which wording is most suitable? (A) The minister’s decision is, to put it mildly, open to question. (B) The minister has really messed up. (C) The minister’s decision was idiotic. (D) What on earth was the minister thinking? =A
+4. You are asked for your view on a matter outside your expertise. Which response best signals appropriate caution? (A) I know any and everything about it. (B) I couldn’t say. (C) It’s quite obvious. (D) I wouldn’t presume to speak with authority on the subject, but my impression is that… =D
+5. She remains **sanguine** about the company’s prospects. (A) doubtful (B) optimistic (C) indifferent (D) alarmed =B
+6. He gave the report a **perfunctory** glance. (A) careful (B) cursory (C) hostile (D) lengthy =B
+7. The statement seemed designed to **obfuscate** the issue. (A) clarify (B) summarise (C) resolve (D) obscure =D
+8. He was **magnanimous** in victory. (A) petty (B) modest (C) hasty (D) cruel =A
+9. The link between the two events is **tenuous**. (A) strong (B) obvious (C) recent (D) accidental =A
+10. She is **fastidious** about her appearance. (A) vain (B) elegant (C) slapdash (D) cautious =C
+11. “The proposal was dead in the water” means it ____. (A) had been fully funded (B) had no chance of succeeding (C) was widely supported (D) was delayed by bad weather =B
+12. If someone is “skating on thin ice”, they ____. (A) are very skilled (B) are being deceived (C) are in a risky situation (D) are avoiding work =C
