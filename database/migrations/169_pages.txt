@@ -1,10 +1,10 @@
 courses/CELPIP_Gen_1Mo/lessons/class01_p1_course-introduction.php
 resources/placement/foundational_english_assessment.php
 courses/CELPIP_Gen_1Mo/lessons/class01_p3_celpip-introduction.php
+resources/quizzes/class_quiz.php
 courses/CELPIP_intro/celpip_mini_mock.php
 courses/IELTS_Gen_1Mo/lessons/class01_p1_course-introduction.php
 courses/IELTS_Gen_1Mo/lessons/class01_p3_ielts-general-introduction.php
-resources/quizzes/class_quiz.php
 resources/mock_tests/ielts_gt_diagnostic.php
 courses/PTE_Gen_1Mo/lessons/class01_p1_course-introduction.php
 courses/PTE_Gen_1Mo/lessons/class01_p3_pte-academic-introduction.php
