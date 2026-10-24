@@ -166,7 +166,29 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         /* Flat exam look: borders only, no shadows. */
-        .fea { max-width: 760px; }
+        .fea { max-width: 1160px; }
+        .fea-intro { max-width: 780px; }
+        /* Test: questions on the left at a readable width, a sticky panel on the right (timer, answered, jump to a
+           question, submit). Below 992px the panel becomes a timer bar across the top. */
+        .fea-layout { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 2.25rem; align-items: start; }
+        .fea-side { position: sticky; top: 88px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; background: #fff; }
+        .fea-side .fea-timer { position: static; border: 0; padding: 0; margin: 0 0 .2rem; }
+        .fea-count { font-size: .82rem; color: #5b6678; }
+        .fea-nav-part { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #64748b; margin: .9rem 0 .35rem; }
+        .fea-dots { display: grid; grid-template-columns: repeat(6, 1fr); gap: .3rem; }
+        .fea-dot { border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; font-size: .78rem; padding: .3rem 0; color: #475569; text-decoration: none; }
+        .fea-dot:hover { border-color: #0b77ff; color: #0b77ff; }
+        .fea-dot.is-done { background: #0b77ff; border-color: #0b77ff; color: #fff; }
+        .fea-side .fea-submit { width: 100%; margin-top: 1rem; }
+        .fea-q { scroll-margin-top: 90px; }
+        .fea-results { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 991.98px) {
+            .fea-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+            .fea-side { order: -1; top: 72px; z-index: 5; padding: .6rem 1rem; margin: 1rem 0 .5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+            .fea-side .fea-timer { margin: 0; gap: .6rem; }
+            .fea-side .fea-nav, .fea-side .fea-submit { display: none; }
+        }
+        @media (max-width: 767.98px) { .fea-results { grid-template-columns: minmax(0, 1fr); gap: 0; } }
         .fea h1 { font-size: 1.5rem; font-weight: 700; color: #16202f; margin-bottom: .35rem; }
         .fea-intro { color: #5b6678; font-size: .92rem; }
         .fea-timer { position: sticky; top: 72px; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
@@ -196,7 +218,10 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
         .fea-table td:last-child { text-align: right; color: #5b6678; }
         body.dark .fea h1, body.dark .fea-part h2, body.dark .fea-q-text { color: #e2e8f0; }
         body.dark .fea-timer, body.dark .fea-passage { background: #1e293b; border-color: #334155; color: #e2e8f0; }
-        body.dark .fea-opt, body.dark .fea-box { border-color: #334155; }
+        body.dark .fea-opt, body.dark .fea-box, body.dark .fea-dot { border-color: #334155; }
+        body.dark .fea-side { background: #1e293b; border-color: #334155; }
+        body.dark .fea-dot { color: #cbd5e1; }
+        body.dark .fea-dot.is-done { background: #0b77ff; border-color: #0b77ff; color: #fff; }
         body.dark .fea-level { color: #93c5fd; }
     </style>
 </head>
@@ -226,6 +251,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
                 </p>
             </div>
 
+            <div class="fea-results">
             <div class="fea-box">
                 <h2 style="font-size:1rem;font-weight:700;margin:0 0 .5rem;">By part</h2>
                 <table class="fea-table">
@@ -248,6 +274,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
                     <?php endforeach; ?>
                 </table>
             </div>
+            </div>
 
             <a href="foundational_english_assessment.php?retake=1" class="btn btn-outline-secondary btn-sm">Take it again (new questions)</a>
             <a href="<?= ACADEMY_URL ?>learning_dashboard.php" class="btn btn-link btn-sm">Back to dashboard</a>
@@ -258,9 +285,9 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
 <?php else: ?>
             <p class="fea-intro"><?= count($questions) ?> questions, one hour. Answer on your own, without a dictionary or translator. If you don't know an answer, choose the one you think is best. Your result shows your general English level and what to work on.</p>
 
+            <div class="fea-layout">
             <form method="post" id="feaForm">
                 <input type="hidden" name="form" value="<?= $h($code) ?>">
-                <div class="fea-timer" id="feaTimer"><span>Time left</span><strong data-left="<?= (int) $secondsLeft ?>">60:00</strong></div>
                 <?php $part = 0; $passage = null; foreach ($questions as $i => $q): ?>
                     <?php if ((int) $q['part_number'] !== $part): $part = (int) $q['part_number']; $passage = null; ?>
                         <div class="fea-part"><h2><?= $h(FEA_PARTS[$part][0] ?? "Part $part") ?></h2><p><?= $h(FEA_PARTS[$part][1] ?? '') ?></p></div>
@@ -268,7 +295,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
                     <?php if ($q['stimulus_text'] && $q['stimulus_text'] !== $passage): $passage = $q['stimulus_text']; ?>
                         <div class="fea-passage"><div class="lbl">Passage</div><?= $h($passage) ?></div>
                     <?php endif; ?>
-                    <div class="fea-q">
+                    <div class="fea-q" id="q<?= $i + 1 ?>">
                         <div class="fea-q-num">Question <?= $i + 1 ?></div>
                         <?php if ($part === 2 && $q['instructions']): ?><div class="fea-q-ins"><?= $h($q['instructions']) ?></div><?php endif; ?>
                         <div class="fea-q-text"><?= $rich($q['question_text']) ?></div>
@@ -280,10 +307,31 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
                 <?php endforeach; ?>
                 <button type="submit" class="fea-submit">Submit my answers</button>
             </form>
+            <aside class="fea-side">
+                <div class="fea-timer" id="feaTimer"><span>Time left</span><strong data-left="<?= (int) $secondsLeft ?>">60:00</strong></div>
+                <div class="fea-count"><span id="feaAnswered">0</span> of <?= count($questions) ?> answered</div>
+                <div class="fea-nav">
+                    <?php $part = 0; foreach ($questions as $i => $q): ?>
+                        <?php if ((int) $q['part_number'] !== $part): ?>
+                            <?php if ($part): ?></div><?php endif; $part = (int) $q['part_number']; ?>
+                            <div class="fea-nav-part"><?= $h(preg_replace('/^Part \d+: /', '', FEA_PARTS[$part][0] ?? "Part $part")) ?></div><div class="fea-dots">
+                        <?php endif; ?>
+                        <a href="#q<?= $i + 1 ?>" class="fea-dot" data-q="<?= (int) $q['id'] ?>"><?= $i + 1 ?></a>
+                    <?php endforeach; ?></div>
+                </div>
+                <button type="submit" form="feaForm" class="fea-submit">Submit my answers</button>
+            </aside>
+            </div>
             <script>
             (function () {
                 var el = document.querySelector('#feaTimer strong'), box = document.getElementById('feaTimer'),
                     form = document.getElementById('feaForm'), end = Date.now() + parseInt(el.dataset.left, 10) * 1000, sent = false;
+                var count = document.getElementById('feaAnswered');
+                form.addEventListener('change', function (e) {   // mark the question's number in the panel as answered
+                    var dot = document.querySelector('.fea-dot[data-q="' + e.target.name.slice(2) + '"]');
+                    if (dot) dot.classList.add('is-done');
+                    count.textContent = form.querySelectorAll('.fea-q input:checked').length;
+                });
                 form.addEventListener('submit', function (e) {
                     if (sent) return;
                     var blank = form.querySelectorAll('.fea-q').length - form.querySelectorAll('.fea-q input:checked').length;
