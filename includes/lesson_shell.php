@@ -60,6 +60,8 @@ if (!function_exists('render_lesson_shell')) {
         require_once INCLUDES_PATH . '/course_shape.php';
         $shape = course_by_folder($db, $folder);
         $near  = ($shape && !empty($part['file_path'])) ? course_item_neighbours($db, $shape, $part['file_path']) : ['prev' => null, 'next' => null];
+        require_once INCLUDES_PATH . '/item_nav.php';
+        if (item_nav_in_app()) $near = ['prev' => null, 'next' => null];   // the app has its own navigation
         $next  = $near['next'];
         return [
             'course' => $course, 'lesson' => $lesson, 'lessons' => $lessons, 'folder' => $folder,

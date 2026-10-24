@@ -13,6 +13,11 @@
 require_once __DIR__ . '/course_shape.php';
 
 if (!function_exists('item_nav_html')) {
+    /** True inside the mobile app's WebView (its web session starts through api/mobile_session.php). */
+    function item_nav_in_app(): bool {
+        return !empty($_SESSION['in_sls_app']) || strpos($_SERVER['HTTP_USER_AGENT'] ?? '', 'SLSApp') !== false;
+    }
+
     /** The course this page was opened from: ?from=, else the last one remembered this session. */
     function item_nav_course(PDO $db): ?array {
         $from = $_GET['from'] ?? null;
@@ -26,6 +31,7 @@ if (!function_exists('item_nav_html')) {
 
     /** @param string|string[] $paths this item's path(s) as stored on the course (the first one the course has is used) */
     function item_nav_html(PDO $db, $paths): string {
+        if (item_nav_in_app()) return '';   // the app has its own navigation
         $course = item_nav_course($db);
         if (!$course) return '';
         $near = ['found' => false];

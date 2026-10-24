@@ -101,6 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $_SESSION['user_firstname'] = $student['firstname'];
     $_SESSION['user_lastname'] = $student['lastname'];
     $_SESSION['email_verified'] = 1;
+    // This web session lives inside the app (its WebView): pages drop their own Previous / Next there, because the
+    // app's header and Mark complete stay tied to the item the student opened (includes/item_nav.php).
+    $_SESSION['in_sls_app'] = 1;
 
     header('Location: ' . $academyBase . $next);
     exit();
