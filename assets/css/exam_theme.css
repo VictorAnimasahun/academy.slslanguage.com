@@ -197,7 +197,7 @@ body.exam-fullscreen .submit-bar {
 .preview-pill { background: var(--exam-warn-soft); border-radius: 20px; padding: .2rem .75rem; font-size: .75rem; color: var(--exam-warn); white-space: nowrap; flex-shrink: 0; }
 .preview-pill.hidden { display: none; }
 .audio-notice {
-  background: var(--exam-accent-soft); border-left: 3px solid var(--exam-accent); border-radius: 0 var(--exam-radius) var(--exam-radius) 0;
+  background: var(--exam-accent-soft); border: 1px solid var(--exam-line); border-radius: var(--exam-radius);   /* no left strip (founder: never, anywhere) */
   padding: .65rem 1rem; font-size: .84rem; color: var(--exam-ink); margin-bottom: 1.5rem; line-height: 1.5;
 }
 .worksheet-img-wrap { margin-bottom: 1.75rem; border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg); overflow: hidden; background: var(--exam-surface); text-align: center; }
@@ -207,7 +207,7 @@ body.exam-fullscreen .submit-bar {
 /* ── Question blocks (shared) ────────────────────────────────────────────── */
 .section-block { margin-bottom: 2rem; }
 .q-instructions {
-  background: var(--exam-accent-soft); border-left: 3px solid var(--exam-accent); border-radius: 0 var(--exam-radius) var(--exam-radius) 0;
+  background: var(--exam-accent-soft); border: 1px solid var(--exam-line); border-radius: var(--exam-radius);   /* no left strip (founder: never, anywhere) */
   padding: .6rem 1rem; font-size: .875rem; color: var(--exam-ink); margin-bottom: 1rem; line-height: 1.5;
 }
 .q-block { margin-bottom: 1.1rem; }
@@ -223,7 +223,7 @@ body.exam-fullscreen .submit-bar {
   text-align: center; font-weight: 700; font-size: .92rem; color: var(--exam-ink);
   margin-bottom: .75rem; padding: .5rem 1rem; background: var(--exam-bg); border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
 }
-.ff-subtitle { font-weight: 600; font-size: .82rem; color: var(--exam-accent); margin: 1.1rem 0 .5rem; padding-left: .65rem; border-left: 3px solid var(--exam-accent); }
+.ff-subtitle { font-weight: 600; font-size: .82rem; color: var(--exam-accent); margin: 1.1rem 0 .5rem; }
 .ff-sentence { font-size: .875rem; color: var(--exam-ink); margin-bottom: .65rem; line-height: 1.75; padding-left: .65rem; }
 .ff-input {
   border: none; border-bottom: 2px solid var(--exam-line); outline: none; width: 180px; font-size: .87rem;
@@ -289,7 +289,7 @@ body.exam-fullscreen .submit-bar {
 
 /* ── Writing: prompt + essay ──────────────────────────────────────────────── */
 .prompt-box {
-  background: var(--exam-accent-soft); border-left: 3px solid var(--exam-accent); border-radius: 0 var(--exam-radius) var(--exam-radius) 0;
+  background: var(--exam-accent-soft); border: 1px solid var(--exam-line); border-radius: var(--exam-radius);   /* no left strip (founder: never, anywhere) */
   padding: 1.1rem 1.4rem; font-size: .9rem; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-line;
   font-family: 'IBM Plex Serif', serif; color: var(--exam-ink);
 }

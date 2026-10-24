@@ -191,12 +191,20 @@ document.addEventListener('keydown', function(e) {
         }
 
         function goToSection(sectionNum) {
+            if (spk.phase === 'prep' || spk.phase === 'recording') {
+                alert('Please finish the Speaking part first.');
+                return;
+            }
             // Save current answers before moving
             saveCurrentAnswers();
             showPage(`section${sectionNum}`);
         }
 
         function finishQuiz() {
+            // Speaking still running: end the recording first, then come back here once it is saved.
+            if (spk.phase === 'recording') { spk.finishAfterStop = true; spkFinish(); return; }
+            if (spk.phase === 'prep') { spkCancel(); }
+            if (spk.phase === 'idle' && !confirm('You have not recorded your Speaking answer. Finish the test without it?')) return;
             clearInterval(timerInterval);
             saveCurrentAnswers();
             gradeAndShowResults();
@@ -332,9 +340,13 @@ document.addEventListener('keydown', function(e) {
 
             const speakingBox = document.createElement('div');
             speakingBox.className = 'scoreBox';
-            speakingBox.innerHTML = `
+            speakingBox.innerHTML = spk.url ? `
                 <div class="score-label">Speaking</div>
-                <div class="score-value">Examiner Assessed</div>
+                <div class="score-value">Recorded</div>
+                <div style="font-size: 12px; margin-top: 5px;">Part 2, ${formatTime(spk.seconds)}</div>
+            ` : `
+                <div class="score-label">Speaking</div>
+                <div class="score-value">Not recorded</div>
             `;
 
             summaryEl.appendChild(listeningBox);
@@ -448,6 +460,27 @@ document.addEventListener('keydown', function(e) {
             
             writingAssessment.innerHTML = writingFeedback;
             detailsEl.appendChild(writingAssessment);
+
+            // Speaking: the student's own recording, to play back and send to their tutor.
+            const speakingTitle = document.createElement('div');
+            speakingTitle.className = 'sectionTitle';
+            speakingTitle.textContent = 'Speaking (Part 2)';
+            detailsEl.appendChild(speakingTitle);
+            const speakingBlock = document.createElement('div');
+            speakingBlock.style.cssText = 'border:1px solid #e2e8f0;padding:20px;border-radius:8px;margin:15px 0;';
+            if (spk.url) {
+                const ext = (spk.blob.type || '').includes('mp4') ? 'm4a' : 'webm';
+                speakingBlock.innerHTML = `
+                    <p style="margin-top:0;"><strong>Topic:</strong> Describe a skill you learned that has been useful to you.</p>
+                    <p>You spoke for <strong>${formatTime(spk.seconds)}</strong>. In the real test, aim for close to the full 2 minutes.</p>
+                    <audio controls src="${spk.url}" style="width:100%;margin:6px 0 12px;"></audio>
+                    <p><a class="btn btn-primary" href="${spk.url}" download="ielts-mini-mock-speaking.${ext}">Download my recording</a></p>
+                    <p style="margin-bottom:0;">Send the recording to your tutor. They mark it on the four Speaking criteria: Fluency and Coherence,
+                       Lexical Resource, Grammatical Range and Accuracy, and Pronunciation.</p>`;
+            } else {
+                speakingBlock.innerHTML = '<p style="margin:0;">No Speaking answer was recorded in this attempt.</p>';
+            }
+            detailsEl.appendChild(speakingBlock);
         }
 
         function escapeHtml(text) {
@@ -495,6 +528,8 @@ document.addEventListener('keydown', function(e) {
             const writingInput = document.getElementById('writingResponse');
             if (writingInput) writingInput.value = '';
 
+            spkReset();
+
             // Reset timer
             clearInterval(timerInterval);
             timeLeft = 3600;
@@ -540,3 +575,107 @@ document.addEventListener('keydown', function(e) {
             // This could be enhanced to load from localStorage if needed
             // For now, we keep everything in memory during the session
         });
+
+// ── Speaking Part 2, self-recorded (founder, 2026-10-24) ─────────────────────
+// 1 minute to prepare, then one recording of up to 2 minutes, as in the real test. Kept in the browser only.
+const SPK_PREP = 60, SPK_MAX = 120;
+let spk = { phase: 'idle', stream: null, rec: null, chunks: [], blob: null, url: null, seconds: 0, timer: null, finishAfterStop: false };
+
+function spkEl(id) { return document.getElementById(id); }
+function spkError(msg) { const e = spkEl('spkError'); e.textContent = msg; e.style.display = msg ? 'block' : 'none'; }
+
+function spkCountdown(from, onTick, onEnd) {
+    let left = from;
+    onTick(left);
+    clearInterval(spk.timer);
+    spk.timer = setInterval(() => {
+        left--;
+        onTick(left);
+        if (left <= 0) { clearInterval(spk.timer); onEnd(); }
+    }, 1000);
+}
+
+async function spkStart() {
+    spkError('');
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+        spkError('This browser cannot record audio. Please use an up-to-date Chrome, Edge, Firefox or Safari.');
+        return;
+    }
+    try {
+        spk.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+        spkError('The microphone is blocked. Allow this page to use your microphone in your browser settings, then press Start Speaking again.');
+        return;
+    }
+    spkEl('spkIntro').style.display = 'none';
+    spkEl('spkCard').style.display = 'block';
+    spk.phase = 'prep';
+    spkEl('spkStatus').textContent = 'Preparation: read the card and make notes';
+    spkCountdown(SPK_PREP, s => { spkEl('spkClock').textContent = formatTime(s); }, spkRecord);
+}
+
+function spkRecord() {
+    spk.chunks = [];
+    spk.rec = new MediaRecorder(spk.stream);
+    spk.rec.ondataavailable = e => { if (e.data && e.data.size) spk.chunks.push(e.data); };
+    spk.rec.onstop = spkStopped;
+    spk.rec.start();
+    spk.phase = 'recording';
+    spk.started = Date.now();
+    spkEl('spkStatus').textContent = 'Recording: speak now';
+    spkEl('spkStatus').style.color = 'var(--error-color)';
+    spkEl('spkFinishBtn').style.display = 'inline-block';
+    spkCountdown(SPK_MAX, s => { spkEl('spkClock').textContent = formatTime(s) + ' left'; }, spkFinish);
+}
+
+function spkFinish() {
+    clearInterval(spk.timer);
+    if (spk.rec && spk.rec.state === 'recording') spk.rec.stop();
+}
+
+function spkStopped() {
+    spk.seconds = Math.min(SPK_MAX, Math.round((Date.now() - spk.started) / 1000));
+    if (spk.stream) spk.stream.getTracks().forEach(t => t.stop());
+    spkEl('spkCard').style.display = 'none';
+    spkEl('spkFinishBtn').style.display = 'none';
+    if (!spk.chunks.length) {
+        // Nothing captured (a microphone problem): let the student try again.
+        spk.phase = 'idle';
+        spkEl('spkIntro').style.display = 'block';
+        spkError('Nothing was recorded. Check your microphone and press Start Speaking to try again.');
+        spk.finishAfterStop = false;
+        return;
+    }
+    spk.blob = new Blob(spk.chunks, { type: spk.rec.mimeType || 'audio/webm' });
+    spk.url = URL.createObjectURL(spk.blob);
+    spk.phase = 'done';
+    spkEl('spkPlayback').src = spk.url;
+    spkEl('spkLength').textContent = formatTime(spk.seconds);
+    spkEl('spkDone').style.display = 'block';
+    if (spk.finishAfterStop) { spk.finishAfterStop = false; finishQuiz(); }
+}
+
+function spkCancel() {
+    clearInterval(spk.timer);
+    if (spk.stream) spk.stream.getTracks().forEach(t => t.stop());
+    spk.phase = 'idle';
+}
+
+function spkReset() {
+    spkCancel();
+    if (spk.url) URL.revokeObjectURL(spk.url);
+    spk = { phase: 'idle', stream: null, rec: null, chunks: [], blob: null, url: null, seconds: 0, timer: null, finishAfterStop: false };
+    spkEl('spkIntro').style.display = 'block';
+    spkEl('spkCard').style.display = 'none';
+    spkEl('spkDone').style.display = 'none';
+    spkEl('spkNotes').value = '';
+    spkEl('spkStatus').style.color = '';
+    spkError('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const b = spkEl('spkStartBtn');
+    if (b) b.addEventListener('click', spkStart);
+    const f = spkEl('spkFinishBtn');
+    if (f) f.addEventListener('click', spkFinish);
+});

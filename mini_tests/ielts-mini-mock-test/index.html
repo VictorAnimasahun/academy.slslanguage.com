@@ -33,7 +33,7 @@
                     <li>Listening (10 questions)</li>
                     <li>Reading (6 questions)</li>
                     <li>Writing (1 task)</li>
-                    <li>Speaking (examiner administered)</li>
+                    <li>Speaking (Part 2, recorded on your own)</li>
                 </ul>
                 <br>
                 <p>Click on the <strong>Start Test</strong> button below when you are ready to begin. At the end, you'll receive a detailed assessment of your English level and personalized feedback on areas for improvement.</p>
@@ -323,89 +323,51 @@
                 <div class="progress" style="width: 100%"></div>
             </div>
             <h2>Section 4: Speaking</h2>
-            
+
+            <!-- Self-recorded IELTS Speaking Part 2 (founder, 2026-10-24): the student does it alone, so the result is
+                 complete at the end of the test instead of waiting for an examiner. Recorded in the browser; nothing is
+                 uploaded. The student plays it back and downloads it to send to their tutor. -->
             <div class="wrap">
                 <div class="card" role="main">
-                    <h1>Speaking Section</h1>
-                    <div class="subtitle">The Speaking test will be administered to you by the examiner.</div>
-                    
-                    <div class="speaking-info">
-                        <div class="speaking-overview">
-                            <h3>IELTS Speaking Test Overview</h3>
-                            <p>The IELTS Speaking test is a face-to-face interview with a certified examiner. It takes 11-14 minutes and consists of three parts:</p>
-                        </div>
-                        
-                        <div class="speaking-parts">
-                            <div class="speaking-part">
-                                <h4>Part 1: Introduction and Interview (4-5 minutes)</h4>
-                                <ul>
-                                    <li>General questions about yourself, your home, family, work, studies</li>
-                                    <li>Familiar topics such as hobbies, interests, daily routines</li>
-                                    <li>Example: "Tell me about your hometown" or "What do you like to do in your free time?"</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="speaking-part">
-                                <h4>Part 2: Long Turn (3-4 minutes)</h4>
-                                <ul>
-                                    <li>You receive a task card with a topic and points to cover</li>
-                                    <li>1 minute preparation time to make notes</li>
-                                    <li>Speak for 1-2 minutes on the topic</li>
-                                    <li>Examiner may ask 1-2 follow-up questions</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="speaking-part">
-                                <h4>Part 3: Discussion (4-5 minutes)</h4>
-                                <ul>
-                                    <li>Abstract discussion related to Part 2 topic</li>
-                                    <li>More complex questions requiring detailed answers</li>
-                                    <li>Opportunity to express opinions and ideas</li>
-                                    <li>Questions about society, future predictions, comparisons</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="speaking-assessment">
-                            <h3>Assessment Criteria</h3>
-                            <p>Your speaking will be assessed on four criteria:</p>
-                            <div class="criteria-grid">
-                                <div class="criterion">
-                                    <h5>Fluency and Coherence</h5>
-                                    <p>How smoothly you speak and organize your ideas</p>
-                                </div>
-                                <div class="criterion">
-                                    <h5>Lexical Resource</h5>
-                                    <p>Range and accuracy of vocabulary</p>
-                                </div>
-                                <div class="criterion">
-                                    <h5>Grammatical Range</h5>
-                                    <p>Variety and accuracy of grammar structures</p>
-                                </div>
-                                <div class="criterion">
-                                    <h5>Pronunciation</h5>
-                                    <p>Clarity and natural rhythm of speech</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="speaking-tips">
-                            <h3>Speaking Test Tips</h3>
-                            <ul>
-                                <li>Speak clearly and at a natural pace</li>
-                                <li>Don't worry about your accent - focus on clear pronunciation</li>
-                                <li>Give full answers, not just yes/no responses</li>
-                                <li>Use a range of vocabulary and grammar structures</li>
-                                <li>Ask for clarification if you don't understand a question</li>
-                                <li>Stay calm and be yourself</li>
+                    <h1>Speaking: Part 2 (Long Turn)</h1>
+                    <div class="subtitle">You do this part on your own, with your microphone.</div>
+
+                    <div id="spkIntro" class="speaking-info">
+                        <p>In the real test, Part 2 is a long turn: you get a card with a topic, <strong>1 minute to prepare</strong>,
+                           then you speak for <strong>up to 2 minutes</strong>. Here it works the same way:</p>
+                        <ol>
+                            <li>Press <strong>Start Speaking</strong> and allow your browser to use the microphone.</li>
+                            <li>Read the card. You have 1 minute to make notes.</li>
+                            <li>Recording starts by itself. Speak until the 2 minutes end, or press <strong>Finish</strong> when you are done.</li>
+                        </ol>
+                        <p>You record once, as in the real test. Use a quiet room and keep your microphone close.</p>
+                        <p id="spkError" style="color:var(--error-color);font-weight:600;display:none;"></p>
+                        <button type="button" class="btn btn-primary" id="spkStartBtn">Start Speaking</button>
+                    </div>
+
+                    <div id="spkCard" style="display:none;">
+                        <div style="border:1px solid #cbd5e1;border-radius:10px;padding:18px 22px;margin:10px 0 16px;">
+                            <div style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#64748b;margin-bottom:8px;">Candidate task card</div>
+                            <p style="font-size:18px;font-weight:700;margin:0 0 10px;">Describe a skill you learned that has been useful to you.</p>
+                            <p style="margin:0 0 6px;">You should say:</p>
+                            <ul style="margin:0 0 6px;">
+                                <li>what the skill is</li>
+                                <li>when and how you learned it</li>
+                                <li>who helped you learn it</li>
                             </ul>
+                            <p style="margin:0;">and explain why this skill has been useful to you.</p>
                         </div>
-                        
-                        <div class="examiner-note">
-                            <h3>Note for Test Day</h3>
-                            <p><strong>The Speaking test is conducted separately from the other three skills and may be scheduled on a different day.</strong> You will be notified of your Speaking test time when you register for the IELTS exam.</p>
-                            <p>The test is recorded for monitoring and remarking purposes. The examiner will take notes during your test, but this is normal procedure and not a cause for concern.</p>
-                        </div>
+                        <div id="spkStatus" style="font-size:18px;font-weight:700;margin-bottom:8px;"></div>
+                        <div id="spkClock" style="font-size:28px;font-variant-numeric:tabular-nums;font-weight:700;margin-bottom:12px;"></div>
+                        <label for="spkNotes" style="font-weight:600;">Your notes (not marked)</label>
+                        <textarea id="spkNotes" rows="4" style="width:100%;margin:6px 0 12px;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;"></textarea>
+                        <button type="button" class="btn btn-secondary" id="spkFinishBtn" style="display:none;">Finish speaking</button>
+                    </div>
+
+                    <div id="spkDone" style="display:none;">
+                        <p style="font-weight:700;color:var(--success-color);">Your answer is recorded (<span id="spkLength"></span>).</p>
+                        <audio id="spkPlayback" controls style="width:100%;margin:8px 0 12px;"></audio>
+                        <p>It is included in your results on the next page, where you can also download it to send to your tutor.</p>
                     </div>
                 </div>
             </div>

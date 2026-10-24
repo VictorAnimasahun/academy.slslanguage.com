@@ -19,6 +19,13 @@ return [
         'writing'   => ['file' => 'mock_writing.php',           'test_code' => 'IELTS_FM1_W'],
         'speaking'  => ['file' => 'mock_speaking.php'],
     ],
+    // IELTS Academic Mock 1 (Cambridge IELTS 13 Academic, Test 1; migration 172).
+    'IELTS_ACA_FULL_MOCK_001' => [
+        'listening' => ['file' => 'aca_full_mock_001_listening.php', 'test_code' => 'IELTS_AFM1_L'],
+        'reading'   => ['file' => 'aca_full_mock_001_reading.php',  'test_code' => 'IELTS_AFM1_R'],
+        'writing'   => ['file' => 'mock_writing.php',               'test_code' => 'IELTS_AFM1_W'],
+        'speaking'  => ['file' => 'mock_speaking.php'],
+    ],
     'IELTS_FULL_MOCK_002' => [
         'listening' => ['file' => 'full_mock_002_listening.php', 'test_code' => 'IELTS_FM2_L'],
         'reading'   => ['file' => 'full_mock_002_reading.php',  'test_code' => 'IELTS_FM2_R'],
