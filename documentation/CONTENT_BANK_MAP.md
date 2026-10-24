@@ -21,7 +21,7 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
 
 | Content | Test code(s) | Source | Used by |
 |---|---|---|---|
-| Foundational English Assessment — `resources/placement/foundational_english_assessment.php` | `FEA_FORM_A` (first sitting), `FEA_FORM_B` (retake): 30 questions, 60 min each, no item shared | Founder's Placement Test bank + Language in Use bank, 2026-10-24 (migration 167) | Class 1 of every paid course (the piece counts when Form A is done) |
+| Foundational English Assessment — `resources/placement/foundational_english_assessment.php` | `FEA50_A` (first sitting), `FEA50_B` (retake): 50 questions, 60 min each, 10 per level, no item shared (167's 30-question `FEA_FORM_A`/`B` are off, results kept) | Founder's Placement Test bank + Language in Use bank, 2026-10-24 (migrations 167, 168) | Class 1 of every paid course (the piece counts when Form A is done) |
 | The bank the forms are built from | `FEA_BANK_A2`, `FEA_BANK_{B1,B2,C1,C2}_S{1,2,3}`, `LIU_BANK_{A1..C2}` (inactive) | same; source file `database/placement/bank.txt`, forms picked in `database/placement/build_migration.py` | Form A uses Set 1 items, Form B Set 2. Set 3 and the unused Set 1/2 items are spare for a Form C or for replacing items after the pilot |
 
 ## CELPIP General

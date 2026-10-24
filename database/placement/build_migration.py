@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """
-Builds migration 167 (Foundational English Assessment) from bank.txt.
+Builds migration 168 (Foundational English Assessment, 50-question forms) from bank.txt.
 
-    python3 -I database/placement/build_migration.py > database/migrations/167_foundational_english_assessment.sql
+    python3 -I database/placement/build_migration.py > database/migrations/168_foundational_english_assessment_50.sql
+
+168 holds everything 167 did (schema, bank) plus the new forms, so live runs 168 whether or not it ran 167. 167 is
+kept as it was run; this script no longer builds it.
 
 bank.txt holds the whole question bank (the founder's placement bank and Language in Use bank, 2026-10-24), one
-inactive test per block (FEA_BANK_*, LIU_BANK_*). FORMS below picks 30 of those items for each of the two forms
-students actually take (FEA_FORM_A, FEA_FORM_B): one hour, five levels, three parts. Change the bank or the picks
+inactive test per block (FEA_BANK_*, LIU_BANK_*). FORMS below picks 50 of those items for each of the two forms
+students actually take (FEA50_A, FEA50_B): one hour, five levels, three parts. Change the bank or the picks
 here and rebuild; never edit the .sql by hand.
 """
 import re
@@ -24,42 +27,49 @@ LIU_INSTRUCTIONS = {
 }
 
 # Each form: (part, level, bank code, item numbers). Levels: Basic = A1-A2. Parts: 1 grammar and vocabulary,
-# 2 language in use, 3 reading. Form B never repeats a Form A item, so a retake is a fresh test.
+# 2 language in use, 3 reading. 50 questions a form, 10 per level (founder, 2026-10-24: "up to 50 questions"); per form
+# 23 grammar and vocabulary, 15 language in use, 12 reading (one passage per level from B1). Form B never repeats a
+# Form A item, so a retake is a fresh test. New codes (FEA50_*): the 30-question FEA_FORM_* of migration 167 are switched
+# off, not rewritten, so any attempt already taken keeps the questions it was marked on.
 FORMS = {
-    'FEA_FORM_A': [
-        (1, 'Basic', 'FEA_BANK_A2', [1, 4, 8]),
-        (1, 'B1', 'FEA_BANK_B1_S1', [2, 3, 4]),
-        (1, 'B2', 'FEA_BANK_B2_S1', [1, 4, 5]),
-        (1, 'C1', 'FEA_BANK_C1_S1', [1, 5, 8]),
-        (1, 'C2', 'FEA_BANK_C2_S1', [1, 2, 3]),
-        (2, 'Basic', 'LIU_BANK_A1', [2]),
-        (2, 'Basic', 'LIU_BANK_A2', [11]),
-        (2, 'B1', 'LIU_BANK_B1', [1]),
-        (2, 'B2', 'LIU_BANK_B2', [5]),
-        (2, 'C1', 'LIU_BANK_C1', [8]),
-        (2, 'C2', 'LIU_BANK_C2', [12]),
+    'FEA50_A': [
+        (1, 'Basic', 'FEA_BANK_A2', [1, 4, 5, 8]),
+        (1, 'B1', 'FEA_BANK_B1_S1', [1, 2, 3, 4, 6]),
+        (1, 'B2', 'FEA_BANK_B2_S1', [1, 2, 4, 5, 7]),
+        (1, 'C1', 'FEA_BANK_C1_S1', [1, 2, 3, 5, 8]),
+        (1, 'C2', 'FEA_BANK_C2_S1', [1, 2, 3, 4]),
+        (2, 'Basic', 'LIU_BANK_A1', [2, 5, 8]),
+        (2, 'Basic', 'LIU_BANK_A2', [1, 9, 11]),
+        (2, 'B1', 'LIU_BANK_B1', [1, 6]),
+        (2, 'B2', 'LIU_BANK_B2', [5, 10]),
+        (2, 'C1', 'LIU_BANK_C1', [3, 8]),
+        (2, 'C2', 'LIU_BANK_C2', [4, 7, 12]),
         (3, 'B1', 'FEA_BANK_B1_S1', [9, 10, 11]),
         (3, 'B2', 'FEA_BANK_B2_S1', [9, 10, 11]),
         (3, 'C1', 'FEA_BANK_C1_S1', [9, 10, 11]),
+        (3, 'C2', 'FEA_BANK_C2_S3', [5, 6, 7]),
     ],
-    'FEA_FORM_B': [
-        (1, 'Basic', 'FEA_BANK_A2', [2, 3, 6]),
-        (1, 'B1', 'FEA_BANK_B1_S2', [2, 5, 6]),
-        (1, 'B2', 'FEA_BANK_B2_S2', [1, 3, 5]),
-        (1, 'C1', 'FEA_BANK_C1_S2', [1, 5, 8]),
-        (1, 'C2', 'FEA_BANK_C2_S2', [1, 2, 3]),
-        (2, 'Basic', 'LIU_BANK_A1', [9]),
-        (2, 'Basic', 'LIU_BANK_A2', [3]),
-        (2, 'B1', 'LIU_BANK_B1', [11]),
-        (2, 'B2', 'LIU_BANK_B2', [2]),
-        (2, 'C1', 'LIU_BANK_C1', [6]),
-        (2, 'C2', 'LIU_BANK_C2', [2]),
+    'FEA50_B': [
+        (1, 'Basic', 'FEA_BANK_A2', [2, 3, 6, 7]),
+        (1, 'B1', 'FEA_BANK_B1_S2', [1, 2, 3, 5, 6]),
+        (1, 'B2', 'FEA_BANK_B2_S2', [1, 2, 3, 5, 7]),
+        (1, 'C1', 'FEA_BANK_C1_S2', [1, 2, 3, 5, 8]),
+        (1, 'C2', 'FEA_BANK_C2_S2', [1, 2, 3, 4]),
+        (2, 'Basic', 'LIU_BANK_A1', [3, 6, 9]),
+        (2, 'Basic', 'LIU_BANK_A2', [3, 7, 12]),
+        (2, 'B1', 'LIU_BANK_B1', [9, 11]),
+        (2, 'B2', 'LIU_BANK_B2', [2, 8]),
+        (2, 'C1', 'LIU_BANK_C1', [6, 12]),
+        (2, 'C2', 'LIU_BANK_C2', [2, 5, 9]),
         (3, 'B1', 'FEA_BANK_B1_S2', [9, 10, 11]),
         (3, 'B2', 'FEA_BANK_B2_S2', [9, 10, 11]),
         (3, 'C1', 'FEA_BANK_C1_S2', [9, 10, 11]),
+        (3, 'C2', 'FEA_BANK_C2_S2', [5, 6, 7]),
     ],
 }
-FORM_TITLES = {'FEA_FORM_A': 'Foundational English Assessment (Form A)', 'FEA_FORM_B': 'Foundational English Assessment (Form B)'}
+FORM_SIZE = 50
+OLD_FORMS = ['FEA_FORM_A', 'FEA_FORM_B']
+FORM_TITLES = {'FEA50_A': 'Foundational English Assessment (Form A)', 'FEA50_B': 'Foundational English Assessment (Form B)'}
 LEVELS = ['Basic', 'B1', 'B2', 'C1', 'C2']
 ITEM = re.compile(r'^(\d+)\.\s+(.*?)\s+\(A\)\s+(.*?)\s+\(B\)\s+(.*?)\s+\(C\)\s+(.*?)\s+\(D\)\s+(.*?)\s+=([ABCD])$')
 
@@ -123,8 +133,8 @@ def main():
     used = {}
     for form, picks in FORMS.items():
         n = sum(len(nums) for *_, nums in picks)
-        if n != 30:
-            sys.exit(f'{form} has {n} items, not 30')
+        if n != FORM_SIZE:
+            sys.exit(f'{form} has {n} items, not {FORM_SIZE}')
         for part, level, bank, nums in picks:
             for num in nums:
                 if num not in blocks[bank]['items']:
@@ -136,17 +146,19 @@ def main():
     total = sum(len(b['items']) for b in blocks.values())
     out = [
         "-- ============================================================",
-        "-- Migration 167 -- Foundational English Assessment (placement test): question bank + two one-hour forms",
+        "-- Migration 168 -- Foundational English Assessment (placement test): 50-question forms (replaces 167's 30)",
         "--",
         f"-- Generated by database/placement/build_migration.py from database/placement/bank.txt -- edit those, not this file.",
         f"-- The founder's Placement Test bank and Language in Use bank (2026-10-24): {total} questions in {len(blocks)} bank blocks",
         "-- (FEA_BANK_* by level and set, LIU_BANK_* by level), inactive: they are the bank, not tests students open.",
-        "-- Students take FEA_FORM_A, then FEA_FORM_B on a retake: 30 questions each, 60 minutes, in three parts",
-        "-- (grammar and vocabulary 15, language in use 6, reading 9), tagged by level (Basic = A1-A2, B1, B2, C1, C2)",
+        "-- Students take FEA50_A, then FEA50_B on a retake: 50 questions each, 60 minutes, 10 per level, in three parts",
+        "-- (grammar and vocabulary 23, language in use 15, reading 12), tagged by level (Basic = A1-A2, B1, B2, C1, C2)",
         "-- through the sections table. resources/placement/foundational_english_assessment.php runs them.",
         "-- The placement bank's answer keys were not in the document; they were worked out item by item -- check before relying",
         "-- on results. The Language in Use keys are the founder's.",
-        "-- Last: the Class 1 'Foundational English Assessment' pieces stop being Coming Soon and count when Form A is done.",
+        "-- Includes all of 167 (schema, bank), so it can run whether or not 167 ran. 167's 30-question forms (FEA_FORM_A/B)",
+        "-- are switched off, not changed, so attempts already taken keep their questions.",
+        "-- Last: the Class 1 'Foundational English Assessment' pieces count when the new Form A is done.",
         "--",
         "-- Re-run safe (tests upserted by code, questions added only where missing, options INSERT IGNORE), including after a run",
         "-- that stopped part-way. MySQL 5.7-safe.",
@@ -187,18 +199,21 @@ def main():
                 for bnum in nums:
                     num += 1
                     items.append((num, blocks[bank]['items'][bnum], bank, bnum, part, level))
-        emit_test(out, form, FORM_TITLES[form], 'General English level check: grammar and vocabulary, language in use, and reading. 30 questions, one hour.',
+        emit_test(out, form, FORM_TITLES[form], f'General English level check: grammar and vocabulary, language in use, and reading. {FORM_SIZE} questions, one hour.',
                   'Placement', 1, 60, items)
 
     out += [
         "",
+        "-- The 30-question forms from 167, where they exist: off, kept for the attempts made on them.",
+        "UPDATE tests SET is_active = 0 WHERE code IN (" + ', '.join(q(c) for c in OLD_FORMS) + ");",
+        "",
         "-- Class 1 of every paid course: the assessment is ready, and done once Form A is completed.",
-        "UPDATE lesson_parts SET status = 'ready', test_code = 'FEA_FORM_A'",
+        "UPDATE lesson_parts SET status = 'ready', test_code = 'FEA50_A'",
         " WHERE file_path = 'resources/placement/foundational_english_assessment.php';",
         "",
     ]
     print('\n'.join(out))
-    print(f'-- {total} bank questions; forms: ' + ', '.join(f'{f} 30' for f in FORMS), file=sys.stderr)
+    print(f'-- {total} bank questions; forms: ' + ', '.join(f'{f} {FORM_SIZE}' for f in FORMS), file=sys.stderr)
 
 
 main()

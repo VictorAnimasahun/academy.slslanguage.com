@@ -4,8 +4,8 @@
 // screen). The old public quiz at mini_tests/english-placement-test stays for the marketing site.
 //
 // Two forms built from the question bank (migration 167; database/placement/): Form A first, Form B on a retake, so a
-// retake never repeats a question. 30 questions, 60 minutes, three parts. Each question belongs to a level (the
-// sections table: Basic = A1-A2, B1, B2, C1, C2). The result is the highest level passed with every level below it
+// retake never repeats a question. 50 questions, 60 minutes, three parts (migration 168; 167's 30-question forms are
+// off but their attempts still show). Each question belongs to a level (the sections table: Basic = A1-A2, B1, B2, C1, C2). The result is the highest level passed with every level below it
 // passed too. Students see their level and what to review, never the answers (founder's bank, 2026-10-24).
 require_once dirname(__DIR__, 2) . '/bootstrap.php';
 
@@ -15,11 +15,13 @@ if (!isset($_SESSION['user_id'])) {
 }
 $studentId = (int) $_SESSION['user_id'];
 
-const FEA_FORMS   = ['FEA_FORM_A', 'FEA_FORM_B'];
+const FEA_FORMS   = ['FEA50_A', 'FEA50_B'];
+const FEA_OLD     = ['FEA_FORM_A', 'FEA_FORM_B'];   // 30-question forms (migration 167): results only
 const FEA_SECONDS = 3600;
-// Pass mark per level, about 70% of its questions. Provisional: the founder's bank asks for a pilot with 10-20 students
-// of known level before these are relied on.
-const FEA_PASS    = ['Basic' => 4, 'B1' => 5, 'B2' => 5, 'C1' => 5, 'C2' => 3];
+const FEA_LEVELS  = ['Basic', 'B1', 'B2', 'C1', 'C2'];
+// Pass mark per level: 70% of its questions, rounded up (7 of 10; on the old forms 4 of 5, 5 of 7, 3 of 4, as before).
+// Provisional: the founder's bank asks for a pilot with 10-20 students of known level before it is relied on.
+const FEA_PASS    = 0.7;
 const FEA_PARTS   = [
     1 => ['Part 1: Grammar and vocabulary', 'Choose the word or phrase that best completes each sentence.'],
     2 => ['Part 2: Language in use', 'Choose the best answer. Each question tells you what to look for.'],
@@ -44,12 +46,13 @@ function fea_questions(PDO $db, int $testId): array {
     return $st->fetchAll(PDO::FETCH_ASSOC);
 }
 
-/** The student's completed attempts at either form, newest first. */
+/** The student's completed attempts at any form, old ones included, newest first. */
 function fea_attempts(PDO $db, int $studentId): array {
-    $ph = implode(',', array_fill(0, count(FEA_FORMS), '?'));
+    $codes = [...FEA_FORMS, ...FEA_OLD];
+    $ph = implode(',', array_fill(0, count($codes), '?'));
     $st = $db->prepare("SELECT a.*, t.code FROM test_attempts a JOIN tests t ON t.id = a.test_id
                          WHERE a.student_id = ? AND a.status = 'completed' AND t.code IN ($ph) ORDER BY a.completed_at DESC, a.id DESC");
-    $st->execute([$studentId, ...FEA_FORMS]);
+    $st->execute([$studentId, ...$codes]);
     return $st->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -68,8 +71,8 @@ function fea_result(PDO $db, array $attempt): array {
         $parts[(int) $r['part_number']]['got'] = ($parts[(int) $r['part_number']]['got'] ?? 0) + ($r['got'] > 0 ? 1 : 0);
     }
     $placed = null;
-    foreach (FEA_PASS as $level => $need) {
-        if (($levels[$level]['got'] ?? 0) < $need) break;
+    foreach (FEA_LEVELS as $level) {
+        if (!isset($levels[$level]) || $levels[$level]['got'] < ceil(FEA_PASS * $levels[$level]['n'] - 1e-9)) break;
         $placed = $level;
     }
     ksort($parts);
@@ -129,8 +132,9 @@ if (isset($_GET['result'])) {
 if ($view) {
     $result = fea_result($db, $view);
 } else {
-    // Form A first; after that, the form not taken last time.
-    $code = $attempts ? FEA_FORMS[(array_search($attempts[0]['code'], FEA_FORMS, true) + 1) % count(FEA_FORMS)] : FEA_FORMS[0];
+    // Form A first (also after an old 30-question form); after that, the form not taken last time.
+    $last = $attempts ? array_search($attempts[0]['code'], FEA_FORMS, true) : false;
+    $code = $last === false ? FEA_FORMS[0] : FEA_FORMS[($last + 1) % count(FEA_FORMS)];
     $test = fea_test($db, $code);
     $questions = $test ? fea_questions($db, (int) $test['id']) : [];
     if ($questions) {
@@ -239,7 +243,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
             <div class="fea-box">
                 <h2 style="font-size:1rem;font-weight:700;margin:0 0 .5rem;">By level</h2>
                 <table class="fea-table">
-                    <?php foreach (array_keys(FEA_PASS) as $lv): if (!isset($r['levels'][$lv])) continue; $s = $r['levels'][$lv]; ?>
+                    <?php foreach (FEA_LEVELS as $lv): if (!isset($r['levels'][$lv])) continue; $s = $r['levels'][$lv]; ?>
                         <tr><td><?= $h($levelNames[$lv]) ?></td><td><?= $s['got'] ?> of <?= $s['n'] ?></td></tr>
                     <?php endforeach; ?>
                 </table>
@@ -252,7 +256,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
             <p class="fea-intro">This assessment isn't available right now. Please check back soon.</p>
 
 <?php else: ?>
-            <p class="fea-intro">30 questions, one hour. Answer on your own, without a dictionary or translator. If you don't know an answer, choose the one you think is best. Your result shows your general English level and what to work on.</p>
+            <p class="fea-intro"><?= count($questions) ?> questions, one hour. Answer on your own, without a dictionary or translator. If you don't know an answer, choose the one you think is best. Your result shows your general English level and what to work on.</p>
 
             <form method="post" id="feaForm">
                 <input type="hidden" name="form" value="<?= $h($code) ?>">
