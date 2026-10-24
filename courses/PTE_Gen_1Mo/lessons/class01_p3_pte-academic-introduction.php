@@ -40,4 +40,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Learn the tasks, know what the AI rewards, and practise under real timings from the first week.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'PTE_Gen_1Mo', 1, 2, ob_get_clean());
+render_lesson_shell($db, 'PTE_Gen_1Mo', 1, 3, ob_get_clean());

@@ -45,4 +45,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> The test rewards steady, specific practice. Know your target, know your starting point, and let the next four weeks close the gap one skill at a time.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'IELTS_Aca_1Mo', 1, 2, ob_get_clean());
+render_lesson_shell($db, 'IELTS_Aca_1Mo', 1, 3, ob_get_clean());
