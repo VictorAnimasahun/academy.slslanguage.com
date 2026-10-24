@@ -98,6 +98,9 @@ function initializeListeningAudio() {
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('error', onError);
     audio.addEventListener('contextmenu', e => e.preventDefault());
+    // A pause from outside the page (media keys, the phone's or computer's media controls) is undone: the recording
+    // plays once, without stopping, as in the real test.
+    audio.addEventListener('pause', () => { if (audioStarted && !audio.ended) audio.play().catch(() => {}); });
 
     // If already cached, fire loaded handler immediately
     if (audio.readyState >= 2) {

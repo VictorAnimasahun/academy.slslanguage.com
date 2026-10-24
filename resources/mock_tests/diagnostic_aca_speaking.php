@@ -190,6 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $session['status'] === 'in_progress
                 </form>
             </div>
             <?php endif; ?>
+            <?php require_once INCLUDES_PATH . '/item_nav.php'; echo item_nav_html($db, ['resources/mock_tests/ielts_aca_diagnostic.php', 'resources/mock_tests/ielts_gt_diagnostic.php']); ?>
             </div><!-- end padding-top div -->
         </main>
     </div>

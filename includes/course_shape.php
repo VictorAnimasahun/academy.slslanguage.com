@@ -49,10 +49,11 @@ if (!function_exists('course_by_folder')) {
         return $name !== false ? ['name' => $name] : null;
     }
 
-    /** Absolute URL for an item. Shared lesson pages (and the slide viewer) need ?from=<folder> to know which course they're in. */
+    /** Absolute URL for an item, with ?from=<folder>: shared pages (lessons, tests, quizzes, the slide viewer) use it to
+     *  know which course they're in, for their Previous / Next buttons (includes/item_nav.php). */
     function course_item_url(string $path, string $folder): string {
         $path = ltrim($path, '/');
-        if (str_starts_with($path, 'courses/') || str_starts_with($path, 'resources/protected_viewer/')) {
+        if (!preg_match('/[?&]from=/', $path)) {
             $path .= (str_contains($path, '?') ? '&' : '?') . 'from=' . rawurlencode($folder);
         }
         return ACADEMY_URL . $path;
@@ -179,6 +180,38 @@ if (!function_exists('course_by_folder')) {
             }
         }
         return null;
+    }
+
+    /** The ready item before / after the page at $path in this course (within its class, else across classes). */
+    function course_item_neighbours(PDO $db, array $course, string $path): array {
+        $flat = [];
+        foreach (course_schedule($db, $course['id']) as $week) {
+            foreach ($week['classes'] as $cls) {
+                foreach ($cls['items'] as $item) $flat[] = $item + ['class' => $cls['number']];
+            }
+        }
+        $strip = function ($p) {
+            $parts = explode('?', ltrim((string) $p, '/'), 2);
+            parse_str($parts[1] ?? '', $q);
+            unset($q['from']);
+            ksort($q);
+            return $parts[0] . ($q ? '?' . http_build_query($q) : '');
+        };
+        $usable = fn ($it) => $it['ready'] && $it['path'];
+        $url = fn ($it) => $it + ['url' => course_item_url($it['path'], $course['folder'])];
+        foreach ($flat as $i => $item) {
+            if ($item['path'] !== null && $strip($item['path']) === $strip($path)) {
+                $prev = $next = null;
+                for ($j = $i - 1; $j >= 0 && !$prev; $j--) if ($usable($flat[$j]) && $strip($flat[$j]['path']) !== $strip($path)) $prev = $url($flat[$j]);
+                for ($j = $i + 1; $j < count($flat) && !$next; $j++) if ($usable($flat[$j]) && $strip($flat[$j]['path']) !== $strip($path)) $next = $url($flat[$j]);
+                return ['prev' => $prev, 'next' => $next, 'found' => true];
+            }
+        }
+        return ['prev' => null, 'next' => null, 'found' => false];
+    }
+
+    function prev_course_item(PDO $db, array $course, string $path): ?array {
+        return course_item_neighbours($db, $course, $path)['prev'];
     }
 
     /** The item that comes after the page at $path in this course: the next item in its class, else the next class's first. */

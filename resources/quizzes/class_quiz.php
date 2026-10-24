@@ -242,6 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
             <?php endif; ?>
 
+            <?php require_once INCLUDES_PATH . '/item_nav.php'; echo item_nav_html($db, 'resources/quizzes/class_quiz.php?test_code=' . $testCode); ?>
         </div>
     </main>
 </div>

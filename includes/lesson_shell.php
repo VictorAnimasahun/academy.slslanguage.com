@@ -59,7 +59,8 @@ if (!function_exists('render_lesson_shell')) {
         // "Next:" is the next item in the class, else the next class's first (includes/course_shape.php).
         require_once INCLUDES_PATH . '/course_shape.php';
         $shape = course_by_folder($db, $folder);
-        $next  = ($shape && !empty($part['file_path'])) ? next_course_item($db, $shape, $part['file_path']) : null;
+        $near  = ($shape && !empty($part['file_path'])) ? course_item_neighbours($db, $shape, $part['file_path']) : ['prev' => null, 'next' => null];
+        $next  = $near['next'];
         return [
             'course' => $course, 'lesson' => $lesson, 'lessons' => $lessons, 'folder' => $folder,
             'title' => $title, 'kind' => $part['kind'] ?? lesson_piece_kind($title),
@@ -69,6 +70,7 @@ if (!function_exists('render_lesson_shell')) {
             'back_url' => ACADEMY_URL . 'courses/' . $folder . '/course_overview.php',
             'back_label' => 'Back to course',
             'next' => $next,
+            'prev' => $near['prev'],
         ];
     }
 
@@ -112,7 +114,7 @@ if (!function_exists('render_lesson_shell')) {
         .class-chip.kind.practice_test { background: #fef3c7; color: #92400e; }
         .class-chip.kind.mock_test { background: #fee2e2; color: #991b1b; }
         .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
-        .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
+        .lesson-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem 1rem; margin-top: 2rem; }
     </style>
 </head>
 <body>
@@ -155,7 +157,10 @@ if (!function_exists('render_lesson_shell')) {
             <?php endif; ?>
 
             <div class="lesson-nav">
-                <a href="<?= $h($backUrl) ?>" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i><?= $h($backLabel) ?></a>
+                <?php if (!empty($ctx['prev'])): ?>
+                    <a href="<?= $h($ctx['prev']['url']) ?>" class="btn btn-outline-primary"><i class="bi bi-arrow-left me-1"></i>Previous: <?= $h($ctx['prev']['title']) ?></a>
+                <?php endif; ?>
+                <a href="<?= $h($backUrl) ?>" class="btn btn-outline-secondary"><?php if (empty($ctx['prev'])): ?><i class="bi bi-arrow-left me-1"></i><?php endif; ?><?= $h($backLabel) ?></a>
                 <?php if (!empty($ctx['next'])): ?>
                     <a href="<?= $h($ctx['next']['url']) ?>" class="btn btn-primary" style="background-color:#0b77ff;border-color:#0b77ff;">Next: <?= $h($ctx['next']['title']) ?> <i class="bi bi-arrow-right ms-1"></i></a>
                 <?php endif; ?>

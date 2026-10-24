@@ -606,6 +606,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
                                 <p><strong>Note:</strong> This is a practice test. Your actual CELPIP score may vary.</p>
                                 <p>For official CELPIP testing, visit <a href="https://celpip.ca" target="_blank" rel="noopener">celpip.ca</a></p>
                             </div>
+                            <?php require_once INCLUDES_PATH . '/item_nav.php'; echo item_nav_html($db, 'courses/CELPIP_intro/celpip_mini_mock.php'); ?>
                         </div>
                     </div>
                 </div>

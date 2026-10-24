@@ -38,12 +38,29 @@ define('COURSE_PROGRESS_PATH_LOADED', true);
 require_once __DIR__ . '/lesson_title.php';
 require_once __DIR__ . '/course_shape.php';
 
+/** Each item's own done state for the page being drawn: [lesson id][item title] => bool (set by progressPathLoadParts). */
+function progressPathItemDone(?array $set = null): array {
+    static $done = [];
+    if ($set !== null) $done = $set;
+    return $done;
+}
+
 function progressPathLoadParts(PDO $db, int $courseId, int $studentId): array {
     // Tick any class whose items are all done (a quiz or test finished since the last visit) before the page
     // reads lesson_progress (includes/item_progress.php; migration 156).
     if ($studentId > 0) {
         require_once __DIR__ . '/item_progress.php';
         try { item_progress_sync_course($db, $studentId, $courseId); } catch (PDOException $e) { error_log('item_progress_sync_course: ' . $e->getMessage()); }
+        // Each item ticks as soon as IT is done, not only when its whole class is (founder, 2026-10-24).
+        $itemDone = [];
+        try {
+            $st = $db->prepare("SELECT l.id FROM lessons l JOIN modules m ON m.id = l.module_id WHERE m.course_id = ?");
+            $st->execute([$courseId]);
+            foreach ($st->fetchAll(PDO::FETCH_COLUMN) as $lid) {
+                foreach (item_states($db, $studentId, (int) $lid) as $it) $itemDone[(int) $lid][$it['title']] = ($it['state'] ?? '') === 'done';
+            }
+        } catch (PDOException $e) { error_log('progressPathLoadParts item states: ' . $e->getMessage()); }
+        progressPathItemDone($itemDone);
     }
     $stmt = $db->prepare("SELECT lesson_id, title, item_type, test_code FROM course_pacing_items WHERE course_id = ? AND lesson_id IS NOT NULL ORDER BY display_order");
     $stmt->execute([$courseId]);
@@ -208,7 +225,8 @@ function renderProgressPath(array $modules, array $completedLessonIds, array $op
                 // whether it is Coming Soon. It used to say "Class lesson" for every piece, so tests looked like lessons.
                 $stored   = $partsStored[(int) $lid][$piece] ?? null;
                 $kindLabel = lesson_kind_label($stored['kind'] ?? lesson_piece_kind($piece));
-                $parts[] = ['title' => $piece, 'kind' => $kindLabel, 'meta' => '', 'done' => $c['done'], 'lesson' => true,
+                $parts[] = ['title' => $piece, 'kind' => $kindLabel, 'meta' => '', 'lesson' => true,
+                            'done' => $c['done'] || !empty(progressPathItemDone()[(int) $lid][$piece]),
                             'href' => !empty($stored['file_path']) ? course_item_url($stored['file_path'], $folder) : null,
                             'soon' => $stored ? lesson_piece_coming_soon($stored) : false];
             }

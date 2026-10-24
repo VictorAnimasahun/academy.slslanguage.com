@@ -280,6 +280,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
 
             <a href="foundational_english_assessment.php?retake=1" class="btn btn-outline-secondary btn-sm">Take it again (new questions)</a>
             <a href="<?= ACADEMY_URL ?>learning_dashboard.php" class="btn btn-link btn-sm">Back to dashboard</a>
+            <?php require_once INCLUDES_PATH . '/item_nav.php'; echo item_nav_html($db, 'resources/placement/foundational_english_assessment.php'); ?>
 
 <?php elseif (empty($questions)): ?>
             <p class="fea-intro">This assessment isn't available right now. Please check back soon.</p>
@@ -351,6 +352,7 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
             })();
             </script>
 <?php endif; ?>
+<?php if (!$view): ?>            <?php require_once INCLUDES_PATH . '/item_nav.php'; echo item_nav_html($db, 'resources/placement/foundational_english_assessment.php'); ?><?php endif; ?>
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

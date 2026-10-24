@@ -162,11 +162,13 @@ $DURATION_SECS  = 15 * 60; // short audio + transfer time
                 <source id="audioSrc" src="<?= htmlspecialchars($audioBase . 'listening_part1.mp3') ?>" type="audio/mpeg">
             </audio>
 
-            <!-- Audio player UI -->
+            <!-- Audio player UI — no play/pause control: each recording plays automatically, once, as in the real IELTS
+                 test (founder, 2026-10-24; same as the Full Mocks). "Tap to play" appears only if the browser blocks
+                 autoplay outright (see playWithFallback in the JS). -->
             <div class="audio-box" style="top:<?= $isAdmin ? '110px' : '60px' ?>;">
-                <button class="btn-play" onclick="togglePlay()"><i class="bi bi-play-fill" id="playIcon"></i></button>
+                <i class="bi bi-volume-up-fill" style="font-size:1.2rem;color:var(--accent,#0b77ff);flex-shrink:0;"></i>
                 <div class="progress-wrap">
-                    <input type="range" id="audioBar" min="0" max="100" value="0">
+                    <input type="range" id="audioBar" min="0" max="100" value="0" disabled style="pointer-events:none;">
                     <div class="audio-time" id="audioTime">0:00 / 0:00</div>
                 </div>
                 <div class="vol-wrap">
@@ -185,7 +187,8 @@ $DURATION_SECS  = 15 * 60; // short audio + transfer time
                     ?>
                     <button class="part-tab-btn <?= $pNum === 1 ? 'active' : '' ?>"
                             id="ptab-<?= $pNum ?>"
-                            onclick="switchPart(<?= $pNum ?>, this)">
+                            onclick="switchPart(<?= $pNum ?>, this)"
+                            <?= (!$isAdmin && $pNum !== 1) ? 'disabled style="cursor:default;"' : '' ?>>
                         <span class="done-dot"></span>
                         <?= $labels[$pNum - 1] ?? "Part {$pNum}" ?>
                         <span class="tab-qrange">Q<?= $f ?>–<?= $l ?></span>
@@ -409,7 +412,8 @@ let submitting   = false;
 
 const audio      = document.getElementById('mainAudio');
 const audioSrc   = document.getElementById('audioSrc');
-const playIcon   = document.getElementById('playIcon');
+const IS_ADMIN   = <?= $isAdmin ? 'true' : 'false' ?>;
+const TOTAL_PARTS = document.querySelectorAll('.part-panel').length;
 const audioBar   = document.getElementById('audioBar');
 const audioTime  = document.getElementById('audioTime');
 const timerEl    = document.getElementById('inlineTimer');
@@ -430,10 +434,7 @@ function startTimer() {
 }
 
 // ── Audio ─────────────────────────────────────────────────
-function togglePlay() {
-    if (audio.paused) { audio.play(); playIcon.className = 'bi bi-pause-fill'; }
-    else { audio.pause(); playIcon.className = 'bi bi-play-fill'; }
-}
+// No manual play/pause: the recording plays automatically and continuously, as in the real IELTS test.
 function toggleMute() {
     audio.muted = !audio.muted;
     document.getElementById('volIcon').className = audio.muted ? 'bi bi-volume-mute' : 'bi bi-volume-up';
@@ -445,27 +446,62 @@ audio.addEventListener('timeupdate', () => {
         audioTime.textContent = fmt(Math.floor(audio.currentTime)) + ' / ' + fmt(Math.floor(audio.duration));
     }
 });
-audio.addEventListener('ended', () => { playIcon.className = 'bi bi-play-fill'; });
+function playWithFallback(mediaEl, containerEl) {
+    mediaEl.play().catch(() => {
+        let btn = containerEl.querySelector('.tap-to-play-btn');
+        if (btn) return;
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-primary btn-sm tap-to-play-btn';
+        btn.style.marginLeft = '.75rem';
+        btn.innerHTML = '<i class="bi bi-play-fill me-1"></i>Tap to play';
+        btn.onclick = () => { mediaEl.play(); btn.remove(); };
+        containerEl.appendChild(btn);
+    });
+}
 
 // ── Part switching ─────────────────────────────────────────
-function switchPart(pNum, btn) {
+// Students: only called when a recording ends (force=true); the other tabs are disabled. Admins move freely.
+let switchingPart = false;
+function switchPart(pNum, btn, force = false) {
+    if (!force && !IS_ADMIN && btn && btn.disabled) return;
     document.querySelectorAll('.part-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.part-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('panel-' + pNum).classList.add('active');
-    btn.classList.add('active');
+    const tab = document.getElementById('ptab-' + pNum);
+    if (tab) tab.classList.add('active');
 
-    // Load part audio
+    // Load and auto-play this part's audio
     const panel = document.getElementById('panel-' + pNum);
     const src   = panel.dataset.audio;
-    if (src && audioSrc.src !== src) {
+    if (src) {
+        switchingPart = true;
         audio.pause();
-        playIcon.className = 'bi bi-play-fill';
         audioSrc.src = src;
         audio.load();
+        switchingPart = false;
         audioBar.value = 0;
         audioTime.textContent = '0:00 / 0:00';
+        playWithFallback(audio, document.querySelector('.audio-box'));
     }
 }
+
+// A pause from outside the page (media keys, the phone's or computer's media controls) is undone for students.
+audio.addEventListener('pause', () => {
+    if (!IS_ADMIN && !switchingPart && !audio.ended && audio.currentTime > 0) audio.play().catch(() => {});
+});
+
+// When a part's recording finishes, move on to the next part. The last part just stops.
+audio.addEventListener('ended', () => {
+    if (IS_ADMIN) return;
+    const activePanel = document.querySelector('.part-panel.active');
+    if (!activePanel) return;
+    const currentPart = parseInt(activePanel.id.replace('panel-', ''), 10);
+    const fromTab = document.getElementById('ptab-' + currentPart);
+    if (fromTab) fromTab.classList.add('all-answered');
+    if (currentPart >= TOTAL_PARTS) return;
+    switchPart(currentPart + 1, document.getElementById('ptab-' + (currentPart + 1)), true);
+});
 
 // ── Progress ───────────────────────────────────────────────
 function collectAnswers() {
@@ -539,6 +575,12 @@ window.addEventListener('beforeunload', e => { if (!submitting) { e.preventDefau
 
 startTimer();
 updateProgress();
+// Part 1's recording starts as soon as the test loads, as in the real test.
+if (document.getElementById('panel-1') && document.getElementById('panel-1').dataset.audio) {
+    audioSrc.src = document.getElementById('panel-1').dataset.audio;
+    audio.load();
+    playWithFallback(audio, document.querySelector('.audio-box'));
+}
 </script>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
