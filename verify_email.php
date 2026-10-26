@@ -25,7 +25,9 @@ error_log("VERIFY DEBUG: Received token => " . $token);
 
 // Look for user in database
 try {
-    $sql = "SELECT id, email, firstname, token_created_at
+    // Expiry is decided by MySQL against its own NOW(), not PHP's time(): the two clocks can sit in different time
+    // zones, which once made fresh links look expired (same reason as api/mobile_resend_verification.php).
+    $sql = "SELECT id, email, firstname, (token_created_at < NOW() - INTERVAL 24 HOUR) AS expired
             FROM students
             WHERE verification_token = ? AND is_verified = 0";
     $stmt = $db->prepare($sql);
@@ -33,11 +35,22 @@ try {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
-        $token_age = time() - strtotime($user['token_created_at']);
-        $max_age = 24 * 60 * 60; // 24 hours
-
-        if ($token_age > $max_age) {
-            header("Location: {$redirect_base}/edu_hub_registration.php?status=error&message=Verification+link+expired.+Please+register+again");
+        if ($user['expired']) {
+            // An expired link sends a fresh one by itself (founder, 2026-10-26). It used to say "Please register again",
+            // which can't work: the email is already registered, so the student was stuck.
+            $newToken = bin2hex(random_bytes(32));
+            $db->prepare("UPDATE students SET verification_token = ?, token_created_at = NOW() WHERE id = ?")->execute([$newToken, $user['id']]);
+            $sent = false;
+            try {
+                require_once __DIR__ . '/../config/email_helper.php';
+                $sent = send_verification_email($user['email'], $user['firstname'], $newToken);
+            } catch (Throwable $e) {
+                error_log('VERIFY: resending an expired link failed: ' . $e->getMessage());
+            }
+            $msg = $sent
+                ? 'That link had expired, so we have sent you a new one. Check your inbox (and spam folder); it works for 24 hours.'
+                : 'That link had expired and we could not send a new one just now. Please contact support and we will verify your account.';
+            header("Location: {$redirect_base}/edu_hub_registration.php?status=" . ($sent ? 'resent' : 'error') . '&message=' . urlencode($msg));
             exit();
         }
 

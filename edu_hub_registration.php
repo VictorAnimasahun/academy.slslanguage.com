@@ -138,12 +138,21 @@ $showRegister = isset($_GET['form']) && $_GET['form'] === 'register';
 				// Registration success
 				Swal.fire({
 					title: 'Registration Successful!',
-					html: '<p>Please check your email inbox (and spam folder) for a verification link.</p><p style="color: #666; font-size: 14px; margin-top: 10px;">📧 You must verify your email before logging in.</p>',
+					html: '<p>Please check your email inbox (and spam folder) for a verification link.</p><p style="color: #666; font-size: 14px; margin-top: 10px;">You must verify your email before logging in.</p>',
 					icon: 'success',
 					confirmButtonColor: '#38b6ff',
 					confirmButtonText: 'Got it!'
 				});
 			}
+		} else if (status === 'resent') {
+			// An expired verification link sent a fresh one (verify_email.php).
+			Swal.fire({
+				title: 'New link sent',
+				text: message || 'Check your inbox for a new verification link.',
+				icon: 'info',
+				confirmButtonColor: '#38b6ff',
+				confirmButtonText: 'Got it'
+			});
 		} else if (status === 'error') {
 			const errorMessage = message ? decodeURIComponent(message.replace(/\+/g, ' ')) : 'There was a problem. Please try again.';
 			Swal.fire({
