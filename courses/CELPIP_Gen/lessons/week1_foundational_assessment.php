@@ -12,7 +12,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-if (!can_access('intermediate')) {
+// The plan level of the class this page sits in, in the course it was opened from (Class 1 is the free preview).
+// It used to require Intermediate everywhere, so Class 1 of the 2/3-month courses was locked (found 2026-10-26).
+require_once INCLUDES_PATH . '/lesson_title.php';
+$pagePos = course_item_position($db, $ctxCourse, 'courses/CELPIP_Gen/lessons/week1_foundational_assessment.php') ?? ['class' => 1];
+$pageTier = lesson_min_tier($db, $ctxCourse['folder'], (int) $pagePos['class'], 'beginner');
+if (!can_access($pageTier)) {
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -31,7 +36,7 @@ if (!can_access('intermediate')) {
         <?php include INCLUDES_PATH . '/navbar.php'; ?>
         <main class="main-wrapper">
             <div class="course-card">
-                <?php render_upgrade_prompt('intermediate', 'Course Introduction'); ?>
+                <?php render_upgrade_prompt($pageTier, 'Course Introduction'); ?>
             </div>
         </main>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
