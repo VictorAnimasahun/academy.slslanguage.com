@@ -35,18 +35,20 @@ $doneAt = $st->fetchColumn();
 $img = ACADEMY_URL . 'assets/img/orientation/';
 // Each tour step: screenshot, heading, text, pointers [x%, y%, label, where the label sits: down (default) | up | right].
 $tour = [
-    ['dashboard', 'Your dashboard', 'Everything starts here. Your courses and progress are on the dashboard; My Results and Messages are in the menu.',
-        [[31.6, 50.3, 'Continue where you stopped', 'up'], [8, 45.3, 'Your scores and feedback', 'right'], [8, 57, 'Write to your tutor', 'right']]],
-    ['course', 'Your course', 'Your course runs week by week, two classes a week. Open a week to see each class and what is in it. Your tutor is named here.',
-        [[30, 87, 'Your tutor'], [29, 82.6, 'Classes you have finished']]],
+    // Screens retaken 2026-10-26 after the menu (icon rail) and course page redesigns; pointer positions measured on the
+    // live layout (1280x800) by the capture script, not placed by eye.
+    ['dashboard', 'Your dashboard', 'Everything starts here: your courses and progress. My Results and Messages are in the menu down the left (point at an icon to see its name).',
+        [[26.4, 50.4, 'Continue where you stopped', 'right'], [4.8, 44.5, 'Your scores and feedback', 'right'], [4.8, 57.5, 'Write to your tutor', 'right']]],
+    ['course', 'Your course', 'Your course runs week by week, two classes a week. Pick a week on the left to see its classes and everything in them. Your tutor is named here.',
+        [[27.2, 71.9, 'Classes you have finished', 'right'], [28.5, 77.5, 'Your tutor', 'right'], [18.5, 90.5, 'Open a week', 'right']]],
     ['lesson', 'Lessons', 'Each class is made of items: lessons, quizzes and tests. Spend at least five minutes on a lesson, then mark it complete.',
-        [[81, 94.6, 'Mark complete after 5 minutes', 'up']]],
+        [[88, 94.7, 'Mark complete after 5 minutes', 'up']]],
     ['slides', 'Class slides', 'Some lessons are your tutor\'s class slides. Move through them with the arrows, then go on to the next item.',
-        [[22.9, 94, 'Move through the slides', 'up'], [50.5, 98.5, 'Then go on to the next item', 'up']]],
+        [[12.6, 89.7, 'Move through the slides', 'up'], [61.5, 94.7, 'Then go on to the next item', 'up']]],
     ['test', 'Tests', 'Practice tests and mock tests run like the real exam: timed, one section at a time. Take them on a computer, not on your phone.',
-        [[66, 24.3, 'The timer keeps running'], [75.4, 24.3, 'Move to the next part']]],
+        [[59.1, 24.4, 'The timer keeps running'], [75.3, 24.4, 'Move to the next part', 'right']]],
     ['results', 'Your results', 'Every test you finish is saved in My Results. Writing and speaking get an instant AI score; your tutor reviews them and gives the final grade.',
-        [[22.3, 60.6, 'Your grade, with your tutor\'s notes']]],
+        [[16.2, 60.6, 'Your grade, with your tutor\'s notes']]],
 ];
 // The quiz: [question, options, index of the right answer].
 $quiz = [
