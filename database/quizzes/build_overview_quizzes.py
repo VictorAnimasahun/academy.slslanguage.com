@@ -7,7 +7,7 @@ the overview quiz"; order chosen: Course Introduction, Course Overview Quiz, Fou
     python3 -I database/quizzes/build_overview_quizzes.py > database/migrations/173_course_overview_quizzes.sql
 
 Each quiz has 10 questions on what THAT course's Course Introduction says: six on the facts every introduction gives
-(length, classes, mocks, computer-only tests, Week 1), with the course's own numbers, and four on its own version of the
+(length, classes, mocks, computer-only tests, the orientation), with the course's own numbers, and four on its own version of the
 introduction (CELPIP's shared page, IELTS General's shared page, or the generated one IELTS Academic and PTE use). Right
 answers spread over A-D (3/3/2/2), never one letter three times running. Courses found by folder, never by id.
 """
@@ -43,8 +43,9 @@ def common(exam, weeks, classes, mocks):
          ['All together in the final week', 'Only in Week 1, to find your starting point', 'After the course ends, booked separately']),
         ('Where do you take the tests in this course?', 'On a computer, so that conditions match the real exam',
          ['On your phone, wherever you are', 'At an official test centre', 'On paper, handed in to your tutor']),
-        ('What does Week 1 do?', f'It introduces the course and the {exam} exam and finds your starting point',
-         ['It starts straight away with full practice tests', 'It is a free trial week with no classes', 'It covers only the Writing tasks']),
+        ('What do you do before the course starts properly?',
+         'Your orientation: a walk through the platform, a short quiz, and your study plan, which your tutor sees',
+         ['Nothing: Class 2 starts straight away with practice tests', 'Book your real exam date at a test centre', 'Sit a full mock exam']),
     ]
 
 

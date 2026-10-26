@@ -9,6 +9,39 @@
 require_once __DIR__ . '/course_shape.php';
 require_once __DIR__ . '/content_types.php';
 
+if (!function_exists('orientation_section_html')) {
+    /**
+     * "Start With Your Orientation" for every Course Introduction (founder, 2026-10-26: the overview must point to the
+     * orientation; it is part of what a student does before the course starts properly). Shows the steps and a Start button,
+     * or, once done, that it is complete with a link back to it. $scoreWord: band score / CLB level / PTE score.
+     */
+    function orientation_section_html(PDO $db, string $scoreWord): string {
+        $h = fn ($s) => htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
+        $oriented = false;
+        if (isset($_SESSION['user_id'])) {
+            try {
+                $st = $db->prepare("SELECT completed_at FROM student_orientation WHERE student_id = ?");
+                $st->execute([(int) $_SESSION['user_id']]);
+                $oriented = (bool) $st->fetchColumn();
+            } catch (PDOException $e) { /* table not there yet: show the invitation */ }
+        }
+        $url = $h(ACADEMY_URL . 'orientation/index.php');
+        $body = $oriented
+            ? '<p class="mb-0"><i class="bi bi-check-circle-fill text-success me-1"></i>You have completed your orientation. You can open it again at any time to look back at the walkthrough or your plan: <a href="' . $url . '">Open your orientation</a>.</p>'
+            : '<p>Before the course starts properly, do your orientation:</p>
+  <ol>
+    <li>A walk through the platform, with real screens: your dashboard, your course, lessons, class slides, tests and your results.</li>
+    <li>A short quiz on what you have just seen.</li>
+    <li>Your plan: the days and time of your classes, your start date, your weekly study hours and your target ' . $h($scoreWord) . '. Your tutor sees this plan and works to it.</li>
+  </ol>
+  <p class="mb-0"><a href="' . $url . '" class="btn btn-primary btn-sm">Start your orientation</a></p>';
+        return '<div class="content-section">
+  <h2>Start With Your Orientation</h2>
+  ' . $body . '
+</div>';
+    }
+}
+
 if (!function_exists('course_introduction_body')) {
     function course_introduction_body(PDO $db, string $folder, string $exam, string $scoreWord): string {
         $course = course_by_folder($db, $folder);
@@ -19,8 +52,10 @@ if (!function_exists('course_introduction_body')) {
 <div class="content-section">
   <h2>Welcome to the ' . $h($course['title']) . '</h2>
   <p>This class sets you up for the next ' . (int) $course['weeks'] . ' weeks: how the course runs, where you are starting from,
-     and the ' . $h($scoreWord) . ' you are aiming for. The next lesson introduces the ' . $h($exam) . ' exam itself.</p>
+     and the ' . $h($scoreWord) . ' you are aiming for. Class 2 introduces the ' . $h($exam) . ' exam itself.</p>
 </div>
+
+' . orientation_section_html($db, $scoreWord) . '
 
 <div class="content-section">
   <h2>How the Course Runs</h2>
@@ -77,15 +112,6 @@ if (!function_exists('crash_course_introduction_body')) {
         $st = $db->prepare("SELECT access_extra_months FROM courses WHERE folder_name = ? LIMIT 1");
         $st->execute([$folder]);
         $extra = (int) ($st->fetchColumn() ?: 0);
-
-        $oriented = false;
-        if (isset($_SESSION['user_id'])) {
-            try {
-                $st = $db->prepare("SELECT completed_at FROM student_orientation WHERE student_id = ?");
-                $st->execute([(int) $_SESSION['user_id']]);
-                $oriented = (bool) $st->fetchColumn();
-            } catch (PDOException $e) { /* table not there yet: show the invitation */ }
-        }
 
         // The same type labels and colours as the course page (includes/content_types.php).
         $chip = function (string $kind) use ($h): string {
@@ -144,18 +170,7 @@ if (!function_exists('crash_course_introduction_body')) {
   <p class="mb-0">You keep access for ' . ($extra > 0 ? $weeks . ' weeks plus ' . $extra . ' extra month' . ($extra > 1 ? 's' : '') : 'the ' . $weeks . ' weeks') . ', so you can go back over anything before your exam.</p>
 </div>
 
-<div class="content-section">
-  <h2>Start With Your Orientation</h2>
-  ' . ($oriented
-    ? '<p class="mb-0"><i class="bi bi-check-circle-fill text-success me-1"></i>You have completed your orientation. You can open it again at any time to look back at the walkthrough or your plan: <a href="' . $h(ACADEMY_URL . 'orientation/index.php') . '">Open your orientation</a>.</p>'
-    : '<p>Before going further, do your orientation:</p>
-  <ol>
-    <li>A walk through the platform, with real screens: your dashboard, your course, lessons, class slides, tests and your results.</li>
-    <li>A short quiz on what you have just seen.</li>
-    <li>Your plan: the days and time of your classes, your start date, your weekly study hours and your target ' . $h($scoreWord) . '. Your tutor sees this plan and works to it.</li>
-  </ol>
-  <p class="mb-0"><a href="' . $h(ACADEMY_URL . 'orientation/index.php') . '" class="btn btn-primary btn-sm">Start your orientation</a></p>') . '
-</div>
+' . orientation_section_html($db, $scoreWord) . '
 
 <div class="content-section">
   <h2>How You Learn Here</h2>

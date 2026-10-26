@@ -6,6 +6,7 @@
 require_once (dirname(dirname(dirname(__DIR__)))) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/tier_access.php';
 require_once __DIR__ . '/course_context.php';
+require_once INCLUDES_PATH . '/course_introduction.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../../edu_hub_registration.php?message=Please+login+to+access+this+course");
@@ -109,6 +110,8 @@ foreach ($schedule as $w) foreach ($w['classes'] as $c) foreach ($c['items'] as 
                 <p class="mb-0">This class sets you up for the next <?= (int) $ctxCourse['weeks'] ?> weeks: how the course runs, where you're starting from, and the CLB level you're aiming for.</p>
                 <?php endif; ?>
             </div>
+
+            <?= orientation_section_html($db, 'CLB level') ?>
 
             <div class="content-section">
                 <h2><i class="bi bi-clipboard-data me-2" style="color:#0b77ff;"></i>Your Plan</h2>

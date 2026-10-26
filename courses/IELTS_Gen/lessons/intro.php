@@ -180,6 +180,8 @@ if (!isset($_SESSION['user_id'])) {
             <?php endif; ?>
 
             <?php if ($showCourse): ?>
+            <?php require_once INCLUDES_PATH . '/course_introduction.php'; echo orientation_section_html($db, 'band score'); ?>
+
             <!-- How the Programme Works -->
             <div class="content-section">
                 <h2>How This Programme Works</h2>
