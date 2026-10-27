@@ -158,7 +158,10 @@ function inbox_apply(PDO $db, int $sid, string $action, array $keys): void {
     }
 }
 
-/** The Markdown messages use (paragraphs, **bold**, - lists, [links](url), # headings) as safe HTML. */
+/**
+ * The Markdown messages use, as safe HTML, line by line: # headings, --- dividers, - / * bullet lists, 1. numbered
+ * lists, **bold**, [links](https://...), and paragraphs (a single line break stays a line break).
+ */
 function inbox_markdown(string $md): string {
     $inline = function (string $t): string {
         $t = htmlspecialchars($t, ENT_QUOTES, 'UTF-8');
@@ -166,16 +169,28 @@ function inbox_markdown(string $md): string {
         return preg_replace_callback('/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/', fn ($m) => '<a href="' . $m[2] . '">' . $m[1] . '</a>', $t);
     };
     $out = '';
-    foreach (preg_split('/\n\s*\n/', str_replace("\r", '', trim($md))) as $block) {
-        $lines = explode("\n", trim($block));
-        if (preg_match('/^(#{1,6})\s+(.*)$/', $lines[0], $h) && count($lines) === 1) {
-            $out .= '<h3 style="font-size:1.05rem;font-weight:700;margin:1rem 0 .4rem;">' . $inline($h[2]) . '</h3>';
-        } elseif (count(array_filter($lines, fn ($l) => preg_match('/^\s*[-*]\s+/', $l))) === count($lines)) {
-            $out .= '<ul>' . implode('', array_map(fn ($l) => '<li>' . $inline(preg_replace('/^\s*[-*]\s+/', '', $l)) . '</li>', $lines)) . '</ul>';
-        } else {
-            $out .= '<p>' . implode('<br>', array_map($inline, $lines)) . '</p>';
+    $para = [];
+    $list = null;   // 'ul' or 'ol' while inside a list
+    $flush = function () use (&$out, &$para, &$list, $inline) {
+        if ($para) { $out .= '<p>' . implode('<br>', array_map($inline, $para)) . '</p>'; $para = []; }
+        if ($list) { $out .= "</$list>"; $list = null; }
+    };
+    foreach (explode("\n", str_replace("\r", '', $md)) as $line) {
+        $t = trim($line);
+        if ($t === '') { $flush(); continue; }
+        if (preg_match('/^(-{3,}|\*{3,}|_{3,})$/', $t)) { $flush(); $out .= '<hr style="margin:1rem 0;opacity:.2;">'; continue; }
+        if (preg_match('/^#{1,6}\s+(.*)$/', $t, $h)) { $flush(); $out .= '<h3 style="font-size:1.08rem;font-weight:700;margin:1.1rem 0 .4rem;">' . $inline($h[1]) . '</h3>'; continue; }
+        if (preg_match('/^(?:[-*+]|(\d+)[.)])\s+(.*)$/', $t, $li)) {
+            $type = $li[1] !== '' ? 'ol' : 'ul';
+            if ($para) { $out .= '<p>' . implode('<br>', array_map($inline, $para)) . '</p>'; $para = []; }
+            if ($list !== $type) { if ($list) $out .= "</$list>"; $out .= "<$type>"; $list = $type; }
+            $out .= '<li>' . $inline($li[2]) . '</li>';
+            continue;
         }
+        if ($list) { $out .= "</$list>"; $list = null; }
+        $para[] = $t;
     }
+    $flush();
     return $out;
 }
 

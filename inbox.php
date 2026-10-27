@@ -82,18 +82,21 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link href="assets/css/dashboard.css" rel="stylesheet">
     <style>
-        @media(min-width:1400px){.content{max-width:calc(100vw - 500px);}}   /* clear of the advert column */
+        /* Use exactly the space between the menu rail and the advert column (shown from 1200px, --advert-w wide), and
+           drop .content's own top offset there -- .main-wrapper already clears the top bar (topbar.php), so the two
+           together left an empty band above the title. */
+        @media (min-width:1200px) { .content { max-width:calc(100vw - var(--sidebar-w) - var(--advert-w)); margin-top:0; } }
         .ib-title { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding-bottom:1rem; border-bottom:1px solid #d6dde6; flex-wrap:wrap; }
         .ib-title h1 { font-size:2.4rem; font-weight:600; margin:0; color:#1f2937; }
         .ib-compose { display:inline-flex; align-items:center; gap:.5rem; background:#0b77ff; color:#fff; border:1px solid #0b77ff; border-radius:6px; padding:.55rem 1.1rem; font-size:1rem; font-weight:500; }
         .ib-compose:hover { background:#0a66db; }
-        .ib-bar { display:flex; align-items:center; gap:.75rem; flex-wrap:wrap; padding:.9rem 1rem; background:#f2f4f7; border-bottom:1px solid #d6dde6; }
+        .ib-bar { display:flex; align-items:center; gap:.75rem; flex-wrap:nowrap; padding:.9rem 1rem; background:#f2f4f7; border-bottom:1px solid #d6dde6; }
         .ib-bar select, .ib-bar input[type=search] { height:40px; border:1px solid #c7cdd5; border-radius:6px; background:#fff; padding:0 .8rem; font-size:.98rem; color:#1f2937; }
-        .ib-bar select { width:230px; }
-        .ib-search { position:relative; flex:1; min-width:180px; max-width:340px; }
+        .ib-bar select { flex:0 1 220px; min-width:120px; }
+        .ib-search { position:relative; flex:1 1 220px; min-width:120px; }
         .ib-search input { width:100%; padding-left:2.2rem !important; }
         .ib-search i { position:absolute; left:.8rem; top:50%; transform:translateY(-50%); color:#4b5563; }
-        .ib-tools { display:flex; gap:.5rem; margin-left:auto; }
+        .ib-tools { display:flex; gap:.5rem; flex-shrink:0; }
         .ib-tool { width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #c7cdd5; border-radius:6px; background:#fff; color:#1f2937; font-size:1.15rem; }
         .ib-tool:hover:not(:disabled) { background:#e8edf3; }
         .ib-tool:disabled { opacity:.45; cursor:not-allowed; }
@@ -103,9 +106,10 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         .ib-menu { position:absolute; right:0; top:46px; background:#fff; border:1px solid #c7cdd5; border-radius:6px; box-shadow:0 6px 20px rgba(15,23,42,.12); min-width:190px; z-index:30; padding:.3rem 0; }
         .ib-menu button { display:block; width:100%; text-align:left; background:none; border:0; padding:.5rem 1rem; font-size:.93rem; color:#1f2937; }
         .ib-menu button:hover { background:#f2f4f7; }
-        .ib-panes { display:grid; grid-template-columns:minmax(300px, 34%) minmax(0, 1fr); min-height:calc(100vh - 260px); background:#fff; border:1px solid #d6dde6; border-top:0; }
+        .ib-panes { display:grid; grid-template-columns:minmax(340px, 38%) minmax(0, 1fr); min-height:calc(100vh - 260px); background:#fff; border:1px solid #d6dde6; border-top:0; }
         .ib-list, .ib-read, .ib-row > * { min-width:0; }
-        .ib-list { border-right:1px solid #d6dde6; overflow-y:auto; max-height:calc(100vh - 260px); }
+        .ib-list { overflow-y:auto; max-height:calc(100vh - 220px); position:sticky; top:calc(var(--topbar-h) + 8px); align-self:start; }
+        .ib-read { border-left:1px solid #d6dde6; }   /* the divider runs the full height of a long message */
         .ib-row { display:grid; grid-template-columns:28px minmax(0,1fr) 34px; gap:.2rem .5rem; padding:.9rem .9rem .9rem .8rem; border-bottom:1px solid #d6dde6; position:relative; }
         .ib-row:hover { background:#f7f9fb; }
         .ib-row.active { background:#e5f0fb; }
@@ -162,11 +166,13 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         body.dark .ib-menu button { color:#e5e7eb; } body.dark .ib-menu button:hover { background:#2a2a2a; }
         @media (max-width: 900px) {
             .ib-title h1 { font-size:1.9rem; }
+            .ib-bar { flex-wrap:wrap; }
             .ib-bar select { width:auto; min-width:0; max-width:100%; flex:1 1 100%; }
             .ib-search { max-width:none; flex:1 1 100%; }
             .ib-tools { margin-left:0; }
             .ib-panes { grid-template-columns:minmax(0, 1fr); }
-            .ib-list { border-right:0; max-height:none; }
+            .ib-list { max-height:none; position:static; }
+            .ib-read { border-left:0; }
             .ib-panes.has-open .ib-list { display:none; }
             .ib-panes:not(.has-open) .ib-read { display:none; }
             .ib-back { display:inline-flex; }
@@ -295,7 +301,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                     <div class="ib-avatar"><?= $current['kind'] === 'announcement' ? 'SLS' : e(inbox_initials($current['sender'])) ?></div>
                                     <div>
                                         <div class="n"><?= e($current['sender']) ?></div>
-                                        <div class="m"><?= e($current['course'] ?? 'SLS Academy') ?></div>
+                                        <?php if ($current['course']): ?><div class="m"><?= e($current['course']) ?></div><?php endif; ?>
                                         <div class="m"><?= e($fullDate($current['at'])) ?></div>
                                     </div>
                                 </div>
