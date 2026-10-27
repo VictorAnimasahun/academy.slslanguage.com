@@ -2275,3 +2275,12 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 **What it does:** founder, 2026-10-26: Class 1 of the 2/3-month courses holds the programme overview, the Foundational English Assessment, and "a quiz too, but not the introduction quiz, the overview quiz"; order Introduction, Quiz, Assessment; all eight 2/3-month courses (CELPIP, IELTS General, IELTS Academic, PTE). One 10-question quiz per course (OVW_*), on what that course's own Course Introduction says: six shared facts with its own numbers (two 2-hour classes a week, weeks, mocks and when, computer-only tests, Week 1) and four from its version of the page. The exam introduction, its quiz and the diagnostic stay in Class 2. Same day: question 6 of every quiz became the orientation question ("What do you do before the course starts properly?"), when the Course Introductions got their orientation section; 173 was regenerated and is safe to run again where it already ran (it updates the wording and options in place).
 
+
+## 174 — Masterclass Class 2: reuse the crash courses' exam introduction and exam quiz
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-27 | Run twice locally (re-runnable). Also on MySQL 5.7.44 from the pre-174 state (Coming Soon items, "Class 1 Quiz —" titles). The two new CELPIP lesson pages render (8 and 12 weeks listed) and link on to the quiz. |
+| Live  | [ ] | | Needs the files synced first: courses/CELPIP_Gen_2Mo/lessons/ and courses/CELPIP_Gen_3Mo/lessons/ (new). Final SELECT: every item of the four Class 2s `ready`. |
+
+**What it does:** founder, 2026-10-27 ("Of course, yes"): the Coming Soon Class 2 items of the 2/3-month CELPIP and IELTS Academic courses reuse the crash courses' finished content. CELPIP_Gen_2Mo/3Mo item 1 (CELPIP Introduction) opens a new per-course page built from includes/exam_introduction.php, the same body as the crash course's, listing that course's own weeks; item 2 opens CELPIP_C1_QUIZ (20 questions). IELTS_Aca_2Mo/3Mo item 2 opens IELTS_ACA_C1_QUIZ (their introduction lesson was already written). The four crash-course exam quizzes are renamed "<Exam> Introduction Quiz" (were "Class 1 Quiz — ..."), and build_c1_quizzes.py / migration 170 changed to match so a re-run of 170 keeps the new names. The old outline page courses/CELPIP_Gen/lessons/exam_introduction.php is no longer linked from any course.

@@ -18,7 +18,7 @@ KEYS = 'BDACABDCCADBDACBACBD'   # 5 x A, B, C, D; no letter three times running
 QUIZZES = {
     'IELTS_ACA_C1_QUIZ': {
         'folder': 'IELTS_Aca_1Mo', 'type': 'IELTS_Academic', 'item': 'IELTS Academic Introduction Quiz',
-        'title': 'Class 1 Quiz — IELTS Academic Introduction',
+        'title': 'IELTS Academic Introduction Quiz',
         'qs': [
             ('A university asks for an overall band of 6.5. Your results are Listening 6.5, Reading 6.0, Writing 6.0 and Speaking 6.0. What is your overall band?',
              '6.0', ['6.5', '6.125', '6.25']),
@@ -76,7 +76,7 @@ QUIZZES = {
     },
     'IELTS_GT_C1_QUIZ': {
         'folder': 'IELTS_Gen_1Mo', 'type': 'IELTS_General', 'item': 'IELTS General Introduction Quiz',
-        'title': 'Class 1 Quiz — IELTS General Training Introduction',
+        'title': 'IELTS General Training Introduction Quiz',
         'qs': [
             ('You are applying to immigrate to Canada and the programme accepts IELTS. Which IELTS test do you take?',
              'IELTS General Training', ['IELTS Academic', 'Either: immigration accepts both', 'IELTS Life Skills, which has no Reading test']),
@@ -128,7 +128,7 @@ QUIZZES = {
     },
     'CELPIP_C1_QUIZ': {
         'folder': 'CELPIP_Gen_1Mo', 'type': 'CELPIP_General', 'item': 'CELPIP Introduction Quiz',
-        'title': 'Class 1 Quiz — CELPIP General Introduction',
+        'title': 'CELPIP General Introduction Quiz',
         'qs': [
             ('Which organisation accepts CELPIP General for permanent residence and citizenship in Canada?',
              'Immigration, Refugees and Citizenship Canada (IRCC)', ['The British Council', 'Pearson', 'Universities only']),
@@ -175,7 +175,7 @@ QUIZZES = {
     },
     'PTE_C1_QUIZ': {
         'folder': 'PTE_Gen_1Mo', 'type': 'PTE_Academic', 'item': 'PTE Academic Introduction Quiz',
-        'title': 'Class 1 Quiz — PTE Academic Introduction',
+        'title': 'PTE Academic Introduction Quiz',
         'qs': [
             ('What scale are PTE Academic scores reported on?', '10 to 90', ['0 to 9', '1 to 12', '0 to 100']),
             ('You read a paragraph aloud clearly and fluently in Read Aloud. Which scores can this task help?',
@@ -249,7 +249,7 @@ def main():
         rnd = random.Random(code)
         out.append(f"\n-- {code}: {d['title']}")
         out.append(f"INSERT INTO tests (code, title, description, test_type, duration_minutes, total_questions, is_active) "
-                   f"VALUES ({q(code)}, {q(d['title'])}, {q('Class 1 quiz: the exam parts, timing and scoring.')}, {q(d['type'])}, 20, 20, 1) "
+                   f"VALUES ({q(code)}, {q(d['title'])}, {q('The exam parts, timing and scoring.')}, {q(d['type'])}, 20, 20, 1) "
                    f"ON DUPLICATE KEY UPDATE title = VALUES(title), description = VALUES(description), test_type = VALUES(test_type), "
                    f"duration_minutes = VALUES(duration_minutes), total_questions = VALUES(total_questions), is_active = VALUES(is_active);")
         for n, (text, right, wrong) in enumerate(qs, 1):
