@@ -15,7 +15,7 @@ Stack: plain PHP + MySQL, served by MAMP/Apache, no build step, no framework.
 | `verify_email.php` | Email verification (token-based) |
 | `edu_hub_logout.php` | Logout handler |
 | `analytics.php` | Student performance dashboard (test attempts, scores, progress) |
-| `messages.php` / `message_view.php` / `mark_read.php` | Broadcast message inbox, detail view, read-receipt AJAX |
+| `inbox.php` | The Inbox (2026-10-27): announcements, reminders, mentor conversations, assignments due, events soon; Canvas-style. `messages.php`, `message_view.php`, `mark_read.php`, `notifications.php`, `threads.php` redirect here; `thread_view.php` only sends (POST) |
 | `assignments.php` | Per-course assignment list |
 | `events.php` / `events/gen_z_experience.php` | Event countdown/registration pages |
 | `students.php` / `mentors.php` | Directory placeholders ("coming soon") |

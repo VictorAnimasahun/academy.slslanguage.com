@@ -1,7 +1,7 @@
 <?php
-// Shared notifications feed logic, used by notifications.php (web) and api/v1/notifications.php
-// (mobile) so the two never drift apart. See notifications.php's own comments for the rules this
-// follows (SLS-Academy-App-Spec.md 8.17, NTF-01..04).
+// The notifications feed, used by api/v1/notifications.php (the mobile app's Notifications screen). The web folded
+// notifications into the Inbox on 2026-10-27 (inbox.php, includes/inbox.php -- same four sources); notifications.php
+// now redirects there. Rules: SLS-Academy-App-Spec.md 8.17, NTF-01..04.
 
 if (defined('NOTIFICATIONS_FEED_LOADED')) {
     return;

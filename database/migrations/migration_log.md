@@ -2284,3 +2284,12 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Live  | [ ] | | Needs the files synced first: courses/CELPIP_Gen_2Mo/lessons/ and courses/CELPIP_Gen_3Mo/lessons/ (new). Final SELECT: every item of the four Class 2s `ready`. |
 
 **What it does:** founder, 2026-10-27 ("Of course, yes"): the Coming Soon Class 2 items of the 2/3-month CELPIP and IELTS Academic courses reuse the crash courses' finished content. CELPIP_Gen_2Mo/3Mo item 1 (CELPIP Introduction) opens a new per-course page built from includes/exam_introduction.php, the same body as the crash course's, listing that course's own weeks; item 2 opens CELPIP_C1_QUIZ (20 questions). IELTS_Aca_2Mo/3Mo item 2 opens IELTS_ACA_C1_QUIZ (their introduction lesson was already written). The four crash-course exam quizzes are renamed "<Exam> Introduction Quiz" (were "Class 1 Quiz — ..."), and build_c1_quizzes.py / migration 170 changed to match so a re-run of 170 keeps the new names. The old outline page courses/CELPIP_Gen/lessons/exam_introduction.php is no longer linked from any course.
+
+## 175 — Inbox: per-student item state, and the course a message is about
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-27 | Run twice locally (re-runnable). Also on MySQL 5.7.44 from a broadcast_messages without course_id: column added once, re-run a no-op. |
+| Live  | [ ] | | Additive only (new table, new nullable column), so it is safe to run BEFORE the academy files are synced, and must be run before (or right with) them: the new Inbox reads both. Final SELECTs: inbox_item_state's columns, and broadcast_messages.course_id. |
+
+**What it does:** founder, 2026-10-27 ("I want the same UI" as Canvas's Inbox; "call it Inbox"; Notifications fold in). `inbox_item_state` holds each student's starred / archived / deleted state for every inbox item (keys a<id> announcement, t<id> conversation, d<id> assignment due, e<id> event soon) and the read state of due/event items, which have no read table of their own. No foreign keys, so it works whatever engine live's tables use. `broadcast_messages.course_id` is the course a message is about, shown under the sender; the planner's week-ahead brief (slslanguage.com sls-admin/planner_lib.php) fills it, and only once the column exists.

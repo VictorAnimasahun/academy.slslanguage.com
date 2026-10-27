@@ -12,10 +12,9 @@ $navItems = [
     ['mentors',       'Mentors',       'mentors.php',                                $current_page == 'mentors.php'],
     ['results',       'My Results',    'resources/practice_tests/my_results.php',    $current_page == 'my_results.php'],
     ['resources',     'Resources',     'resources/resources_home.php',               strpos($_SERVER['PHP_SELF'], '/resources/') !== false && $current_page !== 'my_results.php'],
-    ['messages',      'Messages',      'messages.php',                               in_array($current_page, ['messages.php', 'message_view.php', 'threads.php', 'thread_view.php'])],
-    // notifications.php is a unified feed (announcements + unread messages + assignment-due + event reminders);
-    // get_unread_count.php counts across both sources and fills the badge.
-    ['notifications', 'Notifications', 'notifications.php',                          $current_page == 'notifications.php'],
+    // One Inbox (2026-10-27): announcements, reminders, mentor conversations, assignments due and events starting
+    // soon (Notifications folded in). The bell links here too; get_unread_count.php fills the badge.
+    ['inbox',         'Inbox',         'inbox.php',                                  $current_page == 'inbox.php'],
     ['analytics',     'Analytics',     'analytics.php',                              $current_page == 'analytics.php'],
     ['events',        'Events',        'events.php',                                 $current_page == 'events.php'],
 ];
@@ -26,10 +25,10 @@ $navItems = [
     <nav class="nav flex-column gap-1">
         <?php foreach ($navItems as [$icon, $label, $href, $active]): ?>
             <a class="nav-link <?= $active ? 'active' : '' ?>" href="<?= ACADEMY_URL . $href ?>" aria-label="<?= $label ?>"
-               <?= $icon === 'notifications' ? 'id="msgNavLink"' : '' ?>>
+               <?= $icon === 'inbox' ? 'id="msgNavLink"' : '' ?>>
                 <?= nav_icon($icon) ?>
                 <span class="nav-label"><?= $label ?></span>
-                <?php if ($icon === 'notifications'): ?>
+                <?php if ($icon === 'inbox'): ?>
                     <span class="navbar-badge-unread badge bg-danger" style="display:none;">0</span>
                 <?php endif; ?>
             </a>
