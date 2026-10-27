@@ -1,49 +1,12 @@
 <?php
-// File: academy/api/get_unread_count.php
+// File: academy/api/get_unread_count.php -- the inbox's unread count, for the bell's refresh (includes/footer.php,
+// includes/topbar.php). Counted in includes/inbox_unread.php.
 header('Content-Type: application/json');
 
 // Go up one level to academy root, then require bootstrap
 require_once __DIR__ . '/../bootstrap.php';
+require_once INCLUDES_PATH . '/inbox_unread.php';
 
-$unread_count = 0;
-
-if (isset($_SESSION['user_id'])) {
-    $uid = $_SESSION['user_id'];
-
-    $stmt = executeQuery($db, "
-        SELECT COUNT(*) AS unread_count
-        FROM broadcast_messages m
-        LEFT JOIN broadcast_message_reads r 
-            ON r.message_id = m.id AND r.student_id = ?
-        WHERE (
-            m.target_all_students = 1
-            OR FIND_IN_SET(?, m.target_student_ids)
-            OR EXISTS (
-                SELECT 1 FROM enrollments e
-                WHERE e.student_id = ? 
-                AND FIND_IN_SET(e.course_id, m.target_course_ids)
-            )
-        )
-        AND (r.id IS NULL)
-    ", [$uid, $uid, $uid]);
-
-    if ($stmt) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $unread_count = intval($row['unread_count']);
-    }
-
-    // The bell/nav badge now represents Notifications broadly (notifications.php), not just
-    // announcements -- add threads with an unread message, one per thread.
-    $msgStmt = executeQuery($db, "
-        SELECT COUNT(*) AS unread_threads FROM threads t
-        JOIN thread_participants tp ON tp.thread_id = t.id AND tp.student_id = ?
-        JOIN thread_messages lm ON lm.id = (SELECT MAX(id) FROM thread_messages WHERE thread_id = t.id)
-        WHERE lm.sender_id != ? AND lm.id > COALESCE(tp.last_read_message_id, 0)
-    ", [$uid, $uid]);
-    if ($msgStmt) {
-        $unread_count += intval($msgStmt->fetch(PDO::FETCH_ASSOC)['unread_threads']);
-    }
-}
+$unread_count = isset($_SESSION['user_id']) ? inbox_unread_count($db, (int) $_SESSION['user_id']) : 0;
 
 echo json_encode(['unread_count' => $unread_count]);
-?>

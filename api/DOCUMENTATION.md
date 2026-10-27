@@ -7,7 +7,7 @@ JSON/AJAX endpoints. Not REST in any formal sense — each file is a single-purp
 | File | Called from | Purpose |
 |---|---|---|
 | `api_handler.php` | `resources/essay_analyzer.php`, `resources/audio_analyzer.php` | Main AI dispatcher. Actions: `analyze_essay`, `transcribe_audio`, `analyze_speaking`, `analyze_speaking_batch`. Checks session + `includes/rate_limiter.php`, calls the configured AI provider (`ANALYSIS_API` in `config/api_keys.php`, currently `'gemini'`), returns JSON. |
-| `get_messages_preview.php` | dashboard / topbar | Returns the student's most recent unread broadcast messages (limit 5) for a preview dropdown |
+| `get_messages_preview.php` | (unused since 2026-10-27) | Returned the most recent broadcast messages for the old messages drawer; the bell now links to the inbox (messages.php) |
 | `get_unread_count.php` | topbar (polled) | Returns a single integer — unread broadcast message count, respecting targeting rules (all-students / course / individual) |
 
 ## Relationship to `resources/mock_tests/mock_save_section.php` and `resources/practice_tests/save_attempt.php`

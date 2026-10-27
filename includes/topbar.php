@@ -66,18 +66,55 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
             <i class="bi bi-arrows-fullscreen"></i> Focus Mode
         </button>
 
-        <button class="btn btn-link p-0 exam-fs-hide" id="bellBtn" aria-label="Notifications">
-            <div style="position:relative;">
-                <i class="bi bi-bell" style="font-size:1.2rem;color:#334155;"></i>
-                <span class="bell-unread-dot" style="
-                    position:absolute; top:-4px; right:-6px;
-                    width:10px; height:10px;
-                    background:#0b77ff; border-radius:50%;
-                    animation:pulse 1.8s infinite;
-                    box-shadow:0 0 6px rgba(11,119,255,0.6);
-                    display:none;"></span>
-            </div>
-        </button>
+        <?php
+        // The bell opens the inbox and glows while anything there is unread (founder, 2026-10-27). Counted here as
+        // the page is built, so it works on every page; the script below keeps it fresh while the page is open.
+        require_once INCLUDES_PATH . '/inbox_unread.php';
+        $bellUnread = isset($_SESSION['user_id']) ? inbox_unread_count($db, (int) $_SESSION['user_id']) : 0;
+        ?>
+        <a href="<?= ACADEMY_URL ?>messages.php" class="bell-link exam-fs-hide <?= $bellUnread ? 'has-unread' : '' ?>" id="bellBtn"
+           aria-label="Inbox<?= $bellUnread ? ', ' . $bellUnread . ' unread' : '' ?>" title="Inbox<?= $bellUnread ? ' (' . $bellUnread . ' unread)' : '' ?>">
+            <i class="bi bi-bell<?= $bellUnread ? '-fill' : '' ?>"></i>
+            <span class="bell-count"><?= $bellUnread > 99 ? '99+' : ($bellUnread ?: '') ?></span>
+        </a>
+        <style>
+            .bell-link { position:relative; display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; color:#334155; text-decoration:none; }
+            .bell-link i { font-size:1.2rem; }
+            .bell-link:hover { background:#f1f5f9; color:#0b77ff; }
+            .bell-link .bell-count { display:none; position:absolute; top:1px; right:-2px; min-width:17px; height:17px; padding:0 4px; border-radius:9px;
+                background:#0b77ff; color:#fff; font-size:.66rem; font-weight:700; line-height:17px; text-align:center; }
+            .bell-link.has-unread { color:#0b77ff; animation:bellGlow 2s ease-in-out infinite; }
+            .bell-link.has-unread .bell-count { display:block; }
+            @keyframes bellGlow {
+                0%, 100% { box-shadow:0 0 0 0 rgba(11,119,255,.45); background:rgba(11,119,255,.08); }
+                50%      { box-shadow:0 0 14px 4px rgba(11,119,255,.35); background:rgba(11,119,255,.16); }
+            }
+            @media (prefers-reduced-motion: reduce) { .bell-link.has-unread { animation:none; box-shadow:0 0 10px 2px rgba(11,119,255,.35); } }
+            body.dark .bell-link { color:#cbd5e1; }
+            body.dark .bell-link:hover { background:#2a2a2a; }
+        </style>
+        <script>
+        (function () {
+            const bell = document.getElementById('bellBtn');
+            if (!bell) return;
+            function show(n) {
+                bell.classList.toggle('has-unread', n > 0);
+                bell.querySelector('i').className = n > 0 ? 'bi bi-bell-fill' : 'bi bi-bell';
+                bell.querySelector('.bell-count').textContent = n > 99 ? '99+' : (n || '');
+                bell.setAttribute('aria-label', 'Inbox' + (n ? ', ' + n + ' unread' : ''));
+                bell.title = 'Inbox' + (n ? ' (' + n + ' unread)' : '');
+                const badge = document.querySelector('.navbar-badge-unread');
+                if (badge) { badge.textContent = n; badge.style.display = n > 0 ? 'inline-block' : 'none'; }
+            }
+            function refresh() {
+                fetch('<?= ACADEMY_URL ?>api/get_unread_count.php', { credentials: 'same-origin' })
+                    .then(r => r.json()).then(d => show(+d.unread_count || 0)).catch(() => {});
+            }
+            show(<?= (int) $bellUnread ?>);
+            setInterval(refresh, 30000);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+        })();
+        </script>
 
         <?php if (isset($userName)): ?>
         <div class="exam-fs-hide" style="width:34px;height:34px;border-radius:10px;

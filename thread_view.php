@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $lastId = (int) executeQuery($db, "SELECT MAX(id) FROM thread_messages WHERE thread_id = ?", [$threadId])->fetchColumn();
         executeQuery($db, "UPDATE thread_participants SET last_read_message_id = ? WHERE thread_id = ? AND student_id = ?", [$lastId, $threadId, $studentId]);
     }
-    header("Location: thread_view.php?id=$threadId");
+    header('Location: ' . (($_POST['back'] ?? '') === 'inbox' ? "messages.php?open=t$threadId" : "thread_view.php?id=$threadId"));   // replies sent from the inbox
     exit();
 }
 
@@ -101,8 +101,8 @@ if ($threadId && $messages) {
     <div class="main-wrapper flex-grow-1">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
         <main class="content p-4">
-            <a href="threads.php" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-3">
-                <i class="bi bi-arrow-left"></i> Messages
+            <a href="messages.php" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-3">
+                <i class="bi bi-arrow-left"></i> Inbox
             </a>
             <h4 class="mb-3"><?= e($mentor['display_name'] ?? 'Conversation') ?></h4>
 

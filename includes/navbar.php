@@ -12,10 +12,10 @@ $navItems = [
     ['mentors',       'Mentors',       'mentors.php',                                $current_page == 'mentors.php'],
     ['results',       'My Results',    'resources/practice_tests/my_results.php',    $current_page == 'my_results.php'],
     ['resources',     'Resources',     'resources/resources_home.php',               strpos($_SERVER['PHP_SELF'], '/resources/') !== false && $current_page !== 'my_results.php'],
-    ['messages',      'Messages',      'threads.php',                                in_array($current_page, ['threads.php', 'thread_view.php'])],
+    ['messages',      'Messages',      'messages.php',                               in_array($current_page, ['messages.php', 'message_view.php', 'threads.php', 'thread_view.php'])],
     // notifications.php is a unified feed (announcements + unread messages + assignment-due + event reminders);
     // get_unread_count.php counts across both sources and fills the badge.
-    ['notifications', 'Notifications', 'notifications.php',                          in_array($current_page, ['notifications.php', 'messages.php', 'message_view.php'])],
+    ['notifications', 'Notifications', 'notifications.php',                          $current_page == 'notifications.php'],
     ['analytics',     'Analytics',     'analytics.php',                              $current_page == 'analytics.php'],
     ['events',        'Events',        'events.php',                                 $current_page == 'events.php'],
 ];
