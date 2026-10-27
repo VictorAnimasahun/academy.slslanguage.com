@@ -9,7 +9,11 @@
 --                          No foreign keys, so it works whatever engine the live tables use.
 --   broadcast_messages.course_id   the course a message is about (NULL = not about one course). The planner's
 --                          week-ahead brief sets it; course-targeted messages fall back to their target course.
--- Re-runnable. MySQL 5.7-safe (no ADD COLUMN IF NOT EXISTS). The SELECTs at the end show both.
+--
+-- Deliberately does NOT mention information_schema: phpMyAdmin switches to any database a query names, so the
+-- first live run (guarded ADD COLUMN via information_schema.COLUMNS) sent the CREATE TABLE to information_schema
+-- and failed with #1044 -- nothing was created. The ALTER is plain and LAST instead: on a re-run it is the only
+-- statement that errors ("Duplicate column name 'course_id'"), which means it is already done. MySQL 5.7-safe.
 -- ============================================================
 
 SET NAMES utf8mb4;
@@ -25,10 +29,8 @@ CREATE TABLE IF NOT EXISTS inbox_item_state (
   PRIMARY KEY (student_id, item_key)
 ) DEFAULT CHARSET=utf8mb4;
 
-SET @c := (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'broadcast_messages' AND COLUMN_NAME = 'course_id');
-SET @s := IF(@c = 0, 'ALTER TABLE broadcast_messages ADD COLUMN course_id int unsigned NULL, ADD KEY idx_broadcast_course (course_id)', 'SELECT 1');
-PREPARE st FROM @s; EXECUTE st; DEALLOCATE PREPARE st;
+ALTER TABLE broadcast_messages ADD COLUMN course_id int unsigned NULL, ADD KEY idx_broadcast_course (course_id);
 
-SHOW COLUMNS FROM inbox_item_state;
-SELECT COLUMN_NAME, COLUMN_TYPE, IS_NULLABLE FROM information_schema.COLUMNS
- WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'broadcast_messages' AND COLUMN_NAME = 'course_id';
+-- To check afterwards (run on their own):
+--   SHOW COLUMNS FROM inbox_item_state;
+--   SHOW COLUMNS FROM broadcast_messages LIKE 'course_id';

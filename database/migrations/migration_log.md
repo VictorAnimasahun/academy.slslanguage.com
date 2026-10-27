@@ -2289,7 +2289,7 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 
 | Environment | Applied | Date | Notes |
 |---|---|---|---|
-| Local | [x] | 2026-10-27 | Run twice locally (re-runnable). Also on MySQL 5.7.44 from a broadcast_messages without course_id: column added once, re-run a no-op. |
-| Live  | [ ] | | Additive only (new table, new nullable column), so it is safe to run BEFORE the academy files are synced, and must be run before (or right with) them: the new Inbox reads both. Final SELECTs: inbox_item_state's columns, and broadcast_messages.course_id. |
+| Local | [x] | 2026-10-27 | Rewritten version: fresh run creates both; re-run errors only on the final ALTER (duplicate column). Plain CREATE TABLE IF NOT EXISTS + ALTER, MySQL 5.7-safe. |
+| Live  | [ ] | 2026-10-27 | First attempt failed: #1044 Access denied ... to database 'information_schema' -- phpMyAdmin switched to information_schema because the guarded ADD COLUMN named information_schema.COLUMNS, so the CREATE TABLE went there; nothing was created. 175 rewritten without information_schema (plain ALTER, last). Additive only; run before the academy files are synced (the new Inbox reads both). A re-run's only error is "Duplicate column name 'course_id'" = already done. |
 
 **What it does:** founder, 2026-10-27 ("I want the same UI" as Canvas's Inbox; "call it Inbox"; Notifications fold in). `inbox_item_state` holds each student's starred / archived / deleted state for every inbox item (keys a<id> announcement, t<id> conversation, d<id> assignment due, e<id> event soon) and the read state of due/event items, which have no read table of their own. No foreign keys, so it works whatever engine live's tables use. `broadcast_messages.course_id` is the course a message is about, shown under the sender; the planner's week-ahead brief (slslanguage.com sls-admin/planner_lib.php) fills it, and only once the column exists.
