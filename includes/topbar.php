@@ -70,7 +70,9 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
         // The bell opens the inbox and glows while anything there is unread (founder, 2026-10-27). Counted here as
         // the page is built, so it works on every page; the script below keeps it fresh while the page is open.
         require_once INCLUDES_PATH . '/inbox.php';
-        $bellUnread = isset($_SESSION['user_id']) ? inbox_unread_count($db, (int) $_SESSION['user_id']) : 0;
+        // Never let the count take a page down: on any error the bell just shows no count.
+        try { $bellUnread = isset($_SESSION['user_id']) ? inbox_unread_count($db, (int) $_SESSION['user_id']) : 0; }
+        catch (Throwable $e) { error_log('Inbox bell: ' . $e->getMessage()); $bellUnread = 0; }
         ?>
         <a href="<?= ACADEMY_URL ?>inbox.php" class="bell-link exam-fs-hide <?= $bellUnread ? 'has-unread' : '' ?>" id="bellBtn"
            aria-label="Inbox<?= $bellUnread ? ', ' . $bellUnread . ' unread' : '' ?>" title="Inbox<?= $bellUnread ? ' (' . $bellUnread . ' unread)' : '' ?>">

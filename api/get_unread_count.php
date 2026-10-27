@@ -7,6 +7,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../bootstrap.php';
 require_once INCLUDES_PATH . '/inbox.php';
 
-$unread_count = isset($_SESSION['user_id']) ? inbox_unread_count($db, (int) $_SESSION['user_id']) : 0;
+try { $unread_count = isset($_SESSION['user_id']) ? inbox_unread_count($db, (int) $_SESSION['user_id']) : 0; }
+catch (Throwable $e) { error_log('Inbox count: ' . $e->getMessage()); $unread_count = 0; }
 
 echo json_encode(['unread_count' => $unread_count]);

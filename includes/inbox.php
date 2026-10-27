@@ -16,27 +16,34 @@
 if (defined('INBOX_LIB_LOADED')) return;
 define('INBOX_LIB_LOADED', true);
 
+/** Rows of a query, or none if it failed (executeQuery logs it and returns false) -- so a missing table or column
+ *  (e.g. migration 175 not run yet) empties that part of the inbox instead of a fatal error on every page. */
+function inbox_rows(PDO $db, string $sql, array $params): array {
+    $st = executeQuery($db, $sql, $params);
+    return $st ? $st->fetchAll(PDO::FETCH_ASSOC) : [];
+}
+
 function inbox_items(PDO $db, int $sid): array {
     $courses = [];   // the student's courses: id => title
-    foreach (executeQuery($db, "SELECT c.id, c.title FROM enrollments e JOIN courses c ON c.id = e.course_id WHERE e.student_id = ? ORDER BY c.title", [$sid])->fetchAll(PDO::FETCH_ASSOC) as $c) {
+    foreach (inbox_rows($db, "SELECT c.id, c.title FROM enrollments e JOIN courses c ON c.id = e.course_id WHERE e.student_id = ? ORDER BY c.title", [$sid]) as $c) {
         $courses[(int) $c['id']] = $c['title'];
     }
     $state = [];
-    foreach (executeQuery($db, "SELECT * FROM inbox_item_state WHERE student_id = ?", [$sid])->fetchAll(PDO::FETCH_ASSOC) as $s) $state[$s['item_key']] = $s;
+    foreach (inbox_rows($db, "SELECT * FROM inbox_item_state WHERE student_id = ?", [$sid]) as $s) $state[$s['item_key']] = $s;
     $items = [];
     $add = function (array $i) use (&$items, $state) {
         $s = $state[$i['key']] ?? [];
         $items[] = $i + ['starred' => !empty($s['starred']), 'archived' => !empty($s['archived']), 'deleted' => !empty($s['deleted'])];
     };
 
-    $rows = executeQuery($db, "
+    $rows = inbox_rows($db, "
         SELECT m.id, m.title, m.content, m.message_type, m.link_url, m.link_text, m.created_at, m.course_id, m.target_course_ids,
                EXISTS (SELECT 1 FROM broadcast_message_reads r WHERE r.message_id = m.id AND r.student_id = ?) AS is_read
         FROM broadcast_messages m
         WHERE m.target_all_students = 1
            OR FIND_IN_SET(?, m.target_student_ids) > 0
            OR EXISTS (SELECT 1 FROM enrollments e WHERE e.student_id = ? AND FIND_IN_SET(e.course_id, m.target_course_ids) > 0)
-    ", [$sid, $sid, $sid])->fetchAll(PDO::FETCH_ASSOC);
+    ", [$sid, $sid, $sid]);
     foreach ($rows as $m) {
         $cid = (int) $m['course_id'];
         if (!$cid) foreach (array_filter(array_map('intval', explode(',', (string) $m['target_course_ids']))) as $t) if (isset($courses[$t])) { $cid = $t; break; }
@@ -46,7 +53,7 @@ function inbox_items(PDO $db, int $sid): array {
               'link_url' => $m['link_url'], 'link_text' => $m['link_text'] ?: 'Open']);
     }
 
-    $rows = executeQuery($db, "
+    $rows = inbox_rows($db, "
         SELECT t.id, m.display_name AS mentor_name, lm.body AS last_body, lm.created_at AS last_at,
                (SELECT COUNT(*) FROM thread_messages x WHERE x.thread_id = t.id) AS n,
                (SELECT COUNT(*) FROM thread_messages x WHERE x.thread_id = t.id AND x.sender_id = ?) AS mine,
@@ -55,7 +62,7 @@ function inbox_items(PDO $db, int $sid): array {
         JOIN thread_participants tp ON tp.thread_id = t.id AND tp.student_id = ?
         LEFT JOIN mentors m ON m.id = t.mentor_id
         JOIN thread_messages lm ON lm.id = (SELECT MAX(id) FROM thread_messages WHERE thread_id = t.id)
-    ", [$sid, $sid, $sid])->fetchAll(PDO::FETCH_ASSOC);
+    ", [$sid, $sid, $sid]);
     foreach ($rows as $t) {
         $name = $t['mentor_name'] ?: 'Mentor';
         $add(['key' => 't' . $t['id'], 'kind' => 'conversation', 'sender' => $name, 'subject' => 'Conversation with ' . $name,
@@ -63,7 +70,7 @@ function inbox_items(PDO $db, int $sid): array {
               'sent' => $t['mine'] > 0, 'course_id' => null, 'course' => null, 'link_url' => null, 'link_text' => null]);
     }
 
-    $rows = executeQuery($db, "
+    $rows = inbox_rows($db, "
         SELECT a.id, a.title, a.due_date, a.course_id
         FROM assignments a
         JOIN enrollments e ON e.course_id = a.course_id AND e.student_id = ?
@@ -74,7 +81,7 @@ function inbox_items(PDO $db, int $sid): array {
         WHERE (a.student_id IS NULL OR a.student_id = ?)
           AND a.due_date IS NOT NULL AND a.due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 DAY)
           AND (latest.status IS NULL OR latest.status != 'completed')
-    ", [$sid, $sid, $sid])->fetchAll(PDO::FETCH_ASSOC);
+    ", [$sid, $sid, $sid]);
     foreach ($rows as $a) {
         $key = 'd' . $a['id'];
         $due = new DateTime($a['due_date']);
@@ -86,11 +93,11 @@ function inbox_items(PDO $db, int $sid): array {
               'link_url' => 'assignments.php', 'link_text' => 'Open my assignments']);
     }
 
-    $rows = executeQuery($db, "
+    $rows = inbox_rows($db, "
         SELECT ev.id, ev.title, ev.description, ev.host, ev.starts_at, ev.join_url FROM events ev
         JOIN event_registrations r ON r.event_id = ev.id AND r.student_id = ?
         WHERE ev.starts_at BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 24 HOUR)
-    ", [$sid])->fetchAll(PDO::FETCH_ASSOC);
+    ", [$sid]);
     foreach ($rows as $ev) {
         $key = 'e' . $ev['id'];
         $at = new DateTime($ev['starts_at']);
@@ -113,7 +120,7 @@ function inbox_unread_count(PDO $db, int $sid): int {
 /** The student's courses, for the course filter: id => title. */
 function inbox_courses(PDO $db, int $sid): array {
     $out = [];
-    foreach (executeQuery($db, "SELECT c.id, c.title FROM enrollments e JOIN courses c ON c.id = e.course_id WHERE e.student_id = ? ORDER BY c.title", [$sid])->fetchAll(PDO::FETCH_ASSOC) as $c) {
+    foreach (inbox_rows($db, "SELECT c.id, c.title FROM enrollments e JOIN courses c ON c.id = e.course_id WHERE e.student_id = ? ORDER BY c.title", [$sid]) as $c) {
         $out[(int) $c['id']] = $c['title'];
     }
     return $out;
