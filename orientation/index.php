@@ -196,7 +196,7 @@ $zones = ['Africa/Lagos', 'America/St_Johns', 'America/Halifax', 'America/Toront
             <?php if (!$courses): ?>
                 <p class="ori-lead">You are not enrolled in a course yet. When you join one, come back here to set your class plan.</p>
             <?php else: ?>
-            <p class="ori-lead">Tell us how and when you take your classes, and what you are aiming for. Your tutor plans your classes from this.</p>
+            <p class="ori-lead">Enter the class days, time and first class date you agreed with us when you enrolled, and what you are aiming for. Your tutor plans your classes from this. Not sure what was agreed? Message us before you sign.</p>
             <?php foreach ($courses as $c): $p = $plans[$c['id']] ?? []; $pDays = $p ? explode(',', $p['class_days']) : []; ?>
             <div class="ori-plan" data-course="<?= (int) $c['id'] ?>">
                 <h5 style="font-weight:700;"><?= $h($c['title']) ?></h5>
@@ -210,14 +210,14 @@ $zones = ['Africa/Lagos', 'America/St_Johns', 'America/Halifax', 'America/Toront
                         </div>
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-semibold">Class days <span class="text-muted fw-normal small">(most courses run two classes a week)</span></label>
+                        <label class="form-label fw-semibold">Class days <span class="text-muted fw-normal small">(the days agreed with us; most courses run two classes a week)</span></label>
                         <div class="ori-days">
                             <?php foreach ($days as $v => $l): ?>
                                 <input type="checkbox" id="d<?= (int) $c['id'] . $v ?>" value="<?= $v ?>" data-f="class_days" <?= in_array($v, $pDays, true) ? 'checked' : '' ?>><label for="d<?= (int) $c['id'] . $v ?>"><?= $l ?></label>
                             <?php endforeach; ?>
                         </div>
                     </div>
-                    <div class="col-sm-4"><label class="form-label fw-semibold">Class time</label><input type="time" class="form-control" data-f="class_time" value="<?= $h(substr($p['class_time'] ?? '', 0, 5)) ?>"></div>
+                    <div class="col-sm-4"><label class="form-label fw-semibold">Agreed class time</label><input type="time" class="form-control" data-f="class_time" value="<?= $h(substr($p['class_time'] ?? '', 0, 5)) ?>"></div>
                     <div class="col-sm-5"><label class="form-label fw-semibold">Your time zone</label>
                         <select class="form-select" data-f="timezone" data-saved="<?= $h($p['timezone'] ?? '') ?>">
                             <?php foreach ($zones as $z): ?><option value="<?= $h($z) ?>"><?= $h(str_replace('_', ' ', $z)) ?></option><?php endforeach; ?>
