@@ -2302,3 +2302,12 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Live  | [ ] | | Live listing 2026-10-28: Week 1 = modules 54 (lessons 308, 309) and 150 (393, 392); Week 2 = 55 (310, 311) and 151 (395, 394); weeks 3-12 = 152-161 once each. Plain SQL, no files. Final SELECT should read 12 modules, 12 weeks, 24 classes. |
 
 **What it does:** the Course Introduction said "Class 1 of 28" for a 24-class course. For each week number of CELPIP_Gen_3Mo (by folder) with more than one module, keeps the newest module and maps each older class to the kept class in the same position; moves lesson_progress (merging "completed"), lesson_item_progress, course_pacing_items (only titles the kept class lacks), week_briefs / week_resources / week_vocab_words (only where the kept week has none); then deletes the old copies' parts, lessons and modules, last. Helper tables m176_* are created and dropped by the migration.
+
+## 177 — Remove duplicate pacing items and duplicate assignments (every course)
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-28 | Local had none; tested by doubling CELPIP_Gen_2Mo's pacing items and a student's assignments (14 -> 15 pacing, 5 -> 7 assignments): back to 14 / 5, second run a no-op. Also on MySQL 5.7.44. |
+| Live  | [ ] | | Live: a CELPIP_Gen_2Mo student saw both mock exams twice (same due dates). Final SELECTs: both 0. |
+
+**What it does:** deletes exact duplicates, keeping the oldest row: course_pacing_items with the same course, class, item type, test and offset; assignments with the same student, course, test, title and due date. Completion is read from test_attempts by test, so no history is lost.
