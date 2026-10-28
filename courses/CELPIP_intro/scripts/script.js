@@ -48,120 +48,7 @@ let audioUpdateInterval = null;
 // Audio Recording Functions
 // ==================
 
-// Audio recording functionality - updated for multiple recorders
-let mediaRecorders = {};
-let audioChunks = {};
-let recordingStartTimes = {};
-let recordingIntervals = {};
-
-async function initializeAudioRecorder() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
-        // Initialize all 8 recorders
-        for (let i = 1; i <= 8; i++) {
-            setupRecorderForTask(i, stream);
-        }
-        
-    } catch (error) {
-        console.error('Error accessing microphone:', error);
-        // Update all status indicators
-        for (let i = 1; i <= 8; i++) {
-            const statusSpan = document.getElementById(`recordingStatus${i}`);
-            if (statusSpan) {
-                statusSpan.textContent = 'Microphone access denied';
-            }
-        }
-    }
-}
-
-function setupRecorderForTask(taskNum, stream) {
-    mediaRecorders[taskNum] = new MediaRecorder(stream);
-    audioChunks[taskNum] = [];
-    
-    mediaRecorders[taskNum].ondataavailable = (event) => {
-        audioChunks[taskNum].push(event.data);
-    };
-    
-    mediaRecorders[taskNum].onstop = () => {
-        const audioBlob = new Blob(audioChunks[taskNum], { type: 'audio/wav' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        
-        const playback = document.getElementById(`recordingPlayback${taskNum}`);
-        playback.src = audioUrl;
-        playback.style.display = 'block';
-        
-        document.getElementById(`playRecording${taskNum}`).disabled = false;
-        
-        submitAudioToDatabase(audioBlob, taskNum);
-    };
-    
-    setupRecordingControlsForTask(taskNum);
-}
-
-function setupRecordingControlsForTask(taskNum) {
-    const startBtn = document.getElementById(`startRecording${taskNum}`);
-    const stopBtn = document.getElementById(`stopRecording${taskNum}`);
-    const statusSpan = document.getElementById(`recordingStatus${taskNum}`);
-    const timerSpan = document.getElementById(`recordingTimer${taskNum}`);
-    
-    if (!startBtn || !stopBtn || !statusSpan || !timerSpan) {
-        console.error(`Missing elements for task ${taskNum}`);
-        return;
-    }
-    
-    startBtn.addEventListener('click', () => {
-        audioChunks[taskNum] = [];
-        mediaRecorders[taskNum].start();
-        
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-        statusSpan.textContent = 'Recording...';
-        statusSpan.style.color = '#dc3545';
-        
-        recordingStartTimes[taskNum] = Date.now();
-        recordingIntervals[taskNum] = setInterval(() => updateRecordingTimer(taskNum), 1000);
-    });
-    
-    stopBtn.addEventListener('click', () => {
-        mediaRecorders[taskNum].stop();
-        
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-        statusSpan.textContent = 'Recording stopped';
-        statusSpan.style.color = '#28a745';
-        
-        clearInterval(recordingIntervals[taskNum]);
-    });
-}
-
-function updateRecordingTimer(taskNum) {
-    const elapsed = Date.now() - recordingStartTimes[taskNum];
-    const minutes = Math.floor(elapsed / 60000);
-    const seconds = Math.floor((elapsed % 60000) / 1000);
-    
-    const timerSpan = document.getElementById(`recordingTimer${taskNum}`);
-    if (timerSpan) {
-        timerSpan.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-}
-
-// Each recording goes to the platform's speaking store (as CELPIP Speaking practice does), where it is transcribed
-// and a tutor can listen and grade it. It used to be sent to /api/submit-audio, which doesn't exist on this server.
-async function submitAudioToDatabase(audioBlob, taskNum) {
-    const formData = new FormData();
-    formData.append('audio', audioBlob, `speaking_task_${taskNum}.webm`);
-    formData.append('test_code', 'CELPIP_DIAGNOSTIC');
-    formData.append('task_number', taskNum);
-    formData.append('task_title', `Speaking Task ${taskNum}`);
-
-    try {
-        const response = await fetch('../../api/speaking_upload.php', { method: 'POST', body: formData });
-        if (!response.ok) console.error(`Saving the recording for task ${taskNum} failed (${response.status})`);
-    } catch (error) {
-        console.error(`Error saving the recording for task ${taskNum}:`, error);
-    }
-}
+// Speaking recordings: celpip_mini_mock.php runs the speaking tasks (the practice tests' flow) and saves each one.
 
 // The finished test is saved as one attempt (Listening + Reading score, and the writing response for a tutor), so
 // the platform knows it was done. It used to exist only on the results screen.
@@ -355,10 +242,6 @@ function goToSection(sectionNum) {
     saveCurrentAnswers();
     showPage(`section${sectionNum}`);
     
-    // Initialize recorder when reaching speaking section
-    if (sectionNum === 4) {
-        setTimeout(initializeAudioRecorder, 500);
-    }
 }
 
 // Modified finishQuiz function with database integration
@@ -515,7 +398,7 @@ function displayResults(listenScore, readScore, writingScore, wordCount, listenR
     speakingBox.className = 'scoreBox';
     speakingBox.innerHTML = `
         <div class="score-label">Speaking</div>
-        <div class="score-value">Examiner Assessed</div>
+        <div class="score-value">Marked by your tutor</div>
     `;
 
     summaryEl.appendChild(listeningBox);

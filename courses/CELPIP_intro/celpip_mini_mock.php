@@ -12,6 +12,75 @@ $_from = preg_replace('/[^a-zA-Z0-9_]/', '', $_GET['from'] ?? '');
 $ctxCourse = in_array($_from, ['CELPIP_Gen_1Mo', 'CELPIP_Gen_2Mo', 'CELPIP_Gen_3Mo'], true) ? course_by_folder($db, $_from) : null;
 $backName = $ctxCourse['title'] ?? 'Introduction to CELPIP';
 $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/course_overview.php' : 'course_overview.php';
+require_once INCLUDES_PATH . '/admin_check.php';
+$isAdmin = is_staff_account();   // staff take it untimed, as on the practice tests; testers are timed
+
+// Speaking: the eight tasks of CELPIP Speaking Practice 3 (resources/practice_tests/celpip_speaking_003.php, its
+// pictures in assets/img/practice_tests/CELPIP_PT_S_003/), in the same flow as the practice tests (founder,
+// 2026-10-28: the speaking section "is not like the standard stuff"). Reused as the IELTS General diagnostic reuses
+// a Cambridge mock: crash courses never meet Set 3; the 2/3-month courses meet it in Classes 14/15.
+$speakTasks = [
+    1 => [
+        'title'  => 'Task 1: Giving Advice',
+        'prep'   => 30,
+        'speak'  => 90,
+        'prompt' => "Your parents are traveling abroad for the first time. Give them advice on what to do in an airport.",
+    ],
+    2 => [
+        'title'  => 'Task 2: Talking about a Personal Experience',
+        'prep'   => 30,
+        'speak'  => 60,
+        'prompt' => "Talk about a time you made a change in your lifestyle. What was the change and how did it affect your life?",
+    ],
+    3 => [
+        'title'  => 'Task 3: Describing a Scene',
+        'prep'   => 30,
+        'speak'  => 60,
+        'prompt' => "Describe this scene. The person with whom you are speaking cannot see the picture.",
+        'image'  => 'scene.jpg',
+    ],
+    4 => [
+        'title'  => 'Task 4: Making Predictions',
+        'prep'   => 30,
+        'speak'  => 60,
+        'prompt' => "In this picture, what do you think will most probably happen next?",
+        'image'  => 'scene.jpg',
+    ],
+    5 => [
+        // Real CELPIP Task 5 has a twist: two options are shown first, then a
+        // third competing option appears that the candidate must also argue
+        // against. Both stages are shown together here (as a single combined
+        // prompt + both source images) since the practice engine only has one
+        // linear prep+speak stage per task, not the real exam's two-stage
+        // selection timing -- a deliberate simplification, noted here rather
+        // than silently dropping the third option.
+        'title'  => 'Task 5: Comparing and Persuading',
+        'prep'   => 60,
+        'speak'  => 60,
+        'prompt' => "You are camping with your friends and discussing your plans for tomorrow. Choose the option you prefer and convince your friends that your idea is best:\n\nOption A - Hike up a mountain: 10 hour hike, amazing view from the summit, natural hot springs on the way, chance to see bighorn sheep.\nOption B - Walk along the river: 4 hour walk, easy path to follow, nice spot for a picnic lunch, lots of birds and deer nearby.\n\nYour friends then suggest a third option - swimming in the lake all afternoon, relaxing in the sun, a chance to catch some fish, and a BBQ beside the lake. Persuade them that your original choice is still best.",
+        'images' => ['task5a.jpg', 'task5b.jpg'],
+    ],
+    6 => [
+        'title'  => 'Task 6: Dealing with a Difficult Situation',
+        'prep'   => 60,
+        'speak'  => 60,
+        'prompt' => "Your cousin recently borrowed your iPad when his family went on a road trip. After he returned it, you noticed a crack in the glass on the corner of the device. Call him up and explain the discovery. Ask him to pay for the repair.",
+    ],
+    7 => [
+        'title'  => 'Task 7: Expressing Opinions',
+        'prep'   => 30,
+        'speak'  => 90,
+        'prompt' => "It is becoming common these days for children to have their own smartphones. Do you think this trend is good or bad? Explain your reasons.",
+    ],
+    8 => [
+        'title'  => 'Task 8: Describing an Unusual Situation',
+        'prep'   => 30,
+        'speak'  => 60,
+        'prompt' => "You are on a safari in Africa and see a very strange animal. Unfortunately, your camera battery died and you couldn't take a picture! Call your friend at the end of the day and describe the animal you saw.",
+        'image'  => 'painting.jpg',
+    ],
+];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +94,8 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
     <!-- The CELPIP exam look of the practice tests and mocks (founder, 2026-10-28); was css/style.css -->
-    <link rel="stylesheet" href="css/mini_mock_exam.css?v=1">
+    <link rel="stylesheet" href="css/mini_mock_exam.css?v=2">
+    <?php include dirname(__DIR__, 2) . '/resources/practice_tests/celpip_screen_styles.php'; /* the CELPIP speaking screen */ ?>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -78,7 +148,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
                                 <li>Listening (10 questions)</li>
                                 <li>Reading (11 questions)</li>
                                 <li>Writing (1 task)</li>
-                                <li>Speaking (examiner administered)</li>
+                                <li>Speaking (8 recorded tasks, marked by your tutor)</li>
                             </ul>
                             <p>Click on the <strong>Start Test</strong> button below when you are ready to begin. At the end, you'll receive a detailed assessment of your English level and personalized feedback on areas for improvement.</p>
                         </div>
@@ -150,7 +220,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 1 of 10</div>
-                            <div class="question-text">Choose the best answer. What is Megan Gilmore's profession?</div>
+                            <div class="question-text">What is Megan Gilmore's profession?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l1" id="l1a" value="A"> She is a government policy advisor.</label></li>
                                 <li><label><input type="radio" name="l1" id="l1b" value="B"> She is a journalist.</label></li>
@@ -161,7 +231,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 2 of 10</div>
-                            <div class="question-text">Choose the best answer. Why was Ontario's UBI pilot program terminated?</div>
+                            <div class="question-text">Why was Ontario's UBI pilot program terminated?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l2" id="l2a" value="A"> The program was too expensive to maintain.</label></li>
                                 <li><label><input type="radio" name="l2" id="l2b" value="B"> Research results showed negative outcomes.</label></li>
@@ -172,7 +242,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 3 of 10</div>
-                            <div class="question-text">Choose the best answer. What was the intended duration of Ontario's pilot program?</div>
+                            <div class="question-text">What was the intended duration of Ontario's pilot program?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l3" id="l3a" value="A"> One year</label></li>
                                 <li><label><input type="radio" name="l3" id="l3b" value="B"> Two years</label></li>
@@ -183,7 +253,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 4 of 10</div>
-                            <div class="question-text">Choose the best answer. According to the interview, what was lost when Ontario's program ended?</div>
+                            <div class="question-text">According to the interview, what was lost when Ontario's program ended?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l4" id="l4a" value="A"> Comprehensive research data about UBI impacts</label></li>
                                 <li><label><input type="radio" name="l4" id="l4b" value="B"> Federal funding for future programs</label></li>
@@ -194,7 +264,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 5 of 10</div>
-                            <div class="question-text">Choose the best answer. How did participants react to the program's cancellation?</div>
+                            <div class="question-text">How did participants react to the program's cancellation?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l5" id="l5a" value="A"> They expressed anger toward the government.</label></li>
                                 <li><label><input type="radio" name="l5" id="l5b" value="B"> They felt disappointed about lost opportunities.</label></li>
@@ -205,7 +275,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 6 of 10</div>
-                            <div class="question-text">Choose the best answer. Which Ontario municipalities have supported UBI initiatives?</div>
+                            <div class="question-text">Which Ontario municipalities have supported UBI initiatives?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l6" id="l6a" value="A"> Toronto, Ottawa, and Hamilton</label></li>
                                 <li><label><input type="radio" name="l6" id="l6b" value="B"> Kingston, London, and Windsor</label></li>
@@ -216,7 +286,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 7 of 10</div>
-                            <div class="question-text">Choose the best answer. What is the current status of British Columbia's UBI involvement?</div>
+                            <div class="question-text">What is the current status of British Columbia's UBI involvement?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l7" id="l7a" value="A"> The province has launched a pilot program.</label></li>
                                 <li><label><input type="radio" name="l7" id="l7b" value="B"> Some communities are considering municipal programs.</label></li>
@@ -227,7 +297,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 8 of 10</div>
-                            <div class="question-text">Choose the best answer. What did the 2021 federal bills propose?</div>
+                            <div class="question-text">What did the 2021 federal bills propose?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l8" id="l8a" value="A"> Immediate implementation of UBI across Canada</label></li>
                                 <li><label><input type="radio" name="l8" id="l8b" value="B"> Specific payment amounts for program participants</label></li>
@@ -238,7 +308,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 9 of 10</div>
-                            <div class="question-text">Choose the best answer. According to Gilmore, what typically happens to UBI payments when recipients work?</div>
+                            <div class="question-text">According to Gilmore, what typically happens to UBI payments when recipients work?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l9" id="l9a" value="A"> Payments increase to encourage employment.</label></li>
                                 <li><label><input type="radio" name="l9" id="l9b" value="B"> Payments remain unchanged regardless of earnings.</label></li>
@@ -249,7 +319,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                         <div class="question-container">
                             <div class="question-number">Question 10 of 10</div>
-                            <div class="question-text">Choose the best answer. What does Gilmore suggest people should monitor regarding UBI's future?</div>
+                            <div class="question-text">What does Gilmore suggest people should monitor regarding UBI's future?</div>
                             <ul class="options">
                                 <li><label><input type="radio" name="l10" id="l10a" value="A"> Provincial election outcomes and policy changes</label></li>
                                 <li><label><input type="radio" name="l10" id="l10b" value="B"> Senate committee decisions and disability benefit discussions</label></li>
@@ -498,107 +568,60 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
             <!-- Section 4: Speaking -->
             <div id="section4" class="page">
-                <div class="progress-bar"><div class="progress" style="width: 100%"></div></div>
-                <h2>Section 4: Speaking</h2>
-
-                <div class="wrap">
-                    <div class="card" role="main">
-                        <h1>Speaking Section</h1>
-                        <div class="subtitle">The Speaking test will be administered to you by the examiner.</div>
-
-                        <div class="speaking-info">
-                            <div class="speaking-overview">
-                                <h3>CELPIP Speaking Test Overview</h3>
-                                <p>The CELPIP Speaking test is a computer-delivered test. It takes approximately 15–20 minutes and consists of eight tasks:</p>
-                            </div>
-
-                            <div class="speaking-parts">
-                                <?php
-                                $speakingTasks = [
-                                    1 => ['title' => 'Task 1: Giving Advice', 'meta' => '1 minute preparation, 1 minute speaking', 'points' => ['Give advice to someone in a specific situation', 'Example: "Your friend wants to learn a new language. What advice would you give?"']],
-                                    2 => ['title' => 'Task 2: Talking about a Personal Experience', 'meta' => '1 minute prep, 2 minutes speaking', 'points' => ['Share a personal story or experience', 'Include details about what happened and how you felt']],
-                                    3 => ['title' => 'Task 3: Describing a Scene', 'meta' => '1 minute prep, 1 minute speaking', 'points' => ['Describe what you see in a picture', 'Focus on details, people, objects, and activities']],
-                                    4 => ['title' => 'Task 4: Making Predictions', 'meta' => '1 minute prep, 1 minute speaking', 'points' => ['Look at a picture and predict what might happen next', 'Use your imagination to create a logical scenario']],
-                                    5 => ['title' => 'Task 5: Comparing and Persuading', 'meta' => '1 minute prep, 1 minute speaking', 'points' => ['Choose between two options and explain your choice', 'Persuade someone to agree with your decision']],
-                                    6 => ['title' => 'Task 6: Dealing with a Difficult Situation', 'meta' => '1 minute prep, 1 minute speaking', 'points' => ['Respond to a challenging or unexpected situation', 'Show how you would handle the problem']],
-                                    7 => ['title' => 'Task 7: Expressing Opinions', 'meta' => '1 minute prep, 1 minute speaking', 'points' => ['Share your opinion on a topic of general interest', 'Support your viewpoint with reasons and examples']],
-                                    8 => ['title' => 'Task 8: Describing an Unusual Situation', 'meta' => '1 minute prep, 1 minute speaking', 'points' => ['Describe what you see in an unusual or strange picture', 'Explain what might be happening and why']],
-                                ];
-                                foreach ($speakingTasks as $n => $task): ?>
-                                <div class="speaking-part">
-                                    <h4><?= htmlspecialchars($task['title']) ?> (<?= htmlspecialchars($task['meta']) ?>)</h4>
-                                    <ul>
-                                        <?php foreach ($task['points'] as $point): ?>
-                                            <li><?= htmlspecialchars($point) ?></li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                    <div id="audioRecorder<?= $n ?>" class="audio-recorder">
-                                        <div class="recording-controls">
-                                            <button id="startRecording<?= $n ?>" class="btn btn-primary"><i class="bi bi-mic-fill me-1"></i> Start Recording</button>
-                                            <button id="stopRecording<?= $n ?>" class="btn btn-secondary" disabled><i class="bi bi-stop-fill me-1"></i> Stop Recording</button>
-                                            <button id="playRecording<?= $n ?>" class="btn btn-secondary" disabled><i class="bi bi-play-fill me-1"></i> Play Recording</button>
-                                        </div>
-                                        <div class="recording-status">
-                                            <span id="recordingStatus<?= $n ?>">Ready to record</span>
-                                            <span id="recordingTimer<?= $n ?>">00:00</span>
-                                        </div>
-                                        <audio id="recordingPlayback<?= $n ?>" controls style="display: none; width: 100%; margin-top: .6rem;"></audio>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
-                            </div>
-
-                            <div class="speaking-assessment">
-                                <h3>Assessment Criteria</h3>
-                                <p class="note" style="margin-bottom:.6rem;">Your speaking will be assessed on four criteria:</p>
-                                <div class="criteria-grid">
-                                    <div class="criterion">
-                                        <h5>Content/Coherence</h5>
-                                        <p>How well you address the topic and organize ideas</p>
-                                    </div>
-                                    <div class="criterion">
-                                        <h5>Vocabulary</h5>
-                                        <p>Range and accuracy of words and expressions</p>
-                                    </div>
-                                    <div class="criterion">
-                                        <h5>Listenability</h5>
-                                        <p>How easy you are to understand</p>
-                                    </div>
-                                    <div class="criterion">
-                                        <h5>Task Fulfillment</h5>
-                                        <p>How completely you address the task requirements</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="speaking-tips">
-                                <h3>Speaking Test Tips</h3>
-                                <ul>
-                                    <li>Use your preparation time effectively to organize your thoughts</li>
-                                    <li>Speak clearly and at a natural pace</li>
-                                    <li>Use the full time given for each response</li>
-                                    <li>Include specific details and examples in your answers</li>
-                                    <li>Practice with a variety of topics and situations</li>
-                                    <li>Stay calm and confident during the test</li>
-                                </ul>
-                            </div>
-
-                            <div class="examiner-note">
-                                <h3>Note for Test Day</h3>
-                                <p><strong>The CELPIP Speaking test is completed on a computer with a headset and microphone.</strong> You will record your responses which will be evaluated by certified raters.</p>
-                                <p>Make sure to test your equipment before beginning and speak clearly into the microphone.</p>
-                            </div>
-                        </div>
+                <!-- Speaking, as on the CELPIP speaking practice tests: a microphone check, then one task per screen --
+                     preparation counts down, recording starts by itself and counts down, NEXT moves on. -->
+                <div class="card" id="micGate">
+                    <h1>Speaking Section</h1>
+                    <p>The Speaking section has 8 tasks. Each task gives you time to prepare, then records your answer automatically &mdash; just like the real CELPIP test. Your tutor listens to your recordings and marks them.</p>
+                    <p>Click below and choose <strong>Allow</strong> when your browser asks for your microphone.</p>
+                    <div class="navigation">
+                        <div></div>
+                        <button type="button" class="btn btn-primary" id="micGateBtn" onclick="requestMicAccess()"><i class="bi bi-mic-fill me-1"></i> Enable Microphone &amp; Start Speaking</button>
                     </div>
+                    <div id="micGateError" class="audio-warning" style="display:none;"></div>
                 </div>
 
-                <div class="navigation">
-                    <button class="btn btn-secondary" onclick="goToSection(3)">← Previous</button>
-                    <button class="btn btn-primary" onclick="finishQuiz()">Finish Test &amp; See Results →</button>
+                <div class="celpip-shell" id="celpipShell" style="display:none;">
+                    <?php foreach ($speakTasks as $tNum => $task):
+                        $images = !empty($task['images']) ? $task['images'] : (!empty($task['image']) ? [$task['image']] : []);
+                        $slots = count($images); ?>
+                    <div class="celpip-screen" data-task="<?= $tNum ?>" style="<?= $tNum === 1 ? '' : 'display:none;' ?>">
+                        <div class="celpip-header">
+                            <div class="title"><?= htmlspecialchars($task['title']) ?></div>
+                            <div class="meta">
+                                <span>Preparation: <?= $task['prep'] ?> seconds</span>
+                                <span>Recording: <?= $task['speak'] ?> seconds</span>
+                                <button type="button" class="celpip-next-btn" onclick="speakingNext()"><?= $tNum < count($speakTasks) ? 'Next' : 'Finish Test' ?></button>
+                            </div>
+                        </div>
+                        <div class="celpip-body speaking<?= $slots === 0 ? ' no-image' : '' ?>">
+                            <div class="speaking-prompt"><?= htmlspecialchars($task['prompt']) ?></div>
+                            <div class="speaking-stage slots-<?= $slots ?>">
+                                <?php foreach ($images as $i => $img): ?>
+                                    <div class="speaking-tile">
+                                        <img src="<?= ACADEMY_URL ?>assets/img/practice_tests/CELPIP_PT_S_003/<?= $img ?>" alt="Task <?= $tNum ?> picture <?= $i + 1 ?>">
+                                        <?php if ($slots === 2): ?><div class="tile-label">Option <?= $i === 0 ? 'A' : 'B' ?></div><?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="speaking-timerbar">
+                                <div class="phase-pill" id="phasePill-<?= $tNum ?>"><span class="dot"></span><span id="phaseLabel-<?= $tNum ?>">Preparing</span></div>
+                                <div class="progress-wrap">
+                                    <div class="progress-label" id="progressLabel-<?= $tNum ?>">Preparation time</div>
+                                    <div class="progress-track"><div class="progress-fill" id="progressFill-<?= $tNum ?>"></div></div>
+                                </div>
+                                <div class="timer-digits" id="timerDigits-<?= $tNum ?>"><?= $task['prep'] ?>s</div>
+                            </div>
+                            <div class="mic-indicator" id="micIndicator-<?= $tNum ?>"><span class="dot"></span> <span id="micText-<?= $tNum ?>">Recording starts after the preparation time</span></div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                    <div class="celpip-progress">
+                        <?php for ($i = 1; $i <= count($speakTasks); $i++): ?><div class="dot <?= $i === 1 ? 'current' : '' ?>" id="progressDot-<?= $i ?>"></div><?php endfor; ?>
+                    </div>
                 </div>
             </div>
 
-            <!-- Results Page -->
             <div id="results" class="page">
                 <div class="download-buttons">
                     <button class="btn btn-download" id="downloadSummaryPDF"><i class="bi bi-file-earmark-text me-1"></i> Download Summary PDF</button>
@@ -632,7 +655,143 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 <?php include INCLUDES_PATH . '/adverts.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
-<script src="scripts/script.js?v=163" defer></script>
+<script src="scripts/script.js?v=164" defer></script>
+<style>
+    /* The speaking screen of the practice tests, without their fixed-height page (this page scrolls). */
+    #section4 .celpip-shell { display: flex; flex-direction: column; border: 1px solid #d7dce0; }
+    #section4 .celpip-body.speaking { display: grid; grid-template-rows: auto minmax(260px, 46vh) auto auto; gap: .75rem; padding: 1rem 1.25rem; background: #fff; }
+    #section4 .celpip-body.speaking.no-image { grid-template-rows: auto 0 auto auto; }
+    #section4 .celpip-body.speaking.no-image .speaking-stage { display: none; }
+    #section4 .speaking-prompt { color: #1f2937; font-size: .95rem; line-height: 1.6; white-space: pre-line; }
+    #section4 .speaking-stage { min-height: 0; display: grid; gap: 3px; background: #e9ebef; overflow: hidden; }
+    #section4 .speaking-stage.slots-1 { grid-template-columns: 1fr; } #section4 .speaking-stage.slots-2 { grid-template-columns: 1fr 1fr; }
+    #section4 .speaking-tile { position: relative; overflow: hidden; background: #e9ebef; display: flex; align-items: center; justify-content: center; }
+    #section4 .speaking-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    #section4 .speaking-tile .tile-label { position: absolute; top: 6px; left: 6px; font-size: 11px; padding: 2px 7px; background: rgba(27,35,48,.72); color: #fff; }
+    :root { --prep-fill:#e9932e; --prep-tint:#fdf1e2; --prep-ink:#8a4f0c; --speak-fill:#1f9aa0; --speak-tint:#e3f4f4; --speak-ink:#0e5c60; --done-fill:#b23b3b; --done-tint:#fbe9e9; --done-ink:#7c2626; }
+    #section4 .speaking-timerbar { display: grid; grid-template-columns: 110px 1fr 100px; align-items: center; gap: 14px; }
+    #section4 .phase-pill { height: 28px; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; background: #f1f3f5; color: #8a92a0; white-space: nowrap; }
+    #section4 .phase-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    #section4 .phase-pill.is-prep { background: var(--prep-tint); color: var(--prep-ink); }
+    #section4 .phase-pill.is-speak { background: var(--speak-tint); color: var(--speak-ink); }
+    #section4 .phase-pill.is-done { background: var(--done-tint); color: var(--done-ink); }
+    #section4 .progress-wrap { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    #section4 .progress-label { font-size: 11px; color: #8a92a0; }
+    #section4 .progress-track { height: 8px; background: #f1f3f5; overflow: hidden; }
+    #section4 .progress-fill { height: 100%; width: 0%; background: #8a92a0; transition: width 1s linear; }
+    #section4 .progress-fill.is-prep { background: var(--prep-fill); } #section4 .progress-fill.is-speak { background: var(--speak-fill); } #section4 .progress-fill.is-done { background: var(--done-fill); }
+    #section4 .timer-digits { height: 36px; background: #f1f3f5; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: 700; font-size: 18px; color: #1f2937; }
+    #section4 .timer-digits.is-prep { background: var(--prep-tint); color: var(--prep-ink); } #section4 .timer-digits.is-speak { background: var(--speak-tint); color: var(--speak-ink); } #section4 .timer-digits.is-done { background: var(--done-tint); color: var(--done-ink); }
+    #section4 .mic-indicator { display: flex; align-items: center; gap: .5rem; justify-content: center; color: #6b7280; font-size: .85rem; }
+    #section4 .mic-indicator.recording { color: #b91c1c; font-weight: 600; }
+    #section4 .mic-indicator .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    #section4 .celpip-progress .dot.done { background: #9c1f2e; }
+</style>
+<script>
+// Speaking, as on the CELPIP speaking practice tests (celpip_speaking_00N.php): each task prepares, then records by
+// itself; NEXT during preparation starts the recording rather than skipping the task; the last NEXT finishes the
+// test (finishQuiz, scripts/script.js). Each recording keeps its own chunks (a shared array once swapped recordings).
+// Recordings go to the speaking store as CELPIP_DIAGNOSTIC, where a tutor listens and marks them.
+const SPEAK = <?= json_encode(array_map(fn ($t) => ['title' => $t['title'], 'prompt' => $t['prompt'], 'prep' => $t['prep'], 'speak' => $t['speak']], $speakTasks)) ?>;
+const SPEAK_TOTAL = <?= count($speakTasks) ?>;
+const SPEAK_UNTIMED = <?= $isAdmin ? 'true' : 'false' ?>;
+let spTask = 1, spPrep = null, spRec = null, spRecorder = null, spStream = null;
+const spPhase = {}, spStarted = {};
+
+function spSetPhase(n, phase) {
+    ['phasePill-', 'progressFill-', 'timerDigits-'].forEach(id => {
+        const el = document.getElementById(id + n); el.classList.remove('is-prep', 'is-speak', 'is-done'); el.classList.add('is-' + phase);
+    });
+}
+function spCountdown(n, secs0, onEnd) {
+    const digits = document.getElementById('timerDigits-' + n), fill = document.getElementById('progressFill-' + n);
+    let secs = secs0; digits.textContent = secs + 's'; fill.style.width = '100%';
+    return setInterval(() => {
+        secs--; digits.textContent = Math.max(secs, 0) + 's'; fill.style.width = Math.max(0, secs / secs0 * 100) + '%';
+        if (secs <= 0) onEnd();
+    }, 1000);
+}
+function spStartTask(n) {
+    spPhase[n] = 'prep'; spSetPhase(n, 'prep');
+    document.getElementById('phaseLabel-' + n).textContent = 'Preparing';
+    document.getElementById('progressLabel-' + n).textContent = 'Preparation time';
+    if (SPEAK_UNTIMED) { document.getElementById('timerDigits-' + n).textContent = ''; return; }
+    spPrep = spCountdown(n, SPEAK[n].prep, () => { clearInterval(spPrep); spBeginRecording(n); });
+}
+function spBeginRecording(n) {
+    spPhase[n] = 'speak'; spStarted[n] = Date.now(); spSetPhase(n, 'speak');
+    document.getElementById('phaseLabel-' + n).textContent = 'Speaking';
+    document.getElementById('progressLabel-' + n).textContent = 'Recording your answer';
+    const mic = document.getElementById('micIndicator-' + n); mic.classList.add('recording');
+    document.getElementById('micText-' + n).textContent = 'Recording';
+    spCapture(n);
+    spRec = spCountdown(n, SPEAK[n].speak, () => {
+        clearInterval(spRec); spStopAndUpload(n); spPhase[n] = 'done'; spSetPhase(n, 'done');
+        document.getElementById('phaseLabel-' + n).textContent = "Time's up";
+        document.getElementById('progressLabel-' + n).textContent = 'Response complete';
+        mic.classList.remove('recording'); document.getElementById('micText-' + n).textContent = 'Response recorded';
+    });
+}
+async function spCapture(n) {
+    if (spRecorder && spRecorder.state === 'recording') return;   // never two recordings at once
+    const chunks = [];
+    try {
+        spStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const rec = new MediaRecorder(spStream); rec._chunks = chunks;
+        rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+        rec.start(); spRecorder = rec;
+    } catch (err) { console.error('Microphone failed for task ' + n, err); spRecorder = null; }
+}
+function spStopAndUpload(n) {
+    if (!spRecorder || spRecorder.state === 'inactive') return;
+    const rec = spRecorder, stream = spStream, chunks = rec._chunks || [];
+    rec.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        if (blob.size > 0) {
+            const fd = new FormData();
+            fd.append('audio', blob, 'speaking_task_' + n + '.webm');
+            fd.append('test_code', 'CELPIP_DIAGNOSTIC'); fd.append('task_number', n);
+            fd.append('task_title', SPEAK[n].title); fd.append('prompt', SPEAK[n].prompt);
+            fetch('../../api/speaking_upload.php', { method: 'POST', body: fd }).catch(err => console.error('Saving task ' + n + ' failed', err));
+        }
+        stream.getTracks().forEach(t => t.stop());
+    };
+    rec.stop(); spRecorder = null;
+}
+function spShow(n) {
+    document.querySelectorAll('#section4 .celpip-screen').forEach(s => s.style.display = 'none');
+    document.querySelector('#section4 .celpip-screen[data-task="' + n + '"]').style.display = '';
+    for (let i = 1; i <= SPEAK_TOTAL; i++) {
+        const d = document.getElementById('progressDot-' + i); d.classList.remove('current', 'done');
+        if (i < n) d.classList.add('done'); else if (i === n) d.classList.add('current');
+    }
+    spTask = n; spStartTask(n); window.scrollTo(0, 0);
+}
+function speakingNext() {
+    const phase = spPhase[spTask];
+    if (phase === 'prep') { clearInterval(spPrep); spBeginRecording(spTask); return; }   // start it, don't skip it
+    if (phase === 'speak' && Date.now() - (spStarted[spTask] || 0) < 1200) return;      // a double-click right after starting
+    clearInterval(spPrep); clearInterval(spRec); spStopAndUpload(spTask);
+    if (spTask < SPEAK_TOTAL) spShow(spTask + 1); else finishQuiz();
+}
+async function requestMicAccess() {
+    const btn = document.getElementById('micGateBtn'), errEl = document.getElementById('micGateError');
+    btn.disabled = true; errEl.style.display = 'none';
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(t => t.stop());
+        document.getElementById('micGate').style.display = 'none';
+        document.getElementById('celpipShell').style.display = '';
+        spShow(1);
+    } catch (err) {
+        btn.disabled = false; btn.innerHTML = '<i class="bi bi-mic-fill me-1"></i> Try Again';
+        errEl.textContent = (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')
+            ? 'Microphone access was denied. Allow it from the padlock icon in your address bar, then click Try Again.'
+            : (err.name === 'NotFoundError' ? 'No microphone was found. Connect one and click Try Again.' : 'Could not access your microphone: ' + (err.message || err.name) + '.');
+        errEl.style.display = '';
+    }
+}
+</script>
 <script>
 // The section tabs follow whichever page the test is on (scripts/script.js switches .page.active); earlier
 // sections show as done.

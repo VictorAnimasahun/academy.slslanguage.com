@@ -28,7 +28,7 @@ the same commit. The "Used by" columns come from `lesson_parts` (`c8` = Class 8)
 
 | Content | Test code(s) | Source | Used by |
 |---|---|---|---|
-| CELPIP Diagnostic Test — `courses/CELPIP_intro/celpip_mini_mock.php` | `CELPIP_DIAGNOSTIC` (Listening + Reading score and writing saved; recordings in `speaking_recordings`) | Original SLS content | Crash c1; 2Mo c2; 3Mo c2 |
+| CELPIP Diagnostic Test — `courses/CELPIP_intro/celpip_mini_mock.php` | `CELPIP_DIAGNOSTIC` (Listening + Reading score and writing saved; recordings in `speaking_recordings`) | Original SLS content; Speaking = the 8 tasks + pictures of Speaking Practice 3 (`CELPIP_PT_S_003`), since 2026-10-28 | Crash c1; 2Mo c2; 3Mo c2 |
 | Listening Practice Test 1 — `courses/CELPIP_Gen/lessons/celpip_listening_001.php` | `CELPIP_PT_L_001` | CELPIP Practice Test C transcripts (migration 084) | Crash c2; 2Mo c3; 3Mo c3 |
 | Listening Practice Tests 2-4 | `CELPIP_PT_L_002`.. (0 questions) | — | Coming Soon (2Mo c7, c12; 3Mo c7, c13, c19) |
 | Reading Practice Test 1 — `celpip_reading_001.php` | `CELPIP_PT_R_001` | Instructor's CELPIP TASKS, Reading Test 1 (055) | Crash c6; 2Mo c4; 3Mo c4 |
