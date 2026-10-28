@@ -346,13 +346,55 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 <script>
 (function () {
-    const reply = document.getElementById('ibReply');
-    document.querySelectorAll('[data-reply]').forEach(b => b.addEventListener('click', () => {
-        if (!reply) return;
-        reply.hidden = false;
-        reply.querySelector('textarea').focus();
-    }));
-    document.querySelector('[data-cancel-reply]')?.addEventListener('click', () => { reply.hidden = true; });
+    // Reply / Cancel: delegated, so they keep working after the reading pane is swapped below.
+    document.addEventListener('click', e => {
+        const reply = document.getElementById('ibReply');
+        if (e.target.closest('[data-reply]') && reply) { reply.hidden = false; reply.querySelector('textarea').focus(); }
+        if (e.target.closest('[data-cancel-reply]') && reply) reply.hidden = true;
+    });
+
+    // Opening a message (or going back to the list) swaps only what changes -- the reading pane, the list (read
+    // dots, highlighted row), the toolbar, the bell -- instead of reloading the page (founder, 2026-10-28). The
+    // links stay real links: without JavaScript, or on cmd/ctrl-click, they open normally.
+    const panes = document.querySelector('.ib-panes');
+    async function show(url, push) {
+        panes.style.cursor = 'progress';
+        try {
+            const res = await fetch(url, { credentials: 'same-origin' });
+            if (!res.ok || res.redirected && !new URL(res.url).pathname.endsWith('/inbox.php')) throw new Error('reload');
+            const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+            const list = document.querySelector('.ib-list'), top = list.scrollTop;
+            for (const sel of ['.ib-read', '.ib-list', '.ib-tools']) {
+                const next = doc.querySelector(sel), cur = document.querySelector(sel);
+                if (next && cur) cur.replaceWith(document.importNode(next, true));
+            }
+            document.querySelector('.ib-list').scrollTop = top;
+            document.getElementById('ibAct').setAttribute('action', doc.getElementById('ibAct').getAttribute('action'));
+            panes.className = doc.querySelector('.ib-panes').className;
+            // The bell keeps its element (its refresh timer holds it); take the new count, and the menu badge with it.
+            const bell = document.getElementById('bellBtn'), nextBell = doc.getElementById('bellBtn');
+            if (bell && nextBell) {
+                bell.className = nextBell.className; bell.innerHTML = nextBell.innerHTML;
+                bell.setAttribute('aria-label', nextBell.getAttribute('aria-label')); bell.title = nextBell.title;
+                const n = parseInt(bell.querySelector('.bell-count')?.textContent, 10) || 0, badge = document.querySelector('.navbar-badge-unread');
+                if (badge) { badge.textContent = n; badge.style.display = n > 0 ? 'inline-block' : 'none'; }
+            }
+            const log = document.getElementById('ibLog'); if (log) log.scrollTop = 0;
+            if (push) history.pushState(null, '', url);
+            if (window.innerWidth <= 900) window.scrollTo(0, 0);
+        } catch (err) {
+            location.href = url;   // anything unexpected: an ordinary page load
+        } finally {
+            panes.style.cursor = '';
+        }
+    }
+    panes.addEventListener('click', e => {
+        const a = e.target.closest('a.ib-hit, a.ib-back');
+        if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        show(a.href, true);
+    });
+    window.addEventListener('popstate', () => show(location.href, false));
 
     const dlg = document.getElementById('ibCompose');
     document.getElementById('ibComposeBtn').addEventListener('click', () => dlg.showModal());
