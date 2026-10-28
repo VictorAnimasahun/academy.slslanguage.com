@@ -1,5 +1,5 @@
 <?php
-// Trend Vocabulary & Paraphrasing — IELTS Academic — 1-Month Crash Course, Class 3, piece 2 (lesson).
+// Trend Vocabulary & Paraphrasing — IELTS Academic — 1-Month Crash Course, Class 5, piece 2 (lesson; moved from Class 3 by migration 179, before Writing Test 1).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -44,4 +44,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Pick the verb, noun and adverb that match the size and speed of the change, get your prepositions exactly right, and change the question's words so the examiner sees your own vocabulary.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'IELTS_Aca_1Mo', 3, 2, ob_get_clean());
+render_lesson_shell($db, 'IELTS_Aca_1Mo', 5, 2, ob_get_clean());
