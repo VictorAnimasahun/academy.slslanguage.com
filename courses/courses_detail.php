@@ -149,12 +149,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             color: #fff;
             padding: 2.5rem 2rem 2rem;
         }
-        /* Pull the hero flush to the sidebar, topbar and advert panel: cancel main-wrapper's own 2rem padding.
-           (It used to pull 40px further left for an old 220px sidebar with a gap; the sidebar is now exactly the
-           main area's margin, so those 40px slid the hero's text under the sidebar.) */
-        @media (min-width: 1200px) {
-            .course-hero { margin: -2rem -2rem 0 -2rem; }
-        }
+        /* Flush to the sidebar, topbar and advert panel already: the wrapper has no padding of its own on a page
+           with a .content area (includes/navbar_styles.php), so the hero needs no negative margin -- the old
+           -2rem pulled it, and its text, 2rem under the menu rail (2026-10-29). */
         .course-hero .breadcrumb-item a { color: rgba(255,255,255,.65); text-decoration: none; }
         .course-hero .breadcrumb-item a:hover { color: #fff; }
         .course-hero .breadcrumb-item.active,
@@ -472,6 +469,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 </div>
 
 <?php include INCLUDES_PATH . '/adverts.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>   <!-- the week accordion and the alert's close button need it -->
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>

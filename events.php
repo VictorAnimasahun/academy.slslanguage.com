@@ -131,6 +131,7 @@ $past = executeQuery($db, "
     </div>
 </div>
 <?php include INCLUDES_PATH . '/adverts.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>   <!-- the "Past events" toggle needs it -->
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
 <?php include INCLUDES_PATH . '/footer.php'; ?>
 </body>
