@@ -73,11 +73,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .mock-card { background:#fff; border-radius:16px; padding:2.5rem; box-shadow:0 4px 20px rgba(0,0,0,.08); max-width:760px; margin:2rem auto; }
+        .mock-card { background:#fff; border-radius:3px; padding:2.5rem; box-shadow:0 4px 20px rgba(0,0,0,.08); max-width:760px; margin:2rem auto; border:1px solid rgba(15,23,42,.12); }
         .section-row { display:flex; align-items:center; gap:1rem; padding:1rem 0; border-bottom:1px solid #f1f5f9; }
         .section-row:last-child { border-bottom:none; }
-        .section-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.1rem; flex-shrink:0; }
-        .warning-box { background:#fffbeb; border:1px solid #fcd34d; border-radius:10px; padding:1rem 1.25rem; font-size:.9rem; }
+        .section-icon { width:44px; height:44px; border-radius:3px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.1rem; flex-shrink:0; }
+        .warning-box { background:#fffbeb; border:1px solid #fcd34d; border-radius:3px; padding:1rem 1.25rem; font-size:.9rem; }
     </style>
 </head>
 <body class="light">
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="mock-card">
                 <div class="d-flex align-items-center gap-3 mb-4">
-                    <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;">
+                    <div style="width:52px;height:52px;border-radius:3px;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;">
                         <i class="bi bi-clipboard-check text-white fs-4"></i>
                     </div>
                     <div>

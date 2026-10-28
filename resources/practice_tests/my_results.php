@@ -198,28 +198,28 @@ if (!$sessionId && !$attemptId) {
         }
 
         /* ── List cards ─────────────────────────────── */
-        .result-card { background:#fff; border-radius:14px; padding:1.1rem 1.4rem; margin-bottom:.75rem; box-shadow:0 2px 8px rgba(0,0,0,.06); display:flex; align-items:center; gap:1.1rem; border:1px solid #e5e7eb; }
-        .result-card:hover { box-shadow:0 4px 18px rgba(0,0,0,.1); }
+        .result-card { background:#fff; border-radius:3px; padding:1.1rem 1.4rem; margin-bottom:.75rem; box-shadow:0 2px 8px rgba(0,0,0,.06); display:flex; align-items:center; gap:1.1rem; border:1px solid #e5e7eb; }
+        .result-card:hover { box-shadow:0 4px 18px rgba(0,0,0,.1); border:1px solid rgba(15,23,42,.12); }
         .band-circle { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,var(--blue),#38bdf8); display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; color:#fff; }
         .band-circle.pink { background:linear-gradient(135deg,var(--pink),#f472b6); }
         .band-circle .bval { font-size:1rem; font-weight:800; line-height:1; }
         .band-circle .blbl { font-size:.52rem; font-weight:600; opacity:.85; }
-        .status-pill { border-radius:999px; padding:.2rem .65rem; font-size:.72rem; font-weight:700; }
+        .status-pill { border-radius:3px; padding:.2rem .65rem; font-size:.72rem; font-weight:700; }
         .pill-released { background:var(--blue-light); color:var(--blue-dark); }
         .pill-pending  { background:#fef3c7; color:#92400e; }
         .pill-progress { background:#f0fdf4; color:#166534; }
         .mini-bands { display:flex; gap:.4rem; font-size:.72rem; color:#64748b; }
         .mini-bands span { font-weight:700; }
-        .btn-pdf { border:1px solid var(--blue); color:var(--blue); border-radius:6px; padding:.2rem .65rem; font-size:.75rem; font-weight:700; background:none; cursor:pointer; white-space:nowrap; }
+        .btn-pdf { border:1px solid var(--blue); color:var(--blue); border-radius:3px; padding:.2rem .65rem; font-size:.75rem; font-weight:700; background:none; cursor:pointer; white-space:nowrap; }
         .btn-pdf:hover { background:var(--blue-light); }
-        .btn-view { background:var(--blue); color:#fff; border:none; border-radius:7px; padding:.3rem .85rem; font-size:.78rem; font-weight:700; text-decoration:none; white-space:nowrap; }
+        .btn-view { background:var(--blue); color:#fff; border:none; border-radius:3px; padding:.3rem .85rem; font-size:.78rem; font-weight:700; text-decoration:none; white-space:nowrap; }
         .btn-view:hover { background:var(--blue-dark); color:#fff; }
         .section-head { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#64748b; margin:1.5rem 0 .6rem; display:flex; align-items:center; gap:.5rem; }
         .section-divider { flex:1; height:1px; background:#e2e8f0; }
 
         /* ── Band bar (mock detail) ──────────────────── */
         .band-bar { display:grid; grid-template-columns:repeat(5,1fr); gap:.6rem; margin-bottom:1.5rem; }
-        .band-box { background:#fff; border-radius:12px; padding:.85rem; text-align:center; border:1px solid #e2e8f0; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+        .band-box { background:#fff; border-radius:3px; padding:.85rem; text-align:center; border:1px solid #e2e8f0; box-shadow:0 1px 4px rgba(0,0,0,.04); }
         .band-box.overall { background:linear-gradient(135deg,var(--blue-light),var(--pink-light)); }
         .band-num { font-size:1.75rem; font-weight:900; color:var(--blue); line-height:1; }
         .band-num.pink { color:var(--pink); }
@@ -228,8 +228,8 @@ if (!$sessionId && !$attemptId) {
 
         /* ── Section trigger buttons ─────────────────── */
         .section-btns { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; margin-bottom:1.25rem; }
-        .section-btn { background:#fff; border:2px solid #e2e8f0; border-radius:12px; padding:1rem; cursor:pointer; text-align:left; transition:all .18s; }
-        .section-btn:hover { border-color:var(--blue); box-shadow:0 4px 12px rgba(14,165,233,.15); }
+        .section-btn { background:#fff; border:2px solid #e2e8f0; border-radius:3px; padding:1rem; cursor:pointer; text-align:left; transition:all .18s; }
+        .section-btn:hover { border-color:var(--blue); box-shadow:0 4px 12px rgba(14,165,233,.15); border:1px solid rgba(15,23,42,.12); }
         .section-btn .sicon { font-size:1.3rem; margin-bottom:.35rem; display:block; }
         .section-btn .stitle { font-weight:700; font-size:.88rem; color:#0f172a; }
         .section-btn .ssub   { font-size:.72rem; color:#64748b; margin-top:.15rem; }
@@ -238,10 +238,10 @@ if (!$sessionId && !$attemptId) {
         /* ── Modal ───────────────────────────────────── */
         .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:2000; align-items:center; justify-content:center; }
         .modal-overlay.open { display:flex; }
-        .modal-box { background:#fff; border-radius:16px; width:92vw; max-width:1000px; height:88vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+        .modal-box { background:#fff; border-radius:3px; width:92vw; max-width:1000px; height:88vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); border:1px solid rgba(15,23,42,.12); }
         .modal-head { padding:1rem 1.4rem; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; background:linear-gradient(135deg,var(--blue-light),var(--pink-light)); }
         .modal-title { font-weight:800; font-size:.95rem; color:#0f172a; }
-        .modal-close { background:none; border:none; font-size:1.3rem; cursor:pointer; color:#64748b; padding:.2rem .4rem; border-radius:6px; }
+        .modal-close { background:none; border:none; font-size:1.3rem; cursor:pointer; color:#64748b; padding:.2rem .4rem; border-radius:3px; }
         .modal-close:hover { background:#e2e8f0; }
         .modal-body { flex:1; overflow-y:auto; padding:1.25rem; }
 
@@ -253,26 +253,26 @@ if (!$sessionId && !$attemptId) {
         .ans-table tr.wrong   td { background:#fff5f5; }
         .ans-table tr:last-child td { border-bottom:none; }
         .q-num { font-weight:700; color:#94a3b8; text-align:center; width:32px; }
-        .pill-c { background:var(--blue-light); color:var(--blue-dark); padding:.12rem .45rem; border-radius:999px; font-size:.68rem; font-weight:700; white-space:nowrap; }
-        .pill-w { background:var(--pink-light);  color:var(--pink-dark);  padding:.12rem .45rem; border-radius:999px; font-size:.68rem; font-weight:700; white-space:nowrap; }
+        .pill-c { background:var(--blue-light); color:var(--blue-dark); padding:.12rem .45rem; border-radius:3px; font-size:.68rem; font-weight:700; white-space:nowrap; }
+        .pill-w { background:var(--pink-light);  color:var(--pink-dark);  padding:.12rem .45rem; border-radius:3px; font-size:.68rem; font-weight:700; white-space:nowrap; }
         .correct-val { color:var(--blue-dark); font-weight:600; font-size:.82rem; }
-        .passage-block { background:#f8fafc; border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1rem; font-size:.84rem; line-height:1.8; color:#1e293b; white-space:pre-wrap; }
+        .passage-block { background:#f8fafc; border-radius:3px; padding:.9rem 1.1rem; margin-bottom:1rem; font-size:.84rem; line-height:1.8; color:#1e293b; white-space:pre-wrap; }
         .passage-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--blue-dark); margin-bottom:.4rem; }
 
         /* ── Writing ─────────────────────────────────── */
         .task-block { margin-bottom:1.75rem; }
         .task-head  { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--pink-dark); margin-bottom:.4rem; }
-        .prompt-box { background:var(--blue-light); border-radius:10px; padding:.9rem 1.1rem; font-size:.86rem; line-height:1.75; color:#0f172a; margin-bottom:.65rem; white-space:pre-wrap; }
-        .essay-box  { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:.9rem 1.1rem; font-size:.86rem; line-height:1.8; color:#374151; white-space:pre-wrap; }
-        .ai-box     { background:var(--blue-light); border-radius:6px; padding:.9rem 1rem; font-size:.82rem; white-space:pre-wrap; color:#0f172a; margin-top:1.25rem; }
+        .prompt-box { background:var(--blue-light); border-radius:3px; padding:.9rem 1.1rem; font-size:.86rem; line-height:1.75; color:#0f172a; margin-bottom:.65rem; white-space:pre-wrap; }
+        .essay-box  { background:#f8fafc; border:1px solid #e2e8f0; border-radius:3px; padding:.9rem 1.1rem; font-size:.86rem; line-height:1.8; color:#374151; white-space:pre-wrap; }
+        .ai-box     { background:var(--blue-light); border-radius:3px; padding:.9rem 1rem; font-size:.82rem; white-space:pre-wrap; color:#0f172a; margin-top:1.25rem; }
 
         /* ── Speaking notes ──────────────────────────── */
-        .speaking-panel { background:linear-gradient(135deg,var(--blue-light),var(--pink-light)); border-radius:14px; padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
-        .speaking-panel .snotes { background:var(--pink-light); border:1px solid #fbcfe8; border-radius:6px; padding:.8rem 1rem; font-size:.86rem; color:#0f172a; margin-top:.5rem; }
+        .speaking-panel { background:linear-gradient(135deg,var(--blue-light),var(--pink-light)); border-radius:3px; padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
+        .speaking-panel .snotes { background:var(--pink-light); border:1px solid #fbcfe8; border-radius:3px; padding:.8rem 1rem; font-size:.86rem; color:#0f172a; margin-top:.5rem; }
 
         /* ── Practice detail ─────────────────────────── */
-        .detail-card { background:#fff; border-radius:14px; padding:1.4rem; box-shadow:0 2px 10px rgba(0,0,0,.06); }
-        .stat-box { background:#f8fafc; border-radius:10px; padding:.7rem 1rem; text-align:center; }
+        .detail-card { background:#fff; border-radius:3px; padding:1.4rem; box-shadow:0 2px 10px rgba(0,0,0,.06); border:1px solid rgba(15,23,42,.12); }
+        .stat-box { background:#f8fafc; border-radius:3px; padding:.7rem 1rem; text-align:center; }
         .stat-box .val { font-size:1.35rem; font-weight:800; color:var(--blue); }
         .stat-box .lbl { font-size:.7rem; color:#64748b; }
         .q-row { display:flex; align-items:flex-start; gap:.9rem; padding:.55rem 0; border-bottom:1px solid #f3f4f6; font-size:.86rem; }
@@ -293,7 +293,7 @@ if (!$sessionId && !$attemptId) {
 
 <div class="main-wrapper flex-grow-1" style="flex:1;">
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
-    <main class="content p-4" style="max-width:900px;">
+    <main class="content p-4">
 
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
@@ -320,11 +320,11 @@ if (!$sessionId && !$attemptId) {
     <a href="my_results.php" class="back-link"><i class="bi bi-arrow-left"></i> All Results</a>
 
     <!-- Header -->
-    <div style="background:linear-gradient(135deg,var(--blue-light),var(--pink-light));border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+    <div style="background:linear-gradient(135deg,var(--blue-light),var(--pink-light));border-radius:3px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
         <div>
             <div style="font-size:1.15rem;font-weight:800;color:#0f172a;"><?= e($mockSession['mock_title']) ?></div>
             <div style="font-size:.82rem;color:#475569;margin-top:.2rem;">
-                <span style="background:var(--blue);color:#fff;padding:.2rem .6rem;border-radius:6px;font-size:.72rem;font-weight:700;margin-right:.5rem;"><?= e($mockSession['mock_code']) ?></span>
+                <span style="background:var(--blue);color:#fff;padding:.2rem .6rem;border-radius:3px;font-size:.72rem;font-weight:700;margin-right:.5rem;"><?= e($mockSession['mock_code']) ?></span>
                 Released <?= date('d M Y', strtotime($mockSession['released_at'])) ?>
             </div>
         </div>
@@ -412,7 +412,7 @@ if (!$sessionId && !$attemptId) {
             </div>
             <div class="modal-body">
                 <?php if (attempt_total_adjusted($db, (int)$mockSession['l_att_id'], (float)$mockSession['l_score'], $listeningAnswers)): ?>
-                <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
+                <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:3px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
                 <?php endif; ?>
                 <?php if (empty($listeningAnswers)): ?>
                     <p class="text-muted">No answers recorded.</p>
@@ -449,7 +449,7 @@ if (!$sessionId && !$attemptId) {
             </div>
             <div class="modal-body">
                 <?php if (attempt_total_adjusted($db, (int)$mockSession['r_att_id'], (float)$mockSession['r_score'], $readingAnswers)): ?>
-                <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
+                <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:3px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
                 <?php endif; ?>
                 <?php if (empty($readingGroups)): ?>
                     <p class="text-muted">No answers recorded.</p>
@@ -528,7 +528,7 @@ if (!$sessionId && !$attemptId) {
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
             <div>
                 <h5 class="fw-bold mb-1"><?= e($practiceDetail['title']) ?></h5>
-                <span style="background:var(--blue-light);color:var(--blue-dark);border-radius:6px;padding:.2rem .55rem;font-size:.72rem;font-weight:700;">
+                <span style="background:var(--blue-light);color:var(--blue-dark);border-radius:3px;padding:.2rem .55rem;font-size:.72rem;font-weight:700;">
                     <?= e($practiceDetail['category'] ?: 'Practice') ?>
                 </span>
                 <span class="text-muted small ms-2"><?= date('d M Y', strtotime($practiceDetail['completed_at'])) ?></span>
@@ -546,7 +546,7 @@ if (!$sessionId && !$attemptId) {
         </div>
 
         <?php if (attempt_total_adjusted($db, (int)$practiceDetail['id'], (float)$practiceDetail['score'], $practiceAnswers)): ?>
-            <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
+            <div style="background:#fef3c7;border:1px solid #fde68a;color:#92400e;border-radius:3px;padding:.6rem .9rem;font-size:.82rem;margin-bottom:1rem;">Your instructor adjusted this total after reviewing your test, so the question-by-question marks below may not add up to it exactly.</div>
         <?php endif; ?>
         <?php if ($practiceDetail['response_text'] !== null): /* writing / speaking practice (migration 162) */ ?>
             <p class="small mb-3" style="color:#475569;">
@@ -559,7 +559,7 @@ if (!$sessionId && !$attemptId) {
                 <div class="mb-3" style="white-space:pre-wrap;font-size:.88rem;line-height:1.7;"><?= e($practiceDetail['tutor_notes']) ?></div>
             <?php endif; ?>
             <div class="fw-semibold mb-1" style="font-size:.88rem;">Your response</div>
-            <div class="mb-3" style="white-space:pre-wrap;font-size:.88rem;line-height:1.7;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.8rem 1rem;"><?= trim((string)$practiceDetail['response_text']) !== '' ? e($practiceDetail['response_text']) : '<em class="text-muted">Submitted empty.</em>' ?></div>
+            <div class="mb-3" style="white-space:pre-wrap;font-size:.88rem;line-height:1.7;background:#f8fafc;border:1px solid #e2e8f0;border-radius:3px;padding:.8rem 1rem;"><?= trim((string)$practiceDetail['response_text']) !== '' ? e($practiceDetail['response_text']) : '<em class="text-muted">Submitted empty.</em>' ?></div>
             <?php if ($practiceDetail['ai_feedback']): ?>
                 <div class="fw-semibold mb-1" style="font-size:.88rem;">AI feedback</div>
                 <div style="white-space:pre-wrap;font-size:.88rem;line-height:1.7;"><?= e($practiceDetail['ai_feedback']) ?></div>
@@ -611,7 +611,7 @@ if (!$sessionId && !$attemptId) {
     </div>
 
     <?php if (empty($mockSessions)): ?>
-        <div class="text-center py-4 text-muted" style="background:#fff;border-radius:14px;border:1px solid #e2e8f0;">
+        <div class="text-center py-4 text-muted" style="background:#fff;border-radius:3px;border:1px solid #e2e8f0;">
             <i class="bi bi-clipboard-x fs-3 mb-2 d-block"></i>
             No mock tests completed yet.
             <div class="mt-2 small"><a href="../mock_tests/index.php">Start a full mock exam →</a></div>
@@ -663,7 +663,7 @@ if (!$sessionId && !$attemptId) {
     </div>
 
     <?php if (empty($practiceAttempts)): ?>
-        <div class="text-center py-4 text-muted" style="background:#fff;border-radius:14px;border:1px solid #e2e8f0;">
+        <div class="text-center py-4 text-muted" style="background:#fff;border-radius:3px;border:1px solid #e2e8f0;">
             <i class="bi bi-clipboard-x fs-3 mb-2 d-block"></i>
             No practice tests completed yet.
             <div class="mt-2 small"><a href="index.php">Browse practice tests →</a></div>
@@ -682,8 +682,8 @@ if (!$sessionId && !$attemptId) {
             </div>
             <div style="flex:1;min-width:0;">
                 <div class="fw-semibold text-dark mb-1" style="font-size:.9rem;"><?= e($a['title']) ?></div>
-                <div style="height:4px;background:#e5e7eb;border-radius:4px;margin:.3rem 0;">
-                    <div style="width:<?= $pct ?>%;height:100%;background:<?= $barCol ?>;border-radius:4px;"></div>
+                <div style="height:4px;background:#e5e7eb;border-radius:3px;margin:.3rem 0;">
+                    <div style="width:<?= $pct ?>%;height:100%;background:<?= $barCol ?>;border-radius:3px;"></div>
                 </div>
                 <div class="text-muted" style="font-size:.75rem;"><?= date('d M Y, g:i a', strtotime($a['completed_at'])) ?></div>
             </div>

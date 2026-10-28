@@ -45,6 +45,9 @@
 		   lesson-type pages (a .course-card straight inside the wrapper) get 1.5rem, not 2rem. */
 		body .main-wrapper { padding: 1.5rem; }
 		body .main-wrapper:has(> .content) { padding: 0; }
+		/* A Bootstrap .container wrapping a page's content added 12px more inset and, above 1400px, a width cap. */
+		.main-wrapper > .content > .container, .main-wrapper > .content > .container-fluid,
+		main.main-wrapper > .container, main.main-wrapper > .container-fluid { max-width: none; padding-left: 0; padding-right: 0; }
 	}
 
 	/* ── Dark mode ─────────────────────────────────────────────────── */

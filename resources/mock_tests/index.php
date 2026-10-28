@@ -51,7 +51,7 @@ foreach ($mockExams as $mock) {
     <style>
         .mock-card {
             background: white;
-            border-radius: 16px;
+            border-radius: 3px;
             padding: 1.75rem;
             margin-bottom: 1.5rem;
             border: 1px solid #e5e7eb;
@@ -64,7 +64,7 @@ foreach ($mockExams as $mock) {
         .mock-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
         .mock-badge {
             padding: 0.4rem 1rem;
-            border-radius: 50px;
+            border-radius: 3px;
             font-size: 0.85rem;
             font-weight: 600;
             background: #10b981;

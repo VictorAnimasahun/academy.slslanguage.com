@@ -55,8 +55,8 @@ if ($result) {
     <link href="../../assets/css/courses.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .result-card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:1.75rem; margin-bottom:1.25rem; }
-        .score-band { background:linear-gradient(135deg,#e0f2fe,#fce7f3); border-radius:12px; padding:1.5rem; text-align:center; margin-bottom:1.5rem; }
+        .result-card { background:#fff; border:1px solid #e2e8f0; border-radius:3px; padding:1.75rem; margin-bottom:1.25rem; }
+        .score-band { background:linear-gradient(135deg,#e0f2fe,#fce7f3); border-radius:3px; padding:1.5rem; text-align:center; margin-bottom:1.5rem; }
         .score-band .num { font-size:3rem; font-weight:800; color:#0369a1; line-height:1; }
         .score-band .lbl { font-size:.85rem; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-top:.3rem; }
         .task-row { border-top:1px solid #e2e8f0; padding:1rem 0; }

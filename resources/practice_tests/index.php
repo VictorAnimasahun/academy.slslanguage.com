@@ -62,7 +62,7 @@ $sections = [
         .exam-block { margin-bottom: 3rem; }
         .exam-header {
             display: flex; align-items: center; gap: 1rem;
-            padding: 1.1rem 1.5rem; border-radius: 12px;
+            padding: 1.1rem 1.5rem; border-radius: 3px;
             color: white; margin-bottom: 1.5rem;
             font-size: 1.2rem; font-weight: 700;
         }
@@ -72,13 +72,13 @@ $sections = [
             gap: 1.1rem;
         }
         .test-card {
-            background: white; border-radius: 14px;
+            background: white; border-radius: 3px;
             padding: 1.4rem 1.6rem;
             box-shadow: 0 3px 14px rgba(0,0,0,0.07);
             cursor: pointer; transition: box-shadow 0.25s;
-            text-decoration: none; color: inherit; display: block;
+            text-decoration: none; color: inherit; display: block; border:1px solid rgba(15,23,42,.12);
         }
-        .test-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.14); color: inherit; }
+        .test-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.14); color: inherit; border:1px solid rgba(15,23,42,.12); }
         .test-card-top { display: flex; align-items: center; gap: .75rem; margin-bottom: .6rem; }
         .test-icon-circle {
             width: 42px; height: 42px; border-radius: 50%;
@@ -89,7 +89,7 @@ $sections = [
         .test-card-title { font-weight: 700; font-size: 1rem; color: #111827; margin: 0; }
         .test-section-tag {
             display: inline-block; font-size: .75rem; font-weight: 600;
-            padding: .2rem .7rem; border-radius: 20px;
+            padding: .2rem .7rem; border-radius: 3px;
             background: #f3f4f6; color: #6b7280; margin-bottom: .5rem;
         }
         .test-meta { font-size: .82rem; color: #9ca3af; }

@@ -32,7 +32,7 @@ if (!isset($_SESSION['user_id'])) {
 		}
 
 		.test-type-card {
-			border-radius: 16px;
+			border-radius: 3px;
 			overflow: hidden;
 			box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 			transition: all 0.3s ease;
@@ -42,12 +42,12 @@ if (!isset($_SESSION['user_id'])) {
 
 		.test-type-card:hover {
 			transform: translateY(-5px);
-			box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+			box-shadow: 0 12px 30px rgba(0,0,0,0.15); border:1px solid rgba(15,23,42,.12);
 		}
 
 		.test-type-card.active {
 			border-color: #ffffff;
-			box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+			box-shadow: 0 8px 30px rgba(0,0,0,0.2); border:1px solid rgba(15,23,42,.12);
 		}
 
 		.test-type-card .card-body {
@@ -64,14 +64,14 @@ if (!isset($_SESSION['user_id'])) {
 		/* Navigation Tabs */
 		.test-nav {
 			background: white;
-			border-radius: 12px;
+			border-radius: 3px;
 			padding: 1rem;
 			margin-bottom: 2rem;
-			box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+			box-shadow: 0 2px 10px rgba(0,0,0,0.05); border:1px solid rgba(15,23,42,.12);
 		}
 
 		.test-nav .nav-pills .nav-link {
-			border-radius: 8px;
+			border-radius: 3px;
 			padding: 0.75rem 1.5rem;
 			color: #6b7280;
 			font-weight: 500;
@@ -89,15 +89,15 @@ if (!isset($_SESSION['user_id'])) {
 		/* Test Content */
 		.test-content {
 			background: white;
-			border-radius: 16px;
+			border-radius: 3px;
 			padding: 2.5rem;
 			box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-			min-height: 400px;
+			min-height: 400px; border:1px solid rgba(15,23,42,.12);
 		}
 
 		.test-item {
 			background: #f9fafb;
-			border-radius: 12px;
+			border-radius: 3px;
 			padding: 1.5rem;
 			margin-bottom: 1rem;
 			border: 1px solid #e5e7eb;
@@ -125,7 +125,7 @@ if (!isset($_SESSION['user_id'])) {
 
 		.test-badge {
 			padding: 0.25rem 0.75rem;
-			border-radius: 20px;
+			border-radius: 3px;
 			font-size: 0.8rem;
 			font-weight: 600;
 		}
@@ -155,7 +155,7 @@ if (!isset($_SESSION['user_id'])) {
 			color: white;
 			border: none;
 			padding: 0.5rem 1.5rem;
-			border-radius: 8px;
+			border-radius: 3px;
 			font-weight: 500;
 			transition: all 0.3s;
 		}
@@ -163,7 +163,7 @@ if (!isset($_SESSION['user_id'])) {
 		.btn-start-test:hover {
 			transform: translateY(-2px);
 			box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-			color: white;
+			color: white; border:1px solid rgba(15,23,42,.12);
 		}
 
 		.back-btn {
