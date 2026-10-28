@@ -1,0 +1,102 @@
+/*
+ * CELPIP Diagnostic Test (celpip_mini_mock.php) in the CELPIP exam look of the practice tests and full mocks
+ * (founder, 2026-10-28: "why is it so vastly different from the CELPIP approved UI and UX in the CELPIP mocks and
+ * practice tests?"). Loaded after assets/css/exam_theme.css and uses its variables, so it follows dark mode and
+ * Focus Mode the same way. Replaces the old standalone css/style.css (teal, Tahoma, a centred narrow column).
+ * The page's script (scripts/script.js) is unchanged: it only needs .page / .page.active, kept below.
+ */
+
+/* Pages: the script shows one at a time. */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Full width, like every exam page; the sticky header is fixed, so content starts below it. */
+.mock-shell { max-width: none; margin: 0; }
+.mock-content { padding-top: 92px; padding-bottom: 1rem; }
+.page > h2 { display: none; }                 /* the tab bar says which section this is */
+.progress-bar { display: none; }              /* ditto */
+.wrap { max-width: none; margin: 0 0 1rem; padding: 0; }
+
+/* Section tabs: show where the student is; the test itself moves them on (not clickable). */
+.mini-tabs .part-tab-btn { cursor: default; }
+.mini-tabs .part-tab-btn.done .done-dot { background: var(--exam-good); }
+
+/* A screen: the CELPIP panel -- white, one border, a plain grey title bar. */
+.page .card {
+  background: var(--exam-surface); border: 1px solid var(--exam-line); border-radius: var(--exam-radius-lg);
+  box-shadow: none; padding: 1.25rem 1.5rem; margin: 0 0 1rem; color: var(--exam-ink);
+}
+.page .card > h1:first-child, .page .card > h3:first-child {
+  margin: -1.25rem -1.5rem 1.1rem; padding: .65rem 1.25rem; background: #eef0f2; border-bottom: 1px solid var(--exam-line);
+  border-radius: var(--exam-radius-lg) var(--exam-radius-lg) 0 0; font-size: .85rem; font-weight: 700; color: #374151;
+  text-align: left; font-family: inherit; letter-spacing: 0;
+}
+body.dark .page .card > h1:first-child, body.dark .page .card > h3:first-child { background: rgba(255,255,255,.05); color: var(--exam-ink); }
+.page .card h1, .page .card h2, .page .card h3, .page .card h4 { color: var(--exam-ink); font-family: inherit; text-align: left; }
+.page .card h2 { font-size: 1rem; font-weight: 700; margin: 1rem 0 .6rem; }
+.page .card h4 { font-size: .95rem; font-weight: 700; margin: 0 0 .4rem; }
+.subtitle, .note { font-size: .85rem; color: var(--exam-accent); margin: 0 0 1rem; }
+.intro-text { text-align: left; font-size: .98rem; line-height: 1.65; }
+.intro-text ul { list-style: none; padding: .75rem 1rem; margin: 1rem 0; border: 1px solid var(--exam-line); border-radius: var(--exam-radius); background: var(--exam-bg); }
+.intro-text li { padding: .2rem 0; }
+.intro-text li::before { content: "\2022"; color: var(--exam-accent); font-weight: 700; margin-right: .6rem; }
+
+/* Questions: the practice tests' question block and bordered options. */
+.question-container { margin: 0 0 1.25rem; padding: 0; border: 0; background: none; }
+.question-number { font-size: .82rem; color: var(--exam-ink-muted); margin-bottom: .35rem; }
+.question-text { font-weight: 600; margin-bottom: .6rem; color: var(--exam-ink); }
+.options { list-style: none; padding: 0; margin: 0; }
+.options li { margin: 0 0 .5rem; }
+.options label {
+  display: flex; gap: .6rem; align-items: flex-start; padding: .5rem .75rem; border: 1px solid var(--exam-line);
+  border-radius: var(--exam-radius); cursor: pointer; background: var(--exam-surface); color: var(--exam-ink);
+}
+.options label:hover { background: var(--exam-bg); }
+.options input[type=radio] { margin-top: .2rem; accent-color: var(--exam-accent); flex-shrink: 0; }
+.options label:has(input:checked) { border-color: var(--exam-accent); background: var(--exam-accent-soft); }
+
+/* Reading passages, the writing box, speaking tasks and criteria. */
+.passage {
+  background: var(--exam-bg) !important; border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
+  padding: 1rem 1.25rem; margin: 0 0 1.25rem; line-height: 1.7; color: var(--exam-ink);
+}
+.writing-textarea, .page textarea {
+  width: 100%; min-height: 260px; border: 1px solid var(--exam-line); border-radius: var(--exam-radius);
+  padding: .75rem .9rem; font: inherit; font-size: .95rem; line-height: 1.6; background: var(--exam-surface); color: var(--exam-ink);
+}
+.writing-textarea:focus, .page textarea:focus { outline: 2px solid var(--exam-accent-soft); border-color: var(--exam-accent); }
+.speaking-overview, .speaking-part, .criterion {
+  border: 1px solid var(--exam-line); border-radius: var(--exam-radius); padding: .9rem 1.1rem; margin: 0 0 .75rem; background: var(--exam-surface);
+}
+.speaking-part ul { margin: .3rem 0 .6rem; padding-left: 1.2rem; font-size: .9rem; }
+.recording-controls { display: flex; gap: .5rem; flex-wrap: wrap; }
+.recording-status { display: flex; gap: 1rem; margin-top: .5rem; font-size: .85rem; color: var(--exam-ink-muted); font-variant-numeric: tabular-nums; }
+
+/* Listening: the video, its status line and the one-play rule. */
+#youtubePlayer { border: 1px solid var(--exam-line); border-radius: var(--exam-radius); overflow: hidden; margin: .75rem 0; }
+.audio-info { font-size: .92rem; line-height: 1.6; }
+.audio-status { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; align-items: center; font-size: .85rem; color: var(--exam-ink-muted);
+  border: 1px solid var(--exam-line); border-radius: var(--exam-radius); padding: .6rem .9rem; background: var(--exam-bg); }
+.audio-warning { border: 1px solid #f5c38a; background: var(--exam-warn-soft); color: var(--exam-warn); border-radius: var(--exam-radius); padding: .6rem .9rem; margin-top: .75rem; }
+.audio-warning p { margin: 0; color: inherit; font-size: .88rem; }
+
+/* Buttons: the CELPIP navy NEXT, plain secondary, as on the practice tests. */
+.navigation { display: flex; justify-content: space-between; align-items: center; gap: .75rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--exam-line); }
+.page .btn { border-radius: var(--exam-radius); font-weight: 700; font-size: .85rem; padding: .45rem 1.4rem; box-shadow: none; }
+.page .btn-primary { background: var(--exam-accent); border: 1px solid var(--exam-accent); color: #fff; }
+.page .btn-primary:hover { filter: brightness(.95); background: var(--exam-accent); color: #fff; }
+.page .btn-secondary, .page .btn-download { background: var(--exam-surface); border: 1px solid var(--exam-line); color: var(--exam-ink); }
+.page .btn-secondary:hover, .page .btn-download:hover { background: var(--exam-bg); color: var(--exam-ink); }
+.recording-controls .btn-primary { background: var(--exam-warn); border-color: var(--exam-warn); }
+
+/* Results. */
+.page table { width: 100%; border-collapse: collapse; margin: .8rem 0 1.25rem; border: 1px solid var(--exam-line); background: var(--exam-surface); }
+.page th, .page td { padding: .5rem .75rem; border-bottom: 1px solid var(--exam-line); text-align: left; color: var(--exam-ink); }
+.page th { background: var(--exam-bg); font-size: .82rem; }
+
+/* The listening status dot (scripts/script.js sets data-state). */
+.audio-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--exam-line); margin-right: .45rem; vertical-align: middle; }
+.audio-dot[data-state=loading] { background: var(--exam-warn); }
+.audio-dot[data-state=playing], .audio-dot[data-state=done] { background: var(--exam-good); }
+.audio-dot[data-state=recording], .audio-dot[data-state=error] { background: #dc2626; }
+.audio-dot[data-state=warning] { background: var(--exam-warn); }

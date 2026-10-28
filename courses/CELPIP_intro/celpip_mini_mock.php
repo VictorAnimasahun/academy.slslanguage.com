@@ -23,7 +23,9 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
+    <!-- The CELPIP exam look of the practice tests and mocks (founder, 2026-10-28); was css/style.css -->
+    <link rel="stylesheet" href="css/mini_mock_exam.css?v=1">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -38,20 +40,31 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
     <main class="content p-3">
-        <div class="mock-shell">
-
-            <nav aria-label="breadcrumb" class="mb-3">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="../courses_catalogue.php">Courses</a></li>
-                    <li class="breadcrumb-item"><a href="<?= htmlspecialchars($backUrl) ?>"><?= htmlspecialchars($backName) ?></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">CELPIP Diagnostic Test</li>
-                </ol>
-            </nav>
-
-            <div class="mock-header">
-                <span class="celpip-badge"><i class="bi bi-award-fill"></i> CELPIP Diagnostic Test</span>
-                <div id="quiz-timer"><i class="bi bi-clock-history"></i> Time Left: <span id="time">60:00</span></div>
+        <!-- The CELPIP exam header, as on the practice tests: breadcrumb, timer, section tabs (they follow the test,
+             they don't navigate it). The timer keeps its #time element, which scripts/script.js counts down. -->
+        <div class="sticky-header" id="stickyHeader">
+            <div class="d-flex align-items-center justify-content-between">
+                <nav aria-label="breadcrumb" class="mb-0">
+                    <ol class="breadcrumb mb-0" style="font-size:.8rem;">
+                        <li class="breadcrumb-item"><a href="../courses_catalogue.php">Courses</a></li>
+                        <li class="breadcrumb-item"><a href="<?= htmlspecialchars($backUrl) ?>"><?= htmlspecialchars($backName) ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page">CELPIP Diagnostic Test</li>
+                    </ol>
+                </nav>
+                <div class="inline-timer" id="quiz-timer"><i class="bi bi-clock-fill"></i> <span id="time">60:00</span></div>
             </div>
+            <div class="part-tabs-bar mini-tabs">
+                <div class="part-tabs-scrollable">
+                    <?php foreach (['intro' => 'Introduction', 'section1' => 'Listening', 'section2' => 'Reading', 'section3' => 'Writing', 'section4' => 'Speaking', 'results' => 'Results'] as $tabPage => $tabLabel): ?>
+                    <button type="button" class="part-tab-btn <?= $tabPage === 'intro' ? 'active' : '' ?>" data-tab-page="<?= $tabPage ?>" tabindex="-1" aria-disabled="true">
+                        <span class="done-dot"></span><?= $tabLabel ?>
+                    </button>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="mock-shell mock-content">
 
             <!-- Introduction Page -->
             <div id="intro" class="page active">
@@ -114,7 +127,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 
                             <div class="audio-status" id="audioStatus">
                                 <div class="status-indicator">
-                                    <span id="audioIndicator">⚪</span>
+                                    <span id="audioIndicator" class="audio-dot" data-state="ready" aria-hidden="true"></span>
                                     <span id="audioText">Click "Start Listening" to begin</span>
                                 </div>
                                 <div id="audioStatusText">Ready</div>
@@ -616,8 +629,29 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
     </main>
 </div>
 
+<?php include INCLUDES_PATH . '/adverts.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php include INCLUDES_PATH . '/navbar_scripts.php'; ?>
-<script src="scripts/script.js?v=162" defer></script>
+<script src="scripts/script.js?v=163" defer></script>
+<script>
+// The section tabs follow whichever page the test is on (scripts/script.js switches .page.active); earlier
+// sections show as done.
+(function () {
+    const order = ['intro', 'section1', 'section2', 'section3', 'section4', 'results'];
+    const tabs = document.querySelectorAll('.mini-tabs [data-tab-page]');
+    const sync = () => {
+        const cur = document.querySelector('.page.active');
+        const at = cur ? order.indexOf(cur.id) : 0;
+        tabs.forEach(t => {
+            const i = order.indexOf(t.dataset.tabPage);
+            t.classList.toggle('active', i === at);
+            t.classList.toggle('done', i < at);
+        });
+        window.scrollTo(0, 0);
+    };
+    document.querySelectorAll('.page').forEach(p => new MutationObserver(sync).observe(p, { attributes: true, attributeFilter: ['class'] }));
+    sync();
+})();
+</script>
 </body>
 </html>

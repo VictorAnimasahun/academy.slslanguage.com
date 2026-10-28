@@ -214,19 +214,19 @@ function initializeListeningAudio() {
     startBtn.textContent = 'Preparing...';
 
     // Initial status
-    audioIndicator.textContent = '🟡';
+    audioIndicator.dataset.state = 'loading';   // a CSS dot (mini_mock_exam.css), not an emoji
     audioText.textContent = 'Loading audio...';
     audioStatusText.textContent = 'Loading…';
 
     function onLoaded() {
-        audioIndicator.textContent = '🟢';
+        audioIndicator.dataset.state = 'playing';   // a CSS dot (mini_mock_exam.css), not an emoji
         audioText.textContent = 'Audio ready — starting in 3 seconds...';
         audioStatusText.textContent = 'Starting soon…';
 
         setTimeout(() => {
             audio.play().then(() => {
                 audioStarted = true;
-                audioIndicator.textContent = '🔴';
+                audioIndicator.dataset.state = 'recording';   // a CSS dot (mini_mock_exam.css), not an emoji
                 audioText.textContent = 'Audio playing — Listen carefully!';
                 audioText.classList.add('playing-indicator');
                 audioStatusText.textContent = 'Audio playing (cannot pause or replay)';
@@ -234,7 +234,7 @@ function initializeListeningAudio() {
                 audioUpdateInterval = setInterval(updateAudioTime, 250);
             }).catch(err => {
                 console.error('Playback failed:', err);
-                audioIndicator.textContent = '⚠️';
+                audioIndicator.dataset.state = 'warning';   // a CSS dot (mini_mock_exam.css), not an emoji
                 audioText.textContent = 'Playback blocked or failed';
                 audioStatusText.textContent = 'Audio error — try clicking to interact with the page first';
                 startBtn.disabled = false;
@@ -244,7 +244,7 @@ function initializeListeningAudio() {
     }
 
     function onEnded() {
-        audioIndicator.textContent = '✅';
+        audioIndicator.dataset.state = 'done';   // a CSS dot (mini_mock_exam.css), not an emoji
         audioText.textContent = 'Audio completed';
         audioText.classList.remove('playing-indicator');
         audioStatusText.textContent = 'Audio finished — you may proceed';
@@ -259,7 +259,7 @@ function initializeListeningAudio() {
     }
 
     function onError() {
-        audioIndicator.textContent = '❌';
+        audioIndicator.dataset.state = 'error';   // a CSS dot (mini_mock_exam.css), not an emoji
         audioText.textContent = 'Audio failed to load';
         audioStatusText.textContent = 'Audio unavailable';
         startBtn.disabled = false;
@@ -611,7 +611,7 @@ function displayResults(listenScore, readScore, writingScore, wordCount, listenR
     let writingFeedback = '';
     if (wordCount >= 150) {
         writingFeedback = `
-            <div style="color: var(--success-color); font-weight: bold;">✓ Word Count: ${wordCount} words (Meets requirement)</div>
+            <div style="color: var(--success-color); font-weight: bold;">Word Count: ${wordCount} words (Meets requirement)</div>
             <p style="margin-top: 10px;">Your writing meets the minimum word count requirement. For a complete assessment, this would be evaluated by a qualified examiner on:</p>
             <ul style="margin: 10px 0; padding-left: 20px;">
                 <li>Task Achievement</li>
@@ -622,7 +622,7 @@ function displayResults(listenScore, readScore, writingScore, wordCount, listenR
         `;
     } else {
         writingFeedback = `
-            <div style="color: var(--error-color); font-weight: bold;">✗ Word Count: ${wordCount} words (Below minimum requirement)</div>
+            <div style="color: var(--error-color); font-weight: bold;">Word Count: ${wordCount} words (Below minimum requirement)</div>
             <p style="margin-top: 10px;">Your response is below the minimum 150-word requirement. This would significantly impact your Task Achievement score in the actual CELPIP exam.</p>
         `;
     }
