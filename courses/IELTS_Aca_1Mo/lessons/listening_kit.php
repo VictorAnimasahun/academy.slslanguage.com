@@ -29,6 +29,8 @@ if (!function_exists('listening_kit_assets')) {
 .lc .lc-take { background:#111827; color:#f9fafb; border-radius:3px; padding:1rem 1.25rem; margin-top:1.6rem; }
 .lc .lc-take strong { color:#93c5fd; }
 .lc video { width:100%; max-width:860px; display:block; border:1px solid #dbe1ea; border-radius:3px; background:#000; margin:.5rem 0 1rem; }
+.lc .lc-video-soon { max-width:860px; aspect-ratio:16/9; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.3rem; border:1px dashed #b6c2d2; border-radius:3px; background:#f3f6fa; color:#475569; margin:.5rem 0 1rem; text-align:center; padding:1rem; }
+.lc .lc-video-soon strong { font-size:1.05rem; color:#1f2937; }
 .lc audio { width:100%; max-width:560px; display:block; margin:.5rem 0 1rem; }
 /* An exercise: a bordered block, its own title bar, Check / Try again, feedback per answer. */
 .lx { border:1px solid #cfd8e3; border-radius:3px; margin:1.25rem 0; background:#fff; }
@@ -58,6 +60,7 @@ body.dark .lx, body.dark .lx-opt, body.dark .lx input[type=text] { background:#1
 body.dark .lx-head { background:#262626; color:#cbd5e1; border-color:rgba(255,255,255,.14); }
 body.dark .lx-score, body.dark .lx .lx-form label { color:#e5e7eb; }
 body.dark .lx-transcript, body.dark .lc .lc-aim, body.dark .lc .lc-tip, body.dark .lc .lc-warn { background:#1b2638; border-color:#2c3e57; color:#e2e8f0; }
+body.dark .lc .lc-video-soon { background:#1b2638; border-color:#2c3e57; color:#cbd5e1; } body.dark .lc .lc-video-soon strong { color:#e5e7eb; }
 body.dark .lc th { background:#1b2638; border-color:#2c3e57; } body.dark .lc td { border-color:#2c3e57; }
 </style>
 <script>
@@ -102,5 +105,19 @@ document.addEventListener('click', function (e) {
 });
 </script>
 HTML;
+    }
+}
+
+/**
+ * A lesson video by its path under academy/ (e.g. assets/video/ielts_reading/reading_overview.mp4). Until the file is
+ * there, the space says Coming Soon instead of showing a broken player -- so a video can be named and placed in a
+ * lesson before it is made, and appears as soon as the file is synced.
+ */
+if (!function_exists('lesson_video')) {
+    function lesson_video(string $path, string $title): string {
+        if (is_file(dirname(__DIR__, 3) . '/' . $path)) {
+            return '<video controls preload="metadata" src="' . htmlspecialchars(ACADEMY_URL . $path) . '"></video>';
+        }
+        return '<div class="lc-video-soon"><strong>Video coming soon</strong><span>' . htmlspecialchars($title) . '</span></div>';
     }
 }
