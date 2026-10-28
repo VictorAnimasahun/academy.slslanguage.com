@@ -67,7 +67,7 @@ $wordFamily  = splitComma($word['word_family']);
         /* ── Word header ── */
         .word-header {
             background: linear-gradient(135deg, #0b77ff 0%, #6366f1 100%);
-            border-radius: 16px; padding: 2rem 2.2rem; color: #fff;
+            border-radius: 3px; padding: 2rem 2.2rem; color: #fff;
             margin-bottom: 1.75rem; position: relative; overflow: hidden;
         }
         .word-header::after {
@@ -78,7 +78,7 @@ $wordFamily  = splitComma($word['word_family']);
         .word-main    { font-size: 2.6rem; font-weight: 800; line-height: 1; }
         .word-phonetic { font-size: 1rem; opacity: 0.8; font-style: italic; margin-top: 0.3rem; }
         .pill {
-            display: inline-block; border-radius: 20px;
+            display: inline-block; border-radius: 3px;
             padding: 0.2rem 0.7rem; font-size: 0.78rem; font-weight: 600;
         }
         .pill-glass  { background: rgba(255,255,255,0.2); color: #fff; }
@@ -89,8 +89,8 @@ $wordFamily  = splitComma($word['word_family']);
 
         /* ── Sections ── */
         .vocab-section {
-            background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem;
-            box-shadow: 0 1px 6px rgba(15,23,42,0.06); margin-bottom: 1.1rem;
+            background: #fff; border-radius: 3px; padding: 1.4rem 1.5rem;
+            box-shadow: 0 1px 6px rgba(15,23,42,0.06); margin-bottom: 1.1rem; border:1px solid rgba(15,23,42,.12);
         }
         .section-title {
             font-size: 0.76rem; font-weight: 700; text-transform: uppercase;
@@ -99,13 +99,13 @@ $wordFamily  = splitComma($word['word_family']);
         .definition-text { font-size: 1rem; color: #1e293b; line-height: 1.65; }
         .definition-secondary {
             font-size: 0.9rem; color: #475569; margin-top: 0.5rem;
-            border-left: 3px solid #e2e8f0; padding-left: 0.75rem;
+            border: 1px solid #dbe1ea; padding-left: 0.75rem;
         }
 
         /* ── Syn/ant ── */
         .word-chip {
             display: inline-block; padding: 0.25rem 0.65rem;
-            border-radius: 20px; font-size: 0.82rem; font-weight: 600;
+            border-radius: 3px; font-size: 0.82rem; font-weight: 600;
             margin: 0.2rem; text-decoration: none;
         }
         .chip-syn { background: #f0fdf4; color: #166534; }
@@ -125,7 +125,7 @@ $wordFamily  = splitComma($word['word_family']);
             letter-spacing: 0.07em; color: #94a3b8; margin-bottom: 0.5rem;
         }
         .usage-item {
-            background: #f8fafc; border-radius: 8px; padding: 0.8rem 1rem;
+            background: #f8fafc; border-radius: 3px; padding: 0.8rem 1rem;
             margin-bottom: 0.5rem;
         }
         .usage-item .sub { font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.25rem; }
@@ -135,7 +135,7 @@ $wordFamily  = splitComma($word['word_family']);
         /* ── Quiz CTA ── */
         .quiz-cta {
             background: linear-gradient(135deg, #ec4899, #f43f5e);
-            border-radius: 12px; padding: 1.2rem 1.5rem; color: #fff;
+            border-radius: 3px; padding: 1.2rem 1.5rem; color: #fff;
             display: flex; align-items: center; justify-content: space-between;
             gap: 1rem; text-decoration: none; transition: opacity 0.15s;
         }
@@ -148,11 +148,11 @@ $wordFamily  = splitComma($word['word_family']);
             display: flex; gap: 0.75rem; margin-top: 1.5rem; margin-bottom: 0.5rem;
         }
         .nav-btn {
-            flex: 1; background: #fff; border-radius: 10px; padding: 0.8rem 1rem;
+            flex: 1; background: #fff; border-radius: 3px; padding: 0.8rem 1rem;
             box-shadow: 0 1px 5px rgba(15,23,42,0.06); text-decoration: none;
-            color: #1e293b; transition: box-shadow 0.2s;
+            color: #1e293b; transition: box-shadow 0.2s; border:1px solid rgba(15,23,42,.12);
         }
-        .nav-btn:hover { box-shadow: 0 4px 14px rgba(11,119,255,0.1); color: #0b77ff; }
+        .nav-btn:hover { box-shadow: 0 4px 14px rgba(11,119,255,0.1); color: #0b77ff; border:1px solid rgba(15,23,42,.12); }
         .nav-btn.prev { text-align: left; }
         .nav-btn.next { text-align: right; }
         .nav-btn .dir { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: .06em; }
@@ -168,7 +168,7 @@ $wordFamily  = splitComma($word['word_family']);
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
     <main class="content p-4">
-        <div style="max-width:720px;">
+        <div>
 
             <!-- Breadcrumb -->
             <a href="vocab_home.php" style="font-size:0.85rem;color:#64748b;text-decoration:none;" class="d-inline-flex align-items-center gap-1 mb-3">

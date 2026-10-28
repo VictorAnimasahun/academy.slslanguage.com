@@ -140,25 +140,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         .quiz-header {
             background: linear-gradient(135deg, #ec4899, #f43f5e);
-            border-radius: 16px; padding: 1.5rem 2rem; color: #fff; margin-bottom: 1.75rem;
+            border-radius: 3px; padding: 1.5rem 2rem; color: #fff; margin-bottom: 1.75rem;
         }
         .quiz-header h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; }
         .quiz-header p  { opacity: 0.85; margin: 0; font-size: 0.9rem; }
 
         .q-card {
-            background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem;
+            background: #fff; border-radius: 3px; padding: 1.4rem 1.5rem;
             box-shadow: 0 1px 6px rgba(15,23,42,0.06); margin-bottom: 1.1rem;
-            border-left: 4px solid #e2e8f0;
+            border: 1px solid #dbe1ea;
         }
-        .q-card.answered-correct { border-left-color: #22c55e; }
-        .q-card.answered-wrong   { border-left-color: #ef4444; }
+        .q-card.answered-correct { }
+        .q-card.answered-wrong   { }
 
         .q-num  { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #94a3b8; margin-bottom: 0.5rem; }
         .q-text { font-size: 1rem; font-weight: 600; color: #1e293b; line-height: 1.55; margin-bottom: 1rem; }
 
         .opt-label {
             display: flex; align-items: flex-start; gap: 0.75rem;
-            padding: 0.7rem 0.9rem; border-radius: 8px;
+            padding: 0.7rem 0.9rem; border-radius: 3px;
             border: 1.5px solid #e2e8f0; background: #fff;
             margin-bottom: 0.45rem; cursor: pointer;
             transition: border-color 0.15s, background 0.15s;
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .feedback-wrong   { color: #991b1b; font-size: 0.85rem; margin-top: 0.5rem; }
 
         .gap-input {
-            border: 1.5px solid #e2e8f0; border-radius: 8px;
+            border: 1.5px solid #e2e8f0; border-radius: 3px;
             padding: 0.6rem 0.9rem; font-size: 0.95rem; width: 100%; max-width: 320px;
             outline: none; transition: border-color 0.15s;
         }
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .gap-input.wrong   { border-color: #ef4444; background: #fff1f2; }
 
         .score-banner {
-            border-radius: 16px; padding: 1.5rem 2rem; margin-bottom: 1.75rem; text-align: center;
+            border-radius: 3px; padding: 1.5rem 2rem; margin-bottom: 1.75rem; text-align: center;
         }
         .score-banner.perfect  { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; }
         .score-banner.good     { background: linear-gradient(135deg, #3b82f6, #0b77ff); color: #fff; }
@@ -194,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .score-sub  { opacity: 0.85; font-size: 0.95rem; margin-top: 0.4rem; }
 
         .submit-btn {
-            width: 100%; padding: 0.85rem; border-radius: 10px;
+            width: 100%; padding: 0.85rem; border-radius: 3px;
             background: linear-gradient(135deg, #ec4899, #f43f5e);
             color: #fff; border: none; font-size: 1rem; font-weight: 700;
             cursor: pointer; margin-top: 0.5rem; transition: opacity 0.15s;
@@ -211,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
     <main class="content p-4">
-        <div style="max-width:680px;">
+        <div>
 
             <!-- Breadcrumb -->
             <a href="word.php?id=<?= $wordId ?>" style="font-size:0.85rem;color:#64748b;text-decoration:none;" class="d-inline-flex align-items-center gap-1 mb-3">

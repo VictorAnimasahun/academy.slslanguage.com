@@ -361,10 +361,10 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
                             </div>
                         </div>
 
-                        <div class="passage" style="border-left-color: var(--secondary-color); background:#fffbeb;">
+                        <div class="passage" style=" background:#fffbeb;">
                             <p><strong>Here is a response to the message. Complete the response by filling in the blanks.</strong></p>
 
-                            <div style="background:#fff; padding:1.2rem 1.4rem; margin-top:1rem; border-radius:8px; border-left:4px solid var(--primary-color);">
+                            <div style="background:#fff; padding:1.2rem 1.4rem; margin-top:1rem; border-radius:3px; border: 1px solid #dbe1ea;">
                                 <p>Hi Emma,</p>
                                 <p>This is such wonderful news! Count us in, we would love to have
                                 7. <select id="r7">

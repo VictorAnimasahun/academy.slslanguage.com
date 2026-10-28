@@ -5,7 +5,7 @@
 
 .analyzer-card {
     background: white;
-    border-radius: 20px;
+    border-radius: 3px;
     border: 1px solid #e5e7eb;
     padding: 2.5rem;
     margin-bottom: 2rem;
@@ -21,7 +21,7 @@
     flex: 1;
     padding: 1rem;
     border: 3px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: 3px;
     background: white;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -40,9 +40,9 @@
 
 .question-display {
     background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
-    border-left: 4px solid #14b8a6;
+    border: 1px solid #dbe1ea;
     padding: 1.5rem;
-    border-radius: 12px;
+    border-radius: 3px;
     margin-bottom: 1.5rem;
 }
 
@@ -63,7 +63,7 @@ textarea.essay-input {
     min-height: 300px;
     padding: 1.5rem;
     border: 2px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: 3px;
     font-size: 1rem;
     line-height: 1.8;
     resize: vertical;
@@ -73,7 +73,7 @@ textarea.essay-input {
 textarea.essay-input:focus {
     outline: none;
     border-color: #14b8a6;
-    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1); border:1px solid rgba(15,23,42,.12);
 }
 
 .analyze-btn {
@@ -81,7 +81,7 @@ textarea.essay-input:focus {
     color: white;
     border: none;
     padding: 1.2rem 3rem;
-    border-radius: 12px;
+    border-radius: 3px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
@@ -147,7 +147,7 @@ textarea.essay-input:focus {
 
 .result-card {
     background: white;
-    border-radius: 16px;
+    border-radius: 3px;
     padding: 2rem;
     margin-bottom: 1.5rem;
     border: 2px solid #e5e7eb;
@@ -197,8 +197,8 @@ textarea.essay-input:focus {
     padding: 0.8rem 1rem;
     margin-bottom: 0.8rem;
     background: #f9fafb;
-    border-radius: 8px;
-    border-left: 3px solid #14b8a6;
+    border-radius: 3px;
+    border: 1px solid #dbe1ea;
 }
 
 .feedback-content strong {
@@ -216,7 +216,7 @@ textarea.essay-input:focus {
 .criteria-card {
     background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
     padding: 1.2rem;
-    border-radius: 12px;
+    border-radius: 3px;
     border: 2px solid #99f6e4;
 }
 
@@ -234,13 +234,13 @@ textarea.essay-input:focus {
 }
 
 .grammar-card {
-    border-left: 4px solid #ef4444;
+    border: 1px solid #dbe1ea;
 }
 
 .grammar-issue {
     padding: 1rem;
     background: #fef2f2;
-    border-radius: 8px;
+    border-radius: 3px;
     margin-bottom: 1rem;
 }
 
@@ -256,5 +256,5 @@ textarea.essay-input:focus {
 .no-issues {
     background: linear-gradient(135deg, #d1fae5, #a7f3d0);
     color: #065f46;
-    border-left: 4px solid #10b981;
+    border: 1px solid #dbe1ea;
 }

@@ -130,7 +130,7 @@ if ($__pacingBlockers) {
             <?php /* Now its own item in this class (migration 153): a quiz/test is never folded into a lesson page. */ if (false): ?>
 <div class="content-section">
                 <h2><i class="bi bi-stopwatch me-2" style="color: #0b77ff;"></i>Practice Test</h2>
-                <div class="highlight-box" style="border-left-color: #0b77ff; background: #eff6ff;">
+                <div class="highlight-box" style=" background: #eff6ff;">
                     <h5 style="color: #0b77ff;"><i class="bi bi-journal-text me-2"></i>Practice Test Set 1 — Listening Section</h5>
                     <p class="mb-1">Parts 1–4, full timed conditions. 40 questions, 30 minutes.</p>
                     <p class="mb-2 text-muted"><i class="bi bi-clock me-1"></i>Complete under timed conditions. Do not pause the recording once it starts.</p>
@@ -288,7 +288,7 @@ if ($__pacingBlockers) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>L1 Part 1 Listening Class 1</h4>
                         <p class="text-muted mb-2">Form completion and gap-fill strategies for Listening Parts 1 and 2, with worked examples.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -296,7 +296,7 @@ if ($__pacingBlockers) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Listening Question Types</h4>
                         <p class="text-muted mb-2">An overview of all IELTS Listening question types and when each appears in the four parts.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -304,7 +304,7 @@ if ($__pacingBlockers) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Speaking Coherence</h4>
                         <p class="text-muted mb-2">How to connect your ideas clearly and avoid the common trap of answering in unlinked fragments.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -312,7 +312,7 @@ if ($__pacingBlockers) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Speaking Part 1 Mind Map</h4>
                         <p class="text-muted mb-2">A visual guide to the most common Part 1 topic areas and the vocabulary associated with each.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -324,7 +324,7 @@ if ($__pacingBlockers) {
             <?php /* Now its own item in this class (migration 153): a quiz/test is never folded into a lesson page. */ if (false): ?>
 <div class="content-section">
                 <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class 3 Quiz</h2>
-                <div class="highlight-box" style="border-left-color: #16a34a; background: #f0fdf4;">
+                <div class="highlight-box" style=" background: #f0fdf4;">
                     <h5 style="color: #16a34a;"><i class="bi bi-check2-square me-2"></i>Gap-fill Prediction Strategies Quiz</h5>
                     <p class="mb-2">
                         For each of 10 gap contexts, identify the expected answer type: name / number / place / date / noun / adjective.

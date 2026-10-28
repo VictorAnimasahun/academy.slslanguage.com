@@ -300,13 +300,13 @@ if (!can_access('intermediate')) {
     <link href="../../../assets/css/courses.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .test-block { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:1.5rem; margin-bottom:1.5rem; }
-        .test-not-built { background:#fef3c7; border:1px dashed #fcd34d; border-radius:10px; padding:1rem 1.25rem; color:#92400e; font-size:.9rem; }
+        .test-block { background:#fff; border:1px solid #e2e8f0; border-radius:3px; padding:1.5rem; margin-bottom:1.5rem; }
+        .test-not-built { background:#fef3c7; border:1px dashed #fcd34d; border-radius:3px; padding:1rem 1.25rem; color:#92400e; font-size:.9rem; }
         .test-dual-links { display:flex; flex-direction:column; gap:.6rem; }
         .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
-        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 3px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
         .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
-        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
+        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 3px; padding: .2rem .7rem; }
         .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
         .class-title-line { display: block; }
         .class-title-line + .class-title-line { margin-top: .2rem; }

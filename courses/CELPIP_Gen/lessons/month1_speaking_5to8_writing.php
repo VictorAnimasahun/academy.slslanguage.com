@@ -185,7 +185,7 @@ if (!can_access('intermediate')) {
             <!-- Quiz -->
             <div class="content-section">
                 <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class Quiz</h2>
-                <div class="highlight-box" style="border-left-color: #16a34a; background: #f0fdf4;">
+                <div class="highlight-box" style=" background: #f0fdf4;">
                     <h5 style="color: #16a34a;"><i class="bi bi-check2-square me-2"></i>Speaking Tasks 5-8 Strategy Check</h5>
                     <p class="mb-2">Match each strategy (acknowledge-and-redirect, commit-immediately, etc.) to the correct task number.</p>
                     <p class="mb-2"><strong>Format:</strong> 8 questions | Matching</p>

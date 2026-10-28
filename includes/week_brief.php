@@ -287,7 +287,7 @@ function renderWeekPanel(PDO $db, int $courseId, int $studentId, ?int $moduleId 
     // Headings only (founder, 2026-10-23: "reduce the text in the quick links on the right. The headings should be
     // good enough"): each line is a link into the class or the matching part of the full week page.
     $row  = 'display:block;padding:.4rem 0;border-bottom:1px solid #eef1f4;text-decoration:none;font-weight:600;color:#0f172a;';
-    $o  = '<div class="week-panel" style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:.8rem .9rem;color:#1f2937;font-size:.88rem;line-height:1.4;">';
+    $o  = '<div class="week-panel" style="background:#fff;border:1px solid #e2e8f0;border-radius:3px;padding:.8rem .9rem;color:#1f2937;font-size:.88rem;line-height:1.4;">';
     $o .= '<div style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:#64748b;">This week &middot; ' . $pos . ' of ' . count($mods) . '</div>';
     $o .= '<div style="font-weight:700;font-size:.95rem;margin:.15rem 0 .45rem;">' . $h($b['module']['module_title']) . '</div>';
 

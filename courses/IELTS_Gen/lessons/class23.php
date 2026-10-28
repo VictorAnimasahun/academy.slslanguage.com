@@ -169,7 +169,7 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>L1 Part 1 Listening — Revision</h4>
                         <p class="text-muted mb-2">Full revision of Part 1 strategies — form completion, gap-fill, and distractor management under exam conditions.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                 </div>
             </div>
@@ -179,7 +179,7 @@ if ($__pacingBlockers) { ?>
                 <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                     <h4 style="color:#15803d;margin-top:0;">Listening Strategy Audit</h4>
                     <p class="mb-2">12 Listening questions covering 6 question types (2 each). For each question, state: (1) what question type it is, (2) what your strategy is before the recording starts, (3) your answer. Review your accuracy rate by question type — your weakest type needs the most attention in Mock Test 3.</p>
-                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:8px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
+                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:3px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
                 </div>
             </div>
 

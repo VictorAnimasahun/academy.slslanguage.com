@@ -170,7 +170,7 @@ if (!can_access('intermediate')) {
                         <tr><td><strong>DETAILS</strong></td><td>Numbers, times, places, changes of plan, opinions</td></tr>
                     </tbody>
                 </table>
-                <div class="highlight-box" style="border-left-color:#16a34a; background:#f0fdf4;">
+                <div class="highlight-box" style=" background:#f0fdf4;">
                     <h5 style="color:#16a34a;"><i class="bi bi-check2-circle me-2"></i>Practice Habit</h5>
                     <p class="mb-0">Every time you listen to a podcast or news clip this week, pause after 60 seconds and write down everything you remember using the two-column method above. This builds the exact muscle CELPIP Part 2/4 requires under real time pressure.</p>
                 </div>
@@ -179,7 +179,7 @@ if (!can_access('intermediate')) {
             <!-- Quiz -->
             <div class="content-section">
                 <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class Quiz</h2>
-                <div class="highlight-box" style="border-left-color: #16a34a; background: #f0fdf4;">
+                <div class="highlight-box" style=" background: #f0fdf4;">
                     <h5 style="color: #16a34a;"><i class="bi bi-check2-square me-2"></i>Part 2 &amp; 4 Strategy Check</h5>
                     <p class="mb-2">10 questions on recognizing plan-changes in conversations and identifying the "5 Ws" structure of a news report.</p>
                     <p class="mb-2"><strong>Format:</strong> 10 questions | Multiple choice</p>

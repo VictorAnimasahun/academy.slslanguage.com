@@ -35,14 +35,14 @@ if (!isset($_SESSION['user_id'])) {
 	/* Force perfect squares */
 	.resource-card {
 		aspect-ratio: 1 / 1;
-		border-radius: 16px;
+		border-radius: 3px;
 		overflow: hidden;
 		box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-		transition: all 0.3s ease;
+		transition: all 0.3s ease; border:1px solid rgba(15,23,42,.12);
 	}
 
 	.resource-card:hover {
-		box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+		box-shadow: 0 20px 40px rgba(0,0,0,0.2); border:1px solid rgba(15,23,42,.12);
 	}
 
 	.resource-card .card-body {

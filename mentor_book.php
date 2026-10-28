@@ -73,15 +73,14 @@ $days = buildMentorBookingDays($db, $mentorId);
         .mentor-avatar { width:64px; height:64px; border-radius:50%;
             background:linear-gradient(135deg,#0b77ff,#7c3aed); display:flex; align-items:center; justify-content:center;
             color:#fff; font-size:1.3rem; font-weight:700; }
-        .day-chip { border:1px solid #e2e8f0; border-radius:12px; padding:.6rem .9rem; text-align:center; cursor:pointer; background:#fff; }
+        .day-chip { border:1px solid #e2e8f0; border-radius:3px; padding:.6rem .9rem; text-align:center; cursor:pointer; background:#fff; }
         .day-chip.active { background:#0b77ff; color:#fff; border-color:#0b77ff; }
         body.dark .day-chip { background:#1f1f1f; border-color:#333; }
-        .slot-chip { border:1px solid #e2e8f0; border-radius:10px; padding:.5rem; text-align:center; cursor:pointer; background:#fff; font-size:.9rem; }
+        .slot-chip { border:1px solid #e2e8f0; border-radius:3px; padding:.5rem; text-align:center; cursor:pointer; background:#fff; font-size:.9rem; }
         .slot-chip.active { background:#0b77ff; color:#fff; border-color:#0b77ff; }
         .slot-chip.taken { opacity:.4; text-decoration:line-through; cursor:not-allowed; background:#f3f4f6; }
         body.dark .slot-chip { background:#1f1f1f; border-color:#333; }
         .slots-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:.6rem; }
-        @media(min-width:1400px){.content{max-width:calc(100vw - 500px);}}
     </style>
 </head>
 <body class="light">
@@ -90,7 +89,7 @@ $days = buildMentorBookingDays($db, $mentorId);
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
     <div class="main-wrapper flex-grow-1">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
-        <main class="content p-4" style="max-width:720px;">
+        <main class="content p-4">
             <a href="mentors.php" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-3">
                 <i class="bi bi-arrow-left"></i> Mentors
             </a>
@@ -108,7 +107,7 @@ $days = buildMentorBookingDays($db, $mentorId);
             <?php if ($error): ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?>
 
             <?php if ($openRequest): ?>
-                <div class="stat-card p-4" style="border:2px solid #16a34a;border-radius:16px;">
+                <div class="stat-card p-4" style="border:2px solid #16a34a;border-radius:3px;">
                     <h5 class="text-success"><i class="bi bi-check-circle-fill"></i> Request sent</h5>
                     <p class="mb-3">
                         <?= e((new DateTime($openRequest['preferred_at']))->format('D j M, g:i A')) ?>.

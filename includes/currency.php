@@ -168,7 +168,7 @@ function currency_switcher_html(): string {
         $href = '?' . http_build_query($q + ['currency' => $code]);
         $on   = $code === $cur;
         $out .= '<a href="' . htmlspecialchars($href) . '" title="' . $meta['name'] . '" style="padding:2px 9px;border:1px solid ' . ($on ? '#0b77ff' : '#cbd5e1')
-              . ';border-radius:4px;text-decoration:none;font-weight:' . ($on ? '700' : '500') . ';background:' . ($on ? '#e0efff' : '#fff') . ';color:#1b2430;">' . $meta['symbol'] . '</a>';
+              . ';border-radius:3px;text-decoration:none;font-weight:' . ($on ? '700' : '500') . ';background:' . ($on ? '#e0efff' : '#fff') . ';color:#1b2430;">' . $meta['symbol'] . '</a>';
     }
     return $out . '</span>';
 }

@@ -62,9 +62,9 @@ $isExternal = !empty($lesson['file_path']);
         .lesson-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; }
         .lesson-nav .btn { max-width: 47%; }
         .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
-        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #fdf2f8; color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 3px; background: #fdf2f8; color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
         .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
-        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
+        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 3px; padding: .2rem .7rem; }
         .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
         .class-title-line { display: block; }
         .class-title-line + .class-title-line { margin-top: .2rem; }

@@ -67,7 +67,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         background: linear-gradient(135deg, #10b981, #059669);
         color: white;
         padding: 1rem 1.5rem;
-        border-radius: 12px;
+        border-radius: 3px;
         margin-bottom: 2rem;
         display: flex;
         justify-content: space-between;
@@ -78,7 +78,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
         padding: 1rem 1.5rem;
-        border-radius: 12px;
+        border-radius: 3px;
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
@@ -87,10 +87,10 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     
     .analyzer-card {
         background: white;
-        border-radius: 20px;
+        border-radius: 3px;
         padding: 2.5rem;
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        margin-bottom: 2rem;
+        margin-bottom: 2rem; border:1px solid rgba(15,23,42,.12);
     }
     
     .mode-selector {
@@ -99,7 +99,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         margin-bottom: 2rem;
         padding: 1rem;
         background: #f8f9fa;
-        border-radius: 12px;
+        border-radius: 3px;
     }
     
     .mode-btn {
@@ -107,7 +107,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         padding: 1rem;
         border: 2px solid #e5e7eb;
         background: white;
-        border-radius: 12px;
+        border-radius: 3px;
         font-weight: 600;
         transition: all 0.3s;
         cursor: pointer;
@@ -131,7 +131,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         padding: 1rem;
         border: 2px solid #e5e7eb;
         background: white;
-        border-radius: 12px;
+        border-radius: 3px;
         font-weight: 600;
         transition: all 0.3s;
         cursor: pointer;
@@ -146,7 +146,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     .task-card {
         background: #f8f9fa;
         border: 2px solid #e5e7eb;
-        border-radius: 12px;
+        border-radius: 3px;
         padding: 1.5rem;
         margin-bottom: 1rem;
         transition: all 0.3s;
@@ -178,7 +178,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     .prompt-display {
         background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
         padding: 1.5rem;
-        border-radius: 12px;
+        border-radius: 3px;
         margin-bottom: 2rem;
     }
     
@@ -197,7 +197,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         text-align: center;
         padding: 3rem 2rem;
         background: linear-gradient(135deg, #fef3c7, #fde68a);
-        border-radius: 16px;
+        border-radius: 3px;
         margin-bottom: 2rem;
     }
     
@@ -217,7 +217,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     
     .record-button:hover {
         transform: scale(1.05);
-        box-shadow: 0 15px 40px rgba(239, 68, 68, 0.6);
+        box-shadow: 0 15px 40px rgba(239, 68, 68, 0.6); border:1px solid rgba(15,23,42,.12);
     }
     
     .record-button.recording {
@@ -240,7 +240,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     .audio-preview {
         background: white;
         padding: 1.5rem;
-        border-radius: 12px;
+        border-radius: 3px;
         border: 2px solid #e5e7eb;
         margin-bottom: 1.5rem;
     }
@@ -249,7 +249,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         width: 100%;
         padding: 1rem;
         border: none;
-        border-radius: 12px;
+        border-radius: 3px;
         background: linear-gradient(135deg, #667eea, #764ba2);
         color: white;
         font-weight: 600;
@@ -266,7 +266,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     
     .analyze-btn:hover, .submit-batch-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4); border:1px solid rgba(15,23,42,.12);
     }
     
     .analyze-btn:disabled, .submit-batch-btn:disabled {
@@ -280,8 +280,8 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
         text-align: center;
         padding: 3rem;
         background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        border-radius: 3px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3); border:1px solid rgba(15,23,42,.12);
     }
     
     .loading-container.active {
@@ -304,7 +304,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     
     .progress-bar-custom {
         height: 30px;
-        border-radius: 8px;
+        border-radius: 3px;
         font-weight: 600;
     }
     
@@ -318,10 +318,10 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     
     .result-card {
         background: white;
-        border-radius: 20px;
+        border-radius: 3px;
         padding: 2rem;
         box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
+        margin-bottom: 2rem; border:1px solid rgba(15,23,42,.12);
     }
     
     .score-card {
@@ -357,7 +357,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     .transcription-card {
         background: #f8fafc;
         padding: 1.5rem;
-        border-radius: 12px;
+        border-radius: 3px;
         border: 1px solid #e2e8f0;
     }
     
@@ -467,7 +467,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
                     <textarea 
                         id="promptInput" 
                         class="form-control"
-                        style="min-height: 80px; border-radius: 10px;"
+                        style="min-height: 80px; border-radius: 3px;"
                         placeholder="Leave blank to use the default prompt above, or type your own speaking question..."
                     ></textarea>
                     <small class="text-muted">Tip: IELTS Part 2 prompts work best (2-minute responses)</small>
@@ -482,7 +482,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
                     <p class="mb-0 text-muted" id="recordStatus">Click the microphone to start recording</p>
                     
                     <!-- Live Transcription Preview -->
-                    <div id="liveTranscriptContainer" style="display: none; margin-top: 1.5rem; padding: 1rem; background: white; border-radius: 8px; text-align: left;">
+                    <div id="liveTranscriptContainer" style="display: none; margin-top: 1.5rem; padding: 1rem; background: white; border-radius: 3px; text-align: left;">
                         <small class="text-muted"><i class="bi bi-mic-fill me-1"></i>Live transcription:</small>
                         <div id="liveTranscript" style="margin-top: 0.5rem; color: #1e293b; min-height: 40px; font-size: 0.95rem;"></div>
                     </div>
@@ -738,7 +738,7 @@ function createTaskCard(number, prompt) {
             </button>
             <span class="badge bg-success align-self-center task-status" style="display: none;">✓ Completed</span>
         </div>
-        <div class="task-transcription" style="display: none; padding: 0.75rem; background: white; border-radius: 8px; font-size: 0.9rem;"></div>
+        <div class="task-transcription" style="display: none; padding: 0.75rem; background: white; border-radius: 3px; font-size: 0.9rem;"></div>
         <audio class="task-audio" style="display: none;"></audio>
     `;
     

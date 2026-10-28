@@ -156,21 +156,21 @@ $base_url = "../../";
             color: #fff;
             width: 44px;
             height: 44px;
-            border-radius: 10px;
+            border-radius: 3px;
         }
 
         .course-card {
             background: #fff;
             border-radius: var(--card-radius);
             padding: 2rem;
-            box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+            box-shadow: 0 6px 18px rgba(15,23,42,0.04); border:1px solid rgba(15,23,42,.12);
         }
 
         .badge-free {
             background: linear-gradient(90deg, #059669, #10b981);
             color: white;
             padding: 0.5rem 1rem;
-            border-radius: 20px;
+            border-radius: 3px;
             font-weight: 600;
         }
 
@@ -178,7 +178,7 @@ $base_url = "../../";
             background: linear-gradient(90deg, #dc2626, #f87171);
             color: white;
             padding: 0.5rem 1rem;
-            border-radius: 20px;
+            border-radius: 3px;
             font-weight: 600;
         }
 
@@ -186,7 +186,7 @@ $base_url = "../../";
             background: linear-gradient(90deg, #10b981, #34d399);
             color: white;
             padding: 0.5rem 1rem;
-            border-radius: 20px;
+            border-radius: 3px;
             font-weight: 600;
         }
 

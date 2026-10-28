@@ -19,33 +19,33 @@ if (!isset($_SESSION['user_id'])) {
 
 	<style>
 		.main-wrapper { padding: 2rem 1.5rem; }
-		.exercise-container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+		.exercise-container { max-width: 900px; margin: 0 auto; background: white; border-radius: 3px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border:1px solid rgba(15,23,42,.12); }
 		.exercise-header { margin-bottom: 2rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 1.5rem; }
 		.exercise-title { font-size: 2rem; font-weight: 700; color: #1f2937; margin-bottom: 0.5rem; }
 		.exercise-description { color: #6b7280; font-size: 1rem; }
 		
 		.sentences-area { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0; }
-		.source-box, .answer-box { background: #f8f9fa; border-radius: 8px; padding: 1.5rem; }
+		.source-box, .answer-box { background: #f8f9fa; border-radius: 3px; padding: 1.5rem; }
 		.source-box h3, .answer-box h3 { color: #667eea; font-weight: 600; margin-bottom: 1rem; }
 		
 		.sentence-item {
-			background: white; border: 2px solid #ddd; border-radius: 6px; padding: 1rem; margin-bottom: 0.75rem;
+			background: white; border: 2px solid #ddd; border-radius: 3px; padding: 1rem; margin-bottom: 0.75rem;
 			cursor: grab; user-select: none; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 		}
-		.sentence-item:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: translateY(-2px); }
+		.sentence-item:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); transform: translateY(-2px); border:1px solid rgba(15,23,42,.12); }
 		.sentence-item.dragging { opacity: 0.5; cursor: grabbing; }
 		.sentence-item.placed { background: #f0f4ff; border-color: #667eea; cursor: default; }
 		
 		.answer-sequence { min-height: 200px; }
 		.ordered-item { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.5rem; }
 		.order-number { background: #667eea; color: white; width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-		.remove-btn { background: #ef4444; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+		.remove-btn { background: #ef4444; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 3px; cursor: pointer; font-size: 0.8rem; }
 		
 		.button-group { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
-		button { background: #667eea; color: white; border: none; padding: 0.75rem 2rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.3s; }
+		button { background: #667eea; color: white; border: none; padding: 0.75rem 2rem; border-radius: 3px; cursor: pointer; font-weight: 500; transition: all 0.3s; }
 		button:hover { background: #764ba2; transform: translateY(-2px); }
 		
-		.feedback { text-align: center; margin: 1.5rem 0; padding: 1rem; border-radius: 8px; font-weight: 600; display: none; }
+		.feedback { text-align: center; margin: 1.5rem 0; padding: 1rem; border-radius: 3px; font-weight: 600; display: none; }
 		.feedback.show { display: block; }
 		.feedback.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 		.feedback.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }

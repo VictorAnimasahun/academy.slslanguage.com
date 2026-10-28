@@ -242,7 +242,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Alessandra — Welcome &amp; Introduction</h4>
                         <p class="text-muted mb-2">Programme introduction from your lead tutor — what to expect over the next <?= (int) $ctxCourse['weeks'] ?> weeks.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -250,7 +250,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Seda — How to Use the Platform</h4>
                         <p class="text-muted mb-2">Walkthrough of the course structure, quizzes, take-home exercises, and how to navigate your classes.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -260,7 +260,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Speaking Test — Three Candidates</h4>
                         <p class="text-muted mb-2">Watch three real speaking test extracts and learn exactly what the examiner is assessing.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -274,7 +274,7 @@ if (!isset($_SESSION['user_id'])) {
             <!-- Quiz -->
             <div class="content-section">
                 <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class 1 Quiz</h2>
-                <div class="highlight-box" style="border-left-color: #16a34a; background: #f0fdf4;">
+                <div class="highlight-box" style=" background: #f0fdf4;">
                     <h5 style="color: #16a34a;"><i class="bi bi-check2-square me-2"></i>IELTS Format Knowledge Quiz</h5>
                     <p class="mb-2">
                         10 quick questions on the format of the test itself — section timings, question counts,

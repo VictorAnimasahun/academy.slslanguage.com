@@ -32,7 +32,7 @@ if (!isset($_SESSION['user_id'])) {
 		}
 
 		.test-type-card {
-			border-radius: 16px;
+			border-radius: 3px;
 			overflow: hidden;
 			box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 			transition: all 0.3s ease;
@@ -44,7 +44,7 @@ if (!isset($_SESSION['user_id'])) {
 
 		.test-type-card:hover {
 			transform: translateY(-5px);
-			box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+			box-shadow: 0 12px 30px rgba(0,0,0,0.15); border:1px solid rgba(15,23,42,.12);
 		}
 
 		.test-type-card .card-body {

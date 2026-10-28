@@ -159,7 +159,7 @@ renderTopic(contextTopics[0].slug);
         border: 1px solid #dbeafe;
         background: #fff;
         color: #1e3a8a;
-        border-radius: 999px;
+        border-radius: 3px;
         padding: 0.45rem 0.9rem;
         font-size: 0.8rem;
         font-weight: 700;
@@ -177,7 +177,7 @@ renderTopic(contextTopics[0].slug);
     .topic-panel {
         background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
         border: 1px solid #e2e8f0;
-        border-radius: 14px;
+        border-radius: 3px;
         padding: 1rem;
         box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
     }
@@ -204,7 +204,7 @@ renderTopic(contextTopics[0].slug);
     .topic-word-card {
         background: #fff;
         border: 1px solid #e2e8f0;
-        border-radius: 10px;
+        border-radius: 3px;
         padding: 0.8rem 0.9rem;
     }
     .topic-word-head {
@@ -223,7 +223,7 @@ renderTopic(contextTopics[0].slug);
         font-size: 0.7rem;
         background: #e0f2fe;
         color: #0369a1;
-        border-radius: 999px;
+        border-radius: 3px;
         padding: 0.2rem 0.5rem;
         font-weight: 700;
     }

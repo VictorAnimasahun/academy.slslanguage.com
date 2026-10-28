@@ -157,7 +157,7 @@ if (!function_exists('crash_exam_introduction_body')) {
   .ei table { width: 100%; border-collapse: collapse; font-size: .92rem; margin: .5rem 0 1rem; }
   .ei th { text-align: left; padding: .5rem .7rem; border: 1px solid #dbe1f0; background: #f4f7fd; }
   .ei td { padding: .5rem .7rem; border: 1px solid #e5e7eb; vertical-align: top; }
-  .ei .ei-box { border: 1px solid #dbe1f0; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .ei .ei-box { border: 1px solid #dbe1f0; border-radius: 3px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
   .ei .ei-h3 { font-size: 1.02rem; font-weight: 700; margin: 1.1rem 0 .35rem; color: #16202f; }
   body.dark .ei th { background: #1e293b; border-color: #334155; }
   body.dark .ei td, body.dark .ei .ei-box { border-color: #334155; }

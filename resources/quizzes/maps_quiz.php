@@ -112,9 +112,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			max-width: 900px;
 			margin: 0 auto;
 			background: white;
-			border-radius: 12px;
+			border-radius: 3px;
 			box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-			overflow: hidden;
+			overflow: hidden; border:1px solid rgba(15,23,42,.12);
 		}
 
 		.quiz-header {
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			margin-bottom: 2rem;
 			padding: 1.5rem;
 			background: #f8f9fa;
-			border-radius: 8px;
+			border-radius: 3px;
 		}
 
 		.question-number {
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			max-width: 100%;
 			height: auto;
 			margin: 1rem 0;
-			border-radius: 8px;
+			border-radius: 3px;
 			border: 2px solid #ddd;
 		}
 
@@ -186,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			padding: 0.75rem 1rem;
 			background: white;
 			border: 2px solid #ddd;
-			border-radius: 6px;
+			border-radius: 3px;
 			cursor: pointer;
 			transition: all 0.3s ease;
 			display: flex;
@@ -231,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			color: white;
 			border: none;
 			padding: 0.75rem 2rem;
-			border-radius: 6px;
+			border-radius: 3px;
 			cursor: pointer;
 			font-size: 1rem;
 			font-weight: 600;
@@ -259,14 +259,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			margin-bottom: 1.5rem;
 			padding: 1rem;
 			background: #e8eaf6;
-			border-radius: 6px;
+			border-radius: 3px;
 		}
 
 		.progress-bar-container {
 			flex: 1;
 			height: 10px;
 			background: #ddd;
-			border-radius: 10px;
+			border-radius: 3px;
 			margin: 0 1rem;
 			overflow: hidden;
 		}
@@ -298,7 +298,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		.results-content {
 			background: white;
 			padding: 2rem;
-			border-radius: 12px;
+			border-radius: 3px;
 			max-width: 600px;
 			max-height: 80vh;
 			overflow-y: auto;
@@ -339,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		.results-summary {
 			background: #f8f9fa;
 			padding: 1rem;
-			border-radius: 8px;
+			border-radius: 3px;
 			margin-bottom: 1rem;
 			text-align: center;
 		}
@@ -354,7 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		.breakdown-item {
 			padding: 1rem;
 			background: #f0f4ff;
-			border-radius: 8px;
+			border-radius: 3px;
 			text-align: center;
 		}
 

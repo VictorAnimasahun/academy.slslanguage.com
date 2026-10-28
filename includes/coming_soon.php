@@ -26,6 +26,6 @@ if (!function_exists('course_is_coming_soon')) {
 
     /** Small pill for cards and accordion rows. */
     function coming_soon_pill(): string {
-        return '<span style="display:inline-block;padding:.12rem .55rem;border-radius:999px;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#f1f5f9;color:#475569;"><i class="bi bi-hourglass-split me-1"></i>Coming Soon</span>';
+        return '<span style="display:inline-block;padding:.12rem .55rem;border-radius:3px;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#f1f5f9;color:#475569;"><i class="bi bi-hourglass-split me-1"></i>Coming Soon</span>';
     }
 }

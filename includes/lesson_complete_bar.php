@@ -72,9 +72,9 @@ $lcbState = $st->fetch(PDO::FETCH_ASSOC) ?: ['completed_at' => null, 'seconds_le
 </div>
 <style>
     .lcb { position: fixed; right: 1rem; bottom: 1rem; z-index: 1040; display: flex; align-items: center; gap: .75rem;
-           background: #fff; border: 1px solid #d1d5db; border-radius: 10px; padding: .55rem .7rem .55rem .9rem;
+           background: #fff; border: 1px solid #d1d5db; border-radius: 3px; padding: .55rem .7rem .55rem .9rem;
            font-size: .85rem; color: #374151; max-width: calc(100vw - 2rem); }
-    .lcb-btn { background: #0b77ff; color: #fff; border: 0; border-radius: 8px; padding: .4rem .8rem; font-weight: 600; white-space: nowrap; }
+    .lcb-btn { background: #0b77ff; color: #fff; border: 0; border-radius: 3px; padding: .4rem .8rem; font-weight: 600; white-space: nowrap; }
     .lcb-btn:disabled { background: #9ca3af; cursor: not-allowed; }
     .lcb.done { border-color: #86efac; color: #166534; }
     body.dark .lcb { background: #1f2937; border-color: #374151; color: #e5e7eb; }

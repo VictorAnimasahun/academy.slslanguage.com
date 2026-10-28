@@ -46,7 +46,7 @@ function typeBadge(string $type): string {
         'task'       => ['bg:#f3f4f6;color:#4b5563', 'bi-check2-square',   'Task'],
     ];
     [$style, $icon, $label] = $map[$type] ?? $map['task'];
-    return "<span style='display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:999px;font-size:.7rem;font-weight:700;{$style}'><i class='bi {$icon}'></i>{$label}</span>";
+    return "<span style='display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:3px;font-size:.7rem;font-weight:700;{$style}'><i class='bi {$icon}'></i>{$label}</span>";
 }
 
 /**

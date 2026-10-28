@@ -39,7 +39,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         /* ── Daily word hero ── */
         .hero {
             background: linear-gradient(135deg, #0b77ff 0%, #6366f1 100%);
-            border-radius: 16px;
+            border-radius: 3px;
             padding: 2rem 2.2rem;
             color: #fff;
             margin-bottom: 2rem;
@@ -67,7 +67,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         }
         .hero-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
         .hero-pill {
-            background: rgba(255,255,255,0.2); border-radius: 20px;
+            background: rgba(255,255,255,0.2); border-radius: 3px;
             padding: 0.2rem 0.7rem; font-size: 0.78rem; font-weight: 600;
         }
         .hero-def {
@@ -77,7 +77,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         .hero-cta {
             display: inline-flex; align-items: center; gap: 0.4rem;
             background: #fff; color: #0b77ff;
-            padding: 0.55rem 1.2rem; border-radius: 8px;
+            padding: 0.55rem 1.2rem; border-radius: 3px;
             font-weight: 700; font-size: 0.9rem; text-decoration: none;
             transition: opacity 0.15s;
         }
@@ -88,7 +88,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 1.25rem;
         }
         .az-btn {
-            width: 34px; height: 34px; border-radius: 6px;
+            width: 34px; height: 34px; border-radius: 3px;
             border: 1px solid #e2e8f0; background: #fff;
             font-size: 0.82rem; font-weight: 600; color: #475569;
             cursor: pointer; text-align: center; line-height: 32px;
@@ -105,7 +105,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             gap: 0.65rem;
         }
         .word-card {
-            background: #fff; border-radius: 10px;
+            background: #fff; border-radius: 3px;
             padding: 0.85rem 1rem;
             box-shadow: 0 1px 5px rgba(15,23,42,0.06);
             text-decoration: none; color: inherit;
@@ -113,17 +113,17 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             display: block;
             transition: box-shadow 0.2s, border-color 0.2s;
         }
-        .word-card:hover { box-shadow: 0 4px 14px rgba(11,119,255,0.12); color: inherit; }
+        .word-card:hover { box-shadow: 0 4px 14px rgba(11,119,255,0.12); color: inherit; border:1px solid rgba(15,23,42,.12); }
         .word-card .hw { font-weight: 700; font-size: 0.97rem; color: #1e293b; }
         .word-card .wc { font-size: 0.76rem; color: #94a3b8; margin-top: 0.1rem; }
         .badge-cefr {
             display: inline-block; font-size: 0.68rem; font-weight: 700;
-            padding: 0.1rem 0.45rem; border-radius: 4px;
+            padding: 0.1rem 0.45rem; border-radius: 3px;
             background: #f0fdf4; color: #166534; margin-left: 0.4rem;
         }
         .badge-awl {
             display: inline-block; font-size: 0.68rem; font-weight: 700;
-            padding: 0.1rem 0.4rem; border-radius: 4px;
+            padding: 0.1rem 0.4rem; border-radius: 3px;
             background: #dbeafe; color: #1e40af; margin-left: 0.25rem;
         }
         .section-label {
@@ -141,7 +141,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
     <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
     <main class="content p-4">
-        <div style="max-width:780px;">
+        <div>
 
             <!-- ── Back link ── -->
             <a href="../resources_home.php" style="font-size:0.85rem;color:#64748b;text-decoration:none;" class="d-inline-flex align-items-center gap-1 mb-3">

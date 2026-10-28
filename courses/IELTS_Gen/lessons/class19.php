@@ -177,7 +177,7 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>WT2 Introductions Class 2</h4>
                         <p class="text-muted mb-2">Advanced introduction techniques for discussion and double-question essays — how to signal essay structure without sounding formulaic.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                 </div>
             </div>
@@ -187,7 +187,7 @@ if ($__pacingBlockers) { ?>
                 <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                     <h4 style="color:#15803d;margin-top:0;">Discussion Essay Structure + Conclusion Writing</h4>
                     <p class="mb-2">Part A: Given 3 sample conclusions, identify which errors each one contains (opinion introduced early, new idea added, too long, copied from introduction). Part B: Write a 2–3 sentence conclusion for a given discussion essay prompt.</p>
-                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:8px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
+                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:3px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
                 </div>
             </div>
 

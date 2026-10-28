@@ -21,36 +21,36 @@ if (!isset($_SESSION['user_id'])) {
         .main-wrapper { height: 100vh; overflow-y: auto; padding: 1rem; }
         .exercise-container {
             max-width: 100%; min-height: calc(100vh - 2rem);
-            background: white; border-radius: 12px; padding: 1rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; flex-direction: column;
+            background: white; border-radius: 3px; padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; flex-direction: column; border:1px solid rgba(15,23,42,.12);
         }
         .exercise-header { border-bottom: 2px solid #f0f0f0; margin-bottom: 1rem; padding-bottom: 0.75rem; }
         .level-badge {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white; padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700;
+            color: white; padding: 0.4rem 1rem; border-radius: 3px; font-weight: 700;
         }
-        .progress-bar-container { flex: 1; margin: 0 1rem; height: 8px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+        .progress-bar-container { flex: 1; margin: 0 1rem; height: 8px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
         .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #10b981, #059669); transition: width 0.5s ease; }
         
         .thin-sentence-box {
-            background: #f1f5f9; border-left: 5px solid #10b981;
-            padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;
+            background: #f1f5f9; border: 1px solid #dbe1ea;
+            padding: 1.5rem; border-radius: 3px; margin-bottom: 1.5rem;
         }
         .thin-sentence-box h3 { font-size: 0.9rem; text-transform: uppercase; color: #64748b; letter-spacing: 1px; }
         .thin-sentence-box p { font-size: 1.4rem; font-weight: 700; color: #1e293b; margin: 0; }
         
         textarea {
-            width: 100%; border: 2px solid #e2e8f0; border-radius: 8px;
+            width: 100%; border: 2px solid #e2e8f0; border-radius: 3px;
             padding: 1rem; font-size: 1.1rem; resize: none; transition: border 0.3s;
             min-height: 150px;
         }
-        textarea:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        textarea:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); border:1px solid rgba(15,23,42,.12); }
         
         .word-count { text-align: right; color: #64748b; font-size: 0.9rem; margin-top: 0.5rem; }
         
         .btn-check {
             background: #10b981; color: white; border: none; padding: 0.8rem 2rem;
-            border-radius: 6px; font-weight: 600; font-size: 1rem; margin-top: 1rem;
+            border-radius: 3px; font-weight: 600; font-size: 1rem; margin-top: 1rem;
         }
         .btn-check:hover { background: #059669; }
         .btn-check:disabled { background: #9ca3af; cursor: not-allowed; }
@@ -62,7 +62,7 @@ if (!isset($_SESSION['user_id'])) {
         }
         .level-complete-modal.show { display: flex; }
         .modal-content {
-            background: white; padding: 2rem; border-radius: 12px; text-align: center;
+            background: white; padding: 2rem; border-radius: 3px; text-align: center;
             max-width: 400px; animation: slideIn 0.3s ease-out;
         }
         @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

@@ -122,18 +122,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* Same frame and header as a lesson page (includes/lesson_shell.php, assets/css/courses.css): founder,
            2026-10-28, "Every single content page in a course should take the same space." Flat: bordered blocks,
            no gradients, no coloured left edges. */
-        .stimulus-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; white-space:pre-line; font-size:.95rem; line-height:1.7; color:#334155; }
+        .stimulus-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:3px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; white-space:pre-line; font-size:.95rem; line-height:1.7; color:#334155; }
         .stimulus-box .stim-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#64748b; margin-bottom:.6rem; }
 
-        .q-card { border:1px solid #e2e8f0; border-radius:10px; padding:1.25rem 1.4rem; margin-bottom:1rem; }
+        .q-card { border:1px solid #e2e8f0; border-radius:3px; padding:1.25rem 1.4rem; margin-bottom:1rem; }
         .q-card.answered-correct { border-color:#86efac; }
         .q-card.answered-wrong   { border-color:#fca5a5; }
         .q-num  { font-size:.74rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#64748b; margin-bottom:.45rem; display:flex; gap:.6rem; align-items:center; }
-        .q-mark { font-size:.72rem; letter-spacing:0; text-transform:none; font-weight:700; border-radius:999px; padding:.05rem .55rem; }
+        .q-mark { font-size:.72rem; letter-spacing:0; text-transform:none; font-weight:700; border-radius:3px; padding:.05rem .55rem; }
         .q-mark.ok { background:#dcfce7; color:#166534; } .q-mark.no { background:#fee2e2; color:#991b1b; }
         .q-text { font-size:1rem; font-weight:600; color:#1e293b; line-height:1.55; margin-bottom:.9rem; }
 
-        .opt-label { display:flex; align-items:flex-start; gap:.75rem; padding:.65rem .9rem; border-radius:8px; border:1px solid #e2e8f0; background:#fff; margin-bottom:.45rem; cursor:pointer; transition:border-color .15s, background .15s; }
+        .opt-label { display:flex; align-items:flex-start; gap:.75rem; padding:.65rem .9rem; border-radius:3px; border:1px solid #e2e8f0; background:#fff; margin-bottom:.45rem; cursor:pointer; transition:border-color .15s, background .15s; }
         .opt-label:hover { border-color:#0b77ff; background:#f0f7ff; }
         .opt-label input[type=radio] { margin-top:3px; flex-shrink:0; accent-color:#0b77ff; }
         .opt-key  { font-weight:700; color:#475569; min-width:20px; }
@@ -141,13 +141,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .opt-correct { border-color:#22c55e !important; background:#f0fdf4 !important; }
         .opt-wrong   { border-color:#ef4444 !important; background:#fff1f2 !important; }
 
-        .score-box { border:1px solid #e2e8f0; border-radius:10px; padding:1.1rem 1.4rem; margin-bottom:1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
+        .score-box { border:1px solid #e2e8f0; border-radius:3px; padding:1.1rem 1.4rem; margin-bottom:1.5rem; display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
         .score-num { font-size:2.2rem; font-weight:800; line-height:1; color:#0b77ff; }
         .score-box.perfect .score-num, .score-box.good .score-num { color:#16a34a; }
         .score-box.low .score-num { color:#dc2626; }
         .score-sub { color:#475569; font-size:1rem; }
 
-        .submit-btn { padding:.7rem 1.6rem; border-radius:8px; background:#0b77ff; color:#fff; border:1px solid #0b77ff; font-size:1rem; font-weight:600; cursor:pointer; margin-top:.5rem; }
+        .submit-btn { padding:.7rem 1.6rem; border-radius:3px; background:#0b77ff; color:#fff; border:1px solid #0b77ff; font-size:1rem; font-weight:600; cursor:pointer; margin-top:.5rem; }
         .submit-btn:hover { background:#0a66db; }
 
         body.dark .q-card, body.dark .score-box { border-color:rgba(255,255,255,.1); }

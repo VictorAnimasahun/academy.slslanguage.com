@@ -173,12 +173,12 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
         /* Test: questions on the left at a readable width, a sticky panel on the right (timer, answered, jump to a
            question, submit). Below 992px the panel becomes a timer bar across the top. */
         .fea-layout { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 2.25rem; align-items: start; }
-        .fea-side { position: sticky; top: 88px; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; background: #fff; }
+        .fea-side { position: sticky; top: 88px; border: 1px solid #e2e8f0; border-radius: 3px; padding: 1rem; background: #fff; }
         .fea-side .fea-timer { position: static; border: 0; padding: 0; margin: 0 0 .2rem; }
         .fea-count { font-size: .82rem; color: #5b6678; }
         .fea-nav-part { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #64748b; margin: .9rem 0 .35rem; }
         .fea-dots { display: grid; grid-template-columns: repeat(6, 1fr); gap: .3rem; }
-        .fea-dot { border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; font-size: .78rem; padding: .3rem 0; color: #475569; text-decoration: none; }
+        .fea-dot { border: 1px solid #e2e8f0; border-radius: 3px; text-align: center; font-size: .78rem; padding: .3rem 0; color: #475569; text-decoration: none; }
         .fea-dot:hover { border-color: #0b77ff; color: #0b77ff; }
         .fea-dot.is-done { background: #0b77ff; border-color: #0b77ff; color: #fff; }
         .fea-side .fea-submit { width: 100%; margin-top: 1rem; }
@@ -194,26 +194,26 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
         .fea h1 { font-size: 1.5rem; font-weight: 700; color: #16202f; margin-bottom: .35rem; }
         .fea-intro { color: #5b6678; font-size: .92rem; }
         .fea-timer { position: sticky; top: 72px; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
-                     background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: .6rem 1rem; margin: 1rem 0 1.25rem; font-size: .9rem; }
+                     background: #fff; border: 1px solid #e2e8f0; border-radius: 3px; padding: .6rem 1rem; margin: 1rem 0 1.25rem; font-size: .9rem; }
         .fea-timer strong { font-variant-numeric: tabular-nums; font-size: 1.05rem; }
         .fea-timer.is-low strong { color: #b91c1c; }
         .fea-part { margin: 2rem 0 .75rem; padding-bottom: .4rem; border-bottom: 1px solid #e2e8f0; }
         .fea-part h2 { font-size: 1.1rem; font-weight: 700; color: #16202f; margin: 0; }
         .fea-part p { margin: .2rem 0 0; color: #5b6678; font-size: .86rem; }
-        .fea-passage { border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.2rem; margin: 1.25rem 0 .75rem; background: #f8fafc;
+        .fea-passage { border: 1px solid #e2e8f0; border-radius: 3px; padding: 1rem 1.2rem; margin: 1.25rem 0 .75rem; background: #f8fafc;
                        font-size: .93rem; line-height: 1.7; color: #1e293b; }
         .fea-passage .lbl { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #64748b; margin-bottom: .4rem; }
         .fea-q { border-bottom: 1px solid #eef1f5; padding: 1rem 0; }
         .fea-q-num { font-size: .75rem; font-weight: 700; color: #64748b; margin-bottom: .25rem; }
         .fea-q-ins { font-size: .8rem; color: #64748b; margin-bottom: .3rem; }
         .fea-q-text { font-size: .97rem; color: #16202f; margin-bottom: .6rem; }
-        .fea-opt { display: flex; gap: .6rem; align-items: flex-start; border: 1px solid #e2e8f0; border-radius: 8px; padding: .5rem .75rem; margin-bottom: .35rem; cursor: pointer; font-size: .92rem; }
+        .fea-opt { display: flex; gap: .6rem; align-items: flex-start; border: 1px solid #e2e8f0; border-radius: 3px; padding: .5rem .75rem; margin-bottom: .35rem; cursor: pointer; font-size: .92rem; }
         .fea-opt:hover { border-color: #0b77ff; }
         .fea-opt input { margin-top: .25rem; }
         .fea-opt:has(input:checked) { border-color: #0b77ff; background: #eaf3ff; }
         .fea-opt b { color: #475569; min-width: 1rem; }
-        .fea-submit { background: #0b77ff; color: #fff; border: 0; border-radius: 8px; padding: .7rem 1.6rem; font-weight: 600; margin-top: 1.5rem; }
-        .fea-box { border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1rem; }
+        .fea-submit { background: #0b77ff; color: #fff; border: 0; border-radius: 3px; padding: .7rem 1.6rem; font-weight: 600; margin-top: 1.5rem; }
+        .fea-box { border: 1px solid #e2e8f0; border-radius: 3px; padding: 1.2rem 1.4rem; margin-bottom: 1rem; }
         .fea-level { font-size: 1.6rem; font-weight: 700; color: #0b3d91; }
         .fea-table { width: 100%; font-size: .9rem; }
         .fea-table td { padding: .35rem 0; border-bottom: 1px solid #eef1f5; }

@@ -147,7 +147,7 @@ body.exam-fullscreen .submit-bar {
 .test-meta-name { font-size: .9rem; font-weight: 600; color: var(--exam-ink); }
 .section-badge {
   background: var(--exam-accent-soft); color: var(--exam-accent);
-  padding: .4rem 1.1rem; border-radius: 50px; font-weight: 600; font-size: .85rem;
+  padding: .4rem 1.1rem; border-radius: 3px; font-weight: 600; font-size: .85rem;
 }
 
 /* ── Part tabs (Listening/Reading) ───────────────────────────────────────── */
@@ -194,7 +194,7 @@ body.exam-fullscreen .submit-bar {
 .vol-wrap { display: flex; align-items: center; gap: .4rem; }
 .vol-wrap i { font-size: .9rem; color: rgba(255,255,255,.6); cursor: pointer; }
 .vol-wrap input[type=range] { width: 60px; accent-color: var(--exam-accent); }
-.preview-pill { background: var(--exam-warn-soft); border-radius: 20px; padding: .2rem .75rem; font-size: .75rem; color: var(--exam-warn); white-space: nowrap; flex-shrink: 0; }
+.preview-pill { background: var(--exam-warn-soft); border-radius: 3px; padding: .2rem .75rem; font-size: .75rem; color: var(--exam-warn); white-space: nowrap; flex-shrink: 0; }
 .preview-pill.hidden { display: none; }
 .audio-notice {
   background: var(--exam-accent-soft); border: 1px solid var(--exam-line); border-radius: var(--exam-radius);   /* no left strip (founder: never, anywhere) */

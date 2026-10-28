@@ -138,17 +138,17 @@ function fmtTime(?int $secs): string {
         /* ── Summary cards ───────────────────────────────────── */
         .analytics-stat {
             background: #fff;
-            border-radius: 16px;
+            border-radius: 3px;
             padding: 1.4rem 1.6rem;
             box-shadow: 0 2px 12px rgba(0,0,0,.06);
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1rem; border:1px solid rgba(15,23,42,.12);
         }
         .analytics-stat-icon {
             width: 48px;
             height: 48px;
-            border-radius: 14px;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -177,7 +177,7 @@ function fmtTime(?int $secs): string {
         }
         .filter-btn {
             padding: .38rem 1rem;
-            border-radius: 50px;
+            border-radius: 3px;
             border: 1.5px solid #e5e7eb;
             background: #fff;
             font-size: .82rem;
@@ -197,13 +197,13 @@ function fmtTime(?int $secs): string {
         /* ── Attempt rows ────────────────────────────────────── */
         .attempt-row {
             background: #fff;
-            border-radius: 14px;
+            border-radius: 3px;
             box-shadow: 0 2px 10px rgba(0,0,0,.05);
             margin-bottom: .75rem;
             overflow: hidden;
-            transition: box-shadow .2s;
+            transition: box-shadow .2s; border:1px solid rgba(15,23,42,.12);
         }
-        .attempt-row:hover { box-shadow: 0 6px 22px rgba(0,0,0,.10); }
+        .attempt-row:hover { box-shadow: 0 6px 22px rgba(0,0,0,.10); border:1px solid rgba(15,23,42,.12); }
 
         .attempt-summary {
             display: flex;
@@ -217,7 +217,7 @@ function fmtTime(?int $secs): string {
         .attempt-icon {
             width: 42px;
             height: 42px;
-            border-radius: 12px;
+            border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -249,12 +249,12 @@ function fmtTime(?int $secs): string {
         .score-bar-track {
             height: 6px;
             background: #f3f4f6;
-            border-radius: 4px;
+            border-radius: 3px;
             overflow: hidden;
         }
         .score-bar-fill {
             height: 100%;
-            border-radius: 4px;
+            border-radius: 3px;
             transition: width .5s ease;
         }
         .score-pct-label {
@@ -311,7 +311,7 @@ function fmtTime(?int $secs): string {
         .detail-chip {
             background: #fff;
             border: 1px solid #e5e7eb;
-            border-radius: 10px;
+            border-radius: 3px;
             padding: .65rem .9rem;
         }
         .detail-chip-label {
@@ -330,7 +330,7 @@ function fmtTime(?int $secs): string {
         .retake-btn {
             font-size: .8rem;
             padding: .35rem .9rem;
-            border-radius: 8px;
+            border-radius: 3px;
         }
 
         /* ── Empty state ─────────────────────────────────────── */
@@ -338,8 +338,8 @@ function fmtTime(?int $secs): string {
             text-align: center;
             padding: 4rem 2rem;
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+            border-radius: 3px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05); border:1px solid rgba(15,23,42,.12);
         }
         .empty-icon {
             font-size: 3.5rem;
@@ -350,10 +350,10 @@ function fmtTime(?int $secs): string {
         /* ── Trend chart card ────────────────────────────────── */
         .chart-card {
             background: #fff;
-            border-radius: 16px;
+            border-radius: 3px;
             padding: 1.4rem 1.6rem;
             box-shadow: 0 2px 12px rgba(0,0,0,.06);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.5rem; border:1px solid rgba(15,23,42,.12);
         }
 
         /* ── Search ──────────────────────────────────────────── */
@@ -371,7 +371,7 @@ function fmtTime(?int $secs): string {
         }
         .search-input {
             padding-left: 2.1rem;
-            border-radius: 50px;
+            border-radius: 3px;
             border: 1.5px solid #e5e7eb;
             font-size: .85rem;
             height: 36px;
@@ -410,7 +410,7 @@ function fmtTime(?int $secs): string {
                     Every attempt, every score — all in one place.
                 </p>
             </div>
-            <a href="resources/practice_tests/index.php" class="btn btn-primary btn-sm px-3" style="border-radius:50px;">
+            <a href="resources/practice_tests/index.php" class="btn btn-primary btn-sm px-3" style="border-radius:3px;">
                 <i class="bi bi-plus-lg me-1"></i>Take a Test
             </a>
         </div>
@@ -639,7 +639,7 @@ function fmtTime(?int $secs): string {
             <div class="empty-icon"><i class="bi bi-journal-x"></i></div>
             <h5 class="fw-bold">No test records yet</h5>
             <p class="text-muted">Complete a practice test, quiz, or mock exam and your results will appear here.</p>
-            <a href="resources/practice_tests/index.php" class="btn btn-primary px-4 mt-2" style="border-radius:50px;">
+            <a href="resources/practice_tests/index.php" class="btn btn-primary px-4 mt-2" style="border-radius:3px;">
                 <i class="bi bi-play-fill me-1"></i>Start Practising
             </a>
         </div>

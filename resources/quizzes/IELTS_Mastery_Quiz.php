@@ -28,26 +28,26 @@ if (!isset($_SESSION['user_id'])) {
         .timer-box {
             background: linear-gradient(135deg, #dc3545, #f56b6b);
             color: white;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 1rem 2rem;
             text-align: center;
             font-size: 2.2rem;
             font-weight: 700;
             letter-spacing: 4px;
             box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
-            margin-bottom: 2rem;
+            margin-bottom: 2rem; border:1px solid rgba(15,23,42,.12);
         }
         .timer-box small { font-size: 1rem; font-weight: 400; display: block; }
 
         .section-content {
             background: white;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); border:1px solid rgba(15,23,42,.12);
         }
         .question-card {
             border: 1px solid #e5e7eb;
-            border-radius: 10px;
+            border-radius: 3px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
         }

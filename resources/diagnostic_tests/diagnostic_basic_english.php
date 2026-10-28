@@ -38,7 +38,7 @@ if (!isset($_SESSION['user_id'])) {
 			background: white;
 			padding: 0.6rem 0; /* was 1rem */
 			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-			flex-shrink: 0;
+			flex-shrink: 0; border:1px solid rgba(15,23,42,.12);
 		}
 
 		.breadcrumb {
@@ -59,9 +59,9 @@ if (!isset($_SESSION['user_id'])) {
 			max-width: 900px;
 			margin: 0 auto 1.5rem;
 			background: white;
-			border-radius: 16px;
+			border-radius: 3px;
 			box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-			overflow: hidden;
+			overflow: hidden; border:1px solid rgba(15,23,42,.12);
 		}
 
 		.test-header {
@@ -115,7 +115,7 @@ if (!isset($_SESSION['user_id'])) {
 		.intro-card {
 			background: linear-gradient(135deg, #f8f9ff, #fff);
 			border: 2px solid #e6f0f8;
-			border-radius: 12px;
+			border-radius: 3px;
 			padding: 1rem; /* was 1.5rem */
 			transition: all 0.3s;
 		}
@@ -123,7 +123,7 @@ if (!isset($_SESSION['user_id'])) {
 		.intro-card:hover {
 			transform: translateY(-5px);
 			box-shadow: 0 8px 20px rgba(14, 76, 146, 0.1);
-			border-color: #0E4C92;
+			border-color: #0E4C92; border:1px solid rgba(15,23,42,.12);
 		}
 
 		.intro-card h3 {
@@ -139,8 +139,8 @@ if (!isset($_SESSION['user_id'])) {
 
 		.task-card {
 			background: #f9fcff;
-			border-left: 4px solid #0E4C92;
-			border-radius: 8px;
+			border: 1px solid #dbe1ea;
+			border-radius: 3px;
 			padding: 1rem 1.25rem; /* was 1.5rem */
 			margin-bottom: 1rem; /* was 1.5rem */
 		}
@@ -160,7 +160,7 @@ if (!isset($_SESSION['user_id'])) {
 			overflow-y: auto;
 			background: #fefcff;
 			border: 1px solid #e6e6fa;
-			border-radius: 8px;
+			border-radius: 3px;
 			padding: 1rem; /* was 1.5rem */
 			margin-bottom: 1rem;
 			line-height: 1.7; /* was 1.8 */
@@ -169,14 +169,14 @@ if (!isset($_SESSION['user_id'])) {
 
 		.form-control, .form-select {
 			border: 2px solid #e1e5e9;
-			border-radius: 8px;
+			border-radius: 3px;
 			padding: 0.5rem 0.75rem; /* was 0.75rem */
 			font-size: 0.85rem;
 		}
 
 		.form-control:focus, .form-select:focus {
 			border-color: #0E4C92;
-			box-shadow: 0 0 0 0.2rem rgba(14, 76, 146, 0.15);
+			box-shadow: 0 0 0 0.2rem rgba(14, 76, 146, 0.15); border:1px solid rgba(15,23,42,.12);
 		}
 
 		textarea.form-control {
@@ -209,7 +209,7 @@ if (!isset($_SESSION['user_id'])) {
 
 		.btn-nav {
 			padding: 0.5rem 1.5rem; /* was 0.75rem 2rem */
-			border-radius: 25px;
+			border-radius: 3px;
 			font-weight: 500;
 			font-size: 0.85rem;
 			transition: all 0.3s;
@@ -227,8 +227,8 @@ if (!isset($_SESSION['user_id'])) {
 
 		.alert-info {
 			background: #fff5f5;
-			border-left: 6px solid #E76F51;
-			border-radius: 8px;
+			border: 1px solid #dbe1ea;
+			border-radius: 3px;
 			font-size: 0.82rem;
 		}
 
@@ -246,25 +246,25 @@ if (!isset($_SESSION['user_id'])) {
 		.result-item {
 			padding: 0.6rem 0.9rem; /* was 1rem */
 			margin: 0.4rem 0;
-			border-radius: 8px;
+			border-radius: 3px;
 			font-size: 0.82rem;
 		}
 
 		.result-correct {
 			background: #d4edda;
-			border-left: 4px solid #28a745;
+			border: 1px solid #dbe1ea;
 		}
 
 		.result-incorrect {
 			background: #f8d7da;
-			border-left: 4px solid #dc3545;
+			border: 1px solid #dbe1ea;
 		}
 
 		.final-score {
 			background: linear-gradient(135deg, #0E4C92, #1e5fa8);
 			color: white;
 			padding: 1.5rem; /* was 2rem */
-			border-radius: 12px;
+			border-radius: 3px;
 			text-align: center;
 			font-size: 1.1rem; /* was 1.5rem */
 			margin: 1.5rem 0;

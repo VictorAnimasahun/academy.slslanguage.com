@@ -101,7 +101,7 @@ body {
 	color: #fff;
 	width: 44px;
 	height: 44px;
-	border-radius: 10px;
+	border-radius: 3px;
 }
 
 .main-wrapper {
@@ -161,7 +161,7 @@ body {
 	border: 1px solid #cfe0fb;
 	padding: 1.5rem;
 	margin: 1.5rem 0;
-	border-radius: 8px;
+	border-radius: 3px;
 }
 
 .pink-highlight {
@@ -179,7 +179,7 @@ body {
 .info-card {
 	background: #fff;
 	border: 2px solid #e5e7eb;
-	border-radius: 12px;
+	border-radius: 3px;
 	padding: 1.5rem;
 	transition: all 0.3s ease;
 }
@@ -199,7 +199,7 @@ body {
 	background: linear-gradient(90deg, #ec4899, #f472b6);
 	color: white;
 	padding: 0.5rem 1rem;
-	border-radius: 20px;
+	border-radius: 3px;
 	font-size: 0.9rem;
 	font-weight: 600;
 	margin-right: 0.5rem;
@@ -208,7 +208,7 @@ body {
 
 .week-section {
 	background: #f8fafc;
-	border-radius: 12px;
+	border-radius: 3px;
 	padding: 1.5rem;
 	margin-bottom: 1.5rem;
 }
@@ -217,7 +217,7 @@ body {
 	background: linear-gradient(90deg, #1e3a8a, #3b5998);
 	color: white;
 	padding: 1rem 1.5rem;
-	border-radius: 8px;
+	border-radius: 3px;
 	font-size: 1.3rem;
 	font-weight: bold;
 	margin-bottom: 1rem;
@@ -228,7 +228,7 @@ body {
 	border: 1px solid rgba(15,23,42,0.08);
 	padding: 1.5rem;
 	margin-bottom: 1rem;
-	border-radius: 8px;
+	border-radius: 3px;
 }
 
 .ad-container {
@@ -324,7 +324,7 @@ ul.custom-list li:before {
 	background: #ec4899;
 	color: white;
 	padding: 0.5rem 1rem;
-	border-radius: 20px;
+	border-radius: 3px;
 	font-weight: bold;
 	display: inline-block;
 	margin-bottom: 1rem;
@@ -341,7 +341,7 @@ ul.custom-list li:before {
 .option {
 	background: #f8fafc;
 	border: 3px solid #e5e7eb;
-	border-radius: 12px;
+	border-radius: 3px;
 	padding: 1.5rem;
 	margin-bottom: 1rem;
 	cursor: pointer;
@@ -382,7 +382,7 @@ ul.custom-list li:before {
 .quiz-navigation button {
 	padding: 0.75rem 2rem;
 	border: none;
-	border-radius: 25px;
+	border-radius: 3px;
 	font-weight: 600;
 	cursor: pointer;
 	transition: all 0.3s ease;
@@ -423,7 +423,7 @@ ul.custom-list li:before {
 .progress-bar-container {
 	background: #e5e7eb;
 	height: 8px;
-	border-radius: 10px;
+	border-radius: 3px;
 	margin-bottom: 2rem;
 	overflow: hidden;
 }
@@ -432,7 +432,7 @@ ul.custom-list li:before {
 	background: linear-gradient(90deg, #ec4899, #f472b6);
 	height: 100%;
 	transition: width 0.3s ease;
-	border-radius: 10px;
+	border-radius: 3px;
 }
 
 .results-container {
@@ -538,9 +538,9 @@ ul.custom-list li:before {
    via resources/quizzes/class_quiz.php): icon, Week / Class / kind chips, title. Founder, 2026-10-28: "Every single
    content page in a course should take the same space." ── */
 .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
-.class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 3px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
 .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
-.class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
+.class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 3px; padding: .2rem .7rem; }
 .class-chip.kind { background: #e0f2fe; color: #075985; }
 .class-chip.kind.practice_test { background: #fef3c7; color: #92400e; }
 .class-chip.kind.mock_test { background: #fee2e2; color: #991b1b; }

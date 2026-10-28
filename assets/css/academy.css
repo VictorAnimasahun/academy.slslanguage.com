@@ -91,7 +91,7 @@ nav {
 	background: white;
 	min-width: 200px;
 	border: 1px solid #e5e7eb;
-	border-radius: 8px;
+	border-radius: 3px;
 	opacity: 0;
 	visibility: hidden;
 	transform: translateY(-10px);
@@ -127,7 +127,7 @@ nav {
 .btn {
 	padding: 0.5rem;
 	border: none;
-	border-radius: 5px;
+	border-radius: 3px;
 	cursor: pointer;
 	font-weight: 500;
 	text-decoration: none;
@@ -229,7 +229,7 @@ nav {
 	padding: 0.75rem;
 	text-decoration: none;
 	color: #333;
-	border-radius: 5px;
+	border-radius: 3px;
 	transition: background 0.3s ease;
 }
 
@@ -327,7 +327,7 @@ nav {
 .feature-card {
 	background: white;
 	padding: 2rem;
-	border-radius: 15px;
+	border-radius: 3px;
 	border: 1px solid #e5e7eb;
 	text-align: center;
 	transition: transform 0.3s ease;
@@ -378,7 +378,7 @@ nav {
 	display: flex;
 	flex-direction: column;
 	background-color: #d5e3f1;
-	border-radius: 5px;
+	border-radius: 3px;
 }
 .course-heading {
 	text-align: center;
@@ -423,7 +423,7 @@ nav {
   margin: 15px; /* keep spacing */
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 12px;
+  border-radius: 3px;
   display: flex;
   flex-direction: column;
 
@@ -448,7 +448,7 @@ nav {
 	height: 160px;
 	flex-shrink: 0;
 	margin: 10px;
-	border-radius: 8px;
+	border-radius: 3px;
 	overflow: hidden;
 }
 .course-image img {
@@ -473,7 +473,7 @@ nav {
   font-size: 0.75rem;
   font-weight: bold;
   padding: 3px 7px;
-  border-radius: 4px;
+  border-radius: 3px;
   margin-bottom: 7px;
 }
 
@@ -498,7 +498,7 @@ nav {
 	padding: 10px 20px;
 	color: #2196F3;
 	font-weight: 600;
-	border-radius: 5px;
+	border-radius: 3px;
 	align-self: center;
 	text-align: center;
 	text-decoration: none;
@@ -521,7 +521,7 @@ nav {
 	background: #2d6cdf;
 	color: white;
 	border: none;
-	border-radius: 20px;
+	border-radius: 3px;
 	cursor: pointer;
 	font-weight: bold;
 	transition: 0.3s;
@@ -560,7 +560,7 @@ nav {
   margin: 15px; /* keep spacing */
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 12px;
+  border-radius: 3px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -576,7 +576,7 @@ nav {
 	height: 50%;
 	width: auto;           
 	margin: 10px;          
-	border-radius: 8px;
+	border-radius: 3px;
 	overflow: hidden; 
 }
 
@@ -602,7 +602,7 @@ nav {
 	font-size: 0.75rem;
 	font-weight: bold;
 	padding: 4px 10px;
-	border-radius: 4px;
+	border-radius: 3px;
 	margin-bottom: 10px;
 }
 
@@ -657,7 +657,7 @@ nav {
 	padding: 10px 20px;
 	color: #2196F3;
 	font-weight: 600;
-	border-radius: 5px;
+	border-radius: 3px;
 	align-self: center;
 	text-align: center;
 	text-decoration: none;
@@ -856,14 +856,14 @@ footer {
     .course-card {
         min-height: 320px;
         margin: 10px;
-        border-radius: 10px;
+        border-radius: 3px;
     }
 
     .course-image {
         height: 140px;
         flex-shrink: 0;
         margin: 8px;
-        border-radius: 6px;
+        border-radius: 3px;
     }
 
     .course-content {
@@ -898,6 +898,6 @@ footer {
         padding: 8px 16px;
         margin-bottom: 20px;
         font-size: 0.9rem;
-        border-radius: 15px;
+        border-radius: 3px;
     }
 }

@@ -34,13 +34,13 @@ foreach ($partKeys as $key) {
     .hub-wrapper { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
     .hub-item {
         display: flex; align-items: center; justify-content: space-between;
-        background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+        background: #fff; border: 1px solid #e5e7eb; border-radius: 3px;
         padding: 1.1rem 1.4rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,.04);
     }
     .hub-item.locked { opacity: .6; }
     .hub-item-title { font-weight: 600; color: #1f2937; font-size: .95rem; }
     .hub-open-btn {
-        background: #667eea; color: #fff; border: none; border-radius: 8px;
+        background: #667eea; color: #fff; border: none; border-radius: 3px;
         padding: .55rem 1.1rem; font-weight: 600; font-size: .85rem; text-decoration: none;
     }
     .hub-open-btn:hover { background: #5a67d8; color: #fff; }

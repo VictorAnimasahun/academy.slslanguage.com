@@ -23,6 +23,30 @@
 		overflow-x: hidden;
 	}
 
+	/* ── One design for every academy page (founder, 2026-10-28: no coloured left strips, no rounded edges, "use
+	   the same sharp design you used in the sls admin"). Corners are 3px everywhere -- Bootstrap's own classes
+	   through its radius variables, the site's own CSS rewritten to 3px at the source -- circles (50%) stay
+	   round. No shadows: borders separate things. Test screens keep their exam theme (exam_theme.css). ── */
+	:root {
+		--bs-border-radius: 3px; --bs-border-radius-sm: 2px; --bs-border-radius-lg: 3px;
+		--bs-border-radius-xl: 3px; --bs-border-radius-xxl: 3px; --bs-border-radius-pill: 3px;
+		--card-radius: 3px;
+	}
+	body:not(.exam-page) :where(*):not(:focus-visible):not(.bell-link):not(dialog):not(.dropdown-menu):not(.ib-menu):not(.modal-content) {
+		box-shadow: none !important;
+	}
+	/* Content starts once below the top bar (.main-wrapper already clears it, topbar.php), and fills the room
+	   between the menu rail and the advert column. */
+	@media (min-width: 1200px) {
+		.main-wrapper > .content, .main-wrapper > main.content { margin-top: 0; }
+		body:has(.advert-sidebar) .main-wrapper > .content { max-width: calc(100vw - var(--sidebar-w) - var(--advert-w)); }
+		/* One 24px gutter on every page: a page whose .content brings its own padding (p-4) gets none from the
+		   wrapper -- some pages sit outside a .d-flex and got 2rem more, so they started 32px further in -- and the
+		   lesson-type pages (a .course-card straight inside the wrapper) get 1.5rem, not 2rem. */
+		body .main-wrapper { padding: 1.5rem; }
+		body .main-wrapper:has(> .content) { padding: 0; }
+	}
+
 	/* ── Dark mode ─────────────────────────────────────────────────── */
 	body.dark {
 		background: #121212;

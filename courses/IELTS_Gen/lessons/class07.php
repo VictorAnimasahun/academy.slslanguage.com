@@ -129,12 +129,12 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>S4 Part 2 Speaking Class 1</h4>
                         <p class="text-muted mb-2">How to use the 1-minute preparation time effectively and structure a 2-minute Part 2 response.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#0b77ff;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#0b77ff;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Speaking — Holidays Vocabulary</h4>
                         <p class="text-muted mb-2">Key vocabulary for the travel and holiday topic — one of the most common Part 2 categories.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#0b77ff;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#0b77ff;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                 </div>
             </div>

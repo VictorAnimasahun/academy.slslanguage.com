@@ -88,22 +88,22 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         @media (min-width:1200px) { .content { max-width:calc(100vw - var(--sidebar-w) - var(--advert-w)); margin-top:0; } }
         .ib-title { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding-bottom:1rem; border-bottom:1px solid #d6dde6; flex-wrap:wrap; }
         .ib-title h1 { font-size:2.4rem; font-weight:600; margin:0; color:#1f2937; }
-        .ib-compose { display:inline-flex; align-items:center; gap:.5rem; background:#0b77ff; color:#fff; border:1px solid #0b77ff; border-radius:6px; padding:.55rem 1.1rem; font-size:1rem; font-weight:500; }
+        .ib-compose { display:inline-flex; align-items:center; gap:.5rem; background:#0b77ff; color:#fff; border:1px solid #0b77ff; border-radius:3px; padding:.55rem 1.1rem; font-size:1rem; font-weight:500; }
         .ib-compose:hover { background:#0a66db; }
         .ib-bar { display:flex; align-items:center; gap:.75rem; flex-wrap:nowrap; padding:.9rem 1rem; background:#f2f4f7; border-bottom:1px solid #d6dde6; }
-        .ib-bar select, .ib-bar input[type=search] { height:40px; border:1px solid #c7cdd5; border-radius:6px; background:#fff; padding:0 .8rem; font-size:.98rem; color:#1f2937; }
+        .ib-bar select, .ib-bar input[type=search] { height:40px; border:1px solid #c7cdd5; border-radius:3px; background:#fff; padding:0 .8rem; font-size:.98rem; color:#1f2937; }
         .ib-bar select { flex:0 1 220px; min-width:120px; }
         .ib-search { position:relative; flex:1 1 220px; min-width:120px; }
         .ib-search input { width:100%; padding-left:2.2rem !important; }
         .ib-search i { position:absolute; left:.8rem; top:50%; transform:translateY(-50%); color:#4b5563; }
         .ib-tools { display:flex; gap:.5rem; flex-shrink:0; }
-        .ib-tool { width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #c7cdd5; border-radius:6px; background:#fff; color:#1f2937; font-size:1.15rem; }
+        .ib-tool { width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #c7cdd5; border-radius:3px; background:#fff; color:#1f2937; font-size:1.15rem; }
         .ib-tool:hover:not(:disabled) { background:#e8edf3; }
         .ib-tool:disabled { opacity:.45; cursor:not-allowed; }
         .ib-more { position:relative; }
         .ib-more summary { list-style:none; cursor:pointer; }
         .ib-more summary::-webkit-details-marker { display:none; }
-        .ib-menu { position:absolute; right:0; top:46px; background:#fff; border:1px solid #c7cdd5; border-radius:6px; box-shadow:0 6px 20px rgba(15,23,42,.12); min-width:190px; z-index:30; padding:.3rem 0; }
+        .ib-menu { position:absolute; right:0; top:46px; background:#fff; border:1px solid #c7cdd5; border-radius:3px; box-shadow:0 6px 20px rgba(15,23,42,.12); min-width:190px; z-index:30; padding:.3rem 0; }
         .ib-menu button { display:block; width:100%; text-align:left; background:none; border:0; padding:.5rem 1rem; font-size:.93rem; color:#1f2937; }
         .ib-menu button:hover { background:#f2f4f7; }
         .ib-panes { display:grid; grid-template-columns:minmax(340px, 38%) minmax(0, 1fr); min-height:calc(100vh - 260px); background:#fff; border:1px solid #d6dde6; border-top:0; }
@@ -117,7 +117,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         .ib-row input[type=checkbox], .ib-row button { position:relative; z-index:2; }
         .ib-row input[type=checkbox] { width:18px; height:18px; margin-top:.15rem; accent-color:#1f2937; }
         .ib-date { color:#0b77ff; font-size:.95rem; }
-        .ib-count { justify-self:end; background:#1f2937; color:#fff; border-radius:4px; font-size:.75rem; font-weight:700; min-width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; padding:0 .35rem; }
+        .ib-count { justify-self:end; background:#1f2937; color:#fff; border-radius:3px; font-size:.75rem; font-weight:700; min-width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; padding:0 .35rem; }
         .ib-dotbtn { background:none; border:0; padding:0; width:28px; height:22px; display:inline-flex; align-items:center; }
         .ib-dotbtn span { width:16px; height:16px; border-radius:50%; border:1.5px solid #4b5563; display:block; }
         .ib-dotbtn.on span { background:#0b77ff; border-color:#0b77ff; }
@@ -132,7 +132,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         .ib-read-head { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.1rem 1.4rem; border-bottom:1px solid #d6dde6; }
         .ib-read-head h2 { font-size:1.55rem; font-weight:600; margin:0; color:#1f2937; }
         .ib-head-tools { display:flex; gap:.4rem; }
-        .ib-icon { background:none; border:0; font-size:1.3rem; color:#1f2937; width:36px; height:36px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
+        .ib-icon { background:none; border:0; font-size:1.3rem; color:#1f2937; width:36px; height:36px; border-radius:3px; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; }
         .ib-icon:hover { background:#f2f4f7; color:#1f2937; }
         .ib-icon.on, .ib-icon.on:hover { color:#d97706; }
         .ib-back { display:none; }
@@ -144,19 +144,19 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         .ib-from .m { font-size:.92rem; color:#374151; margin-top:.15rem; }
         .ib-body { font-size:1.05rem; line-height:1.7; color:#1f2937; overflow-wrap:anywhere; }
         .ib-body ul { padding-left:1.3rem; }
-        .ib-link { display:inline-flex; align-items:center; gap:.4rem; margin-top:.6rem; background:#0b77ff; color:#fff; padding:.55rem 1.1rem; border-radius:6px; text-decoration:none; font-weight:600; }
+        .ib-link { display:inline-flex; align-items:center; gap:.4rem; margin-top:.6rem; background:#0b77ff; color:#fff; padding:.55rem 1.1rem; border-radius:3px; text-decoration:none; font-weight:600; }
         .ib-link:hover { background:#0a66db; color:#fff; }
         .ib-reply { padding:1rem 1.4rem; border-bottom:1px solid #d6dde6; background:#f7f9fb; }
-        .ib-reply textarea { width:100%; border:1px solid #c7cdd5; border-radius:6px; padding:.6rem .8rem; font:inherit; resize:vertical; }
+        .ib-reply textarea { width:100%; border:1px solid #c7cdd5; border-radius:3px; padding:.6rem .8rem; font:inherit; resize:vertical; }
         .ib-none { margin:auto; text-align:center; color:#6b7280; padding:3rem 1rem; }
         .ib-none i { font-size:3rem; color:#c7cdd5; display:block; margin-bottom:.4rem; }
-        dialog.ib-dialog { border:1px solid #c7cdd5; border-radius:8px; padding:0; width:min(560px, 94vw); }
+        dialog.ib-dialog { border:1px solid #c7cdd5; border-radius:3px; padding:0; width:min(560px, 94vw); }
         dialog.ib-dialog::backdrop { background:rgba(15,23,42,.45); }
         .ib-dialog header { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.2rem; border-bottom:1px solid #d6dde6; }
         .ib-dialog header h3 { font-size:1.2rem; margin:0; }
         .ib-dialog .b { padding:1rem 1.2rem; display:grid; gap:.8rem; }
         .ib-dialog label { font-weight:600; font-size:.9rem; }
-        .ib-dialog select, .ib-dialog textarea { width:100%; border:1px solid #c7cdd5; border-radius:6px; padding:.5rem .7rem; font:inherit; }
+        .ib-dialog select, .ib-dialog textarea { width:100%; border:1px solid #c7cdd5; border-radius:3px; padding:.5rem .7rem; font:inherit; }
         .ib-dialog footer { display:flex; justify-content:flex-end; gap:.6rem; padding:.9rem 1.2rem; border-top:1px solid #d6dde6; }
         body.dark .ib-title h1, body.dark .ib-read-head h2, body.dark .ib-from .n, body.dark .ib-who, body.dark .ib-subj, body.dark .ib-body, body.dark .ib-icon { color:#e5e7eb; }
         body.dark .ib-panes, body.dark .ib-bar select, body.dark .ib-bar input, body.dark .ib-tool, body.dark .ib-menu, body.dark .ib-avatar, body.dark dialog.ib-dialog { background:#1e1e1e; color:#e5e7eb; border-color:#374151; }

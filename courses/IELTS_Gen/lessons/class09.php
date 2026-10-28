@@ -94,7 +94,7 @@ if ($__pacingBlockers) { ?>
                     <li><strong>Match to headings — not the other way around.</strong> Students who read the headings first get anchored to them and start looking for evidence to confirm. Instead, know what the paragraph is about, then find the heading that fits.</li>
                     <li><strong>Eliminate as you go.</strong> Once a heading is used, cross it off your list. The list shrinks with each correct match, making later questions easier.</li>
                 </ol>
-                <div class="p-3 mt-3" style="background:#f8f9fa;border-left:4px solid #6366f1;border-radius:4px;">
+                <div class="p-3 mt-3" style="background:#f8f9fa;border: 1px solid #dbe1ea;border-radius:3px;">
                     <strong>Key principle:</strong> If you are unsure between two headings, ask yourself: "Does this heading describe what the <em>whole</em> paragraph is about, or just one part of it?" A heading that describes only one part is almost certainly wrong.
                 </div>
             </div>
@@ -115,7 +115,7 @@ if ($__pacingBlockers) { ?>
                 <p class="mt-3">
                     Unlike heading questions, paragraphs can be used more than once — the same paragraph may contain information that answers multiple questions. Do not assume you have finished with a paragraph once you have matched one statement to it.
                 </p>
-                <div class="p-3 mt-3" style="background:#f8f9fa;border-left:4px solid #6366f1;border-radius:4px;">
+                <div class="p-3 mt-3" style="background:#f8f9fa;border: 1px solid #dbe1ea;border-radius:3px;">
                     <strong>Paraphrase awareness:</strong> Build a habit of noting paraphrase patterns as you practise. "Scientists have demonstrated" becomes "research shows." "A growing number of people" becomes "an increasing proportion of the population." The passage and the question will never say the same thing in the same words.
                 </div>
             </div>
@@ -145,7 +145,7 @@ if ($__pacingBlockers) { ?>
                     <li><strong>Three to four main points:</strong> Each main point is introduced with a signpost phrase.</li>
                     <li><strong>Conclusion:</strong> The speaker summarises and may point forward to the next topic or session.</li>
                 </ol>
-                <div class="p-3 mt-3" style="background:#f8f9fa;border-left:4px solid #6366f1;border-radius:4px;">
+                <div class="p-3 mt-3" style="background:#f8f9fa;border: 1px solid #dbe1ea;border-radius:3px;">
                     <strong>Signpost language — your map through the lecture:</strong><br>
                     <span class="badge bg-secondary me-1 mt-1">Firstly / To begin with</span>
                     <span class="badge bg-secondary me-1 mt-1">Moving on to</span>
@@ -163,7 +163,7 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>L4 Part 4 Listening Class 1</h4>
                         <p class="text-muted mb-2">Academic lecture structure, signpost language, and gap-fill strategies for Listening Part 4.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;">
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;">
                             <i class="bi bi-play-circle-fill" style="font-size:2rem;color:#6366f1;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -171,7 +171,7 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>R3 Detailed Reading Class 1</h4>
                         <p class="text-muted mb-2">Heading matching technique — topic sentence analysis, elimination, and main idea identification.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;">
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;">
                             <i class="bi bi-play-circle-fill" style="font-size:2rem;color:#6366f1;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -182,7 +182,7 @@ if ($__pacingBlockers) { ?>
             <!-- Quiz -->
             <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                 <h4 style="color:#15803d;margin-top:0;"><i class="bi bi-patch-question me-2"></i>Class Quiz</h4>
-                <div class="p-3" style="background:#dcfce7;border-radius:8px;">
+                <div class="p-3" style="background:#dcfce7;border-radius:3px;">
                     <p class="mb-1"><strong>Heading matching strategy drill</strong></p>
                     <p class="mb-0">8 headings, 6 paragraphs from a sample passage. Match each paragraph to the correct heading and explain your reasoning in one sentence — stating what the main idea of the paragraph is and why that heading fits better than the distractors.</p>
                 </div>

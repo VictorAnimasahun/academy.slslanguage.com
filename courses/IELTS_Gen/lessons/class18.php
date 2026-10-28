@@ -170,7 +170,7 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>WT2 Introductions Class 1</h4>
                         <p class="text-muted mb-2">Step-by-step guide to writing a two-sentence Task 2 introduction — background sentence, thesis, and what to avoid.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                 </div>
             </div>
@@ -180,7 +180,7 @@ if ($__pacingBlockers) { ?>
                 <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                     <h4 style="color:#15803d;margin-top:0;">PEEL Paragraph Identification &amp; Build</h4>
                     <p class="mb-2">Part A: Read 3 sample body paragraphs and identify the P, E, E, and L components in each. Part B: Write one complete PEEL paragraph (80–100 words) for a given opinion essay topic.</p>
-                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:8px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
+                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:3px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
                 </div>
             </div>
 

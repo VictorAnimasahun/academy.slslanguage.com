@@ -112,7 +112,7 @@ function render_pacing_gate(array $incompleteTitles, string $scheduleUrl): void 
     <div style="
         background: #f8fafc;
         border: 2px dashed #cbd5e1;
-        border-radius: 16px;
+        border-radius: 3px;
         padding: 2.5rem 2rem;
         text-align: center;
         margin: 1.5rem 0;

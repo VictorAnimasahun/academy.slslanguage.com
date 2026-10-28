@@ -17,7 +17,7 @@
 		
 		.main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
 		
-		.card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+		.card { background: white; border-radius: 3px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); border:1px solid rgba(15,23,42,.12); }
 		
 		.chart-card { grid-column: span 1; }
 		.chart-container { position: relative; height: 300px; margin-bottom: 15px; }
@@ -34,7 +34,7 @@
 		.option { 
 			background: #f8f9fa; 
 			border: 2px solid #e2e8f0; 
-			border-radius: 8px; 
+			border-radius: 3px; 
 			padding: 12px 15px; 
 			cursor: pointer; 
 			transition: all 0.3s ease;
@@ -53,7 +53,7 @@
 			flex: 1; 
 			padding: 12px 20px; 
 			border: none; 
-			border-radius: 8px; 
+			border-radius: 3px; 
 			font-size: 1rem; 
 			font-weight: 600; 
 			cursor: pointer; 
@@ -72,15 +72,15 @@
 		
 		.feedback-box { 
 			background: white; 
-			border-radius: 12px; 
+			border-radius: 3px; 
 			padding: 20px; 
 			margin-bottom: 20px; 
-			box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+			box-shadow: 0 8px 32px rgba(0,0,0,0.1); border:1px solid rgba(15,23,42,.12);
 		}
 		
-		.feedback-box.success { border-left: 5px solid #16a34a; }
-		.feedback-box.error { border-left: 5px solid #dc2626; }
-		.feedback-box.neutral { border-left: 5px solid #667eea; }
+		.feedback-box.success { border: 1px solid #dbe1ea; }
+		.feedback-box.error { border: 1px solid #dbe1ea; }
+		.feedback-box.neutral { border: 1px solid #dbe1ea; }
 		
 		.feedback-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; }
 		.feedback-box.success .feedback-title { color: #16a34a; }
@@ -91,7 +91,7 @@
 		
 		.score-display { text-align: center; font-size: 2rem; font-weight: 800; color: #667eea; margin: 20px 0; }
 		
-		.level-info { background: #f0f4ff; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
+		.level-info { background: #f0f4ff; padding: 15px; margin-bottom: 20px; border-radius: 3px; }
 		.level-info strong { color: #667eea; }
 		
 		@media (max-width: 768px) {

@@ -32,14 +32,14 @@ $ielts_tests = [
         }
         .test-row {
             display: flex; align-items: center; gap: 1rem;
-            background: #fff; border-radius: 12px;
+            background: #fff; border-radius: 3px;
             padding: 1rem 1.2rem; margin-bottom: 0.6rem;
             box-shadow: 0 1px 6px rgba(15,23,42,0.06);
             text-decoration: none; color: inherit;
             border: 1px solid #e2e8f0;
             transition: box-shadow 0.2s, border-color 0.2s;
         }
-        .test-row:hover { box-shadow: 0 4px 16px rgba(11,119,255,0.14); border-color: #0b77ff; color: inherit; }
+        .test-row:hover { box-shadow: 0 4px 16px rgba(11,119,255,0.14); border-color: #0b77ff; color: inherit; border:1px solid rgba(15,23,42,.12); }
         .test-num {
             width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
             background: #0b77ff; color: #fff;
@@ -51,9 +51,9 @@ $ielts_tests = [
         .test-arrow { margin-left: auto; color: #0b77ff; }
         .placeholder-row {
             display: flex; align-items: center; gap: 1rem;
-            background: #f8fafc; border-radius: 12px;
+            background: #f8fafc; border-radius: 3px;
             padding: 1rem 1.2rem; margin-bottom: 0.6rem;
-            border-left: 4px solid #e2e8f0; color: #94a3b8;
+            border: 1px solid #dbe1ea; color: #94a3b8;
         }
         .placeholder-icon {
             width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
@@ -71,7 +71,7 @@ $ielts_tests = [
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-4">
-            <div style="max-width:680px;">
+            <div>
 
                 <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:0.25rem;">Model Answers</h1>
                 <p class="text-muted mb-2">Sample writing responses with band scores and examiner feedback.</p>

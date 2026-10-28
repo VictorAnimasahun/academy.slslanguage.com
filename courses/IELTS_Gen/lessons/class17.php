@@ -116,7 +116,7 @@ if ($__pacingBlockers) { ?>
                     </div>
                 </div>
 
-                <div class="p-3 mt-3" style="background:#f8f9fa;border-left:4px solid #16a34a;border-radius:4px;">
+                <div class="p-3 mt-3" style="background:#f8f9fa;border: 1px solid #dbe1ea;border-radius:3px;">
                     <strong>Key principle:</strong> Using these structures does not just improve your Lexical Resource score — it directly raises your Grammatical Range score, because hypothetical and speculative structures require complex grammar (conditionals, modal verbs, inversion). Aim to use at least one from each category in a single Part 3 response.
                 </div>
             </div>
@@ -130,7 +130,7 @@ if ($__pacingBlockers) { ?>
                 <p>
                     Summary completion presents a short paragraph that summarises part of the passage — with gaps. The summary will NOT follow the exact order of the passage, so you must scan across the whole text.
                 </p>
-                <div class="p-3 mb-3" style="background:#f8f9fa;border-left:4px solid #16a34a;border-radius:4px;">
+                <div class="p-3 mb-3" style="background:#f8f9fa;border: 1px solid #dbe1ea;border-radius:3px;">
                     <strong>Key rule:</strong> The answers are usually <em>adjacent</em> in the passage — once you find one answer, the next is typically in the same paragraph. Use this to your advantage: after finding your first answer, read the surrounding sentences carefully before moving to the next gap.
                 </div>
 
@@ -157,7 +157,7 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2" style="color:#16a34a;"></i>R4 Paraphrasing Class 2</h4>
                         <p class="text-muted mb-2">Advanced paraphrase recognition for summary and completion tasks — vocabulary substitution and structural paraphrase.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;">
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;">
                             <i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -168,7 +168,7 @@ if ($__pacingBlockers) { ?>
             <!-- Quiz -->
             <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                 <h4 style="color:#15803d;margin-top:0;"><i class="bi bi-patch-question me-2"></i>Class Quiz</h4>
-                <div class="p-3" style="background:#dcfce7;border-radius:8px;">
+                <div class="p-3" style="background:#dcfce7;border-radius:3px;">
                     <p class="mb-1"><strong>Abstract topic opinion framework drill</strong></p>
                     <p class="mb-0">5 Part 3 questions requiring speculating, comparing, or hypothesising. Structure a full 3-part answer for each: view + reason + qualification. Topics include: education funding, healthcare systems, technology and work, environmental policy, and globalisation.</p>
                 </div>

@@ -245,6 +245,6 @@ if (!function_exists('lesson_piece_kind')) {
         $lid = $lessonIds[$folder]['ids'][$classNum - 1] ?? 0;
         $kind = lesson_piece_kind_stored(lesson_part_kinds_for_course($db, $lessonIds[$folder]['course']), $lid, $pieceTitle);
         ['bg' => $bg, 'fg' => $fg] = content_type_info($kind);
-        return '<span style="display:inline-block;vertical-align:middle;margin-left:.5rem;padding:.12rem .55rem;border-radius:999px;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:' . $bg . ';color:' . $fg . ';">' . lesson_kind_label($kind) . '</span>';
+        return '<span style="display:inline-block;vertical-align:middle;margin-left:.5rem;padding:.12rem .55rem;border-radius:3px;font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:' . $bg . ';color:' . $fg . ';">' . lesson_kind_label($kind) . '</span>';
     }
 }

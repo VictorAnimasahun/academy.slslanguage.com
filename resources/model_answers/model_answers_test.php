@@ -35,9 +35,9 @@ $test = $all_tests[$test_num];
         .back-link:hover { text-decoration: underline; color: #0b77ff; }
 
         .task-card {
-            background: #fff; border-radius: 14px;
+            background: #fff; border-radius: 3px;
             box-shadow: 0 2px 10px rgba(15,23,42,0.07);
-            margin-bottom: 1.5rem; overflow: hidden;
+            margin-bottom: 1.5rem; overflow: hidden; border:1px solid rgba(15,23,42,.12);
         }
         .task-header {
             display: flex; align-items: center; justify-content: space-between;
@@ -57,7 +57,7 @@ $test = $all_tests[$test_num];
         .task-type  { font-size: 0.78rem; opacity: 0.85; margin-top: 0.1rem; }
         .band-pill {
             background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-            border-radius: 20px; padding: 0.2rem 0.75rem;
+            border-radius: 3px; padding: 0.2rem 0.75rem;
             font-weight: 700; font-size: 0.9rem; white-space: nowrap;
         }
 
@@ -73,7 +73,7 @@ $test = $all_tests[$test_num];
         .btn-view-blue {
             display: inline-flex; align-items: center; gap: 0.4rem;
             background: #0b77ff; color: #fff; border: none;
-            padding: 0.55rem 1.2rem; border-radius: 8px;
+            padding: 0.55rem 1.2rem; border-radius: 3px;
             font-weight: 600; font-size: 0.88rem; cursor: pointer;
             text-decoration: none; transition: background 0.2s;
         }
@@ -81,7 +81,7 @@ $test = $all_tests[$test_num];
         .btn-view-pink {
             display: inline-flex; align-items: center; gap: 0.4rem;
             background: #ec4899; color: #fff; border: none;
-            padding: 0.55rem 1.2rem; border-radius: 8px;
+            padding: 0.55rem 1.2rem; border-radius: 3px;
             font-weight: 600; font-size: 0.88rem; cursor: pointer;
             text-decoration: none; transition: background 0.2s;
         }
@@ -103,7 +103,7 @@ $test = $all_tests[$test_num];
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-4">
-            <div style="max-width:720px;">
+            <div>
 
                 <a href="model_answers.php" class="back-link">
                     <i class="bi bi-arrow-left"></i> Model Answers

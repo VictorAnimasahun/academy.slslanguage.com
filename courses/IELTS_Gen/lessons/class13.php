@@ -156,12 +156,12 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>IELTS Speaking Test Overview</h4>
                         <p class="text-muted mb-2">Full walkthrough of all three Speaking parts — what the examiner assesses at each stage.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#6366f1;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#6366f1;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>S3 Part 1 Speaking Class 2</h4>
                         <p class="text-muted mb-2">Advanced Part 1 fluency — varying response length and using lexical range naturally.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#6366f1;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#6366f1;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                 </div>
             </div>
@@ -171,7 +171,7 @@ if ($__pacingBlockers) { ?>
                 <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                     <h4 style="color:#15803d;margin-top:0;">Part 3 Opinion Extension Framework</h4>
                     <p class="mb-2">5 abstract Part 3 questions. For each, write a 3-sentence extended answer using the framework: view → reason → example. Topics: education, technology, environment, health, and work.</p>
-                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:8px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
+                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:3px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
                 </div>
             </div>
 

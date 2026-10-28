@@ -106,7 +106,7 @@ function require_course_enrollment(array $course_ids, string $content_label = 't
         <div class="main-wrapper flex-grow-1" style="flex:1;">
             <main class="content p-4">
                 <div class="container">
-                    <div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:16px;padding:2.5rem 2rem;text-align:center;margin:1.5rem auto;max-width:560px;">
+                    <div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:3px;padding:2.5rem 2rem;text-align:center;margin:1.5rem auto;max-width:560px;">
                         <div style="font-size:2.5rem;margin-bottom:1rem;color:#64748b;"><i class="bi bi-lock"></i></div>
                         <h4 style="color:#1e293b;margin-bottom:.5rem;">
                             Enroll to unlock <?= htmlspecialchars($content_label) ?>
@@ -117,7 +117,7 @@ function require_course_enrollment(array $course_ids, string $content_label = 't
                             Enroll in the course to take it as part of your program.
                         </p>
                         <a href="<?= htmlspecialchars($primaryUrl) ?>"
-                           style="display:inline-block;background:linear-gradient(90deg,#0b77ff,#6366f1);color:#fff;padding:.75rem 2rem;border-radius:10px;font-weight:700;text-decoration:none;font-size:.95rem;">
+                           style="display:inline-block;background:linear-gradient(90deg,#0b77ff,#6366f1);color:#fff;padding:.75rem 2rem;border-radius:3px;font-weight:700;text-decoration:none;font-size:.95rem;">
                             View <?= htmlspecialchars($primaryTitle) ?> →
                         </a>
                         <div style="margin-top:1rem;">

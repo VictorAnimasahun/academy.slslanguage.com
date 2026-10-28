@@ -36,8 +36,8 @@ $base_url = "../../";
             margin: 2rem auto;
             background: #fff;
             padding: 2rem;
-            border-radius: 14px;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+            border-radius: 3px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.1); border:1px solid rgba(15,23,42,.12);
         }
 
         h1, h2 {
@@ -48,14 +48,14 @@ $base_url = "../../";
             background: #f8faff;
             padding: 1.2rem;
             margin: 1.5rem 0;
-            border-radius: 8px;
+            border-radius: 3px;
         }
 
         .activity {
             background: #f0f7ff;
             padding: 1.5rem;
             margin: 1.5rem 0;
-            border-radius: 8px;
+            border-radius: 3px;
         }
 
         .nav-links {
@@ -71,13 +71,13 @@ $base_url = "../../";
             background: linear-gradient(90deg, #0b77ff, #6f8cff);
             color: #fff;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 3px;
             transition: all 0.3s ease;
         }
 
         .nav-links a:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(11, 119, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(11, 119, 255, 0.3); border:1px solid rgba(15,23,42,.12);
         }
     </style>
 </head>

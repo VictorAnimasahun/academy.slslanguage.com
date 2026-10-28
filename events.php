@@ -53,10 +53,9 @@ $past = executeQuery($db, "
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link href="assets/css/dashboard.css" rel="stylesheet">
     <style>
-        @media(min-width:1400px){.content{max-width:calc(100vw - 500px);}}
-        .event-card { border-radius:16px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.06); padding:1.75rem; margin-bottom:1rem; }
+        .event-card { border-radius:3px; background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.06); padding:1.75rem; margin-bottom:1rem; border:1px solid rgba(15,23,42,.12); }
         body.dark .event-card { background:#1f1f1f; }
-        .event-badge { display:inline-flex; align-items:center; gap:.35rem; background:#fee2e2; color:#991b1b; border-radius:20px; padding:.25rem .8rem; font-size:.75rem; font-weight:700; }
+        .event-badge { display:inline-flex; align-items:center; gap:.35rem; background:#fee2e2; color:#991b1b; border-radius:3px; padding:.25rem .8rem; font-size:.75rem; font-weight:700; }
         .event-meta span { font-size:.88rem; color:#6b7280; display:inline-flex; align-items:center; gap:.35rem; margin-right:1rem; }
     </style>
 </head>
@@ -66,7 +65,7 @@ $past = executeQuery($db, "
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
     <div class="main-wrapper flex-grow-1">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
-        <main class="content p-4" style="max-width:760px;">
+        <main class="content p-4">
             <div class="d-flex align-items-center gap-3 mb-4">
                 <i class="bi bi-calendar-event-fill fs-2 text-primary"></i>
                 <div>

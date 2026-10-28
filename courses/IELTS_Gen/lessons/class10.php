@@ -107,7 +107,7 @@ if ($__pacingBlockers) { ?>
                         <p class="mb-0">What did you learn? How did it change you or your perspective? What impact did it have? This is your conclusion — and if you are running short on time, land here cleanly.</p>
                     </div>
                 </div>
-                <div class="p-3 mt-3" style="background:#f8f9fa;border-left:4px solid #6366f1;border-radius:4px;">
+                <div class="p-3 mt-3" style="background:#f8f9fa;border: 1px solid #dbe1ea;border-radius:3px;">
                     <strong>How to use STARE:</strong> During your 1-minute planning time, jot down one word or phrase for each letter. You now have 5 content blocks. Each block takes 15–25 seconds to speak. That is 75–125 seconds of structured, coherent content — well within the required 2 minutes.
                 </div>
             </div>
@@ -186,7 +186,7 @@ if ($__pacingBlockers) { ?>
                 </p>
                 <div class="row g-3 mt-1">
                     <div class="col-md-6">
-                        <div class="p-3" style="background:#fef2f2;border-radius:8px;border:1px solid #fca5a5;">
+                        <div class="p-3" style="background:#fef2f2;border-radius:3px;border:1px solid #fca5a5;">
                             <strong class="text-danger">Too formal for informal letter:</strong>
                             <ul class="mb-0 mt-2 small">
                                 <li>"I am writing to inform you that..."</li>
@@ -197,7 +197,7 @@ if ($__pacingBlockers) { ?>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="p-3" style="background:#f0fdf4;border-radius:8px;border:1px solid #86efac;">
+                        <div class="p-3" style="background:#f0fdf4;border-radius:3px;border:1px solid #86efac;">
                             <strong class="text-success">Natural informal alternatives:</strong>
                             <ul class="mb-0 mt-2 small">
                                 <li>"I just wanted to let you know..."</li>
@@ -217,7 +217,7 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>S4 Part 2 Speaking Class 2</h4>
                         <p class="text-muted mb-2">Extended STARE framework drills with model answers and fluency techniques for the long turn.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;">
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;">
                             <i class="bi bi-play-circle-fill" style="font-size:2rem;color:#6366f1;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -225,7 +225,7 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Band 9 Part 2 FC1 LR1-5</h4>
                         <p class="text-muted mb-2">Annotated Band 9 Part 2 responses with Fluency &amp; Coherence and Lexical Resource commentary.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;">
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;">
                             <i class="bi bi-play-circle-fill" style="font-size:2rem;color:#6366f1;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -236,7 +236,7 @@ if ($__pacingBlockers) { ?>
             <!-- Quiz -->
             <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                 <h4 style="color:#15803d;margin-top:0;"><i class="bi bi-patch-question me-2"></i>Class Quiz</h4>
-                <div class="p-3" style="background:#dcfce7;border-radius:8px;">
+                <div class="p-3" style="background:#dcfce7;border-radius:3px;">
                     <p class="mb-1"><strong>Long turn coherence self-assessment</strong></p>
                     <p class="mb-0">Record a 2-minute Part 2 response on a given cue card, then rate yourself on the 4 Speaking criteria: Fluency &amp; Coherence, Lexical Resource, Grammatical Range &amp; Accuracy, Pronunciation (score each 1–9). Write one specific thing you would improve in each criterion.</p>
                 </div>

@@ -162,7 +162,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 
         .hero-badge {
             display: inline-flex; align-items: center; gap: .3rem;
-            padding: .35rem .85rem; border-radius: 999px;
+            padding: .35rem .85rem; border-radius: 3px;
             font-size: .8rem; font-weight: 700;
         }
         .hero-badge-free     { background: rgba(16,185,129,.25); color: #6ee7b7; border: 1px solid rgba(16,185,129,.4); }
@@ -175,24 +175,24 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         /* Enrolment card */
         .enrol-card {
             background: #fff;
-            border-radius: 16px;
+            border-radius: 3px;
             box-shadow: 0 8px 32px rgba(15,23,42,.12);
-            padding: 1.5rem;
+            padding: 1.5rem; border:1px solid rgba(15,23,42,.12);
         }
         .enrol-card .price { font-size: 2rem; font-weight: 800; color: #0b77ff; line-height: 1; }
 
         /* Content cards */
         .detail-card {
             background: #fff;
-            border-radius: 14px;
+            border-radius: 3px;
             box-shadow: 0 2px 12px rgba(15,23,42,.06);
             padding: 1.5rem;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.25rem; border:1px solid rgba(15,23,42,.12);
         }
 
         .feature-item { display: flex; align-items: flex-start; gap: .75rem; margin-bottom: 1rem; }
         .feature-icon {
-            width: 36px; height: 36px; border-radius: 10px;
+            width: 36px; height: 36px; border-radius: 3px;
             background: #eef4ff; color: #0b77ff;
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0; font-size: 1rem;
@@ -296,7 +296,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                     <h4 class="fw-bold mb-3">Course Content</h4>
                     <div class="accordion" id="courseAccordion">
                         <?php foreach ($modules as $i => $mod): ?>
-                        <div class="accordion-item border-0 mb-2" style="border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);">
+                        <div class="accordion-item border-0 mb-2" style="border-radius:3px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06); border:1px solid rgba(15,23,42,.12);">
                             <h2 class="accordion-header">
                                 <button class="accordion-button <?= $i > 0 ? 'collapsed' : '' ?> fw-semibold"
                                         type="button" data-bs-toggle="collapse"
@@ -370,8 +370,8 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                                     <span class="text-muted">Your progress</span>
                                     <span class="fw-semibold"><?= (int)$course['progress_percentage'] ?>%</span>
                                 </div>
-                                <div style="height:8px;background:#eef2ff;border-radius:4px;">
-                                    <div style="width:<?= (int)$course['progress_percentage'] ?>%;height:100%;background:linear-gradient(90deg,#0b77ff,#6f8cff);border-radius:4px;"></div>
+                                <div style="height:8px;background:#eef2ff;border-radius:3px;">
+                                    <div style="width:<?= (int)$course['progress_percentage'] ?>%;height:100%;background:linear-gradient(90deg,#0b77ff,#6f8cff);border-radius:3px;"></div>
                                 </div>
                             </div>
                             <?php endif; ?>

@@ -14,14 +14,13 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link href="../assets/css/dashboard.css" rel="stylesheet">
     <style>
-        @media(min-width:1400px){.content{max-width:calc(100vw - 500px);}}
         /* Cap content width for readability — centers it in the available space */
         .content > * { max-width: 900px; }
 
         /* Hero */
         .event-hero {
             background: linear-gradient(135deg, #0d1b4e 0%, #0b5c45 100%);
-            border-radius: 18px; color: #fff;
+            border-radius: 3px; color: #fff;
             padding: 2.75rem 2.25rem 2rem; position: relative; overflow: hidden;
         }
         .event-hero::after {
@@ -31,19 +30,19 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         }
         .platform-pill {
             display: inline-flex; align-items: center; gap: .4rem;
-            background: #fff; color: #0a66c2; border-radius: 20px;
+            background: #fff; color: #0a66c2; border-radius: 3px;
             padding: .3rem 1rem; font-weight: 700; font-size: .85rem;
             margin-bottom: 1.25rem;
         }
         .info-chip {
             display: inline-flex; align-items: center; gap: .35rem;
-            background: rgba(255,255,255,.12); border-radius: 20px;
+            background: rgba(255,255,255,.12); border-radius: 3px;
             padding: .3rem .9rem; font-size: .82rem;
         }
 
         /* Countdown */
         .countdown-bar {
-            background: rgba(0,0,0,.25); border-radius: 14px;
+            background: rgba(0,0,0,.25); border-radius: 3px;
             padding: 1.25rem 1rem; display: flex;
             gap: 1rem; justify-content: center; flex-wrap: wrap;
             margin-top: 1.75rem;
@@ -51,7 +50,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         .cd-cell { text-align: center; min-width: 70px; }
         .cd-num {
             font-size: 2.4rem; font-weight: 900; line-height: 1;
-            background: rgba(255,255,255,.15); border-radius: 12px;
+            background: rgba(255,255,255,.15); border-radius: 3px;
             padding: .4rem .6rem; display: block;
         }
         .cd-lbl {
@@ -61,9 +60,9 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 
         /* Speaker / panelist cards */
         .person-card {
-            background: #fff; border-radius: 16px; padding: 1.5rem 1.25rem;
+            background: #fff; border-radius: 3px; padding: 1.5rem 1.25rem;
             text-align: center; box-shadow: 0 4px 18px rgba(15,23,42,.06);
-            height: 100%;
+            height: 100%; border:1px solid rgba(15,23,42,.12);
         }
         body.dark .person-card { background: #1f1f1f; }
         .avatar-circle {
@@ -73,7 +72,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
             margin: 0 auto 1rem;
         }
         .role-badge {
-            font-size: .72rem; border-radius: 20px;
+            font-size: .72rem; border-radius: 3px;
             padding: .25rem .75rem; font-weight: 700;
             letter-spacing: .04em; display: inline-block; margin-bottom: .75rem;
         }
@@ -83,19 +82,19 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
 
         /* About section */
         .about-card {
-            background: #f8fafc; border-radius: 14px; padding: 1.75rem;
+            background: #f8fafc; border-radius: 3px; padding: 1.75rem;
         }
         body.dark .about-card { background: #161f2e; }
 
         /* Register CTA */
         .cta-card {
             background: linear-gradient(135deg, #0d1b4e 0%, #0b5c45 100%);
-            border-radius: 16px; color: #fff; padding: 2rem; text-align: center;
+            border-radius: 3px; color: #fff; padding: 2rem; text-align: center;
         }
         .linkedin-btn {
             display: inline-flex; align-items: center; gap: .5rem;
             background: #fff; color: #0a66c2;
-            border-radius: 10px; padding: .8rem 2rem;
+            border-radius: 3px; padding: .8rem 2rem;
             font-weight: 700; font-size: .95rem; text-decoration: none;
             transition: opacity .2s;
         }

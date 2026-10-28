@@ -159,7 +159,7 @@ switch ($section) {
         foreach ($tables as $t) {
             echo "<h3>$t</h3>";
             $row = $db->query("SHOW CREATE TABLE `$t`")->fetch(PDO::FETCH_ASSOC);
-            echo '<pre style="background:#1e293b;padding:1rem;border-radius:8px;overflow-x:auto;">' . htmlspecialchars($row['Create Table'] ?? $row[array_key_last($row)]) . '</pre>';
+            echo '<pre style="background:#1e293b;padding:1rem;border-radius:3px;overflow-x:auto;">' . htmlspecialchars($row['Create Table'] ?? $row[array_key_last($row)]) . '</pre>';
         }
         break;
 }

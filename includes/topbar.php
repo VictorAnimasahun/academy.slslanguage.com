@@ -83,13 +83,13 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
             .bell-link { position:relative; display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; color:#334155; text-decoration:none; }
             .bell-link i { font-size:1.2rem; }
             .bell-link:hover { background:#f1f5f9; color:#0b77ff; }
-            .bell-link .bell-count { display:none; position:absolute; top:1px; right:-2px; min-width:17px; height:17px; padding:0 4px; border-radius:9px;
+            .bell-link .bell-count { display:none; position:absolute; top:1px; right:-2px; min-width:17px; height:17px; padding:0 4px; border-radius:3px;
                 background:#0b77ff; color:#fff; font-size:.66rem; font-weight:700; line-height:17px; text-align:center; }
             .bell-link.has-unread { color:#0b77ff; animation:bellGlow 2s ease-in-out infinite; }
             .bell-link.has-unread .bell-count { display:block; }
             @keyframes bellGlow {
-                0%, 100% { box-shadow:0 0 0 0 rgba(11,119,255,.45); background:rgba(11,119,255,.08); }
-                50%      { box-shadow:0 0 14px 4px rgba(11,119,255,.35); background:rgba(11,119,255,.16); }
+                0%, 100% { box-shadow:0 0 0 0 rgba(11,119,255,.45); background:rgba(11,119,255,.08); border:1px solid rgba(15,23,42,.12); }
+                50%      { box-shadow:0 0 14px 4px rgba(11,119,255,.35); background:rgba(11,119,255,.16); border:1px solid rgba(15,23,42,.12); }
             }
             @media (prefers-reduced-motion: reduce) { .bell-link.has-unread { animation:none; box-shadow:0 0 10px 2px rgba(11,119,255,.35); } }
             body.dark .bell-link { color:#cbd5e1; }
@@ -119,7 +119,7 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
         </script>
 
         <?php if (isset($userName)): ?>
-        <div class="exam-fs-hide" style="width:34px;height:34px;border-radius:10px;
+        <div class="exam-fs-hide" style="width:34px;height:34px;border-radius:3px;
                     background:linear-gradient(90deg,#7c3aed,#ec4899);
                     display:flex;align-items:center;justify-content:center;
                     color:white;font-weight:700;font-size:.85rem;cursor:default;"

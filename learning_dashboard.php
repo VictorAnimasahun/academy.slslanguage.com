@@ -152,7 +152,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             background: rgba(255,255,255,.2);
             color: #fff;
             padding: .15rem .55rem;
-            border-radius: 999px;
+            border-radius: 3px;
             font-size: .7rem;
             font-weight: 600;
         }
@@ -228,7 +228,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
         <div class="row align-items-start">
             <?php /* Inside the grid, as wide as its two columns together (750px + a third), so the button never runs off the edge. */ ?>
             <?php if ($needsOrientation): ?>
-            <div class="col-12" style="max-width:calc(750px + 33.333%);padding-right:1.5rem;">
+            <div class="col-12">
             <div class="card border mb-3" style="border-color:#bfdbfe !important;background:#eff6ff;">
                 <div class="card-body d-flex flex-wrap align-items-center gap-3">
                     <i class="bi bi-compass" style="font-size:1.8rem;color:#0b77ff;"></i>
@@ -243,7 +243,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             <?php endif; ?>
 
             <!-- Left column -->
-            <div class="col-lg-8" style="max-width:750px;">
+            <div class="col-lg-8">
 
                 <!-- Stat cards -->
                 <div class="d-flex gap-2 mb-4">
@@ -257,7 +257,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                         </div>
                     </div>
                     <div class="stat-card d-flex align-items-center gap-2" style="flex:1;min-width:0;">
-                        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(90deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;color:#fff;">
+                        <div style="width:32px;height:32px;border-radius:3px;background:linear-gradient(90deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;color:#fff;">
                             <i class="bi bi-award" style="font-size:.8rem;"></i>
                         </div>
                         <div style="min-width:0;">
@@ -266,7 +266,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                         </div>
                     </div>
                     <div class="stat-card d-flex align-items-center gap-2" style="flex:1;min-width:0;">
-                        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(90deg,#7c3aed,#c084fc);display:flex;align-items:center;justify-content:center;color:#fff;">
+                        <div style="width:32px;height:32px;border-radius:3px;background:linear-gradient(90deg,#7c3aed,#c084fc);display:flex;align-items:center;justify-content:center;color:#fff;">
                             <i class="bi bi-mortarboard-fill" style="font-size:.8rem;"></i>
                         </div>
                         <div style="min-width:0;">
@@ -326,8 +326,8 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                 </div>
                                 <?php endif; ?>
                                 <div class="mt-auto">
-                                    <div style="height:6px;background:#eef2ff;border-radius:4px;margin-bottom:.4rem;">
-                                        <div style="width:<?php echo $progress; ?>%;height:100%;background:<?php echo $barCol; ?>;border-radius:4px;transition:width .6s;"></div>
+                                    <div style="height:6px;background:#eef2ff;border-radius:3px;margin-bottom:.4rem;">
+                                        <div style="width:<?php echo $progress; ?>%;height:100%;background:<?php echo $barCol; ?>;border-radius:3px;transition:width .6s;"></div>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-muted" style="font-size:.75rem;"><?php echo $progress; ?>% complete</small>
@@ -350,10 +350,10 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                         <?php foreach ($available_courses as $course): ?>
                         <div class="col-md-4">
                             <div class="course-card h-100 d-flex flex-column">
-                                <div style="height:80px;background:linear-gradient(135deg,#eef4ff,#f5f3ff);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem;flex-shrink:0;">
+                                <div style="height:80px;background:linear-gradient(135deg,#eef4ff,#f5f3ff);border-radius:3px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem;flex-shrink:0;">
                                     <?php if (!empty($course['thumbnail'])): ?>
                                         <img src="<?php echo htmlspecialchars($course['thumbnail']); ?>"
-                                             alt="" style="max-height:100%;max-width:100%;object-fit:cover;border-radius:8px;" loading="lazy">
+                                             alt="" style="max-height:100%;max-width:100%;object-fit:cover;border-radius:3px;" loading="lazy">
                                     <?php else: ?>
                                         <i class="bi bi-book-half" style="font-size:2rem;color:#93c5fd;"></i>
                                     <?php endif; ?>
@@ -396,13 +396,13 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                         $barCol = $pct >= 70 ? '#10b981' : ($pct >= 50 ? '#f59e0b' : '#ef4444');
                     ?>
                     <div class="d-flex align-items-center gap-3 py-2">
-                        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#0b77ff,#6366f1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <div style="width:36px;height:36px;border-radius:3px;background:linear-gradient(135deg,#0b77ff,#6366f1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                             <i class="bi bi-journal-check text-white" style="font-size:.85rem;"></i>
                         </div>
                         <div style="flex:1;min-width:0;">
                             <div class="fw-semibold text-truncate" style="font-size:.88rem;"><?php echo htmlspecialchars($attempt['title']); ?></div>
-                            <div style="height:5px;background:#e5e7eb;border-radius:4px;margin:.25rem 0;">
-                                <div style="width:<?php echo $pct; ?>%;height:100%;background:<?php echo $barCol; ?>;border-radius:4px;"></div>
+                            <div style="height:5px;background:#e5e7eb;border-radius:3px;margin:.25rem 0;">
+                                <div style="width:<?php echo $pct; ?>%;height:100%;background:<?php echo $barCol; ?>;border-radius:3px;"></div>
                             </div>
                             <div class="text-muted" style="font-size:.75rem;"><?php echo $date; ?></div>
                         </div>
@@ -428,7 +428,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                             $msDate = date('d M Y', strtotime($ms['created_at']));
                         ?>
                         <div class="d-flex align-items-start gap-3 py-2">
-                            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <div style="width:36px;height:36px;border-radius:3px;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                 <i class="bi bi-clipboard-check text-white" style="font-size:.85rem;"></i>
                             </div>
                             <div style="flex:1;min-width:0;">
@@ -451,7 +451,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                     ?>
                                     <a href="<?php echo $resumeUrl; ?>" class="btn btn-sm btn-outline-warning py-0 px-2" style="font-size:.75rem;">Resume</a>
                                 <?php elseif ($ms['status'] === 'awaiting_speaking_grade'): ?>
-                                    <span style="background:#fef3c7;color:#92400e;padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:600;">Awaiting Speaking</span>
+                                    <span style="background:#fef3c7;color:#92400e;padding:.2rem .6rem;border-radius:3px;font-size:.72rem;font-weight:600;">Awaiting Speaking</span>
                                 <?php elseif ($ms['status'] === 'results_released'): ?>
                                     <div class="d-flex flex-column align-items-end gap-1">
                                         <span style="font-size:1.1rem;font-weight:800;color:#10b981;"><?php echo htmlspecialchars($msScoreWord); ?> <?php echo mock_fmt_score($ms['overall_band'], $msIsCelpip, true); ?></span>
@@ -462,7 +462,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                             <span>S:<?php echo mock_fmt_score($ms['speaking_band'], $msIsCelpip); ?></span>
                                         </div>
                                         <button onclick="downloadMockReportPDF(<?php echo htmlspecialchars(json_encode(mock_report_raw($db, $ms, $userFullName), JSON_INVALID_UTF8_SUBSTITUTE)); ?>)"
-                                            style="background:none;border:1px solid #10b981;color:#10b981;border-radius:6px;padding:.15rem .5rem;font-size:.72rem;cursor:pointer;">
+                                            style="background:none;border:1px solid #10b981;color:#10b981;border-radius:3px;padding:.15rem .5rem;font-size:.72rem;cursor:pointer;">
                                             ↓ PDF
                                         </button>
                                     </div>
@@ -476,7 +476,7 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
             </div>
 
             <!-- Right column -->
-            <div class="col-lg-4" style="padding-right:1.5rem;">
+            <div class="col-lg-4">
                 <div class="position-sticky" style="top:96px;">
 
                     <!-- Word of the Day -->
@@ -523,8 +523,8 @@ $userFullName = trim($userName . ' ' . $userLastname) ?: 'Learner';
                                 <span class="progress-course-label"><?= htmlspecialchars($course['title']) ?></span>
                                 <span class="progress-pct" style="font-size:.75rem;color:#6b7280;flex-shrink:0;margin-left:.5rem;"><?= $pct ?>%</span>
                             </div>
-                            <div class="progress-track" style="height:6px;background:#f0f4ff;border-radius:4px;">
-                                <div style="width:<?= $pct ?>%;height:100%;background:<?= $barCol ?>;border-radius:4px;transition:width .6s;"></div>
+                            <div class="progress-track" style="height:6px;background:#f0f4ff;border-radius:3px;">
+                                <div style="width:<?= $pct ?>%;height:100%;background:<?= $barCol ?>;border-radius:3px;transition:width .6s;"></div>
                             </div>
                         </div>
                         <?php endforeach; ?>

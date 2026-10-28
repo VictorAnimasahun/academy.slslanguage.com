@@ -24,11 +24,11 @@ $sections = [
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         .main-wrapper { padding: 2rem 1.5rem; min-height: 100vh; background: #f8f9fa; }
-        .mock-overview { background: #fff; border-radius: 16px; padding: 3rem 2.5rem; max-width: 950px; margin: 0 auto; box-shadow: 0 6px 30px rgba(0,0,0,.1); }
-        .mock-badge { display: inline-block; padding: .65rem 2rem; border-radius: 50px; background: linear-gradient(135deg, #2563eb, #38bdf8); color: #fff; font-size: 1.05rem; font-weight: 700; }
-        .section-item { background: #f8f9fa; border-radius: 12px; padding: 1.5rem 1.8rem; margin-bottom: 1rem; }
+        .mock-overview { background: #fff; border-radius: 3px; padding: 3rem 2.5rem; max-width: 950px; margin: 0 auto; box-shadow: 0 6px 30px rgba(0,0,0,.1); border:1px solid rgba(15,23,42,.12); }
+        .mock-badge { display: inline-block; padding: .65rem 2rem; border-radius: 3px; background: linear-gradient(135deg, #2563eb, #38bdf8); color: #fff; font-size: 1.05rem; font-weight: 700; }
+        .section-item { background: #f8f9fa; border-radius: 3px; padding: 1.5rem 1.8rem; margin-bottom: 1rem; }
         .section-icon { color: #2563eb; font-size: 1.8rem; }
-        .status-note { border-left: 4px solid #f59e0b; }
+        .status-note { border: 1px solid #dbe1ea; }
     </style>
 </head>
 <body>

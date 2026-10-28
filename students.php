@@ -36,11 +36,10 @@ $tintBg = ['blue' => '#E3EEFF', 'green' => '#DDF5E6', 'orange' => '#FFE9CC', 'pu
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link href="assets/css/dashboard.css" rel="stylesheet">
     <style>
-        .classmate-row { display:flex; align-items:center; gap:1rem; background:#fff; border-radius:14px; padding:1rem 1.25rem; margin-bottom:.6rem; box-shadow:0 1px 6px rgba(15,23,42,.06); }
+        .classmate-row { display:flex; align-items:center; gap:1rem; background:#fff; border-radius:3px; padding:1rem 1.25rem; margin-bottom:.6rem; box-shadow:0 1px 6px rgba(15,23,42,.06); border:1px solid rgba(15,23,42,.12); }
         body.dark .classmate-row { background:#1f1f1f; }
         .classmate-avatar { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; position:relative; }
         .online-dot { position:absolute; right:-2px; bottom:-2px; width:12px; height:12px; border-radius:50%; background:#16a34a; border:2px solid #fff; }
-        @media(min-width:1400px){.content{max-width:calc(100vw - 500px);}}
     </style>
 </head>
 <body class="light">
@@ -49,7 +48,7 @@ $tintBg = ['blue' => '#E3EEFF', 'green' => '#DDF5E6', 'orange' => '#FFE9CC', 'pu
     <?php include INCLUDES_PATH . '/navbar.php'; ?>
     <div class="main-wrapper flex-grow-1">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
-        <main class="content p-4" style="max-width:720px;">
+        <main class="content p-4">
             <div class="d-flex align-items-center gap-3 mb-4">
                 <i class="bi bi-people-fill fs-2 text-primary"></i>
                 <div>

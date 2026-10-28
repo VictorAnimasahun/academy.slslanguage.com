@@ -135,7 +135,7 @@ function render_upgrade_prompt(string $required_tier, string $content_label = 't
     <div style="
         background: #f8fafc;
         border: 2px dashed #cbd5e1;
-        border-radius: 16px;
+        border-radius: 3px;
         padding: 2.5rem 2rem;
         text-align: center;
         margin: 1.5rem 0;
@@ -154,7 +154,7 @@ function render_upgrade_prompt(string $required_tier, string $content_label = 't
                background: linear-gradient(90deg, #0b77ff, #6366f1);
                color: #fff;
                padding: 0.75rem 2rem;
-               border-radius: 10px;
+               border-radius: 3px;
                font-weight: 700;
                text-decoration: none;
                font-size: 0.95rem;

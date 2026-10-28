@@ -125,7 +125,7 @@ $base_url = "../../";
             color: #fff;
             width: 44px;
             height: 44px;
-            border-radius: 10px;
+            border-radius: 3px;
         }
 
         .main-wrapper {
@@ -151,7 +151,7 @@ $base_url = "../../";
             border-radius: var(--card-radius);
             padding: 2rem;
             box-shadow: 0 6px 18px rgba(15,23,42,0.04);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.5rem; border:1px solid rgba(15,23,42,.12);
         }
 
         .media-section {
@@ -160,16 +160,16 @@ $base_url = "../../";
 
         video, audio {
             width: 100%;
-            border-radius: 8px;
+            border-radius: 3px;
             margin-top: 0.5rem;
         }
 
         .tips {
             background: linear-gradient(135deg, #e6f0ff 0%, #f0f7ff 100%);
-            border-left: 4px solid var(--accent);
+            border: 1px solid #dbe1ea;
             padding: 1.5rem;
             margin: 1.5rem 0;
-            border-radius: 8px;
+            border-radius: 3px;
         }
 
         .tips h3 {
@@ -190,14 +190,14 @@ $base_url = "../../";
             background: linear-gradient(90deg, #0b77ff, #6f8cff);
             color: #fff;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 3px;
             transition: all 0.3s ease;
             font-weight: 500;
         }
 
         .nav-links a:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(11, 119, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(11, 119, 255, 0.3); border:1px solid rgba(15,23,42,.12);
         }
 
         .nav-links a.secondary {
@@ -223,7 +223,7 @@ $base_url = "../../";
             justify-content: center;
             text-align: center;
             color: var(--muted);
-            font-size: 0.875rem;
+            font-size: 0.875rem; border:1px solid rgba(15,23,42,.12);
         }
 
         .ad-container.large {
@@ -247,7 +247,7 @@ $base_url = "../../";
         @media (max-width: 1199px) {
             .sidebar {
                 transform: translateX(-100%);
-                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1); border:1px solid rgba(15,23,42,.12);
             }
 
             .sidebar.active {

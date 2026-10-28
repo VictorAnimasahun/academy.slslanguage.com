@@ -19,13 +19,13 @@ if (!isset($_SESSION['user_id'])) {
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         .task-title { font-size:1.15rem; font-weight:700; margin:2.25rem 0 .75rem; padding-bottom:.4rem; border-bottom:2px solid #0b77ff; }
-        .prompt-card { background:#f0f7ff; border-radius:8px; padding:1rem 1.25rem; margin-bottom:1rem; }
-        .script-card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:1.25rem; margin-bottom:1.25rem; }
+        .prompt-card { background:#f0f7ff; border-radius:3px; padding:1rem 1.25rem; margin-bottom:1rem; }
+        .script-card { background:#fff; border:1px solid #e5e7eb; border-radius:3px; padding:1.25rem; margin-bottom:1.25rem; }
         .script-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:.75rem; }
         .script-name { font-weight:700; }
-        .band-pill { background:#0b77ff; color:#fff; border-radius:999px; padding:.25rem .8rem; font-weight:700; font-size:.85rem; }
-        .script-img { width:100%; max-width:640px; border:1px solid #e5e7eb; border-radius:8px; display:block; margin:0 auto 1rem; }
-        .examiner { background:#f8fafc; border-radius:10px; padding:1rem 1.25rem; font-size:.93rem; line-height:1.6; }
+        .band-pill { background:#0b77ff; color:#fff; border-radius:3px; padding:.25rem .8rem; font-weight:700; font-size:.85rem; }
+        .script-img { width:100%; max-width:640px; border:1px solid #e5e7eb; border-radius:3px; display:block; margin:0 auto 1rem; }
+        .examiner { background:#f8fafc; border-radius:3px; padding:1rem 1.25rem; font-size:.93rem; line-height:1.6; }
         .crit li { margin-bottom:.3rem; }
     </style>
 </head>
@@ -36,7 +36,7 @@ if (!isset($_SESSION['user_id'])) {
     <div class="main-wrapper flex-grow-1" style="flex:1;">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
         <main class="content p-4">
-            <div style="max-width:820px;">
+            <div>
                 <nav aria-label="breadcrumb" class="mb-3">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="model_answers.php">Model Answers</a></li>

@@ -32,18 +32,17 @@ $mentors = executeQuery($db, "
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link href="assets/css/dashboard.css" rel="stylesheet">
     <style>
-        .mentor-card { background:#fff; border-radius:16px; padding:2rem; text-align:center;
-            box-shadow:0 4px 16px rgba(0,0,0,.06); transition:transform .2s; }
+        .mentor-card { background:#fff; border-radius:3px; padding:2rem; text-align:center;
+            box-shadow:0 4px 16px rgba(0,0,0,.06); transition:transform .2s; border:1px solid rgba(15,23,42,.12); }
         .mentor-card:hover { transform:translateY(-4px); }
         body.dark .mentor-card { background:#1f1f1f; }
         .mentor-avatar { width:72px; height:72px; border-radius:50%;
             background:linear-gradient(135deg,#0b77ff,#7c3aed);
             display:flex; align-items:center; justify-content:center;
             color:#fff; font-size:1.5rem; font-weight:700; margin:0 auto 1rem; }
-        .mentor-pill { display:inline-block; padding:.3rem .9rem; border-radius:20px; font-size:.8rem; font-weight:700; margin-top:.75rem; }
+        .mentor-pill { display:inline-block; padding:.3rem .9rem; border-radius:3px; font-size:.8rem; font-weight:700; margin-top:.75rem; }
         .pill-requested { background:#fef3c7; color:#92400e; }
         .pill-confirmed { background:#dcfce7; color:#166534; }
-        @media(min-width:1400px){.content{max-width:calc(100vw - 500px);}}
     </style>
 </head>
 <body class="light">

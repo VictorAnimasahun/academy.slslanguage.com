@@ -26,9 +26,9 @@ if (!isset($_SESSION['user_id'])) {
             max-width: 800px;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
+            border-radius: 3px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
+            overflow: hidden; border:1px solid rgba(15,23,42,.12);
         }
 
         .header {
@@ -56,8 +56,8 @@ if (!isset($_SESSION['user_id'])) {
             margin-bottom: 30px;
             padding: 20px;
             background: #f8f9fa;
-            border-radius: 10px;
-            border-left: 4px solid #FF69B4;
+            border-radius: 3px;
+            border: 1px solid #dbe1ea;
         }
 
         .question-text {
@@ -81,7 +81,7 @@ if (!isset($_SESSION['user_id'])) {
             padding: 12px 15px;
             background: white;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 3px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -117,7 +117,7 @@ if (!isset($_SESSION['user_id'])) {
             background: linear-gradient(135deg, #4A90E2 0%, #FF69B4 100%);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 3px;
             font-size: 1.2em;
             font-weight: 600;
             cursor: pointer;
@@ -139,7 +139,7 @@ if (!isset($_SESSION['user_id'])) {
             margin-top: 30px;
             padding: 25px;
             background: #f8f9fa;
-            border-radius: 10px;
+            border-radius: 3px;
             text-align: center;
             display: none;
         }
@@ -171,7 +171,7 @@ if (!isset($_SESSION['user_id'])) {
             background: #6c757d;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 3px;
             font-size: 1em;
             cursor: pointer;
             transition: background 0.3s ease;
@@ -188,7 +188,7 @@ if (!isset($_SESSION['user_id'])) {
             background: linear-gradient(135deg, #4A90E2 0%, #FF69B4 100%);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 3px;
             font-size: 1em;
             cursor: pointer;
             transition: transform 0.3s ease;

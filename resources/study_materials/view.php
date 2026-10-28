@@ -116,7 +116,7 @@ if (isset($_GET['pdf']) && $hasPdf) {
         }
         .book-stripe {
             width: 6px;
-            border-radius: 6px;
+            border-radius: 3px;
             align-self: stretch;
             flex-shrink: 0;
             min-height: 60px;
@@ -127,14 +127,14 @@ if (isset($_GET['pdf']) && $hasPdf) {
             letter-spacing: 0.06em;
             text-transform: uppercase;
             padding: 3px 9px;
-            border-radius: 20px;
+            border-radius: 3px;
             display: inline-block;
             margin-bottom: 0.4rem;
         }
         .viewer-wrapper {
             background: #fff;
             border: 1px solid #e5e7eb;
-            border-radius: 14px;
+            border-radius: 3px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
@@ -149,7 +149,7 @@ if (isset($_GET['pdf']) && $hasPdf) {
         .viewer-toolbar .badge-mode {
             font-size: 0.7rem;
             padding: 3px 8px;
-            border-radius: 20px;
+            border-radius: 3px;
             background: #f3f4f6;
             color: #6b7280;
             font-weight: 600;
@@ -203,7 +203,7 @@ if (isset($_GET['pdf']) && $hasPdf) {
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-4">
-            <div class="container-fluid" style="max-width:1000px;">
+            <div class="container-fluid">
 
                 <!-- Breadcrumb -->
                 <nav class="mb-3" style="font-size:0.85rem;">

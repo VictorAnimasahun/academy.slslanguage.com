@@ -116,7 +116,7 @@ if (!function_exists('crash_course_introduction_body')) {
         // The same type labels and colours as the course page (includes/content_types.php).
         $chip = function (string $kind) use ($h): string {
             $t = content_type_info($kind);
-            return '<span style="display:inline-block;padding:.12rem .55rem;border-radius:999px;font-size:.72rem;font-weight:700;background:'
+            return '<span style="display:inline-block;padding:.12rem .55rem;border-radius:3px;font-size:.72rem;font-weight:700;background:'
                  . $h($t['bg']) . ';color:' . $h($t['fg']) . ';">' . $h($t['label']) . '</span>';
         };
         $formats = [

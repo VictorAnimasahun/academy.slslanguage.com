@@ -72,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .main-wrapper { padding: 2rem 1rem; }
         
         .builder-card {
-            background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            background: white; border-radius: 3px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             padding: 2rem; border: 1px solid #e2e8f0;
         }
 
         .step-container {
-            border-left: 3px solid #cbd5e1; padding-left: 1.5rem; margin-bottom: 1.5rem; position: relative;
+            border: 1px solid #dbe1ea; padding-left: 1.5rem; margin-bottom: 1.5rem; position: relative;
         }
-        .step-container.active { border-left-color: #6366f1; }
+        .step-container.active { }
         
         .step-label {
             font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 0.5rem; display: block;
@@ -89,20 +89,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .form-control {
             background: #f8fafc; border: 2px solid #e2e8f0; padding: 0.8rem; transition: all 0.2s;
         }
-        .form-control:focus { background: white; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .form-control:focus { background: white; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); border:1px solid rgba(15,23,42,.12); }
 
         .preview-box {
-            background: #e0e7ff; border: 2px dashed #6366f1; border-radius: 12px;
+            background: #e0e7ff; border: 2px dashed #6366f1; border-radius: 3px;
             padding: 1.5rem; margin-top: 2rem; color: #312e81; font-size: 1.1rem; line-height: 1.6;
         }
 
         .topic-badge {
-            background: #312e81; color: white; padding: 0.5rem 1rem; border-radius: 8px;
+            background: #312e81; color: white; padding: 0.5rem 1rem; border-radius: 3px;
             display: inline-block; margin-bottom: 2rem; font-weight: 600;
         }
         
         .btn-build {
-            background: #6366f1; color: white; width: 100%; padding: 1rem; font-weight: 700; border: none; border-radius: 8px;
+            background: #6366f1; color: white; width: 100%; padding: 1rem; font-weight: 700; border: none; border-radius: 3px;
         }
         .btn-build:hover { background: #4f46e5; }
     </style>

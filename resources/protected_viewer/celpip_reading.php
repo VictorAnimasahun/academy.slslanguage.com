@@ -55,7 +55,7 @@ $studentEmail = $_SESSION['user_email'] ?? '';
     .viewer-stage {
         position: relative;
         background: #111827;
-        border-radius: 14px;
+        border-radius: 3px;
         overflow: hidden;
         box-shadow: 0 10px 40px rgba(0,0,0,.25);
         aspect-ratio: 16 / 9;
@@ -63,7 +63,7 @@ $studentEmail = $_SESSION['user_email'] ?? '';
         align-items: center;
         justify-content: center;
         user-select: none;
-        -webkit-user-select: none;
+        -webkit-user-select: none; border:1px solid rgba(15,23,42,.12);
     }
     .viewer-stage img {
         max-width: 100%;
@@ -115,7 +115,7 @@ $studentEmail = $_SESSION['user_email'] ?? '';
         gap: 1rem;
     }
     .nav-btn {
-        background: #1f2937; color: #fff; border: none; border-radius: 8px;
+        background: #1f2937; color: #fff; border: none; border-radius: 3px;
         padding: .6rem 1.1rem; font-weight: 600; font-size: .9rem; cursor: pointer;
         display: flex; align-items: center; gap: .4rem;
     }

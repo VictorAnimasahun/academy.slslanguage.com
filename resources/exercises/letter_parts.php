@@ -93,11 +93,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			max-width: 100%;
 			height: calc(100vh - 2rem);
 			background: white;
-			border-radius: 12px;
+			border-radius: 3px;
 			padding: 1rem;
 			box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 			display: flex;
-			flex-direction: column;
+			flex-direction: column; border:1px solid rgba(15,23,42,.12);
 		}
 
 		.exercise-header {
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 			color: white;
 			padding: 0.4rem 1rem;
-			border-radius: 20px;
+			border-radius: 3px;
 			font-weight: 700;
 			font-size: 0.9rem;
 		}
@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			margin: 0 1rem;
 			height: 8px;
 			background: #e2e8f0;
-			border-radius: 10px;
+			border-radius: 3px;
 			overflow: hidden;
 		}
 
@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			flex: 1;
 			background: #f8f9fa;
 			border: 2px solid #e2e8f0;
-			border-radius: 8px;
+			border-radius: 3px;
 			padding: 0.75rem;
 			overflow-y: auto;
 		}
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			flex: 1;
 			background: #f8f9fa;
 			border: 2px dashed #667eea;
-			border-radius: 8px;
+			border-radius: 3px;
 			padding: 0.75rem;
 			transition: all 0.3s ease;
 			overflow-y: auto;
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		.sentence {
 			background: white;
 			border: 2px solid #ddd;
-			border-radius: 6px;
+			border-radius: 3px;
 			padding: 0.5rem 0.6rem;
 			cursor: grab;
 			user-select: none;
@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 		.sentence:hover {
 			box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-			transform: translateY(-1px);
+			transform: translateY(-1px); border:1px solid rgba(15,23,42,.12);
 		}
 
 		.sentence.dragging {
@@ -252,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			color: white;
 			border: none;
 			padding: 0.6rem 1.5rem;
-			border-radius: 6px;
+			border-radius: 3px;
 			cursor: pointer;
 			font-size: 0.9rem;
 			font-weight: 600;
@@ -275,7 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 		.feedback {
 			padding: 0.75rem;
-			border-radius: 8px;
+			border-radius: 3px;
 			font-size: 0.9rem;
 			font-weight: 600;
 			display: none;
@@ -318,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		.modal-content {
 			background: white;
 			padding: 2rem;
-			border-radius: 12px;
+			border-radius: 3px;
 			text-align: center;
 			max-width: 400px;
 			animation: slideIn 0.3s ease-out;

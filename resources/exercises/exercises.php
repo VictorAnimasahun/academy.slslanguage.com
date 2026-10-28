@@ -139,7 +139,7 @@ $exercises = [
 		.test-tab {
 			padding: 0.75rem 1.5rem;
 			border: 2px solid #e5e7eb;
-			border-radius: 8px;
+			border-radius: 3px;
 			background: white;
 			cursor: pointer;
 			font-weight: 600;
@@ -200,7 +200,7 @@ $exercises = [
 
 		.exercise-card {
 			background: white;
-			border-radius: 12px;
+			border-radius: 3px;
 			overflow: hidden;
 			box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 			transition: all 0.3s ease;
@@ -208,12 +208,12 @@ $exercises = [
 			color: inherit;
 			display: flex;
 			flex-direction: column;
-			height: 100%;
+			height: 100%; border:1px solid rgba(15,23,42,.12);
 		}
 
 		.exercise-card:hover {
 			transform: translateY(-8px);
-			box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+			box-shadow: 0 12px 24px rgba(0,0,0,0.15); border:1px solid rgba(15,23,42,.12);
 		}
 
 		.exercise-header {
@@ -247,7 +247,7 @@ $exercises = [
 			padding: 0.6rem 1.2rem;
 			background: #667eea;
 			color: white;
-			border-radius: 6px;
+			border-radius: 3px;
 			text-decoration: none;
 			font-weight: 500;
 			transition: background 0.3s ease;

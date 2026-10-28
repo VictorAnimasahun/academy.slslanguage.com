@@ -29,9 +29,9 @@ $parts = speaking1Data();
         }
         .back-link:hover { text-decoration: underline; color: #0b77ff; }
         .part-card {
-            background: #fff; border-radius: 14px;
+            background: #fff; border-radius: 3px;
             box-shadow: 0 2px 10px rgba(15,23,42,0.07);
-            margin-bottom: 1.5rem; overflow: hidden;
+            margin-bottom: 1.5rem; overflow: hidden; border:1px solid rgba(15,23,42,.12);
         }
         .part-header {
             padding: 1rem 1.4rem; color: #fff; background: #10b981;
@@ -39,7 +39,7 @@ $parts = speaking1Data();
         }
         .part-body { padding: 1.4rem; }
         .cue-card {
-            background: linear-gradient(135deg,#eff6ff,#dbeafe); border-radius: 12px;
+            background: linear-gradient(135deg,#eff6ff,#dbeafe); border-radius: 3px;
             padding: 1.2rem; font-size: 0.93rem; line-height: 1.7; white-space: pre-line;
             border: 1px solid #bfdbfe; margin-bottom: 1.2rem;
         }
@@ -52,7 +52,7 @@ $parts = speaking1Data();
         .q-label { color: #0b77ff; }
         .a-label { color: #10b981; }
         .q-text { font-weight: 600; color: #1e293b; font-size: 0.93rem; margin-bottom: 0.5rem; }
-        .a-text { color: #334155; font-size: 0.93rem; line-height: 1.6; background:#f8fafc; border-radius:8px; padding:0.75rem 1rem; }
+        .a-text { color: #334155; font-size: 0.93rem; line-height: 1.6; background:#f8fafc; border-radius:3px; padding:0.75rem 1rem; }
     </style>
 </head>
 <body class="light">
@@ -64,7 +64,7 @@ $parts = speaking1Data();
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-4">
-            <div style="max-width:720px;">
+            <div>
 
                 <a href="model_answers.php" class="back-link">
                     <i class="bi bi-arrow-left"></i> Model Answers

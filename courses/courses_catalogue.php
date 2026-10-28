@@ -156,7 +156,7 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
                     <div class="col-lg-4 col-md-6">
                         <div class="course-card d-flex flex-column">
                             <!-- Course Image -->
-                            <div class="mb-3" style="height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                            <div class="mb-3" style="height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 3px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
                                 <?php if (isset($course['thumbnail']) && !empty($course['thumbnail'])): ?>
                                     <img src="<?php echo htmlspecialchars($course['thumbnail']); ?>" 
                                          alt="Course thumbnail" 

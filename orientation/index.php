@@ -76,9 +76,9 @@ $zones = ['Africa/Lagos', 'America/St_Johns', 'America/Halifax', 'America/Toront
     <style>
         :root { --sls: #0b77ff; --ink: #1f2937; --muted: #6b7280; --line: #e5e7eb; }
         .ori { max-width: 980px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
-        .ori-progress { height: 6px; background: var(--line); border-radius: 6px; overflow: hidden; margin-bottom: 1.25rem; }
+        .ori-progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 1.25rem; }
         .ori-progress > div { height: 100%; width: 0; background: var(--sls); transition: width .5s ease; }
-        .ori-card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.5rem; }
+        .ori-card { background: #fff; border: 1px solid var(--line); border-radius: 3px; padding: 1.5rem; }
         body.dark .ori-card { background: #111827; border-color: #374151; color: #e5e7eb; }
         .ori-step { display: none; }
         .ori-step.on { display: block; animation: ori-in .45s ease both; }
@@ -86,35 +86,35 @@ $zones = ['Africa/Lagos', 'America/St_Johns', 'America/Halifax', 'America/Toront
         .ori-step h2 { font-weight: 700; color: var(--ink); margin-bottom: .5rem; }
         body.dark .ori-step h2 { color: #f9fafb; }
         .ori-lead { color: var(--muted); font-size: 1.02rem; }
-        .ori-shot { position: relative; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 1rem; }
+        .ori-shot { position: relative; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; margin-top: 1rem; }
         .ori-shot img { width: 100%; display: block; animation: ori-zoom 6s ease-out both; transform-origin: 30% 40%; }
         @keyframes ori-zoom { from { transform: scale(1.06); } to { transform: scale(1); } }
         .ori-pin { position: absolute; transform: translate(-50%, -50%); opacity: 0; animation: ori-pin .4s ease forwards; }
         .ori-pin .dot { display: block; width: 22px; height: 22px; border-radius: 50%; background: var(--sls); border: 3px solid #fff;
                         box-shadow: 0 0 0 0 rgba(11,119,255,.6); animation: ori-pulse 1.8s ease-out infinite; }
         .ori-pin .tag { position: absolute; left: 50%; top: 28px; transform: translateX(-50%); white-space: nowrap; background: var(--ink);
-                        color: #fff; font-size: .78rem; font-weight: 600; padding: .25rem .55rem; border-radius: 6px; }
+                        color: #fff; font-size: .78rem; font-weight: 600; padding: .25rem .55rem; border-radius: 3px; }
         .ori-pin.up .tag { top: auto; bottom: 28px; }
         .ori-pin.right .tag { left: 30px; top: 50%; transform: translateY(-50%); }
         @keyframes ori-pin { to { opacity: 1; } }
-        @keyframes ori-pulse { 70% { box-shadow: 0 0 0 14px rgba(11,119,255,0); } 100% { box-shadow: 0 0 0 0 rgba(11,119,255,0); } }
+        @keyframes ori-pulse { 70% { box-shadow: 0 0 0 14px rgba(11,119,255,0); border:1px solid rgba(15,23,42,.12); } 100% { box-shadow: 0 0 0 0 rgba(11,119,255,0); border:1px solid rgba(15,23,42,.12); } }
         .ori-tutors { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .75rem; margin-top: 1rem; }
-        .ori-tutor { border: 1px solid var(--line); border-radius: 12px; padding: 1rem; display: flex; gap: .8rem; align-items: center; }
+        .ori-tutor { border: 1px solid var(--line); border-radius: 3px; padding: 1rem; display: flex; gap: .8rem; align-items: center; }
         .ori-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--sls); color: #fff; display: flex; align-items: center;
                       justify-content: center; font-weight: 700; flex-shrink: 0; }
         .ori-nav { display: flex; justify-content: space-between; gap: .75rem; margin-top: 1.25rem; }
         .btn-sls { background: var(--sls); border-color: var(--sls); color: #fff; font-weight: 600; }
         .btn-sls:hover { background: #0962d6; border-color: #0962d6; color: #fff; }
-        .ori-q { border: 1px solid var(--line); border-radius: 12px; padding: 1rem; margin-bottom: .75rem; }
+        .ori-q { border: 1px solid var(--line); border-radius: 3px; padding: 1rem; margin-bottom: .75rem; }
         .ori-q.right { border-color: #86efac; background: #f0fdf4; }
         .ori-q.wrong { border-color: #fca5a5; background: #fef2f2; }
         body.dark .ori-q.right, body.dark .ori-q.wrong { background: transparent; }
-        .ori-plan { border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem; margin-bottom: 1rem; }
+        .ori-plan { border: 1px solid var(--line); border-radius: 3px; padding: 1.1rem; margin-bottom: 1rem; }
         .ori-days { display: flex; flex-wrap: wrap; gap: .4rem; }
         .ori-days input { display: none; }
-        .ori-days label { border: 1px solid #cbd5e1; border-radius: 8px; padding: .35rem .7rem; cursor: pointer; user-select: none; }
+        .ori-days label { border: 1px solid #cbd5e1; border-radius: 3px; padding: .35rem .7rem; cursor: pointer; user-select: none; }
         .ori-days input:checked + label { background: var(--sls); border-color: var(--sls); color: #fff; }
-        .ori-pledge { background: #f8fafc; border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; font-size: .95rem; }
+        .ori-pledge { background: #f8fafc; border: 1px solid var(--line); border-radius: 3px; padding: .9rem 1rem; font-size: .95rem; }
         body.dark .ori-pledge { background: #1f2937; border-color: #374151; }
         .ori-done svg { width: 84px; height: 84px; }
         .ori-done circle { stroke: #22c55e; stroke-width: 4; fill: none; stroke-dasharray: 240; stroke-dashoffset: 240; animation: ori-draw .8s ease forwards; }

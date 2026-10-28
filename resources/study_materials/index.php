@@ -53,7 +53,7 @@ if (isset($_GET['file'])) {
         }
 
         .material-card {
-            border-radius: 14px;
+            border-radius: 3px;
             overflow: hidden;
             border: 1px solid #e5e7eb;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -64,7 +64,7 @@ if (isset($_GET['file'])) {
         }
         .material-card:hover {
             box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            transform: translateY(-2px);
+            transform: translateY(-2px); border:1px solid rgba(15,23,42,.12);
         }
 
         .card-stripe { height: 6px; width: 100%; }
@@ -82,7 +82,7 @@ if (isset($_GET['file'])) {
             letter-spacing: 0.06em;
             text-transform: uppercase;
             padding: 3px 8px;
-            border-radius: 20px;
+            border-radius: 3px;
             display: inline-block;
             margin-bottom: 0.65rem;
         }
@@ -140,7 +140,7 @@ if (isset($_GET['file'])) {
 
         .placeholder-card {
             border: 2px dashed #e5e7eb;
-            border-radius: 14px;
+            border-radius: 3px;
             padding: 2rem 1.25rem;
             text-align: center;
             color: #9ca3af;
@@ -159,7 +159,7 @@ if (isset($_GET['file'])) {
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
         <main class="content p-4">
-            <div class="container-fluid" style="max-width:1100px;">
+            <div class="container-fluid">
 
                 <div class="mb-4">
                     <h1 class="display-6 fw-bold mb-1">Study Materials</h1>

@@ -166,12 +166,12 @@ if ($__pacingBlockers) { ?>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>S4 Part 2 Speaking — Revision</h4>
                         <p class="text-muted mb-2">Revisiting the 1-minute planning technique — with full demonstration of a 2-minute Part 2 response at band 7 level.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Speaking — Holidays Vocabulary (Revision)</h4>
                         <p class="text-muted mb-2">Travel and holiday vocabulary bank — revisited for Part 2 and Part 3 topic integration before the final mock.</p>
-                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:8px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
+                        <div class="p-3 text-center" style="background:#f1f5f9;border-radius:3px;"><i class="bi bi-play-circle-fill" style="font-size:2rem;color:#16a34a;"></i><p class="mt-1 mb-0 small text-muted">Video coming soon</p></div>
                     </div>
                 </div>
             </div>
@@ -181,7 +181,7 @@ if ($__pacingBlockers) { ?>
                 <div class="highlight-box" style="background:#f0fdf4;border-color:#16a34a;">
                     <h4 style="color:#15803d;margin-top:0;">Speaking Performance Self-Assessment</h4>
                     <p class="mb-2">Answer 6 Part 3 questions on camera or by recording. Play them back and tick off: (1) Did you give a view? (2) Did you give a reason? (3) Did you give an example? (4) Did you hedge at least once? (5) Was there any pause over 3 seconds? (6) Did you repeat any word more than twice?</p>
-                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:8px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
+                    <div class="p-3 text-center" style="background:#dcfce7;border-radius:3px;"><i class="bi bi-hourglass-split" style="font-size:1.5rem;color:#16a34a;"></i><p class="mt-1 mb-0 small" style="color:#15803d;">Quiz questions coming soon</p></div>
                 </div>
             </div>
 

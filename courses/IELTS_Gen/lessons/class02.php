@@ -268,7 +268,7 @@ if ($__pacingBlockers) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>IELTS Writing Section Overview</h4>
                         <p class="text-muted mb-2">An introduction to both Writing tasks — what is required, how much time to allocate, and how the marking criteria apply to each task type.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -276,7 +276,7 @@ if ($__pacingBlockers) {
                     <div class="info-card">
                         <h4><i class="bi bi-camera-video me-2"></i>Writing Test Overview</h4>
                         <p class="text-muted mb-2">A walkthrough of the full Writing paper — timing, word counts, and the most common mistakes candidates make in Tasks 1 and 2.</p>
-                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 8px;">
+                        <div class="p-3 text-center" style="background: #f1f5f9; border-radius: 3px;">
                             <i class="bi bi-play-circle-fill" style="font-size: 2rem; color: #0b77ff;"></i>
                             <p class="mt-1 mb-0 small text-muted">Video coming soon</p>
                         </div>
@@ -288,7 +288,7 @@ if ($__pacingBlockers) {
             <?php /* Now its own item in this class (migration 153): a quiz/test is never folded into a lesson page. */ if (false): ?>
 <div class="content-section">
                 <h2><i class="bi bi-question-circle me-2" style="color: #0b77ff;"></i>Class 2 Quiz</h2>
-                <div class="highlight-box" style="border-left-color: #16a34a; background: #f0fdf4;">
+                <div class="highlight-box" style=" background: #f0fdf4;">
                     <h5 style="color: #16a34a;"><i class="bi bi-check2-square me-2"></i>Band Descriptor Matching Quiz</h5>
                     <p class="mb-2">
                         Match the descriptor phrase to the correct marking criterion. For example: "uses a range of

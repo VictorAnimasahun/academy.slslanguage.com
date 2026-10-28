@@ -90,22 +90,22 @@ $pct    = $totalN > 0 ? round(($completedN / $totalN) * 100) : 0;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .sched-header { background:linear-gradient(135deg,#0b77ff,#6366f1); border-radius:18px; padding:1.75rem 2rem; color:#fff; margin-bottom:1.5rem; }
+        .sched-header { background:linear-gradient(135deg,#0b77ff,#6366f1); border-radius:3px; padding:1.75rem 2rem; color:#fff; margin-bottom:1.5rem; }
         .sched-header h1 { font-size:1.4rem; font-weight:800; margin-bottom:.3rem; }
         .sched-header p { opacity:.85; margin:0; font-size:.88rem; }
         .sched-stats { display:flex; gap:1.75rem; margin-top:1.1rem; flex-wrap:wrap; }
         .sched-stat-num { font-size:1.5rem; font-weight:800; line-height:1; }
         .sched-stat-label { font-size:.72rem; opacity:.8; text-transform:uppercase; letter-spacing:.05em; margin-top:.15rem; }
-        .sched-progress { height:8px; background:rgba(255,255,255,.25); border-radius:4px; margin-top:1rem; overflow:hidden; }
-        .sched-progress-bar { height:100%; background:#fff; border-radius:4px; }
+        .sched-progress { height:8px; background:rgba(255,255,255,.25); border-radius:3px; margin-top:1rem; overflow:hidden; }
+        .sched-progress-bar { height:100%; background:#fff; border-radius:3px; }
 
         .week-group { margin-bottom:1.75rem; }
         .week-title { font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:#64748b; margin-bottom:.7rem; padding-left:.2rem; }
 
-        .sched-card { background:#fff; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.05); padding:1.1rem 1.3rem; margin-bottom:.75rem; border-left:4px solid #0b77ff; }
-        .sched-card.completed { border-left-color:#10b981; }
-        .sched-card.overdue   { border-left-color:#ef4444; }
-        .due-badge { display:inline-block; padding:.2rem .65rem; border-radius:999px; font-size:.72rem; font-weight:700; }
+        .sched-card { background:#fff; border-radius:3px; box-shadow:0 2px 10px rgba(0,0,0,.05); padding:1.1rem 1.3rem; margin-bottom:.75rem; border: 1px solid #dbe1ea; }
+        .sched-card.completed { }
+        .sched-card.overdue   { }
+        .due-badge { display:inline-block; padding:.2rem .65rem; border-radius:3px; font-size:.72rem; font-weight:700; }
         .due-upcoming { background:#fef3c7; color:#92400e; }
         .due-overdue  { background:#fee2e2; color:#b91c1c; }
         .due-none     { background:#f3f4f6; color:#6b7280; }
@@ -138,7 +138,7 @@ $pct    = $totalN > 0 ? round(($completedN / $totalN) * 100) : 0;
         </div>
 
         <?php if (empty($items)): ?>
-        <div class="text-center py-5" style="background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.05);">
+        <div class="text-center py-5" style="background:#fff;border-radius:3px;box-shadow:0 2px 10px rgba(0,0,0,.05); border:1px solid rgba(15,23,42,.12);">
             <i class="bi bi-calendar-x fs-1 text-muted mb-3 d-block"></i>
             <h5 class="text-muted">No scheduled items yet</h5>
             <p class="text-muted small">This course doesn't have a pacing schedule configured yet.</p>
@@ -182,11 +182,11 @@ $pct    = $totalN > 0 ? round(($completedN / $totalN) * 100) : 0;
                     </div>
                     <div style="flex-shrink:0;">
                         <?php if ($completed): ?>
-                            <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .75rem;border-radius:999px;background:#dcfce7;color:#15803d;font-size:.75rem;font-weight:700;"><i class="bi bi-check-circle-fill"></i> Done</span>
+                            <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .75rem;border-radius:3px;background:#dcfce7;color:#15803d;font-size:.75rem;font-weight:700;"><i class="bi bi-check-circle-fill"></i> Done</span>
                         <?php elseif ($url): ?>
                             <a href="<?= ACADEMY_URL . $url ?>" class="btn btn-sm btn-primary" style="font-size:.78rem;">Start</a>
                         <?php else: ?>
-                            <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .75rem;border-radius:999px;background:#f3f4f6;color:#6b7280;font-size:.75rem;font-weight:700;"><i class="bi bi-hourglass-split"></i> Not yet available</span>
+                            <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .75rem;border-radius:3px;background:#f3f4f6;color:#6b7280;font-size:.75rem;font-weight:700;"><i class="bi bi-hourglass-split"></i> Not yet available</span>
                         <?php endif; ?>
                     </div>
                 </div>

@@ -80,7 +80,7 @@ foreach ($assignments as $a) {
     <style>
         .filter-bar { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1.5rem; }
         .filter-btn {
-            padding:.35rem 1rem; border-radius:999px; border:1.5px solid #e5e7eb;
+            padding:.35rem 1rem; border-radius:3px; border:1.5px solid #e5e7eb;
             background:#fff; font-size:.82rem; font-weight:600; color:#6b7280;
             cursor:pointer; transition:all .15s;
         }
@@ -88,19 +88,19 @@ foreach ($assignments as $a) {
         .filter-btn.active { background:#0b77ff; border-color:#0b77ff; color:#fff; }
 
         .asgn-card {
-            background:#fff; border-radius:14px;
+            background:#fff; border-radius:3px;
             box-shadow:0 2px 10px rgba(0,0,0,.05);
             padding:1.25rem 1.4rem; margin-bottom:.85rem;
-            border-left:4px solid #0b77ff;
+            border: 1px solid #dbe1ea;
             transition:box-shadow .2s;
         }
-        .asgn-card:hover { box-shadow:0 6px 20px rgba(0,0,0,.09); }
-        .asgn-card.completed { border-left-color:#10b981; }
-        .asgn-card.overdue   { border-left-color:#ef4444; }
+        .asgn-card:hover { box-shadow:0 6px 20px rgba(0,0,0,.09); border:1px solid rgba(15,23,42,.12); }
+        .asgn-card.completed { }
+        .asgn-card.overdue   { }
 
         .due-badge {
             display:inline-block; padding:.2rem .65rem;
-            border-radius:999px; font-size:.72rem; font-weight:700;
+            border-radius:3px; font-size:.72rem; font-weight:700;
         }
         .due-upcoming { background:#fef3c7; color:#92400e; }
         .due-overdue  { background:#fee2e2; color:#b91c1c; }
@@ -108,11 +108,11 @@ foreach ($assignments as $a) {
 
         .due-soon-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; }
         .due-soon-tile {
-            text-align:left; border:1.5px solid #e5e7eb; background:#fff; border-radius:16px;
+            text-align:left; border:1.5px solid #e5e7eb; background:#fff; border-radius:3px;
             padding:1.1rem 1.25rem; cursor:pointer; transition:border-color .15s, box-shadow .15s;
         }
-        .due-soon-tile:hover { box-shadow:0 6px 20px rgba(0,0,0,.08); }
-        .due-soon-tile.active { border-color:#0b77ff; box-shadow:0 0 0 3px rgba(11,119,255,.12); }
+        .due-soon-tile:hover { box-shadow:0 6px 20px rgba(0,0,0,.08); border:1px solid rgba(15,23,42,.12); }
+        .due-soon-tile.active { border-color:#0b77ff; box-shadow:0 0 0 3px rgba(11,119,255,.12); border:1px solid rgba(15,23,42,.12); }
         .due-soon-num { font-size:1.9rem; font-weight:800; line-height:1; color:#1e293b; }
         .due-soon-tile.week .due-soon-num   { color:#0b77ff; }
         .due-soon-tile.month .due-soon-num  { color:#6366f1; }
@@ -136,7 +136,7 @@ foreach ($assignments as $a) {
 
         <!-- Page header -->
         <div class="d-flex align-items-center gap-3 mb-4">
-            <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#0b77ff,#6366f1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <div style="width:48px;height:48px;border-radius:3px;background:linear-gradient(135deg,#0b77ff,#6366f1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 <i class="bi bi-stickies-fill text-white fs-5"></i>
             </div>
             <div>
@@ -146,7 +146,7 @@ foreach ($assignments as $a) {
         </div>
 
         <?php if (empty($assignments)): ?>
-            <div class="text-center py-5" style="background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.05);">
+            <div class="text-center py-5" style="background:#fff;border-radius:3px;box-shadow:0 2px 10px rgba(0,0,0,.05); border:1px solid rgba(15,23,42,.12);">
                 <i class="bi bi-stickies fs-1 text-muted mb-3 d-block"></i>
                 <h5 class="text-muted">No assignments yet</h5>
                 <p class="text-muted small">Enrol in a course to receive assignments.</p>
@@ -241,7 +241,7 @@ foreach ($assignments as $a) {
                     <!-- Status + action -->
                     <div class="d-flex flex-column align-items-end gap-2" style="flex-shrink:0;">
                         <?php if ($completed): ?>
-                            <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .75rem;border-radius:999px;background:#dcfce7;color:#15803d;font-size:.75rem;font-weight:700;">
+                            <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .75rem;border-radius:3px;background:#dcfce7;color:#15803d;font-size:.75rem;font-weight:700;">
                                 <i class="bi bi-check-circle-fill"></i> Completed
                             </span>
                             <?php if ($scoreStr): ?>
@@ -251,7 +251,7 @@ foreach ($assignments as $a) {
                             <a href="<?= $url ?>" class="btn btn-sm btn-outline-success" style="font-size:.78rem;">Redo</a>
                             <?php endif; ?>
                         <?php else: ?>
-                            <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .75rem;border-radius:999px;background:#f3f4f6;color:#6b7280;font-size:.75rem;font-weight:700;">
+                            <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .75rem;border-radius:3px;background:#f3f4f6;color:#6b7280;font-size:.75rem;font-weight:700;">
                                 <i class="bi bi-circle"></i> Not started
                             </span>
                             <?php if ($url): ?>

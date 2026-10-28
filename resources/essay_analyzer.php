@@ -65,7 +65,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     padding: 1rem 1.5rem;
-    border-radius: 12px;
+    border-radius: 3px;
     margin-bottom: 2rem;
     display: flex;
     justify-content: space-between;
@@ -76,7 +76,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     background: linear-gradient(135deg, #10b981, #34d399);
     color: white;
     padding: 1rem 1.5rem;
-    border-radius: 12px;
+    border-radius: 3px;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -94,7 +94,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
 .timer-display {
     background: rgba(255, 255, 255, 0.2);
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: 3px;
     font-weight: 600;
     font-size: 1.2rem;
     font-family: 'Courier New', monospace;
@@ -111,7 +111,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     border: none;
     color: white;
     padding: 0.5rem 1rem;
-    border-radius: 6px;
+    border-radius: 3px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
@@ -129,10 +129,10 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
 /* Visual Display Styles */
 .visual-container {
     background: white;
-    border-radius: 12px;
+    border-radius: 3px;
     padding: 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08); border:1px solid rgba(15,23,42,.12);
 }
 
 .visual-container h5 {
@@ -156,8 +156,8 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
 .image-wrapper img {
     max-width: 100%;
     height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); border:1px solid rgba(15,23,42,.12);
 }
 
 /* Word Counter Styles */
@@ -167,7 +167,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     color: #1f2937;
     padding: 0.5rem 1rem;
     background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-    border-radius: 8px;
+    border-radius: 3px;
     border: 1px solid #bae6fd;
     transition: all 0.3s ease;
 }
@@ -212,13 +212,13 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
 
 .results-modal-content {
     background: white;
-    border-radius: 16px;
+    border-radius: 3px;
     max-width: 1200px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s ease-out;
+    animation: slideUp 0.3s ease-out; border:1px solid rgba(15,23,42,.12);
 }
 
 @keyframes slideUp {
@@ -273,7 +273,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     margin-bottom: 2rem;
     padding: 1.5rem;
     background: #f8f9fa;
-    border-radius: 12px;
+    border-radius: 3px;
 }
 
 .modal-section h3 {
@@ -288,7 +288,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
 .original-essay {
     background: white;
     padding: 1.5rem;
-    border-radius: 8px;
+    border-radius: 3px;
     border: 1px solid #e5e7eb;
     font-family: 'Georgia', serif;
     line-height: 1.8;
@@ -299,7 +299,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     background: linear-gradient(135deg, #10b981, #34d399);
     color: white;
     padding: 1.5rem;
-    border-radius: 12px;
+    border-radius: 3px;
     text-align: center;
     margin-bottom: 2rem;
 }
@@ -324,7 +324,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     color: white;
     border: none;
     padding: 0.8rem 2rem;
-    border-radius: 8px;
+    border-radius: 3px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
@@ -332,7 +332,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
 
 .btn-download-pdf:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); border:1px solid rgba(15,23,42,.12);
 }
 
 .btn-close-modal {
@@ -340,7 +340,7 @@ $stats = $rateLimiter->getUserStats($_SESSION['user_id']);
     color: white;
     border: none;
     padding: 0.8rem 2rem;
-    border-radius: 8px;
+    border-radius: 3px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
@@ -920,7 +920,7 @@ function displayResults(feedback, grammarData, exam, remaining) {
         
         grammarData.matches.slice(0, 15).forEach(m => {
             html += `
-                <div style="background: white; padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; border-left: 3px solid #ef4444;">
+                <div style="background: white; padding: 1rem; margin-bottom: 0.5rem; border-radius: 3px; border: 1px solid #dbe1ea;">
                     <strong>Issue:</strong> ${m.message}<br>
                     <span style="color: #6b7280;">Context: "${m.context.text}"</span><br>
                     ${m.replacements.length > 0 ? `<span style="color: #10b981;"><strong>Suggestion:</strong> ${m.replacements.slice(0, 3).map(r => r.value).join(', ')}</span>` : ''}
