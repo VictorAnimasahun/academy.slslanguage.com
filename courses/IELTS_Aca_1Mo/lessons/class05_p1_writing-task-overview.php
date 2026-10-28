@@ -1,5 +1,5 @@
 <?php
-// Writing Task Overview — IELTS Academic — 1-Month Crash Course, Class 2, piece 2 (lesson).
+// Writing Task Overview — IELTS Academic — 1-Month Crash Course, Class 5, piece 1 (lesson; was Class 2, moved 2026-10-28).
 // EMPTY SHELL. To develop this lesson, put its HTML between the two LESSON BODY markers below.
 // Everything around it (login, plan check, header, back link) comes from includes/lesson_shell.php.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
@@ -42,4 +42,4 @@ ob_start(); ?>
 <div class="lc-take"><strong>Take away.</strong> Two tasks, two jobs: describe accurately in Task 1, argue clearly in Task 2. Plan first, protect the time for Task 2, and never skip the overview.</div></div>
 <!-- LESSON BODY END -->
 <?php
-render_lesson_shell($db, 'IELTS_Aca_1Mo', 2, 2, ob_get_clean());
+render_lesson_shell($db, 'IELTS_Aca_1Mo', 5, 1, ob_get_clean());
