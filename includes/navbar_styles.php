@@ -47,6 +47,25 @@
 		border: 1px solid rgba(255,255,255,0.08);
 	}
 
+	/* Course pages (assets/css/courses.css is light-only): the light info box, the breadcrumb's current page and
+	   the plain headings all went dark-on-dark (founder, 2026-10-28). */
+	body.dark .highlight-box {
+		background: #1b2638;
+		border-color: #2c3e57;
+		color: #e2e8f0;
+	}
+	body.dark .breadcrumb-item.active,
+	body.dark .breadcrumb-item + .breadcrumb-item::before { color: #94a3b8; }
+	body.dark .course-card h1,
+	body.dark .course-card h3,
+	body.dark .course-card h4,
+	body.dark .course-card h5 { color: #f1f5f9; }
+	body.dark .topbar-name { color: #f1f5f9 !important; }
+	body.dark .course-card .content-section h2 { color: #7cb4ff; }   /* courses.css's navy headings vanished on dark */
+	body.dark .advert-sidebar .course-card { background: #1f1f1f !important; color: #e4e6eb !important; }   /* Quick Access: inline white */
+	body.dark .advert-sidebar .course-card a[style*="background:#fff"] { background: transparent !important; }
+	body.dark .ad-container { background: #1f1f1f; border-color: rgba(255,255,255,0.08); }
+
 	body.dark .calendar {
 		background: linear-gradient(180deg, #1f1f1f, #2a2a2a);
 	}

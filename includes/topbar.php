@@ -33,7 +33,7 @@ $current_page = basename($_SERVER['PHP_SELF']); ?>
            class="text-decoration-none d-flex align-items-center gap-2">
             <div class="blue-pill"><i class="bi bi-mortarboard-fill"></i></div>
             <div class="d-none d-md-block">
-                <div style="font-size:.95rem;font-weight:700;color:#0f172a;">EduHub</div>
+                <div class="topbar-name" style="font-size:.95rem;font-weight:700;color:#0f172a;">EduHub</div>
                 <div style="font-size:.78rem;color:var(--muted);">Learning Platform</div>
             </div>
         </a>

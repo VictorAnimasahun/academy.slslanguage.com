@@ -15,7 +15,7 @@ if (!can_access('advanced')) { ?>
 <div class="mt-3"><a href="intro.php" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left-circle me-1"></i>Back to Class 1 (Free)</a></div>
 </div></main><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>const m=document.getElementById('menuToggle'),s=document.querySelector('.sidebar'),o=document.getElementById('mobileOverlay');function t(){s.classList.toggle('active');o.classList.toggle('active');m.querySelector('i').className=s.classList.contains('active')?'bi bi-x-lg':'bi bi-list';}m.addEventListener('click',t);o.addEventListener('click',t);</script>
-</body></html><?php exit(); } ?>
+<?php include INCLUDES_PATH . '/adverts.php'; ?></body></html><?php exit(); } ?>
 <?php
 require_once INCLUDES_PATH . '/course_pacing.php';
 $__pacingBlockers = getIncompletePriorPacingItems($db, (int)$_SESSION['user_id'], 9, 73);
@@ -29,7 +29,7 @@ if ($__pacingBlockers) { ?>
 <nav aria-label="breadcrumb" class="mb-3"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../courses_catalogue.php" class="text-decoration-none">Courses</a></li><li class="breadcrumb-item"><a href="<?= htmlspecialchars($back['url']) ?>" class="text-decoration-none"><?= htmlspecialchars($back['name']) ?></a></li><li class="breadcrumb-item active">Class 11</li></ol></nav>
 <?php render_pacing_gate($__pacingBlockers, '../../course_schedule.php?id=9'); ?>
 </div></main><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body></html><?php exit(); } ?>
+<?php include INCLUDES_PATH . '/adverts.php'; ?></body></html><?php exit(); } ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -187,5 +187,6 @@ if ($__pacingBlockers) { ?>
         menuToggle.addEventListener('click',toggleMenu);overlay.addEventListener('click',toggleMenu);
         document.querySelectorAll('.sidebar .nav-link').forEach(l=>{l.addEventListener('click',()=>{if(window.innerWidth<1200)toggleMenu();});});
     </script>
+<?php include INCLUDES_PATH . '/adverts.php';   // the advert column every course page has (same width as lesson pages) ?>
 </body>
 </html>

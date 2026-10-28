@@ -108,15 +108,7 @@ if (!function_exists('render_lesson_shell')) {
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         .lesson-content { font-size: .95rem; line-height: 1.8; color: #1f2937; }
-        .class-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #e5e7eb; }
-        .class-head-icon { flex: none; width: 52px; height: 52px; border-radius: 12px; background: #e8f1ff; color: #0b77ff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        .class-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .55rem; }
-        .class-chip { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; background: #f1f5f9; color: #475569; border-radius: 999px; padding: .2rem .7rem; }
-        .class-chip.kind { background: #e0f2fe; color: #075985; }
-        .class-chip.kind.practice_test { background: #fef3c7; color: #92400e; }
-        .class-chip.kind.mock_test { background: #fee2e2; color: #991b1b; }
-        .class-title { font-size: 1.5rem; font-weight: 700; margin: 0; line-height: 1.3; }
-        .lesson-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem 1rem; margin-top: 2rem; }
+        /* The page header (.class-head, chips, title) is shared with the other course pages: assets/css/courses.css */
     </style>
 </head>
 <body>
@@ -135,7 +127,8 @@ if (!function_exists('render_lesson_shell')) {
             </nav>
 
             <div class="class-head">
-                <div class="class-head-icon"><i class="bi <?= $h($lesson['icon'] ?: 'bi-journal-text') ?>"></i></div>
+                <?php $icon = $lesson['icon'] ?: 'bi-journal-text'; if (!str_starts_with($icon, 'bi-')) $icon = 'bi-' . $icon;   // 40 lessons store 'play-circle' ?>
+                <div class="class-head-icon"><i class="bi <?= $h($icon) ?>"></i></div>
                 <div>
                     <div class="class-chips">
                         <span class="class-chip">Week <?= (int)$lesson['module_order'] ?></span>

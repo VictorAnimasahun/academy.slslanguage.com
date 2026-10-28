@@ -185,9 +185,11 @@ if (!function_exists('course_by_folder')) {
     /** The ready item before / after the page at $path in this course (within its class, else across classes). */
     function course_item_neighbours(PDO $db, array $course, string $path): array {
         $flat = [];
+        $classes = 0;
         foreach (course_schedule($db, $course['id']) as $week) {
             foreach ($week['classes'] as $cls) {
-                foreach ($cls['items'] as $item) $flat[] = $item + ['class' => $cls['number']];
+                $classes++;
+                foreach ($cls['items'] as $item) $flat[] = $item + ['class' => $cls['number'], 'week' => $week['number']];
             }
         }
         $strip = function ($p) {
@@ -204,10 +206,11 @@ if (!function_exists('course_by_folder')) {
                 $prev = $next = null;
                 for ($j = $i - 1; $j >= 0 && !$prev; $j--) if ($usable($flat[$j]) && $strip($flat[$j]['path']) !== $strip($path)) $prev = $url($flat[$j]);
                 for ($j = $i + 1; $j < count($flat) && !$next; $j++) if ($usable($flat[$j]) && $strip($flat[$j]['path']) !== $strip($path)) $next = $url($flat[$j]);
-                return ['prev' => $prev, 'next' => $next, 'found' => true];
+                // 'item': where this page sits (its title, kind, class and week), for a page header like a lesson's.
+                return ['prev' => $prev, 'next' => $next, 'found' => true, 'item' => $item, 'classes' => $classes];
             }
         }
-        return ['prev' => null, 'next' => null, 'found' => false];
+        return ['prev' => null, 'next' => null, 'found' => false, 'item' => null, 'classes' => $classes];
     }
 
     function prev_course_item(PDO $db, array $course, string $path): ?array {

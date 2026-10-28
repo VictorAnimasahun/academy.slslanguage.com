@@ -356,5 +356,6 @@ $levelNames = ['Basic' => 'A1–A2 (basic)', 'B1' => 'B1 (intermediate)', 'B2' =
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php include INCLUDES_PATH . '/adverts.php';   // the advert column every course page has (same width as lesson pages) ?>
 </body>
 </html>

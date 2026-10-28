@@ -41,6 +41,7 @@ if (!can_access($pageTier)) {
             </div>
         </main>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <?php include INCLUDES_PATH . '/adverts.php';   // the advert column every course page has (same width as lesson pages) ?>
     </body>
     </html>
     <?php
@@ -154,5 +155,6 @@ foreach ($schedule as $w) foreach ($w['classes'] as $c) foreach ($c['items'] as 
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php include INCLUDES_PATH . '/adverts.php';   // the advert column every course page has (same width as lesson pages) ?>
 </body>
 </html>
