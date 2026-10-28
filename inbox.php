@@ -353,32 +353,41 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         if (e.target.closest('[data-cancel-reply]') && reply) reply.hidden = true;
     });
 
-    // Opening a message (or going back to the list) swaps only what changes -- the reading pane, the list (read
-    // dots, highlighted row), the toolbar, the bell -- instead of reloading the page (founder, 2026-10-28). The
-    // links stay real links: without JavaScript, or on cmd/ctrl-click, they open normally.
+    // Nothing in the Inbox reloads the page (founder, 2026-10-28): opening a message, going back to the list, and every
+    // action -- star, read dot, archive, delete, the More menu, a reply, a new message -- happen in the background,
+    // and only what changes is swapped in (reading pane, list, toolbar, mailbox counts, bell). Links and forms stay
+    // real links and forms: without JavaScript, on cmd/ctrl-click, or if anything unexpected happens, they work as
+    // an ordinary page load.
     const panes = document.querySelector('.ib-panes');
+
+    /** Put the inbox page in `res` (already fetched) on screen. False if it isn't an inbox page. */
+    async function swapIn(res) {
+        if (!res.ok || !new URL(res.url).pathname.endsWith('/inbox.php')) return false;
+        const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+        if (!doc.querySelector('.ib-panes')) return false;
+        const top = document.querySelector('.ib-list').scrollTop;
+        for (const sel of ['.ib-read', '.ib-list', '.ib-tools', '.ib-bar select[name=box]']) {
+            const next = doc.querySelector(sel), cur = document.querySelector(sel);
+            if (next && cur) cur.replaceWith(document.importNode(next, true));
+        }
+        document.querySelector('.ib-list').scrollTop = top;
+        document.getElementById('ibAct').setAttribute('action', doc.getElementById('ibAct').getAttribute('action'));
+        panes.className = doc.querySelector('.ib-panes').className;
+        // The bell keeps its element (its refresh timer holds it); take the new count, and the menu badge with it.
+        const bell = document.getElementById('bellBtn'), nextBell = doc.getElementById('bellBtn');
+        if (bell && nextBell) {
+            bell.className = nextBell.className; bell.innerHTML = nextBell.innerHTML;
+            bell.setAttribute('aria-label', nextBell.getAttribute('aria-label')); bell.title = nextBell.title;
+            const n = parseInt(bell.querySelector('.bell-count')?.textContent, 10) || 0, badge = document.querySelector('.navbar-badge-unread');
+            if (badge) { badge.textContent = n; badge.style.display = n > 0 ? 'inline-block' : 'none'; }
+        }
+        return true;
+    }
+
     async function show(url, push) {
         panes.style.cursor = 'progress';
         try {
-            const res = await fetch(url, { credentials: 'same-origin' });
-            if (!res.ok || res.redirected && !new URL(res.url).pathname.endsWith('/inbox.php')) throw new Error('reload');
-            const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
-            const list = document.querySelector('.ib-list'), top = list.scrollTop;
-            for (const sel of ['.ib-read', '.ib-list', '.ib-tools']) {
-                const next = doc.querySelector(sel), cur = document.querySelector(sel);
-                if (next && cur) cur.replaceWith(document.importNode(next, true));
-            }
-            document.querySelector('.ib-list').scrollTop = top;
-            document.getElementById('ibAct').setAttribute('action', doc.getElementById('ibAct').getAttribute('action'));
-            panes.className = doc.querySelector('.ib-panes').className;
-            // The bell keeps its element (its refresh timer holds it); take the new count, and the menu badge with it.
-            const bell = document.getElementById('bellBtn'), nextBell = doc.getElementById('bellBtn');
-            if (bell && nextBell) {
-                bell.className = nextBell.className; bell.innerHTML = nextBell.innerHTML;
-                bell.setAttribute('aria-label', nextBell.getAttribute('aria-label')); bell.title = nextBell.title;
-                const n = parseInt(bell.querySelector('.bell-count')?.textContent, 10) || 0, badge = document.querySelector('.navbar-badge-unread');
-                if (badge) { badge.textContent = n; badge.style.display = n > 0 ? 'inline-block' : 'none'; }
-            }
+            if (!await swapIn(await fetch(url, { credentials: 'same-origin' }))) throw new Error('not the inbox');
             const log = document.getElementById('ibLog'); if (log) log.scrollTop = 0;
             if (push) history.pushState(null, '', url);
             if (window.innerWidth <= 900) window.scrollTo(0, 0);
@@ -395,6 +404,34 @@ $userName = isset($_SESSION['user_firstname']) ? htmlspecialchars($_SESSION['use
         show(a.href, true);
     });
     window.addEventListener('popstate', () => show(location.href, false));
+
+    // Actions (#ibAct), replies (#ibReply) and new messages (Compose): posted in the background. The server answers
+    // with the inbox as it now is (actions may close the open message, a send opens the conversation), and the
+    // address follows it.
+    document.addEventListener('submit', async e => {
+        const form = e.target;
+        if (!(form.id === 'ibAct' || form.id === 'ibReply' || form.closest('#ibCompose')) || form.dataset.native) return;
+        e.preventDefault();
+        const submitter = e.submitter;
+        const body = new FormData(form, submitter);   // before disabling the button, or its name=value is left out
+        panes.style.cursor = 'progress';
+        if (submitter) submitter.disabled = true;
+        try {
+            // getAttribute, not form.action: the toolbar's buttons are named "action", and form.action returns them.
+            const res = await fetch(new URL(form.getAttribute('action') || location.href, location.href), { method: 'POST', body, credentials: 'same-origin' });
+            if (!await swapIn(res)) throw new Error('not the inbox');
+            history.replaceState(null, '', res.url);
+            document.getElementById('ibCompose').open && document.getElementById('ibCompose').close();
+            if (form.closest('#ibCompose')) form.reset();
+            if (submitter && submitter.isConnected) submitter.disabled = false;
+        } catch (err) {
+            form.dataset.native = '1';   // anything unexpected: send it the ordinary way
+            if (submitter) submitter.disabled = false;
+            form.requestSubmit(submitter);
+        } finally {
+            panes.style.cursor = '';
+        }
+    });
 
     const dlg = document.getElementById('ibCompose');
     document.getElementById('ibComposeBtn').addEventListener('click', () => dlg.showModal());

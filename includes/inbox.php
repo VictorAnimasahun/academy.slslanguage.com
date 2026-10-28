@@ -57,7 +57,10 @@ function inbox_items(PDO $db, int $sid): array {
         SELECT t.id, m.display_name AS mentor_name, lm.body AS last_body, lm.created_at AS last_at,
                (SELECT COUNT(*) FROM thread_messages x WHERE x.thread_id = t.id) AS n,
                (SELECT COUNT(*) FROM thread_messages x WHERE x.thread_id = t.id AND x.sender_id = ?) AS mine,
-               (lm.sender_id != ? AND lm.id > COALESCE(tp.last_read_message_id, 0)) AS unread
+               -- unread: the other side wrote since the student last read it, or the student marked it unread
+               -- (last_read_message_id = 0 exactly, set by 'unread' below; a never-opened thread is NULL)
+               ((lm.sender_id != ? AND lm.id > COALESCE(tp.last_read_message_id, 0))
+                OR (tp.last_read_message_id = 0 AND EXISTS (SELECT 1 FROM thread_messages o WHERE o.thread_id = t.id AND o.sender_id != tp.student_id))) AS unread
         FROM threads t
         JOIN thread_participants tp ON tp.thread_id = t.id AND tp.student_id = ?
         LEFT JOIN mentors m ON m.id = t.mentor_id
