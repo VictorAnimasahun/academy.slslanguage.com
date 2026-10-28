@@ -1,7 +1,7 @@
 <?php
 /**
  * Transcribe audio or video files to text (founder, 2026-10-28: "I need that skill for other audios and videos").
- * Command line, on the Mac (the browser version, for staff on the site, is transcribe.php):
+ * Command line only, on the Mac:
  *
  *   php academy/tools/transcribe.php ~/Downloads/lecture.mp4 ~/Downloads/"part 2.mp3"
  *
