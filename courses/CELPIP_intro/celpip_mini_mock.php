@@ -15,7 +15,7 @@ $backUrl = $ctxCourse ? ACADEMY_URL . 'courses/' . $ctxCourse['folder'] . '/cour
 require_once INCLUDES_PATH . '/admin_check.php';
 $isAdmin = is_staff_account();   // staff take it untimed, as on the practice tests; testers are timed
 
-// Speaking: the eight tasks of CELPIP Speaking Practice 3 (resources/practice_tests/celpip_speaking_003.php, its
+// Speaking: four of the eight tasks of CELPIP Speaking Practice 3 (resources/practice_tests/celpip_speaking_003.php, its
 // pictures in assets/img/practice_tests/CELPIP_PT_S_003/), in the same flow as the practice tests (founder,
 // 2026-10-28: the speaking section "is not like the standard stuff"). Reused as the IELTS General diagnostic reuses
 // a Cambridge mock: crash courses never meet Set 3; the 2/3-month courses meet it in Classes 14/15.
@@ -80,6 +80,9 @@ $speakTasks = [
         'image'  => 'painting.jpg',
     ],
 ];
+// The diagnostic takes four of them (founder, 2026-10-28: "just 4 instead of 8"): two spoken from a prompt, two from
+// pictures. Each keeps its CELPIP task number and name, so the student learns which task type is which.
+$speakTasks = array_combine([1, 2, 3, 4], array_map(fn ($n) => $speakTasks[$n], [1, 3, 5, 7]));
 
 ?>
 <!DOCTYPE html>
@@ -94,7 +97,7 @@ $speakTasks = [
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <link rel="stylesheet" href="<?= ACADEMY_URL ?>assets/css/exam_theme.css">
     <!-- The CELPIP exam look of the practice tests and mocks (founder, 2026-10-28); was css/style.css -->
-    <link rel="stylesheet" href="css/mini_mock_exam.css?v=2">
+    <link rel="stylesheet" href="css/mini_mock_exam.css?v=3">
     <?php include dirname(__DIR__, 2) . '/resources/practice_tests/celpip_screen_styles.php'; /* the CELPIP speaking screen */ ?>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -148,7 +151,7 @@ $speakTasks = [
                                 <li>Listening (10 questions)</li>
                                 <li>Reading (11 questions)</li>
                                 <li>Writing (1 task)</li>
-                                <li>Speaking (8 recorded tasks, marked by your tutor)</li>
+                                <li>Speaking (4 recorded tasks, marked by your tutor)</li>
                             </ul>
                             <p>Click on the <strong>Start Test</strong> button below when you are ready to begin. At the end, you'll receive a detailed assessment of your English level and personalized feedback on areas for improvement.</p>
                         </div>
@@ -572,7 +575,7 @@ $speakTasks = [
                      preparation counts down, recording starts by itself and counts down, NEXT moves on. -->
                 <div class="card" id="micGate">
                     <h1>Speaking Section</h1>
-                    <p>The Speaking section has 8 tasks. Each task gives you time to prepare, then records your answer automatically &mdash; just like the real CELPIP test. Your tutor listens to your recordings and marks them.</p>
+                    <p>The Speaking section has 4 tasks. Each task gives you time to prepare, then records your answer automatically &mdash; just like the real CELPIP test. Your tutor listens to your recordings and marks them.</p>
                     <p>Click below and choose <strong>Allow</strong> when your browser asks for your microphone.</p>
                     <div class="navigation">
                         <div></div>
@@ -631,7 +634,7 @@ $speakTasks = [
                 <div class="results-section" id="quiz-results">
                     <div class="wrap">
                         <div class="card">
-                            <h1>CELPIP Mock Test Results</h1>
+                            <h1>CELPIP Diagnostic Test Results</h1>
                             <div id="summary" class="scoreRow" aria-live="polite"></div>
                             <div class="total" id="totalArea"></div>
                             <div class="details" id="detailsArea"></div>

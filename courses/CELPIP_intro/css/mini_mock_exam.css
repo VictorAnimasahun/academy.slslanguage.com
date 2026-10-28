@@ -100,3 +100,15 @@ body.dark .page .card > h1:first-child, body.dark .page .card > h3:first-child {
 .audio-dot[data-state=playing], .audio-dot[data-state=done] { background: var(--exam-good); }
 .audio-dot[data-state=recording], .audio-dot[data-state=error] { background: #dc2626; }
 .audio-dot[data-state=warning] { background: var(--exam-warn); }
+
+/* Results: the four section scores as tiles in a row, then the total and the question-by-question tables. */
+.scoreRow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; margin: 0 0 1rem; }
+@media (max-width: 760px) { .scoreRow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.scoreBox { border: 1px solid var(--exam-line); border-radius: var(--exam-radius); background: var(--exam-surface); padding: .85rem 1rem; color: var(--exam-ink); font-size: .82rem; }
+.score-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--exam-ink-muted); margin-bottom: .3rem; }
+.score-value { font-size: 1.35rem; font-weight: 700; color: var(--exam-accent); line-height: 1.2; }
+#totalArea { border: 1px solid var(--exam-line); border-radius: var(--exam-radius); background: var(--exam-bg); padding: .85rem 1rem; margin: 0 0 1.25rem; font-weight: 700; color: var(--exam-ink); }
+.download-buttons { display: flex; gap: .5rem; flex-wrap: wrap; margin: 0 0 .75rem; }
+.details h3, .details h4 { font-size: .95rem; font-weight: 700; margin: 1.25rem 0 .5rem; color: var(--exam-ink); }
+.ielts-info { border: 1px solid var(--exam-line); border-radius: var(--exam-radius); background: var(--exam-bg); padding: .75rem 1rem; margin-top: 1.25rem; font-size: .88rem; }
+.ielts-info p { margin: 0 0 .3rem; }
