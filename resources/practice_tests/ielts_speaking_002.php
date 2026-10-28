@@ -13,7 +13,7 @@ $parts = [
         'title'    => 'Part 1 – Introduction & Interview',
         'duration' => '4–5 min',
         'icon'     => 'bi-person-circle',
-        'color'    => '#10b981',
+        'color'    => '#0b77ff',
         'intro'    => 'The examiner will ask you general questions about yourself and familiar topics such as home, family, work, studies, and interests.',
         'topic'    => 'Languages',
         'prompts'  => [
@@ -27,7 +27,7 @@ $parts = [
         'title'     => 'Part 2 – Individual Long Turn',
         'duration'  => '3–4 min',
         'icon'      => 'bi-card-text',
-        'color'     => '#3b82f6',
+        'color'     => '#0b77ff',
         'intro'     => 'You will be given a topic card. You have 1 minute to prepare, then you should speak for 1–2 minutes.',
         'prompts'   => [
             "Describe a website that you bought something from.\n\nYou should say:\n• what the website is\n• what you bought from this website\n• how satisfied you were with what you bought\n\nand explain what you liked or disliked about using this website.",
@@ -38,7 +38,7 @@ $parts = [
         'title'    => 'Part 3 – Discussion',
         'duration' => '4–5 min',
         'icon'     => 'bi-chat-dots',
-        'color'    => '#8b5cf6',
+        'color'    => '#0b77ff',
         'intro'    => 'The examiner will ask further questions connected to the topic in Part 2.',
         'prompts'  => [
             'What kinds of things do people in your country often buy from online shops?',
@@ -63,21 +63,21 @@ $parts = [
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
         .main-wrapper { padding:1.5rem; min-height:100vh; }
-        .test-container { max-width:900px; margin:0 auto; }
-        .part-card { background:white; border-radius:16px; padding:2rem; box-shadow:0 4px 18px rgba(0,0,0,0.07); margin-bottom:1.5rem; border-left:5px solid var(--c); }
+        .test-container { max-width:none; }
+        .part-card { background:white; border-radius:3px; padding:2rem; margin-bottom:1.5rem; }
         .part-header { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
         .part-icon { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:white; background:var(--c); }
         .part-title { font-size:1.1rem; font-weight:700; margin:0; }
         .part-duration { font-size:.8rem; color:#9ca3af; }
         .prompt-list { list-style:none; padding:0; margin:1rem 0 0; }
-        .prompt-list li { padding:.65rem 1rem; border-radius:8px; background:#f9fafb; margin-bottom:.5rem; font-size:.95rem; border-left:3px solid var(--c); white-space:pre-line; }
-        .cue-card { background:linear-gradient(135deg,#eff6ff,#dbeafe); border-radius:12px; padding:1.5rem; font-size:1rem; line-height:1.7; white-space:pre-line; border:1px solid #bfdbfe; }
-        .prep-timer { font-size:2rem; font-weight:700; font-family:monospace; color:#1e40af; }
+        .prompt-list li { padding:.65rem 1rem; border-radius:3px; background:#f9fafb; margin-bottom:.5rem; font-size:.95rem; white-space:pre-line; }
+        .cue-card { background:#eef5ff; border-radius:3px; padding:1.5rem; font-size:1rem; line-height:1.7; white-space:pre-line; border:1px solid #c9defc; }
+        .prep-timer { font-size:2rem; font-weight:700; font-family:monospace; color:#0b77ff; }
         .rec-btn { width:64px; height:64px; border-radius:50%; border:none; font-size:1.4rem; color:white; cursor:pointer; background:#ef4444; }
         .rec-btn.recording { animation:pulse 1s infinite; }
-        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)} 50%{box-shadow:0 0 0 12px rgba(239,68,68,0)} }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
         .rec-time { font-size:1.4rem; font-weight:700; font-family:monospace; }
-        .section-badge { background:linear-gradient(135deg,#10b981,#34d399); color:white; padding:.45rem 1.4rem; border-radius:50px; font-weight:700; font-size:.85rem; }
+        .section-badge { background:#0b77ff; color:white; padding:.45rem 1.4rem; border-radius:3px; font-weight:700; font-size:.85rem; }
     </style>
 </head>
 <body class="light">
@@ -147,7 +147,7 @@ $parts = [
             <?php endforeach; ?>
 
             <div class="text-center mt-2 mb-4">
-                <button class="btn btn-success btn-lg px-5" onclick="submitAllParts()">
+                <button class="btn btn-primary btn-lg px-5" onclick="submitAllParts()">
                     <i class="bi bi-stars me-2"></i>Submit All Parts for AI Feedback
                 </button>
             </div>
@@ -160,7 +160,7 @@ $parts = [
 
             <div id="resultsSection" class="d-none mb-5">
                 <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-header bg-success text-white rounded-top-4 py-3">
+                    <div class="card-header bg-primary text-white rounded-top-4 py-3">
                         <h5 class="mb-0"><i class="bi bi-trophy-fill me-2"></i>AI Examiner Feedback</h5>
                     </div>
                     <div class="card-body p-4" id="feedbackContent"></div>

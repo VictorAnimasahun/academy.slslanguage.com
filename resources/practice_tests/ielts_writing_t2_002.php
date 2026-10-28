@@ -24,13 +24,13 @@ $wordTarget = 250;
     <style>
         .main-wrapper { padding: 0; min-height: 100vh; }
         .test-container { max-width: none; }
-        .panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); height: 100%; }
-        .section-badge { background: linear-gradient(135deg,#3b82f6,#60a5fa); color:white; padding:.5rem 1.5rem; border-radius:50px; font-weight:700; font-size:.9rem; }
-        .timer-display { font-size: 2.2rem; font-weight: 700; font-family: monospace; color: #1e40af; }
+        .panel { background: white; border-radius:3px; padding: 2rem; height: 100%; }
+        .section-badge { background: #0b77ff; color:white; padding:.5rem 1.5rem; border-radius:3px; font-weight:700; font-size:.9rem; }
+        .timer-display { font-size: 2.2rem; font-weight: 700; font-family: monospace; color: #0b77ff; }
         .timer-display.warning { color: #ef4444; }
-        .prompt-box { background:#eff6ff; border-left:4px solid #3b82f6; border-radius:8px; padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
-        .essay-textarea { width:100%; min-height:calc(100vh - 310px); padding:1.25rem; border:2px solid #e5e7eb; border-radius:10px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
-        .essay-textarea:focus { border-color:#3b82f6; outline:none; }
+        .prompt-box { background:#eef5ff; border-radius:3px; padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
+        .essay-textarea { width:100%; min-height:calc(100vh - 310px); padding:1.25rem; border:2px solid #e5e7eb; border-radius:3px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
+        .essay-textarea:focus { border-color:#0b77ff; outline:none; }
         .word-count { font-size:1.6rem; font-weight:700; }
         .word-count.below { color:#ef4444; }
         .word-count.ok    { color:#10b981; }
@@ -45,7 +45,7 @@ $wordTarget = 250;
     <div class="main-wrapper flex-grow-1" style="flex:1;">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
-    <main class="content p-2">
+    <main class="content p-4">
         <div class="test-container">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
@@ -145,7 +145,7 @@ $wordTarget = 250;
             html: `Words: <strong>${countWords(textarea.value)}</strong>`,
             icon: 'question', showCancelButton: true,
             confirmButtonText: 'Submit', cancelButtonText: 'Keep writing',
-            confirmButtonColor: '#3b82f6',
+            confirmButtonColor: '#0b77ff',
         }).then(r => { if (r.isConfirmed) doSubmit(); });
     }
 

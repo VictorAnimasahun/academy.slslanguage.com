@@ -413,7 +413,7 @@ $answers = loadTestAnswersMulti($db, $testCode);
         /* ── Passage elements ────────────────────────────────────── */
         .passage-box {
             background: #f8fafc;
-            border-radius: 10px;
+            border-radius:3px;
             padding: 1.25rem 1.5rem;
             margin-bottom: 1rem;
             font-size: .92rem;
@@ -429,7 +429,7 @@ $answers = loadTestAnswersMulti($db, $testCode);
         }
         .passage-item {
             background: #eef2ff;
-            border-radius: 6px;
+            border-radius:3px;
             padding: .75rem;
             font-size: .83rem;
             line-height: 1.6;
@@ -447,7 +447,7 @@ $answers = loadTestAnswersMulti($db, $testCode);
         }
         .q-input {
             border: 2px solid #dee2e6;
-            border-radius: 6px;
+            border-radius:3px;
             padding: .28rem .55rem;
             min-width: 130px;
             font-size: .88rem;
@@ -458,7 +458,7 @@ $answers = loadTestAnswersMulti($db, $testCode);
         .q-input.incorrect { border-color: #dc3545; background: #f8d7da; }
         .tfng-select, .match-select {
             border: 2px solid #dee2e6;
-            border-radius: 6px;
+            border-radius:3px;
             padding: .28rem .55rem;
             font-size: .88rem;
             background: #fff;
@@ -467,13 +467,13 @@ $answers = loadTestAnswersMulti($db, $testCode);
             font-weight: 700;
             background: #e9ecef;
             padding: .35rem .75rem;
-            border-radius: 4px;
+            border-radius:3px;
             margin: .75rem 0 .4rem;
             font-size: .85rem;
         }
         .mcq-card {
             background: #f8f9fa;
-            border-radius: 8px;
+            border-radius:3px;
             padding: .9rem;
             margin-bottom: .9rem;
         }
@@ -491,10 +491,10 @@ $answers = loadTestAnswersMulti($db, $testCode);
 
         /* ── Misc ────────────────────────────────────────────────── */
         .section-badge {
-            background: linear-gradient(135deg,#0b77ff,#6f8cff);
+            background: #0b77ff;
             color: white;
             padding: .3rem 1.1rem;
-            border-radius: 50px;
+            border-radius:3px;
             font-weight: 700;
             font-size: .82rem;
         }
@@ -509,7 +509,7 @@ $answers = loadTestAnswersMulti($db, $testCode);
         .result-badge {
             display: inline-block;
             color: #fff;
-            border-radius: 8px;
+            border-radius:3px;
             padding: .4rem 1rem;
             font-size: .95rem;
             font-weight: 700;
@@ -585,7 +585,7 @@ $answers = loadTestAnswersMulti($db, $testCode);
                     <i class="bi bi-arrow-right ms-1"></i>
                 </button>
                 <?php else: ?>
-                <button type="button" class="btn btn-success px-4 btn-sm" onclick="handleSubmit()">
+                <button type="button" class="btn btn-primary px-4 btn-sm" onclick="handleSubmit()">
                     Submit Test <i class="bi bi-send ms-1"></i>
                 </button>
                 <?php endif; ?>
@@ -878,7 +878,7 @@ function renderFormFill(array $s, string $mode): void {
         // alongside the text it came from.
         if (!empty($s['image'])): ?>
             <div class="passage-box text-center">
-                <img src="<?= ACADEMY_URL ?>assets/img/practice_tests/<?= htmlspecialchars($GLOBALS['testCode']) ?>/<?= htmlspecialchars($s['image']) ?>" alt="<?= htmlspecialchars($s['image_alt'] ?? 'Diagram') ?>" style="max-width:100%;border:1px solid #dee2e6;border-radius:8px;">
+                <img src="<?= ACADEMY_URL ?>assets/img/practice_tests/<?= htmlspecialchars($GLOBALS['testCode']) ?>/<?= htmlspecialchars($s['image']) ?>" alt="<?= htmlspecialchars($s['image_alt'] ?? 'Diagram') ?>" style="max-width:100%;border:1px solid #dee2e6;border-radius:3px;">
             </div>
         <?php endif;
         return;

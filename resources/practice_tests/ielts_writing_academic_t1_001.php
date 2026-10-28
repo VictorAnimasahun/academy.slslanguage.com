@@ -24,19 +24,19 @@ $wordTarget = 150;
     <style>
         .main-wrapper { padding: 0; min-height: 100vh; }
         .test-container { max-width: none; }
-        .panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); height: 100%; }
-        .section-badge { background: linear-gradient(135deg,#10b981,#34d399); color:white; padding:.5rem 1.5rem; border-radius:50px; font-weight:700; font-size:.9rem; }
-        .timer-display { font-size: 2.2rem; font-weight: 700; font-family: monospace; color: #1e40af; }
+        .panel { background: white; border-radius:3px; padding: 2rem; height: 100%; }
+        .section-badge { background: #0b77ff; color:white; padding:.5rem 1.5rem; border-radius:3px; font-weight:700; font-size:.9rem; }
+        .timer-display { font-size: 2.2rem; font-weight: 700; font-family: monospace; color: #0b77ff; }
         .timer-display.warning { color: #ef4444; }
-        .prompt-box { background:#f0fdf4; border-left:4px solid #10b981; border-radius:8px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
-        .essay-textarea { width:100%; min-height:calc(100vh - 310px); padding:1.25rem; border:2px solid #e5e7eb; border-radius:10px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
-        .essay-textarea:focus { border-color:#10b981; outline:none; }
+        .prompt-box { background:#eef5ff; border-radius:3px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
+        .essay-textarea { width:100%; min-height:calc(100vh - 310px); padding:1.25rem; border:2px solid #e5e7eb; border-radius:3px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
+        .essay-textarea:focus { border-color:#0b77ff; outline:none; }
         .word-count { font-size:1.6rem; font-weight:700; }
         .word-count.below { color:#ef4444; }
         .word-count.ok    { color:#10b981; }
         .bottom-bar { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; padding-top:1rem; border-top:1px solid #e5e7eb; }
         /* TODO: replace with actual chart/diagram image */
-        .chart-placeholder { background:#f3f4f6; border:2px dashed #d1d5db; border-radius:10px; height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#9ca3af; font-size:.9rem; }
+        .chart-placeholder { background:#f3f4f6; border:2px dashed #d1d5db; border-radius:3px; height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#9ca3af; font-size:.9rem; }
     </style>
 </head>
 <body class="light">
@@ -47,7 +47,7 @@ $wordTarget = 150;
     <div class="main-wrapper flex-grow-1" style="flex:1;">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
-    <main class="content p-2">
+    <main class="content p-4">
         <div class="test-container">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
@@ -69,10 +69,10 @@ $wordTarget = 150;
                             <p class="mb-2"><strong>The chart below shows the number of men and women in further education in Britain in three periods and whether they were studying full-time or part-time.</strong></p>
                             <p class="mb-0">Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
                         </div>
-                        <img src="<?= ACADEMY_URL ?>assets/images/ielts_academic/writing_001_task1_chart.png" alt="Bar chart: thousands of men and women in further education in Britain, full-time and part-time, 1970/71, 1980/81 and 1990/91" class="img-fluid mb-3" style="border:1px solid #e5e7eb;border-radius:10px;width:100%;">
+                        <img src="<?= ACADEMY_URL ?>assets/images/ielts_academic/writing_001_task1_chart.png" alt="Bar chart: thousands of men and women in further education in Britain, full-time and part-time, 1970/71, 1980/81 and 1990/91" class="img-fluid mb-3" style="border:1px solid #e5e7eb;border-radius:3px;width:100%;">
 
                                         <div class="alert alert-light border small mb-0">
-                            <i class="bi bi-info-circle me-1 text-success"></i>
+                            <i class="bi bi-info-circle me-1 text-primary"></i>
                             Write <strong>at least <?= $wordTarget ?> words</strong>. You should spend about <strong>20 minutes</strong> on this task.
                         </div>
                     </div>
@@ -94,7 +94,7 @@ $wordTarget = 150;
                                 <span id="wordCount" class="word-count below">0</span>
                                 <span class="text-muted ms-1">/ <?= $wordTarget ?>+ words</span>
                             </div>
-                            <button id="submitBtn" class="btn btn-success px-4 py-2 fw-600" disabled onclick="submitResponse()">
+                            <button id="submitBtn" class="btn btn-primary px-4 py-2 fw-600" disabled onclick="submitResponse()">
                                 Submit <i class="bi bi-send ms-1"></i>
                             </button>
                         </div>
@@ -161,7 +161,7 @@ $wordTarget = 150;
             showCancelButton: true,
             confirmButtonText: 'Submit',
             cancelButtonText: 'Keep writing',
-            confirmButtonColor: '#10b981',
+            confirmButtonColor: '#0b77ff',
         }).then(r => { if (r.isConfirmed) doSubmit(); });
     }
 

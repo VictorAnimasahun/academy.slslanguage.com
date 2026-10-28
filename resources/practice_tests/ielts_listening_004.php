@@ -424,53 +424,53 @@ $answers = loadTestAnswers($db, $testCode);
     <style>
         .main-wrapper { padding: 1.5rem; min-height: 100vh; }
         .test-container { max-width: 100%; }
-        .panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,.07); }
-        .section-badge { background: linear-gradient(135deg,#10b981,#34d399); color: white; padding: .45rem 1.4rem; border-radius: 50px; font-weight: 700; font-size: .85rem; }
-        .timer-display { font-size: 2rem; font-weight: 700; font-family: monospace; color: #1e40af; }
+        .panel { background: white; border-radius:3px; padding: 2rem; }
+        .section-badge { background: #0b77ff; color: white; padding: .45rem 1.4rem; border-radius:3px; font-weight: 700; font-size: .85rem; }
+        .timer-display { font-size: 2rem; font-weight: 700; font-family: monospace; color: #0b77ff; }
         .timer-display.warning { color: #ef4444; animation: pulse 1s infinite; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
         /* Tabs */
         .part-tab { cursor: pointer; padding: .5rem 1.1rem; border: none; background: transparent; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; }
-        .part-tab.active { color: #10b981; border-bottom-color: #10b981; }
+        .part-tab.active { color: #0b77ff; border-bottom-color: #0b77ff; }
         .part-panel { display: none; }
         .part-panel.active { display: block; }
 
         /* Audio bar */
-        .audio-bar { background: #f3f4f6; border-radius: 12px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-        .play-btn { width: 42px; height: 42px; border-radius: 50%; background: #10b981; border: none; color: white; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .audio-bar { background: #f3f4f6; border-radius:3px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .play-btn { width: 42px; height: 42px; border-radius: 50%; background: #0b77ff; border: none; color: white; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
 
         /* Form fill */
-        .ff-group-heading { font-weight: 700; font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; color: #374151; margin: 1.2rem 0 .4rem; border-left: 3px solid #10b981; padding-left: .6rem; }
+        .ff-group-heading { font-weight: 700; font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; color: #374151; margin: 1.2rem 0 .4rem; padding-left: .6rem; }
         .ff-row { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; padding: .45rem 0; border-bottom: 1px solid #f3f4f6; font-size: .9rem; color: #374151; }
-        .q-num { font-weight: 700; color: #10b981; min-width: 24px; }
-        .q-input { border: 1.5px solid #d1d5db; border-radius: 6px; padding: .3rem .7rem; font-size: .88rem; min-width: 140px; }
-        .q-input:focus { border-color: #10b981; outline: none; }
+        .q-num { font-weight: 700; color: #0b77ff; min-width: 24px; }
+        .q-input { border: 1.5px solid #d1d5db; border-radius:3px; padding: .3rem .7rem; font-size: .88rem; min-width: 140px; }
+        .q-input:focus { border-color: #0b77ff; outline: none; }
 
         /* MCQ */
-        .mc-option { display: flex; align-items: flex-start; gap: .5rem; padding: .4rem .75rem; border-radius: 6px; cursor: pointer; margin-bottom: .2rem; font-size: .9rem; }
-        .mc-option:hover { background: #f0fdf4; }
-        .mc-option input { accent-color: #10b981; margin-top: 3px; flex-shrink: 0; }
+        .mc-option { display: flex; align-items: flex-start; gap: .5rem; padding: .4rem .75rem; border-radius:3px; cursor: pointer; margin-bottom: .2rem; font-size: .9rem; }
+        .mc-option:hover { background: #eef5ff; }
+        .mc-option input { accent-color: #0b77ff; margin-top: 3px; flex-shrink: 0; }
 
         /* Table fill */
         .tbl-fill { width: 100%; border-collapse: collapse; font-size: .88rem; }
         .tbl-fill th { background: #f3f4f6; font-weight: 700; padding: .6rem .8rem; border: 1px solid #e5e7eb; }
         .tbl-fill td { padding: .55rem .8rem; border: 1px solid #e5e7eb; vertical-align: middle; }
-        .tbl-fill .day-col { font-weight: 600; white-space: nowrap; color: #1e40af; }
+        .tbl-fill .day-col { font-weight: 600; white-space: nowrap; color: #0b77ff; }
         .tbl-cell-inline { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; }
 
         /* Matching */
-        .options-box { display: flex; flex-wrap: wrap; gap: .4rem .8rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: .75rem 1rem; margin-bottom: 1.2rem; font-size: .88rem; }
+        .options-box { display: flex; flex-wrap: wrap; gap: .4rem .8rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius:3px; padding: .75rem 1rem; margin-bottom: 1.2rem; font-size: .88rem; }
         .options-box span { white-space: nowrap; }
-        .q-select { border: 1.5px solid #d1d5db; border-radius: 6px; padding: .3rem .6rem; font-size: .88rem; }
-        .q-select:focus { border-color: #10b981; outline: none; }
+        .q-select { border: 1.5px solid #d1d5db; border-radius:3px; padding: .3rem .6rem; font-size: .88rem; }
+        .q-select:focus { border-color: #0b77ff; outline: none; }
         .match-row { display: flex; align-items: center; gap: .75rem; padding: .45rem 0; border-bottom: 1px solid #f3f4f6; }
         .match-label { flex: 1; font-size: .9rem; }
 
         /* Multi-select */
-        .ms-option { display: flex; align-items: center; gap: .5rem; padding: .4rem .75rem; border-radius: 6px; cursor: pointer; font-size: .9rem; }
-        .ms-option:hover { background: #f0fdf4; }
-        .ms-option input { accent-color: #10b981; }
+        .ms-option { display: flex; align-items: center; gap: .5rem; padding: .4rem .75rem; border-radius:3px; cursor: pointer; font-size: .9rem; }
+        .ms-option:hover { background: #eef5ff; }
+        .ms-option input { accent-color: #0b77ff; }
 
         /* Results feedback */
         .q-input.correct, .q-select.correct { border-color: #10b981; background: #f0fdf4; }
@@ -483,8 +483,8 @@ $answers = loadTestAnswers($db, $testCode);
         .hint.wrong { color: #ef4444; }
 
         /* Results summary */
-        #resultsBanner { display: none; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
-        .band-badge { font-size: 2rem; font-weight: 800; color: #10b981; }
+        #resultsBanner { display: none; border-radius:3px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+        .band-badge { font-size: 2rem; font-weight: 800; color: #0b77ff; }
         .part-score-row { display: flex; justify-content: space-between; font-size: .88rem; border-bottom: 1px solid #e5e7eb; padding: .3rem 0; }
     </style>
 </head>
@@ -562,7 +562,7 @@ $answers = loadTestAnswers($db, $testCode);
                          real IELTS test. A "Tap to play" button appears only
                          if the browser blocks autoplay outright. -->
                     <div class="audio-bar" id="audioBar-<?= $pNum ?>">
-                        <i class="bi bi-volume-up-fill" style="font-size:1.1rem;color:#10b981;flex-shrink:0;"></i>
+                        <i class="bi bi-volume-up-fill" style="font-size:1.1rem;color:#0b77ff;flex-shrink:0;"></i>
                         <audio id="audio-<?= $pNum ?>" src="<?= htmlspecialchars($p['audio_url']) ?>"></audio>
                         <span class="text-muted small"><?= $p['title'] ?> Recording — playing…</span>
                         <span class="ms-auto text-muted small" id="audioTime-<?= $pNum ?>">0:00</span>
@@ -664,7 +664,7 @@ $answers = loadTestAnswers($db, $testCode);
                                 <p class="small text-secondary mb-3"><?= $sec['instructions'] ?></p>
                                 <div class="text-center mb-3">
                                     <img src="<?= htmlspecialchars($sec['image']) ?>" alt="<?= htmlspecialchars($sec['image_alt']) ?>"
-                                         style="max-width:100%;width:520px;height:auto;border:1px solid #e5e7eb;border-radius:8px;background:#fff;">
+                                         style="max-width:100%;width:520px;height:auto;border:1px solid #e5e7eb;border-radius:3px;background:#fff;">
                                 </div>
                                 <?php foreach ($sec['questions'] as $mq): ?>
                                 <div class="match-row">
@@ -776,11 +776,11 @@ $answers = loadTestAnswers($db, $testCode);
                          for previewing content. -->
                     <div class="d-flex justify-content-end mt-4">
                         <?php if ($pNum < 4 && $isAdmin): ?>
-                        <button class="btn btn-outline-success" onclick="switchPart(<?= $pNum + 1 ?>, document.getElementById('ptab-<?= $pNum + 1 ?>'), true)">
+                        <button class="btn btn-outline-primary" onclick="switchPart(<?= $pNum + 1 ?>, document.getElementById('ptab-<?= $pNum + 1 ?>'), true)">
                             <?= $parts[$pNum + 1]['title'] ?> <i class="bi bi-arrow-right ms-1"></i>
                         </button>
                         <?php elseif ($pNum === 4): ?>
-                        <button class="btn btn-success px-4" id="submitBtn" onclick="submitTest()">
+                        <button class="btn btn-primary px-4" id="submitBtn" onclick="submitTest()">
                             Submit <i class="bi bi-send ms-1"></i>
                         </button>
                         <?php endif; ?>
@@ -876,7 +876,7 @@ $answers = loadTestAnswers($db, $testCode);
             if (btn) return;
             btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'btn btn-success btn-sm tap-to-play-btn ms-2';
+            btn.className = 'btn btn-primary btn-sm tap-to-play-btn ms-2';
             btn.innerHTML = '<i class="bi bi-play-fill me-1"></i>Tap to play';
             btn.onclick = () => { mediaEl.play(); btn.remove(); };
             containerEl.appendChild(btn);
@@ -903,7 +903,7 @@ $answers = loadTestAnswers($db, $testCode);
             text: 'Make sure you have answered all 40 questions.',
             icon: 'question', showCancelButton: true,
             confirmButtonText: 'Submit', cancelButtonText: 'Review',
-            confirmButtonColor: '#10b981',
+            confirmButtonColor: '#0b77ff',
         }).then(r => { if (r.isConfirmed) doSubmit(); });
     }
 

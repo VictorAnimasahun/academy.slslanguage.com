@@ -31,6 +31,17 @@
 		--bs-border-radius: 3px; --bs-border-radius-sm: 2px; --bs-border-radius-lg: 3px;
 		--bs-border-radius-xl: 3px; --bs-border-radius-xxl: 3px; --bs-border-radius-pill: 3px;
 		--card-radius: 3px;
+		/* Bootstrap's "primary" is SLS blue #0b77ff, not Bootstrap's own #0d6efd (founder, 2026-10-28: the IELTS
+		   practice tests' colours "not consistent with ... blue"). */
+		--bs-primary: #0b77ff; --bs-primary-rgb: 11, 119, 255;
+	}
+	.btn-primary {
+		--bs-btn-bg: #0b77ff; --bs-btn-border-color: #0b77ff; --bs-btn-hover-bg: #0a66db; --bs-btn-hover-border-color: #0a66db;
+		--bs-btn-active-bg: #0959c2; --bs-btn-active-border-color: #0959c2; --bs-btn-disabled-bg: #0b77ff; --bs-btn-disabled-border-color: #0b77ff;
+	}
+	.btn-outline-primary {
+		--bs-btn-color: #0b77ff; --bs-btn-border-color: #0b77ff; --bs-btn-hover-bg: #0b77ff; --bs-btn-hover-border-color: #0b77ff;
+		--bs-btn-active-bg: #0a66db; --bs-btn-active-border-color: #0a66db; --bs-btn-disabled-color: #0b77ff; --bs-btn-disabled-border-color: #0b77ff;
 	}
 	body:not(.exam-page) :where(*):not(:focus-visible):not(.bell-link):not(dialog):not(.dropdown-menu):not(.ib-menu):not(.modal-content) {
 		box-shadow: none !important;

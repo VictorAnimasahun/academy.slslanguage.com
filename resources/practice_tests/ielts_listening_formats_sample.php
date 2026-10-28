@@ -452,7 +452,7 @@ function ls_task_open(string $id, string $title, string $meta, string $instr, st
 <?php }
 function ls_task_close(string $id, int $total, array $tapescript): void { ?>
         <div class="d-flex align-items-center gap-3 mt-3 flex-wrap">
-            <button type="button" class="btn btn-success btn-sm ls-check" data-task="<?= $id ?>"><i class="bi bi-check2-circle me-1"></i>Check answers</button>
+            <button type="button" class="btn btn-primary btn-sm ls-check" data-task="<?= $id ?>"><i class="bi bi-check2-circle me-1"></i>Check answers</button>
             <span class="ls-score fw-semibold" id="score-<?= $id ?>" data-total="<?= $total ?>"></span>
         </div>
         <div class="ls-script d-none" id="script-<?= $id ?>" data-speak="<?= htmlspecialchars(ls_speak_text($tapescript)) ?>">
@@ -471,22 +471,22 @@ function ls_task_close(string $id, int $total, array $tapescript): void { ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .ls-task { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:1.5rem; margin-bottom:1.5rem; }
-        .ls-tip { background:#f0fdf4; border-left:3px solid #10b981; padding:.5rem .8rem; font-size:.85rem; color:#065f46; border-radius:6px; margin-bottom:.9rem; }
-        .ls-in { border:1.5px solid #d1d5db; border-radius:6px; padding:.25rem .6rem; font-size:.9rem; }
-        .ls-in:focus { border-color:#10b981; outline:none; }
+        .ls-task { background:#fff; border:1px solid #e5e7eb; border-radius:3px; padding:1.5rem; margin-bottom:1.5rem; }
+        .ls-tip { background:#eef5ff; padding:.5rem .8rem; font-size:.85rem; color:#1f3a5f; border-radius:3px; margin-bottom:.9rem; }
+        .ls-in { border:1.5px solid #d1d5db; border-radius:3px; padding:.25rem .6rem; font-size:.9rem; }
+        .ls-in:focus { border-color:#0b77ff; outline:none; }
         .ls-in.correct { border-color:#10b981; background:#f0fdf4; }
         .ls-in.wrong { border-color:#ef4444; background:#fff1f2; }
         .ls-hint { font-size:.78rem; color:#ef4444; margin-left:.4rem; }
         .ls-row { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; padding:.4rem 0; border-bottom:1px solid #f3f4f6; font-size:.92rem; }
-        .ls-num { font-weight:700; color:#10b981; min-width:26px; }
-        .ls-box { display:flex; flex-wrap:wrap; gap:.4rem 1rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:.7rem 1rem; margin-bottom:1rem; font-size:.9rem; }
-        .ls-opt { display:block; padding:.25rem .5rem; border-radius:6px; cursor:pointer; font-size:.9rem; }
+        .ls-num { font-weight:700; color:#0b77ff; min-width:26px; }
+        .ls-box { display:flex; flex-wrap:wrap; gap:.4rem 1rem; background:#f9fafb; border:1px solid #e5e7eb; border-radius:3px; padding:.7rem 1rem; margin-bottom:1rem; font-size:.9rem; }
+        .ls-opt { display:block; padding:.25rem .5rem; border-radius:3px; cursor:pointer; font-size:.9rem; }
         .ls-opt.correct-answer { background:#dcfce7; } .ls-opt.wrong-selected { background:#fee2e2; }
-        .ls-script { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:1rem 1.2rem; margin-top:1rem; font-size:.88rem; line-height:1.6; }
-        .ls-form { border:1.5px solid #374151; border-radius:8px; padding:1rem 1.25rem; max-width:640px; }
+        .ls-script { background:#f8fafc; border:1px solid #e2e8f0; border-radius:3px; padding:1rem 1.2rem; margin-top:1rem; font-size:.88rem; line-height:1.6; }
+        .ls-form { border:1.5px solid #374151; border-radius:3px; padding:1rem 1.25rem; max-width:640px; }
         .ls-form h5 { font-family:Georgia,serif; text-align:center; margin-bottom:1rem; }
-        .ls-fig { max-width:100%; height:auto; border:1px solid #e5e7eb; border-radius:8px; background:#fff; }
+        .ls-fig { max-width:100%; height:auto; border:1px solid #e5e7eb; border-radius:3px; background:#fff; }
     </style>
 </head>
 <body class="light">
@@ -503,7 +503,7 @@ function ls_task_close(string $id, int $total, array $tapescript): void { ?>
                         <li class="breadcrumb-item active">IELTS Listening – Question Formats</li>
                     </ol>
                 </nav>
-                <div style="display:inline-block;padding:.12rem .6rem;border-radius:999px;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#e0f2fe;color:#075985;margin-bottom:.4rem;">Lesson</div>
+                <div style="display:inline-block;padding:.12rem .6rem;border-radius:3px;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:#e0f2fe;color:#075985;margin-bottom:.4rem;">Lesson</div>
                 <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:.25rem;">IELTS Listening – Question Formats</h1>
                 <p class="text-muted mb-2">Seven official IELTS sample tasks, one for each common question format. Work through each one, check your answers, then read the tapescript to see where the answer — and the distractor — came from.</p>
                 <p class="small text-secondary mb-4"><i class="bi bi-info-circle me-1"></i>This is a <strong>lesson worksheet</strong>, not a test: these are practice tasks, not timed, and your answers are not saved. Where a task has a <em>Listen</em> button it is a computer voice reading the official tapescript, not the real recording — your instructor may also read the tapescript aloud in class.</p>

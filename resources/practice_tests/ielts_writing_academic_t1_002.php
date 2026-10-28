@@ -24,19 +24,19 @@ $wordTarget = 150;
     <style>
         .main-wrapper { padding: 0; min-height: 100vh; }
         .test-container { max-width: none; }
-        .panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.07); height: 100%; }
-        .section-badge { background: linear-gradient(135deg,#10b981,#34d399); color:white; padding:.5rem 1.5rem; border-radius:50px; font-weight:700; font-size:.9rem; }
-        .timer-display { font-size: 2.2rem; font-weight: 700; font-family: monospace; color: #1e40af; }
+        .panel { background: white; border-radius:3px; padding: 2rem; height: 100%; }
+        .section-badge { background: #0b77ff; color:white; padding:.5rem 1.5rem; border-radius:3px; font-weight:700; font-size:.9rem; }
+        .timer-display { font-size: 2.2rem; font-weight: 700; font-family: monospace; color: #0b77ff; }
         .timer-display.warning { color: #ef4444; }
-        .prompt-box { background:#f0fdf4; border-left:4px solid #10b981; border-radius:8px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
-        .essay-textarea { width:100%; min-height:calc(100vh - 310px); padding:1.25rem; border:2px solid #e5e7eb; border-radius:10px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
-        .essay-textarea:focus { border-color:#10b981; outline:none; }
+        .prompt-box { background:#eef5ff; border-radius:3px; padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
+        .essay-textarea { width:100%; min-height:calc(100vh - 310px); padding:1.25rem; border:2px solid #e5e7eb; border-radius:3px; font-size:1rem; line-height:1.8; resize:vertical; font-family: system-ui,sans-serif; }
+        .essay-textarea:focus { border-color:#0b77ff; outline:none; }
         .word-count { font-size:1.6rem; font-weight:700; }
         .word-count.below { color:#ef4444; }
         .word-count.ok    { color:#10b981; }
         .bottom-bar { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; padding-top:1rem; border-top:1px solid #e5e7eb; }
         /* TODO: replace with actual chart/diagram image */
-        .chart-placeholder { background:#f3f4f6; border:2px dashed #d1d5db; border-radius:10px; height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#9ca3af; font-size:.9rem; }
+        .chart-placeholder { background:#f3f4f6; border:2px dashed #d1d5db; border-radius:3px; height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#9ca3af; font-size:.9rem; }
     </style>
 </head>
 <body class="light">
@@ -47,7 +47,7 @@ $wordTarget = 150;
     <div class="main-wrapper flex-grow-1" style="flex:1;">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
 
-    <main class="content p-2">
+    <main class="content p-4">
         <div class="test-container">
             <nav aria-label="breadcrumb" class="mb-3">
                 <ol class="breadcrumb">
@@ -69,10 +69,10 @@ $wordTarget = 150;
                             <p class="mb-2"><strong>The table and charts below give information on the police budget for 2017 and 2018 in one area of Britain. The table shows where the money came from and the charts show how it was distributed.</strong></p>
                             <p class="mb-0">Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p>
                         </div>
-                        <div class="table-responsive mb-3"><table class="table table-bordered table-sm" style="background:#fff"><caption class="fw-bold text-dark" style="caption-side:top">Police Budget 2017–2018 (in £m)</caption><thead class="table-light"><tr><th>Sources</th><th>2017</th><th>2018</th></tr></thead><tbody><tr><td>National Government</td><td>175.5m</td><td>177.8m</td></tr><tr><td>Local Taxes</td><td>91.2m</td><td>102.3m</td></tr><tr><td>Other sources (eg grants)</td><td>38m</td><td>38.5m</td></tr><tr class="fw-bold"><td>Total</td><td>304.7m</td><td>318.6m</td></tr></tbody></table></div><div class="mb-3" style="border:1px solid #e5e7eb;border-radius:10px;overflow:hidden"><svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two pie charts: how the police money was spent in 2017 and 2018" style="width:100%;height:auto;background:#fff;font-family:system-ui,sans-serif"><text x="340.0" y="22" text-anchor="middle" font-size="15" font-weight="700">How the money was spent</text><text x="170" y="43" text-anchor="middle" font-size="14" font-weight="700">2017</text><path d="M170,150 L170.0,55.0 A95,95 0 1 1 75.0,150.0 Z" fill="#6b7280" stroke="#111" stroke-width="1"/><text x="211.6" y="195.6" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">75%</text><path d="M170,150 L75.0,150.0 A95,95 0 0 1 86.8,104.2 Z" fill="#ffffff" stroke="#111" stroke-width="1"/><text x="113.0" y="139.4" text-anchor="middle" font-size="13" font-weight="700" fill="#111">8%</text><path d="M170,150 L86.8,104.2 A95,95 0 0 1 170.0,55.0 Z" fill="#111111" stroke="#111" stroke-width="1"/><text x="140.0" y="103.3" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">17%</text><text x="510" y="43" text-anchor="middle" font-size="14" font-weight="700">2018</text><path d="M510,150 L510.0,55.0 A95,95 0 1 1 421.7,185.0 Z" fill="#6b7280" stroke="#111" stroke-width="1"/><text x="558.7" y="187.1" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">69%</text><path d="M510,150 L421.7,185.0 A95,95 0 0 1 426.8,104.2 Z" fill="#ffffff" stroke="#111" stroke-width="1"/><text x="451.2" y="150.3" text-anchor="middle" font-size="13" font-weight="700" fill="#111">14%</text><path d="M510,150 L426.8,104.2 A95,95 0 0 1 510.0,55.0 Z" fill="#111111" stroke="#111" stroke-width="1"/><text x="480.0" y="103.3" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">17%</text><rect x="235.0" y="265" width="12" height="12" fill="#6b7280" stroke="#111"/><text x="252.0" y="276" font-size="12">Salaries (officers and staff)</text><rect x="235.0" y="285" width="12" height="12" fill="#ffffff" stroke="#111"/><text x="252.0" y="296" font-size="12">Technology</text><rect x="235.0" y="305" width="12" height="12" fill="#111111" stroke="#111"/><text x="252.0" y="316" font-size="12">Buildings and transport</text></svg></div>assets/images/ielts_academic/writing_001_task1_chart.png" alt="Bar chart: thousands of men and women in further education in Britain, full-time and part-time, 1970/71, 1980/81 and 1990/91" class="img-fluid mb-3" style="border:1px solid #e5e7eb;border-radius:10px;width:100%;">
+                        <div class="table-responsive mb-3"><table class="table table-bordered table-sm" style="background:#fff"><caption class="fw-bold text-dark" style="caption-side:top">Police Budget 2017–2018 (in £m)</caption><thead class="table-light"><tr><th>Sources</th><th>2017</th><th>2018</th></tr></thead><tbody><tr><td>National Government</td><td>175.5m</td><td>177.8m</td></tr><tr><td>Local Taxes</td><td>91.2m</td><td>102.3m</td></tr><tr><td>Other sources (eg grants)</td><td>38m</td><td>38.5m</td></tr><tr class="fw-bold"><td>Total</td><td>304.7m</td><td>318.6m</td></tr></tbody></table></div><div class="mb-3" style="border:1px solid #e5e7eb;border-radius:3px;overflow:hidden"><svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two pie charts: how the police money was spent in 2017 and 2018" style="width:100%;height:auto;background:#fff;font-family:system-ui,sans-serif"><text x="340.0" y="22" text-anchor="middle" font-size="15" font-weight="700">How the money was spent</text><text x="170" y="43" text-anchor="middle" font-size="14" font-weight="700">2017</text><path d="M170,150 L170.0,55.0 A95,95 0 1 1 75.0,150.0 Z" fill="#6b7280" stroke="#111" stroke-width="1"/><text x="211.6" y="195.6" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">75%</text><path d="M170,150 L75.0,150.0 A95,95 0 0 1 86.8,104.2 Z" fill="#ffffff" stroke="#111" stroke-width="1"/><text x="113.0" y="139.4" text-anchor="middle" font-size="13" font-weight="700" fill="#111">8%</text><path d="M170,150 L86.8,104.2 A95,95 0 0 1 170.0,55.0 Z" fill="#111111" stroke="#111" stroke-width="1"/><text x="140.0" y="103.3" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">17%</text><text x="510" y="43" text-anchor="middle" font-size="14" font-weight="700">2018</text><path d="M510,150 L510.0,55.0 A95,95 0 1 1 421.7,185.0 Z" fill="#6b7280" stroke="#111" stroke-width="1"/><text x="558.7" y="187.1" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">69%</text><path d="M510,150 L421.7,185.0 A95,95 0 0 1 426.8,104.2 Z" fill="#ffffff" stroke="#111" stroke-width="1"/><text x="451.2" y="150.3" text-anchor="middle" font-size="13" font-weight="700" fill="#111">14%</text><path d="M510,150 L426.8,104.2 A95,95 0 0 1 510.0,55.0 Z" fill="#111111" stroke="#111" stroke-width="1"/><text x="480.0" y="103.3" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">17%</text><rect x="235.0" y="265" width="12" height="12" fill="#6b7280" stroke="#111"/><text x="252.0" y="276" font-size="12">Salaries (officers and staff)</text><rect x="235.0" y="285" width="12" height="12" fill="#ffffff" stroke="#111"/><text x="252.0" y="296" font-size="12">Technology</text><rect x="235.0" y="305" width="12" height="12" fill="#111111" stroke="#111"/><text x="252.0" y="316" font-size="12">Buildings and transport</text></svg></div>assets/images/ielts_academic/writing_001_task1_chart.png" alt="Bar chart: thousands of men and women in further education in Britain, full-time and part-time, 1970/71, 1980/81 and 1990/91" class="img-fluid mb-3" style="border:1px solid #e5e7eb;border-radius:3px;width:100%;">
 
                                         <div class="alert alert-light border small mb-0">
-                            <i class="bi bi-info-circle me-1 text-success"></i>
+                            <i class="bi bi-info-circle me-1 text-primary"></i>
                             Write <strong>at least <?= $wordTarget ?> words</strong>. You should spend about <strong>20 minutes</strong> on this task.
                         </div>
                     </div>
@@ -94,7 +94,7 @@ $wordTarget = 150;
                                 <span id="wordCount" class="word-count below">0</span>
                                 <span class="text-muted ms-1">/ <?= $wordTarget ?>+ words</span>
                             </div>
-                            <button id="submitBtn" class="btn btn-success px-4 py-2 fw-600" disabled onclick="submitResponse()">
+                            <button id="submitBtn" class="btn btn-primary px-4 py-2 fw-600" disabled onclick="submitResponse()">
                                 Submit <i class="bi bi-send ms-1"></i>
                             </button>
                         </div>
@@ -161,7 +161,7 @@ $wordTarget = 150;
             showCancelButton: true,
             confirmButtonText: 'Submit',
             cancelButtonText: 'Keep writing',
-            confirmButtonColor: '#10b981',
+            confirmButtonColor: '#0b77ff',
         }).then(r => { if (r.isConfirmed) doSubmit(); });
     }
 

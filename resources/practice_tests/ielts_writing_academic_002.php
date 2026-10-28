@@ -20,7 +20,7 @@ require_course_enrollment(course_ids_for_folders(['IELTS_Aca_2Mo', 'IELTS_Aca_3M
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <?php include INCLUDES_PATH . '/navbar_styles.php'; ?>
     <style>
-        .task-card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:1.5rem; height:100%; }
+        .task-card { background:#fff; border:1px solid #e5e7eb; border-radius:3px; padding:1.5rem; height:100%; }
         .task-card h4 { font-weight:700; margin-bottom:.25rem; }
         .task-meta { color:#64748b; font-size:.9rem; margin-bottom:1rem; }
         .criteria li { margin-bottom:.35rem; }
@@ -33,17 +33,17 @@ require_course_enrollment(course_ids_for_folders(['IELTS_Aca_2Mo', 'IELTS_Aca_3M
     <div class="main-wrapper flex-grow-1" style="flex:1;">
         <?php include INCLUDES_PATH . '/topbar.php'; ?>
         <main class="content p-4">
-            <div style="max-width:980px;">
+            <div>
                 <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:.25rem;">IELTS Academic Writing – Test 2</h1>
                 <p class="text-muted mb-4">A full timed Writing test: <strong>Task 1</strong> (20 minutes) then <strong>Task 2</strong> (40 minutes), 60 minutes in total. Sit both tasks in one go, in this order, without notes.</p>
 
                 <div class="row g-4 mb-4">
                     <div class="col-md-6">
                         <div class="task-card">
-                            <h4><i class="bi bi-bar-chart-line me-2 text-success"></i>Task 1</h4>
+                            <h4><i class="bi bi-bar-chart-line me-2 text-primary"></i>Task 1</h4>
                             <div class="task-meta">Describe a table and two pie charts &middot; 20 minutes &middot; at least 150 words</div>
                             <p>You will see a table and two pie charts and write a report selecting and reporting the main features, with comparisons where relevant.</p>
-                            <a href="ielts_writing_academic_t1_002.php" class="btn btn-success btn-lg"><i class="bi bi-play-fill me-1"></i>Start Task 1</a>
+                            <a href="ielts_writing_academic_t1_002.php" class="btn btn-primary btn-lg"><i class="bi bi-play-fill me-1"></i>Start Task 1</a>
                         </div>
                     </div>
                     <div class="col-md-6">
