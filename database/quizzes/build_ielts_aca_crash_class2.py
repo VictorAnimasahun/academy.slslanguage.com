@@ -13,46 +13,56 @@ Each quiz question is (question, right answer, [three wrong answers]); the right
 
 CODE = 'IELTS_ACA_C2_LQUIZ'
 TITLE = 'Class 2 Listening Quiz'
-DESC = 'IELTS Listening: the test, question types, form completion and multiple choice.'
-KEYS = 'BDACADBCABDCBACDAB'
+DESC = 'From the Class 2 videos and lessons: the test, question types, form completion and multiple choice.'
+KEYS = 'BDACADBCABDCBACDABCA'
 
+# Every question comes from the founder's materials (2026-10-28: "very important stuff were discussed in both set of
+# materials"): the two videos (transcribed and read frame by frame), the SL1 deck and the SL5 deck.
 QUESTIONS = [
-    ('How many times do you hear each recording in IELTS Listening?', 'Once',
-     ['Twice', 'Twice in Part 1, once in the other parts', 'As many times as you need']),
-    ('How many questions are there in the whole Listening test?', '40',
-     ['30', '50', '60']),
-    ('In which part do you hear one person giving a talk on an academic subject?', 'Part 4',
-     ['Part 1', 'Part 2', 'Part 3']),
-    ('In which part are you most likely to complete a form with someone\'s personal details?', 'Part 1',
-     ['Part 2', 'Part 3', 'Part 4']),
-    ('In the computer-delivered test, how much time do you get at the end?', '2 minutes to check your answers',
-     ['10 minutes to transfer your answers', 'No time at all', '5 minutes to listen again']),
-    ('About how many correct answers out of 40 do you usually need for Band 7?', '30',
-     ['20', '25', '36']),
-    ('The instruction says "NO MORE THAN TWO WORDS AND/OR A NUMBER". Which answer breaks the rule?', 'the city library',
-     ['city library', '45 minutes', 'library']),
-    ('You understood the word but spelt it wrongly. How is the answer marked?', 'It is wrong',
-     ['It is right if the meaning is clear', 'It gets half a mark', 'It is right in the computer test']),
-    ('What is the most useful thing to do in the reading time before a form-completion task?', 'Predict what kind of answer each gap needs',
-     ['Write a guess in every gap', 'Read only the last question', 'Count the gaps']),
-    ('The form shows "Email: ______@gmail.com". What do you write in the gap?', 'Only the part before the @',
-     ['The whole email address', 'The word "email"', 'Only "gmail"']),
-    ('The speaker says: "Is that V for Victor?" "No, sorry, B for banana." Which letter do you write?', 'B',
-     ['V', 'Either V or B', 'Both letters']),
-    ('A speaker says a phone number contains "double four". What do you write?', '44',
-     ['4', '8', '404']),
-    ('You have just heard the answer to Question 5, but you missed Question 4. What should you do?', 'Move on and guess Question 4 at the end',
-     ['Wait for Question 4 to come round again', 'Leave Questions 4 and 5 blank', 'Go back and listen for Question 4']),
-    ('In a multiple-choice question, what do you usually hear in the recording?', 'Something about every option, but only one answers the question',
+    # LISTENING_OVERVIEW video
+    ('How many questions are there in the IELTS Listening test?', '40, with 10 in each part',
+     ['30, with 10 in each of three parts', '40, with more in the later parts', '50, with 10 in each of five parts']),
+    ('How are the paper-based and computer-based Listening tests different?', 'They are not: each format has exactly the same test and questions',
+     ['The computer test has fewer questions', 'The computer test is shorter', 'Only the paper test has Part 4']),
+    ('Which accents can you hear in the recordings?', 'British, American, Canadian and Australian, among others',
+     ['Only British English', 'Only British and American English', 'Only the accent of the country you take the test in']),
+    ('How long do you usually get to read the questions before each part starts?', 'About 30 to 45 seconds',
+     ['About 5 seconds', 'About 2 minutes', 'There is no reading time']),
+    ('What has been true of the start of Part 1 since January 2020?', 'There is no example, so you must listen carefully from the very beginning',
+     ['There is an example first that you can ignore', 'The first question is always a practice question', 'The recording is played twice']),
+    ('What do you hear in Part 1?', 'A conversation between two people in an everyday situation, such as buying a ticket or asking about a course',
+     ['One person talking about a place, such as a new gym', 'Up to four people discussing a college project', 'A lecturer talking about an academic subject']),
+    ('What do you hear in Part 2?', 'One person giving information about a product, place or service, such as a new gym or a school map',
+     ['Two people buying and selling a train ticket', 'Three students discussing their research', 'A professor talking about positive psychology']),
+    ('What do you hear in Part 3?', 'Up to four people talking in an education or training situation',
+     ['One person describing a map for new students', 'Two people arranging a delivery', 'A lecturer talking about rainforests']),
+    ('What do you hear in Part 4?', 'One person, often a lecturer, talking about an academic subject',
+     ['Two people in an everyday conversation', 'A group of students discussing a project', 'A guide describing a museum']),
+    ('In the paper-based test, what happens after the last recording?', 'You have 10 minutes to transfer your answers to the answer sheet',
+     ['You hear the recordings again', 'You have 2 minutes to check your answers', 'The test ends immediately']),
+    ('In the computer-based test, when can you review your answers?', 'After each part, and for 2 minutes at the end of the test',
+     ['Only for 10 minutes at the end', 'Never: answers are final', 'Only after Part 4']),
+    # LISTENING_QUESTION_TYPES video
+    ('A multiple-choice question has more than three options. What must you do first?', 'Read the instructions: you may have to choose more than one option',
+     ['Choose one option, as always', 'Choose all the options you hear', 'Skip it and come back later']),
+    ('In plan, map or diagram labelling, what do you usually do?', 'Choose the correct label from a list of options next to the picture',
+     ['Draw the missing parts of the map', 'Write a description of the plan', 'Number the rooms in order']),
+    ('The instructions say "NO MORE THAN TWO WORDS AND/OR A NUMBER". What happens if you write three words?', 'You lose the mark, even if the meaning is right',
+     ['You still get the mark if the meaning is right', 'You get half a mark', 'Nothing, if the third word is "the"']),
+    ('How is a hyphenated word such as "long-term" counted?', 'As one word',
+     ['As two words', 'As three words', 'It is not allowed in an answer']),
+    ('You are not sure of an answer. What should you do?', 'Write something or choose an option: you lose no marks for a wrong answer',
+     ['Leave it blank so you are not penalised', 'Write two possible answers', 'Write a question mark']),
+    # SL1 deck
+    ('Before a form-completion task, what should you do in the reading time?', 'Highlight the keywords and predict what will go in each gap',
+     ['Write a guess in every gap', 'Read only the first line', 'Count the gaps']),
+    ('A form row says "Mobile: ____" and a sentence says "Jason\'s mobile phone number is ____". What is true?', 'Both ask for the same information; the sentence must also be grammatically correct',
+     ['They ask for different information', 'Only the form needs exact spelling', 'The sentence needs a longer answer']),
+    # SL5 deck
+    ('In a multiple-choice question, what will you hear in the recording?', 'Information about all of the options, but only one answers the question',
      ['Only the correct option', 'The exact words of the correct option', 'Nothing about the wrong options']),
-    ('Why do the question words often differ from the words you hear?', 'The questions paraphrase the recording',
-     ['The speakers make mistakes', 'The recordings are from a different test', 'Only the first question is paraphrased']),
-    ('Option A says "his interest in foreign cuisine". Which sentence says the same thing?', 'International food was his true passion',
-     ['He owned many restaurants', 'He cooked a lot for his family', 'He went to the market every day']),
-    ('The question asks what is true "currently". The speaker says the school "soon became 30 ... with 150 at the moment". What is the answer?', '150',
-     ['30', '1', '180']),
-    ('The question asks who "mainly" funds the school. Which phrase in the recording points to the answer?', '"visitor donations account for over 70%"',
-     ['"the city council"', '"local restaurants"', '"when we started, the government"']),
+    ('Which keywords are best to underline in "John Lancer\'s idea for a cookery school came from"?', 'John Lancer\'s, idea and came from',
+     ['idea for a cookery school', 'for, a and from', 'Only "John Lancer\'s"']),
 ]
 
 def q(s):
@@ -98,6 +108,8 @@ INSERT INTO tests (code, title, description, test_type, duration_minutes, total_
         for n, L in enumerate(letters, 1):
             out.append(f"INSERT INTO question_options (question_id, option_label, option_text, is_correct, display_order) SELECT x.id, '{L}', {q(opts[L])}, {1 if L == key else 0}, {n} FROM questions x JOIN tests t ON t.id = x.test_id WHERE t.code = {q(CODE)} AND x.question_number = {i} ON DUPLICATE KEY UPDATE option_text = VALUES(option_text), is_correct = VALUES(is_correct), display_order = VALUES(display_order);")
 
+    out.append(f"DELETE o FROM question_options o JOIN questions x ON x.id = o.question_id JOIN tests t ON t.id = x.test_id WHERE t.code = {q(CODE)} AND x.question_number > {len(QUESTIONS)};")
+    out.append(f"DELETE x FROM questions x JOIN tests t ON t.id = x.test_id WHERE t.code = {q(CODE)} AND x.question_number > {len(QUESTIONS)};")
     L = "courses/IELTS_Aca_1Mo/lessons/"
     cls = lambda week, order: f"(SELECT l.id FROM lessons l JOIN modules m ON m.id = l.module_id JOIN courses c ON c.id = l.course_id WHERE c.folder_name = 'IELTS_Aca_1Mo' AND m.module_order = {week} AND l.lesson_order = {order})"
     out.append(f"""

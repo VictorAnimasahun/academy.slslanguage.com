@@ -18,15 +18,26 @@ ob_start(); ?>
 <h5>Watch: the question types</h5>
 <video controls preload="metadata" src="<?= ACADEMY_URL ?>assets/video/ielts_listening/listening_question_types.mp4"></video>
 
-<h5>The question types, and what each one needs</h5>
+<h5>The six question types, and what each one needs</h5>
 <table><thead><tr><th>Type</th><th>What you do</th><th>Before you listen</th></tr></thead><tbody>
 <tr><td><strong>Form, note, table, flow-chart or summary completion</strong></td><td>Fill gaps with words or numbers from the recording</td><td>Read the word limit. Predict the kind of answer each gap needs: a name, a number, a date, a place, a noun, a verb.</td></tr>
 <tr><td><strong>Sentence completion</strong></td><td>Finish sentences with words from the recording</td><td>Read each sentence and decide what grammar the gap needs. The finished sentence must be correct English.</td></tr>
 <tr><td><strong>Short-answer questions</strong></td><td>Answer questions in a few words</td><td>Underline the question word (who, where, how many) and the word limit.</td></tr>
 <tr><td><strong>Multiple choice</strong></td><td>Choose one answer from A–C, or two or three from a longer list</td><td>Underline the keywords in the question and in every option; think of other ways each option could be said.</td></tr>
 <tr><td><strong>Matching</strong></td><td>Match a list of items to a set of options (for example, people to opinions)</td><td>Read the options first; they usually come up in a different order from the items.</td></tr>
-<tr><td><strong>Plan, map or diagram labelling</strong></td><td>Label places or parts on a picture</td><td>Find where you start, and note words for direction and position: opposite, next to, on the left, at the end of.</td></tr>
+<tr><td><strong>Plan, map or diagram labelling</strong></td><td>Complete the labels on a picture, usually by choosing from a list of options next to it</td><td>Find where you start, and note words for direction and position: opposite, next to, on the left, at the end of.</td></tr>
 </tbody></table>
+
+<p>Every test uses a mix of these types; how many of each, and in what order, changes from test to test. So <strong>read the instructions before every set of questions</strong>, even when you think you know what to do: a multiple-choice set may ask you to choose <em>two</em> or <em>three</em> options, and the word limit for gaps changes (one, two or three words, with or without a number).</p>
+
+<h5>Counting words, and guessing</h5>
+<ul>
+<li><strong>Too many words loses the mark.</strong> If the limit is two words and you write three, the answer is wrong even if the meaning is right.</li>
+<li><strong>A hyphenated word counts as one word:</strong> <em>long-term</em>, <em>ex-president</em>.</li>
+<li><strong>Contracted forms</strong> such as <em>I'm</em>, <em>we're</em> or <em>don't</em> are not tested as answers.</li>
+<li><strong>Spelling and grammar count:</strong> you can lose marks for both.</li>
+<li><strong>Never leave a blank.</strong> You lose no marks for a wrong answer, so always write something or choose an option, even if you have to guess.</li>
+</ul>
 
 <h5>Two things true of every type</h5>
 <ul>

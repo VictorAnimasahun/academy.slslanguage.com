@@ -1,6 +1,7 @@
 <?php
 // IELTS Listening: Overview — IELTS Academic — 1-Month Crash Course, Class 2, piece 1 (lesson).
-// The LISTENING_OVERVIEW video (founder's, 2026-10-28) and the test's format, timing, marking and band table.
+// The LISTENING_OVERVIEW video (founder's, 2026-10-28; its narration is the source of the facts below) and the
+// test's format, timing, marking and band table.
 require_once dirname(__DIR__, 3) . '/bootstrap.php';
 require_once INCLUDES_PATH . '/lesson_shell.php';
 require_once __DIR__ . '/listening_kit.php';
@@ -19,19 +20,25 @@ ob_start(); ?>
 <video controls preload="metadata" src="<?= ACADEMY_URL ?>assets/video/ielts_listening/listening_overview.mp4"></video>
 
 <h5>The test at a glance</h5>
-<p>IELTS Listening is the same test for Academic and General Training. It has <strong>four parts</strong> and <strong>40 questions</strong>, ten in each part, and the recordings last about <strong>30 minutes</strong>. You hear each recording <strong>once only</strong>, so you answer while you listen.</p>
+<p>IELTS Listening is the same test for Academic and General Training. It has <strong>four parts</strong> and <strong>40 questions</strong>, ten in each part, and the recordings last about <strong>30 minutes</strong>. You hear each recording <strong>once only</strong>, so you answer while you listen. The questions come in the same order as the recording.</p>
+<ul>
+<li><strong>Paper or computer:</strong> both formats have exactly the same test and questions.</li>
+<li><strong>Accents:</strong> you can hear British, American, Canadian and Australian English, among others.</li>
+<li><strong>Reading time:</strong> each part starts with instructions and usually 30 to 45 seconds to read its questions. Listen to the instructions: they tell you exactly which questions to look at.</li>
+<li><strong>No example in Part 1:</strong> since January 2020 there is no example before the first part, so listen carefully from the very beginning.</li>
+</ul>
 <table><thead><tr><th>Part</th><th>What you hear</th><th>Typical example</th></tr></thead><tbody>
-<tr><td>1</td><td>A conversation between two people in an everyday situation</td><td>Booking a course, joining a leisure centre, reporting a lost item</td></tr>
-<tr><td>2</td><td>One person speaking about an everyday topic</td><td>A guide describing a museum, a talk about local services</td></tr>
-<tr><td>3</td><td>Up to four people discussing something in an education or training setting</td><td>Two students and a tutor talking about an assignment</td></tr>
-<tr><td>4</td><td>One person giving a talk on an academic subject</td><td>A university lecture</td></tr>
+<tr><td>1</td><td>A conversation between two people in an everyday situation, usually a transaction: buying or asking about a product or service</td><td>Buying a train ticket; a student asking about a university course. Often names, dates and numbers.</td></tr>
+<tr><td>2</td><td>One person in an everyday situation, giving information about a product, place or service</td><td>Information about a new gym; describing places on a school map for new students</td></tr>
+<tr><td>3</td><td>Up to four people in an education or training situation</td><td>Three students talking about research for a college project; a manager discussing IT training with employees</td></tr>
+<tr><td>4</td><td>One person, often a lecturer or professor, talking about an academic subject</td><td>A talk about the environment and rainforests; positive psychology in the workplace</td></tr>
 </tbody></table>
 <p>The parts get harder as you go: Part 1 is the most predictable, Part 4 the most academic. Before each part you get a short time to read the questions; use it to underline keywords and predict the answers (the next lessons show you how).</p>
 
 <h5>Timing on paper and on computer</h5>
 <ul>
 <li><strong>Paper-based test:</strong> you write your answers on the question paper while you listen, then have <strong>10 minutes</strong> at the end to copy them onto the answer sheet.</li>
-<li><strong>Computer-delivered test:</strong> you type your answers as you go, then have <strong>2 minutes</strong> at the end to check them. There is no transfer time, so your spelling must be right first time.</li>
+<li><strong>Computer-delivered test:</strong> you type your answers as you go, have some time to review your answers after each part, and <strong>2 minutes</strong> at the end of the test to check them. There is no transfer time, so your spelling must be right first time.</li>
 </ul>
 
 <h5>How it is marked</h5>
