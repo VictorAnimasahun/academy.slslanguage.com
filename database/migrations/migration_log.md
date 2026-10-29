@@ -2329,3 +2329,21 @@ Done on live already: 127 and 127b. Back up first. Each file is safe to re-run E
 | Live  | [x] | 2026-10-29 | Files synced (rsync output checked) and 179 run. Founder's check query: Class 3 = Overview, TFNG/YNNG, Completion, Matching & MC, Class 3 Reading Quiz, Reading Test 1; Class 5 = Writing Task Overview, Trend Vocabulary & Paraphrasing, Writing Test 1 (Timed), Listening Formats -- as expected. quiz_questions = 20 (founder, 2026-10-29). Originally: needs the files synced first (class03_p1..p4 lesson pages, class05_p2_trend-vocabulary-paraphrasing.php, listening_kit.php). Final SELECTs: Class 3 = 6 items ending with Reading Test 1, Class 5 = Writing Task Overview, Trend Vocabulary & Paraphrasing, Writing Test 1 (Timed), ...; quiz_questions = 20. |
 
 **What it does:** founder, 2026-10-28: "Let's move on to Class 3. Same idea/s as Class 2." Class 3 had Reading Test 1 with no reading teaching before it, then a Writing Task 1 lesson. Class 3 becomes: IELTS Reading: Overview (a named slot for the founder's remade video, `assets/video/ielts_reading/reading_overview.mp4`, Coming Soon until the file exists), True/False/Not Given & Yes/No/Not Given, Completion: Notes, Summary, Table & Diagram, Matching & Multiple Choice (exercises from the seven official IELTS Academic Reading sample tasks, with their answer keys), Class 3 Reading Quiz (IELTS_ACA_C3_RQUIZ, 20 questions, pass 70%), Reading Test 1. Trend Vocabulary & Paraphrasing moves to Class 5 straight before Writing Test 1 (only where Class 5 holds it); its page is renamed class05_p2_... and every row pointing at the old name is updated. By folder + week + class; class ids kept; positions parked at +100.
+
+## 180 — IELTS Listening Practice Test 1: its answer key and options
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-29 | Run twice on local 8.0 (2nd identical): 39 answers, 28 options, 40 of 40 questions keyed. Also on MySQL 5.7.44 from the live state (the test with no key): same result, twice. |
+| Live  | [ ] | | No files to sync. Final SELECT: questions = 40, keyed = 40. |
+
+**What it does:** found in the academy-laravel audit (2026-10-29): `IELTS_PT_L_001`'s 40 questions are in the bank with no answer key and no options, because 012 (which holds them) never ran. Classic marks from the bank, so every answer was marked wrong; Laravel builds the paper from the bank, so Q11–14 and Q27–30 had no choices. Adds 012's key and options (plus the page's own A–E for Q29–30, B and D correct) only to questions that have none. No question is deleted or re-created, so attempts already taken keep their answers. Do not run 012 on live: it deletes and re-creates the questions.
+
+## 181 — Hide the superseded courses from the catalogue
+
+| Environment | Applied | Date | Notes |
+|---|---|---|---|
+| Local | [x] | 2026-10-29 | Local has none of the three (131/132 removed them here); the UPDATE changes nothing, as expected. |
+| Live  | [ ] | | Final SELECT: IELTS_Aca_Crash, IELTS_Aca_Mst, IELTS_Crash_Course with is_visible = 0 and their enrolled counts (5, 4, 1 on 2026-10-29). |
+
+**What it does:** founder, 2026-10-29, on the duplicate courses 131/132 left on live because students were enrolled: "make the decision". They are hidden from the catalogue (is_visible = 0), nothing is deleted: enrolled students keep the course, its access and progress on both classic and academy-laravel. Undo: set is_visible = 1.
