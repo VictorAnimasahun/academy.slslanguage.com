@@ -3,7 +3,7 @@
  * Prints the lesson body of one academy page, rendered, for academy-laravel's content import (academy:import-content).
  * Needed to move content at cutover: the newer lesson pages build their exercises with PHP (listening_kit.php, the
  * $tfng / $pick helpers, course_introduction.php), so their text can only be read by running them.
- * Command line only, on the Mac:
+ * Command line only (on the Mac, or on the server with EDUHUB_PHP):
  *
  *   php academy/tools/render_lesson_body.php courses/IELTS_Aca_1Mo/lessons/class03_p2_true-false-not-given.php
  *
@@ -22,9 +22,13 @@ if (!preg_match('~^(courses|resources)/[A-Za-z0-9_./-]+\.php$~', $rel) || str_co
     exit(1);
 }
 
-$_SERVER['HTTP_HOST'] = 'localhost';
-$_SERVER['REQUEST_URI'] = '/academy/' . $rel;
-$_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'] = '/academy/' . $rel;
+// The host decides which database config/db_connect.php opens: the Mac's MAMP, or live's (on the server, where
+// academy sits at the domain root). Nothing is written: the page runs with no session, so no student is signed in.
+$onMac = str_starts_with($root, '/Applications/MAMP/');
+$_SERVER['HTTP_HOST'] = $onMac ? 'localhost' : 'academy.slslanguage.com';
+$base = $onMac ? '/academy/' : '/';
+$_SERVER['REQUEST_URI'] = $base . $rel;
+$_SERVER['SCRIPT_NAME'] = $_SERVER['PHP_SELF'] = $base . $rel;
 
 function render_lesson_shell(PDO $db, string $folder, int $classNum, int $partOrder, string $bodyHtml = ''): void {
     echo "\n<!-- RENDERED BODY START -->", $bodyHtml, "<!-- RENDERED BODY END -->\n";
@@ -44,7 +48,7 @@ $out = ob_get_clean();
 // The page's own markers win (a page that draws its own frame); otherwise what the page handed the shell.
 foreach (['LESSON BODY', 'RENDERED BODY'] as $m) {
     if (preg_match("/<!-- $m START -->(.*?)<!-- $m END -->/s", $out, $x)) {
-        echo trim($x[1]), "\n";
+        echo trim($x[1]), "\n<!-- RENDER OK -->\n";   // the importer refuses output without this (a page that exit()s early)
         exit(0);
     }
 }
